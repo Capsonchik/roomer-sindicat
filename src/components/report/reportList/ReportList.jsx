@@ -1,19 +1,8 @@
-import {Button, Panel, Table} from "rsuite";
-
+import {Panel, Table} from "rsuite";
+import {data} from "../../../consts/tableData";
 const { Column, HeaderCell, Cell } = Table;
 
-const data = [
-  {
-    id: 1,
-    firstName: "John",
-    lastName: "Doe",
-    gender: "Male",
-    age: 32,
-    postcode: 222-222,
-    email: "john@example.com",
 
-  }
-]
 
 export const ReportList = () => {
   return (
@@ -34,46 +23,21 @@ export const ReportList = () => {
           <Cell dataKey="id" />
         </Column>
 
-        <Column width={150}>
-          <HeaderCell>First Name</HeaderCell>
-          <Cell dataKey="firstName" />
+        <Column width={200}>
+          <HeaderCell>Дата создания</HeaderCell>
+          <Cell dataKey="startDate" />
         </Column>
 
-        <Column width={150}>
-          <HeaderCell>Last Name</HeaderCell>
-          <Cell dataKey="lastName" />
+        <Column width={400}>
+          <HeaderCell>Название отчета</HeaderCell>
+          <Cell dataKey="reportName" />
         </Column>
 
-        <Column width={100}>
-          <HeaderCell>Gender</HeaderCell>
-          <Cell dataKey="gender" />
+        <Column width={400}>
+          <HeaderCell>Ссылка</HeaderCell>
+          <Cell dataKey="link"/>
         </Column>
 
-        <Column width={100}>
-          <HeaderCell>Age</HeaderCell>
-          <Cell dataKey="age" />
-        </Column>
-
-        <Column width={150}>
-          <HeaderCell>Postcode</HeaderCell>
-          <Cell dataKey="postcode" />
-        </Column>
-
-        <Column width={300}>
-          <HeaderCell>Email</HeaderCell>
-          <Cell dataKey="email" />
-        </Column>
-        <Column width={80} fixed="right">
-          <HeaderCell>...</HeaderCell>
-
-          <Cell style={{ padding: '6px' }}>
-            {rowData => (
-              <Button appearance="link" onClick={() => alert(`id:${rowData.id}`)}>
-                Edit
-              </Button>
-            )}
-          </Cell>
-        </Column>
       </Table>
     </div>
   );

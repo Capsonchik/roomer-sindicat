@@ -3,6 +3,7 @@ import {stack1} from "../../consts/stacks";
 import styles from './styles.module.scss';
 import { mockTreeData } from '../../consts/mock'
 import {useState} from "react";
+import {AdvancedAnalytics} from "@rsuite/icons";
 
 export const Report2 = () => {
   const data = stack1.map(item => ({ label: item, value: item }));
@@ -123,29 +124,46 @@ export const Report2 = () => {
       <Panel header="Выберете способ выгрузки данных" shaded className={styles.panel}>
         <div className={styles.botPanel}>
           <div>
-            <h5 style={{marginBottom: 16}}>KPI</h5>
-            <Placeholder.Graph width={250} height={150} className={styles.placeholderGraph}/>
+            <div className={styles.saveBlock} style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
+              <h5 style={{marginBottom: 16}}>KPI</h5>
+              <AdvancedAnalytics style={{ fontSize: '30px' }} />
+            </div>
           </div>
           <div>
-            <h5 style={{marginBottom: 16}}>HML</h5>
-            <Placeholder.Graph width={250} height={150} className={styles.placeholderGraph}/>
+            <div className={styles.saveBlock}
+                 style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
+              <h5 style={{marginBottom: 16}}>HML</h5>
+              <AdvancedAnalytics style={{fontSize: '30px'}}/>
+            </div>
           </div>
 
           <div>
-            <h5 style={{marginBottom: 16}}>Профиль</h5>
-            <Placeholder.Graph width={250} height={150} className={styles.placeholderGraph}/>
+            <div className={styles.saveBlock}
+                 style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
+              <h5 style={{marginBottom: 16}}>Профиль</h5>
+              <AdvancedAnalytics style={{fontSize: '30px'}}/>
+            </div>
           </div>
           <div>
-            <h5 style={{marginBottom: 16}}>Портфель</h5>
-            <Placeholder.Graph width={250} height={150} className={styles.placeholderGraph}/>
+            <div className={styles.saveBlock}
+                 style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
+              <h5 style={{marginBottom: 16}}>Портфель</h5>
+              <AdvancedAnalytics style={{fontSize: '30px'}}/>
+            </div>
           </div>
           <div>
-            <h5 style={{marginBottom: 16}}>Catman</h5>
-            <Placeholder.Graph width={250} height={150} className={styles.placeholderGraph}/>
+            <div className={styles.saveBlock}
+                 style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
+              <h5 style={{marginBottom: 16}}>Catman</h5>
+              <AdvancedAnalytics style={{fontSize: '30px'}}/>
+            </div>
           </div>
           <div>
-            <h5 style={{marginBottom: 16}}>Таблицы</h5>
-            <Placeholder.Graph width={250} height={150} className={styles.placeholderGraph}/>
+            <div className={styles.saveBlock}
+                 style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
+              <h5 style={{marginBottom: 16}}>Таблицы</h5>
+              <AdvancedAnalytics style={{fontSize: '30px'}}/>
+            </div>
           </div>
         </div>
       </Panel>

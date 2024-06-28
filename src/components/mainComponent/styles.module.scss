@@ -18,7 +18,18 @@
   border-radius: 12px;
 }
 
+.panelBlock {
+  width: 350px;
+  height: 150px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
-.mainContent {
-  outline: 1px solid red;
+.icon {
+  font-size: 50px;
+  margin-bottom: 16px;
 }

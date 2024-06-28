@@ -1,0 +1,18 @@
+.newsBlock {
+  display: flex;
+  margin-bottom: 16px;
+
+  & img {
+    margin-right: 16px;
+  }
+
+  & span {
+    font-size: 16px;
+  }
+}
+
+.photo {
+  width: 150px;
+  height: 100px;
+  border-radius: 12px;
+}

@@ -39,6 +39,16 @@
   padding: 10px;
 }
 
+.saveBlock {
+  width: 250px;
+  height: 150px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media (max-width: 750px) {
   .report2container {
     width: 100%;

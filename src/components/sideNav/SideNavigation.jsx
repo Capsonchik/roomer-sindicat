@@ -26,9 +26,10 @@ export const SideNavigation = () => {
             <Nav.Menu title={'Пользователь'} eventKey="2" icon={<GroupIcon/>}>
               <Nav.Item onClick={() => test('/main/reportList')} eventKey="2-1">Мои отчеты</Nav.Item>
             </Nav.Menu>
-            <Nav.Item onClick={() => test('/main/report')} eventKey="3" title="Advanced" icon={<MagicIcon/>}>
-              Сформировать отчет
-            </Nav.Item>
+            <Nav.Menu eventKey="3" title="Сформировать отчет" icon={<MagicIcon/>}>
+              <Nav.Item onClick={() => test('/main/report')} eventKey="3-1">Вариант 1 </Nav.Item>
+              <Nav.Item onClick={() => test('/main/report1')} eventKey="3-1">Вариант 2</Nav.Item>
+            </Nav.Menu>
             <Nav.Menu eventKey="4" title="Настрройки" icon={<GearCircleIcon/>}>
               <Nav.Item eventKey="4-1">Выйти из системы</Nav.Item>
             </Nav.Menu>

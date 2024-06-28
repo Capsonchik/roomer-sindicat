@@ -1,24 +1,27 @@
-import logo from './logo.svg';
 import './App.css';
+import 'rsuite/dist/rsuite.min.css';
+import {Container} from "rsuite";
+import {LoginForm} from "./components/loginForm/LoginForm";
+import {useDispatch, useSelector} from "react-redux";
+import {selectStartPage} from "./store/main.selectors";
+import {AuthForm} from "./components/authForm/AuthForm";
+import {setStartPage} from "./store/main.slice";
 
 function App() {
+  const startPage = useSelector(selectStartPage);
+  const dispatch = useDispatch();
+
+  const handleSetAuthRoute = () => {
+    dispatch(setStartPage('auth'));
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container className="App">
+      <div className={'appContainer'}>
+        <h4>Войдите в систему или <span onClick={handleSetAuthRoute} className={'authRoute'}>зарегистрируйтесь</span></h4>
+        {startPage === 'logIn' ? <LoginForm/> : <AuthForm/>}
+      </div>
+    </Container>
   );
 }
 

@@ -1,0 +1,22 @@
+.container {
+  padding: 5px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: auto;
+}
+
+.topPanel {
+  display: flex;
+  justify-content: space-between;
+}
+
+.placeholderGraph {
+  border-radius: 12px;
+}
+
+
+.mainContent {
+  outline: 1px solid red;
+}

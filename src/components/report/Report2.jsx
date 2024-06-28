@@ -118,7 +118,7 @@ export const Report2 = () => {
         </div>
       </Panel>
       <Panel header="Второй способ выгрузки данных**" shaded className={styles.panel}>
-        <Cascader data={mockData} block />
+        <Cascader data={mockData} block placeholder={'Пикер в виде дерева'}/>
       </Panel>
       <Panel header="Выберете способ выгрузки данных" shaded className={styles.panel}>
         <div className={styles.botPanel}>

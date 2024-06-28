@@ -15,7 +15,7 @@ export const Report2 = () => {
   });
 
   return (
-    <div style={{ padding: "10px", width: "100%" }}>
+    <div className={styles.report2container}>
       <Panel header="Выберете фильтры для необходимой выгрузки*" shaded className={styles.panel}>
         <div className={styles.inputBlocks}>
           <div className={styles.inputContainer}>
@@ -53,7 +53,7 @@ export const Report2 = () => {
         <Cascader data={mockData} block />
       </Panel>
       <Panel header="Выберете способ выгрузки данных" shaded className={styles.panel}>
-        <div className={styles.topPanel}>
+        <div className={styles.botPanel}>
           <div>
             <h5 style={{marginBottom: 16}}>KPI</h5>
             <Placeholder.Graph width={250} height={150} className={styles.placeholderGraph}/>

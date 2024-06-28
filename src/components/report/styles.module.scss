@@ -20,10 +20,27 @@
   justify-content: space-between;
 }
 
+.botPanel {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
 .placeholderGraph {
   border-radius: 12px;
 }
 
 .panel {
   margin-bottom: 16px;
+}
+
+.report2container {
+  width: calc(100% - 300px);
+  padding: 10px;
+}
+
+@media (max-width: 750px) {
+  .report2container {
+    width: 100%;
+  }
 }

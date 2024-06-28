@@ -1,26 +1,26 @@
 import {Nav, Navbar} from "rsuite";
-import CogIcon from '@rsuite/icons/legacy/Cog';
+import {useNavigate} from "react-router-dom";
+import styles from './styles.module.scss'
 
 export const Header = () => {
+  const navigate = useNavigate();
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  }
+
   return (
-    <header>
+    <header className={styles.header}>
       <Navbar>
-        <Navbar.Brand href="/main">ROOMIR</Navbar.Brand>
         <Nav>
-          <Nav.Item>Home</Nav.Item>
-          <Nav.Item>News</Nav.Item>
-          <Nav.Item>Products</Nav.Item>
-          <Nav.Menu title="About">
-            <Nav.Item>Company</Nav.Item>
-            <Nav.Item>Team</Nav.Item>
-            <Nav.Menu title="Contact">
-              <Nav.Item>Via email</Nav.Item>
-              <Nav.Item>Via telephone</Nav.Item>
-            </Nav.Menu>
+          <Nav.Item onClick={() => handleNavigate('/main')}>Главная</Nav.Item>
+          <Nav.Menu title="Пользователь">
+            <Nav.Item onClick={() => handleNavigate('/main/reportList')}>Мои отчеты</Nav.Item>
           </Nav.Menu>
-        </Nav>
-        <Nav pullRight>
-          <Nav.Item icon={<CogIcon />}>Settings</Nav.Item>
+          <Nav.Menu title="Сформировать отчет">
+            <Nav.Item onClick={() => handleNavigate('/main/report')}>Вариант 1</Nav.Item>
+            <Nav.Item onClick={() => handleNavigate('/main/report1')}>Вариант 2</Nav.Item>
+          </Nav.Menu>
         </Nav>
       </Navbar>
     </header>

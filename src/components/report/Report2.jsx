@@ -1,27 +1,21 @@
-import {Cascader, CheckPicker, Divider, Panel, Placeholder, Text} from "rsuite";
+import {Button, CheckPicker, Divider, Panel, Text} from "rsuite";
 import {stack1} from "../../consts/stacks";
 import styles from './styles.module.scss';
 import { mockTreeData } from '../../consts/mock'
 import {useState} from "react";
 import {AdvancedAnalytics} from "@rsuite/icons";
+import {DownloadMethods} from "../downloadMethods/DownloadMethods";
 
 export const Report2 = () => {
   const data = stack1.map(item => ({ label: item, value: item }));
-
-  const mockData = mockTreeData({
-    limits: [3, 3, 4],
-    labels: (layer, value, faker) => {
-      const methodName = ['jobArea', 'jobType', 'firstName'];
-      return faker.person[methodName[layer]]();
-    }
-  });
 
   const [categoryFilled, setCategoryFilled] = useState(false);
   const [manufacturerFilled, setManufacturerFilled] = useState(false);
   const [brandField, setBrandField] = useState(false);
   const [regionField, setRegionField] = useState(false);
   const [chanelField, setChanelField] = useState(false);
-  const [netWorkField, setNetWorkField] = useState(false)
+  const [netWorkField, setNetWorkField] = useState(false);
+  const [reportLoader, setReportLoader] = useState(false);
   // Добавьте состояния для остальных CheckPicker'ов
 
   const handleCategoryChange = (value) => {
@@ -48,9 +42,18 @@ export const Report2 = () => {
     setNetWorkField(!!value);
   }
 
+  const handleClick = () => {
+    setReportLoader(true);
+
+    setTimeout(() => {
+      setReportLoader(false)
+      console.log('Отчет запрошен');
+    }, 3000);
+  };
+
   return (
     <div className={styles.report2container}>
-      <Panel header="Выберете фильтры для необходимой выгрузки*" shaded className={styles.panel}>
+      <Panel header="Выберете параметры для необходимой выгрузки*" shaded className={styles.panel}>
         <div className={styles.inputBlocks}>
           <div className={styles.inputContainer}>
             <h6>Категория</h6>
@@ -117,61 +120,20 @@ export const Report2 = () => {
             />
           </div>
         </div>
+        <Button
+          style={{marginTop: 16}}
+          color='primary'
+          loading={reportLoader}
+          onClick={handleClick}
+        >
+          Запросить отчет
+        </Button>
       </Panel>
-      <Panel header="Второй способ выгрузки данных**" shaded className={styles.panel}>
-        <Cascader data={mockData} block placeholder={'Пикер в виде дерева'}/>
-      </Panel>
-      <Panel header="Выберете способ выгрузки данных" shaded className={styles.panel}>
-        <div className={styles.botPanel}>
-          <div>
-            <div className={styles.saveBlock} style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
-              <h5 style={{marginBottom: 16}}>KPI</h5>
-              <AdvancedAnalytics style={{ fontSize: '30px' }} />
-            </div>
-          </div>
-          <div>
-            <div className={styles.saveBlock}
-                 style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
-              <h5 style={{marginBottom: 16}}>HML</h5>
-              <AdvancedAnalytics style={{fontSize: '30px'}}/>
-            </div>
-          </div>
-
-          <div>
-            <div className={styles.saveBlock}
-                 style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
-              <h5 style={{marginBottom: 16}}>Профиль</h5>
-              <AdvancedAnalytics style={{fontSize: '30px'}}/>
-            </div>
-          </div>
-          <div>
-            <div className={styles.saveBlock}
-                 style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
-              <h5 style={{marginBottom: 16}}>Портфель</h5>
-              <AdvancedAnalytics style={{fontSize: '30px'}}/>
-            </div>
-          </div>
-          <div>
-            <div className={styles.saveBlock}
-                 style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
-              <h5 style={{marginBottom: 16}}>Catman</h5>
-              <AdvancedAnalytics style={{fontSize: '30px'}}/>
-            </div>
-          </div>
-          <div>
-            <div className={styles.saveBlock}
-                 style={{width: 250, height: 150, display: 'flex', flexDirection: 'column'}}>
-              <h5 style={{marginBottom: 16}}>Таблицы</h5>
-              <AdvancedAnalytics style={{fontSize: '30px'}}/>
-            </div>
-          </div>
-        </div>
-      </Panel>
+      <DownloadMethods/>
       <Divider>Описание работы системы</Divider>
       <Text muted>*Допустим всего 6 фильтров</Text>
       <Text muted>*Начинается с 1-го, после того как выбрали категорию уходит запрос на бек, для запроса списка производителей, и так далее</Text>
       <Text muted>*После того как все фильтры составлены, можно будет сформировать отчет в необходимом формате</Text>
-      <Text muted>**Данный вариант имеет ряд сложностей(время разработки), но в целом рабочий</Text>
     </div>
   );
 };

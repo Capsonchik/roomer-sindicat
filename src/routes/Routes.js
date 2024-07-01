@@ -8,6 +8,7 @@ import {MainComponent} from "../components/mainComponent/MainComponent";
 import {Report} from "../components/report/Report";
 import {ReportList} from "../components/report/reportList/ReportList";
 import {Report2} from "../components/report/Report2";
+import ReportPage from "../pages/reportPage/ReportPage";
 
 
 
@@ -26,7 +27,10 @@ export const router = createBrowserRouter([
       { path: '/main/report', element: <Report/> },
       { path: '/main/report1', element: <Report2/> },
       { path: '/main/reportList', element: <ReportList/> },
-
     ],
   },
+  {
+    path: ROUTES_PATH.reportPage,
+    element: <ReportPage/>,
+  }
 ]);

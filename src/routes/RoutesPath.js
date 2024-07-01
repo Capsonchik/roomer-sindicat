@@ -3,4 +3,5 @@ export const ROUTES_PATH = {
   auth: '/auth',
   main: '/main',
   report: '/report',
+  reportPage: '/report-page'
 };

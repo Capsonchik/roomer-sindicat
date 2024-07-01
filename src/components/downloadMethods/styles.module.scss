@@ -1,0 +1,15 @@
+.botPanel {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.saveBlock {
+  width: 250px;
+  height: 150px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

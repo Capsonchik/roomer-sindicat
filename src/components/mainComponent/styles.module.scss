@@ -19,7 +19,7 @@
 }
 
 .panelBlock {
-  width: 350px;
+  width: 24%;
   height: 150px;
   border: 1px solid #ccc;
   border-radius: 12px;
@@ -32,4 +32,28 @@
 .icon {
   font-size: 50px;
   margin-bottom: 16px;
+}
+
+@media (max-width: 1460px) {
+  .panelBlock {
+    width: 20%;
+    height: 100px;
+  }
+
+  .icon {
+    font-size: 30px;
+  }
+
+  .blockHeader {
+    font-size: 14px;
+  }
+
+
+}
+
+@media (max-width: 750px) {
+  .panelBlock {
+    width: 250px;
+    height: 100px;
+  }
 }

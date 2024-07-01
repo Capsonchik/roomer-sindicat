@@ -1,6 +1,6 @@
 import ReactEcharts from 'echarts-for-react';
 
-export const BarChart = () => {
+export const BarChart = ({color}) => {
   const option = {
     xAxis: {
       type: 'category',
@@ -12,7 +12,8 @@ export const BarChart = () => {
     series: [
       {
         data: [120, 200, 150, 80, 70, 110, 130],
-        type: 'bar'
+        type: 'bar',
+        color: color
       }
     ]
   };

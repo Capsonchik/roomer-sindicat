@@ -26,7 +26,7 @@ export const Slide2 = () => {
           <Dropdown.Item onClick={() => setValue2('График 4')}>Пай чарт</Dropdown.Item>
         </Dropdown>
 
-        {value2 === 'График 3' ? <BarChart/> : <PieChart/>}
+        {value2 === 'График 3' ? <BarChart color={'green'}/> : <PieChart/>}
       </div>
       <div className={styles.block}>
         <Dropdown title={value3}>
@@ -34,7 +34,7 @@ export const Slide2 = () => {
           <Dropdown.Item onClick={() => setValue3('График 6')}>Пай чарт</Dropdown.Item>
         </Dropdown>
 
-        {value3 === 'График 5' ? <BarChart/> : <PieChart/>}
+        {value3 === 'График 5' ? <BarChart color={'pink'}/> : <PieChart/>}
       </div>
       <div className={styles.block}>
         <Dropdown title={value4}>
@@ -42,7 +42,7 @@ export const Slide2 = () => {
           <Dropdown.Item onClick={() => setValue4('График 8')}>Пай чарт</Dropdown.Item>
         </Dropdown>
 
-        {value4 === 'График 7' ? <BarChart/> : <PieChart/>}
+        {value4 === 'График 7' ? <BarChart color={'red'}/> : <PieChart/>}
       </div>
     </div>
   );

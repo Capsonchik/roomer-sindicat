@@ -1,5 +1,5 @@
 import styles from './styles.module.scss';
-import {Panel, Steps, Placeholder, ButtonGroup, Button} from "rsuite";
+import {Panel, Steps, ButtonGroup, Button} from "rsuite";
 import {useState} from "react";
 import {Step1} from "./steps/Step1";
 import {Step2} from "./steps/Step2";

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import {fetchLogIn} from "./main.actions";
 
 const initialState = {
+  toggleMenu: false,
   startPage: 'logIn',
   isAuth: false,
   user: null,
@@ -25,6 +26,9 @@ export const mainSlice = createSlice({
     },
     setStepOneValues: (state, action) => {
       state.stepOneValues =  action.payload;
+    },
+    setToggleMenu: (state, action) => {
+      state.toggleMenu = action.payload;
     }
   },
   extraReducers: builder => {
@@ -44,7 +48,8 @@ export const {
   setStartPage,
   setAuthStatus,
   setLogInLoader,
-  setStepOneValues
+  setStepOneValues,
+  setToggleMenu
 } = mainSlice.actions
 
 export default mainSlice.reducer

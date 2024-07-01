@@ -6,9 +6,20 @@ import MagicIcon from '@rsuite/icons/legacy/Magic';
 import GearCircleIcon from '@rsuite/icons/legacy/GearCircle';
 import {Link, useNavigate} from "react-router-dom";
 import {UserInterface} from "../userInterface/UserInterface";
+import {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {selectToggleMenu} from "../../store/main.selectors";
+import {setToggleMenu} from "../../store/main.slice";
 
 export const SideNavigation = () => {
   const navigate = useNavigate();
+  const menu = useSelector(selectToggleMenu);
+  const dispatch = useDispatch();
+  const [onExpand, setOnExpand] = useState(false)
+
+  const handleOpenExpand = () => {
+    setOnExpand(true)
+  }
 
   const test = (path) => {
     navigate(path);
@@ -16,9 +27,13 @@ export const SideNavigation = () => {
 
   return (
     <div className={styles.navContainer}>
-      <Sidenav className={styles.sideNav} defaultOpenKeys={['3', '4']}>
+      <Sidenav
+        className={styles.sideNav}
+        defaultOpenKeys={['3', '4']}
+        expanded={menu}
+      >
         <Sidenav.Body>
-          <UserInterface/>
+          <UserInterface expand={menu}/>
           <Nav activeKey="1">
             <Nav.Item onClick={() => test('/main')} eventKey="1" icon={<DashboardIcon/>}>
               Главная
@@ -35,6 +50,7 @@ export const SideNavigation = () => {
             </Nav.Menu>
           </Nav>
         </Sidenav.Body>
+        <Sidenav.Toggle onToggle={() => dispatch(setToggleMenu(!menu))} />
       </Sidenav>
     </div>
   );

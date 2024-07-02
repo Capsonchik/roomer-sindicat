@@ -3,6 +3,7 @@ import {Dropdown} from "rsuite";
 import {useState} from "react";
 import {PieChart} from "../../../charts/PieChart";
 import {BarChart} from "../../../charts/BarChart";
+import {TOKEN} from "../../../../consts/token";
 
 export const Slide2 = () => {
   const [value, setValue] = useState('Выбор')
@@ -42,8 +43,19 @@ export const Slide2 = () => {
           <Dropdown.Item onClick={() => setValue4('График 8')}>Пай чарт</Dropdown.Item>
         </Dropdown>
 
-        {value4 === 'График 7' ? <BarChart color={'red'}/> : <PieChart/>}
+        {/*{value4 === 'График 7' ? <BarChart color={'red'}/> : <PieChart/>}*/}
+
+        <iframe
+          title={'Bar'}
+          src={`https://datalens.yandex.cloud/2r8hmpf3k1wep-hml-analiz-kategorii-piva#dl_embed_token=${TOKEN}`}
+          width="600"
+          height="400"
+          frameBorder="0"
+        />
+
       </div>
     </div>
   );
 };
+
+

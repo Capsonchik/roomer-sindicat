@@ -2,6 +2,6 @@ import {Heading} from "rsuite";
 
 export const Title = ({title, level}) => {
   return (
-    <Heading level={level}>{title}</Heading>
+    <Heading style={{marginBottom: 16}} level={level}>{title}</Heading>
   );
 };

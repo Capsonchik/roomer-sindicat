@@ -6,12 +6,18 @@
 .slideBlock {
   display: flex;
   justify-content: space-between;
-
 }
 
 .leftBlock {
   width: 49%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
+.leftBlockTitle {
+  margin-bottom: 20px;
 }
 
 .rightBlock {
@@ -22,4 +28,18 @@
 .footer {
   position: fixed;
   bottom: 0;
+}
+
+@media(max-width: 1000px) {
+  .slideBlock {
+    flex-direction: column;
+  }
+
+  .leftBlock {
+    width: 100%;
+  }
+
+  .rightBlock {
+    width: 100%;
+  }
 }

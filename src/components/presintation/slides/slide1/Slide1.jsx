@@ -2,12 +2,12 @@ import styles from './styles.module.scss';
 import {Title} from "../../../helpers/components/Title";
 import {InlineEdit, Steps} from "rsuite";
 import {firstSlideMockText} from "../../../mock/mock";
+import {CustomChart} from "../../../charts/CustomChart";
+import {WaterfallChart} from "../../../charts/WaterFallChart";
 import PencilSquareIcon from '@rsuite/icons/legacy/PencilSquare';
 import BookIcon from '@rsuite/icons/legacy/Book';
 import WechatIcon from '@rsuite/icons/Wechat';
 import SteamSquareIcon from '@rsuite/icons/legacy/SteamSquare';
-import {BarChart} from "../../../charts/BarChart";
-import {PieChart} from "../../../charts/PieChart";
 
 export const Slide1 = () => {
   const title = 'KPI Категории'
@@ -19,20 +19,38 @@ export const Slide1 = () => {
         <InlineEdit defaultValue={firstSlideMockText}/>
         <div className={styles.slideBlock}>
           <div className={styles.leftBlock} >
-            <Title title={'Total Offtrade'} level={4}></Title>
-            {/*<Steps current={1} vertical>*/}
-            {/*  <Steps.Item status={'finish'} title="Finished" icon={<PencilSquareIcon style={{ fontSize: 26 }} />} />*/}
-            {/*  <Steps.Item status={'finish'} title="In Progress" icon={<BookIcon style={{ fontSize: 26 }} />} />*/}
-            {/*  <Steps.Item status={'finish'} title="Waiting" icon={<WechatIcon style={{ fontSize: 26 }} />} />*/}
-            {/*  <Steps.Item status={'finish'} title="Waiting" icon={<SteamSquareIcon style={{ fontSize: 26 }} />} />*/}
-            {/*</Steps>*/}
-            <PieChart/>
-            <PieChart/>
+            <Title title={'Total Offtrade'} level={4}/>
+            <Steps current={1} vertical>
+              <Steps.Item
+                status={'finish'}
+                title="Пенетрация 18+"
+                icon={<PencilSquareIcon style={{ fontSize: 36 }} />}
+                description="Описание"
+              />
+              <Steps.Item
+                status={'finish'}
+                title="In Progress"
+                icon={<BookIcon style={{ fontSize: 36 }} />}
+                description="Описание"
+              />
+              <Steps.Item
+                status={'finish'}
+                title="Waiting"
+                icon={<WechatIcon style={{ fontSize: 36 }} />}
+                description="Описание"
+              />
+              <Steps.Item
+                status={'finish'}
+                title="Waiting"
+                icon={<SteamSquareIcon style={{ fontSize: 36 }} />}
+                description="Описание"
+              />
+            </Steps>
           </div>
           <div className={styles.rightBlock}>
             <Title title={'Вклад KPI в рост объемов'} level={4}></Title>
-            <BarChart/>
-            <BarChart/>
+            <WaterfallChart/>
+            <CustomChart/>
           </div>
         </div>
         <div className={styles.footer}>

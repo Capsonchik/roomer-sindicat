@@ -3,13 +3,14 @@ import {Dropdown} from "rsuite";
 import {useState} from "react";
 import {PieChart} from "../../../charts/PieChart";
 import {BarChart} from "../../../charts/BarChart";
-import {TOKEN} from "../../../../consts/token";
+import {CustomChart} from "../../../charts/CustomChart";
+import {WaterfallChart} from "../../../charts/WaterFallChart";
+
 
 export const Slide2 = () => {
-  const [value, setValue] = useState('Выбор')
+  const [value, setValue] = useState('График 2')
   const [value2, setValue2] = useState('Выбор')
   const [value3, setValue3] = useState('Выбор')
-  const [value4, setValue4] = useState('Выбор')
 
   return (
     <div className={styles.container}>
@@ -18,8 +19,7 @@ export const Slide2 = () => {
           <Dropdown.Item onClick={() => setValue('График 1')}>Бар чарт</Dropdown.Item>
           <Dropdown.Item onClick={() => setValue('График 2')}>Пай чарт</Dropdown.Item>
         </Dropdown>
-
-        {value === 'График 1' ? <BarChart/> : <PieChart/>}
+        {value === 'График 1' ? <PieChart/> : <CustomChart/>}
       </div>
       <div className={styles.block}>
         <Dropdown title={value2}>
@@ -27,7 +27,7 @@ export const Slide2 = () => {
           <Dropdown.Item onClick={() => setValue2('График 4')}>Пай чарт</Dropdown.Item>
         </Dropdown>
 
-        {value2 === 'График 3' ? <BarChart color={'green'}/> : <PieChart/>}
+        {value2 === 'График 4' ? <BarChart color={'green'}/> : <WaterfallChart/>}
       </div>
       <div className={styles.block}>
         <Dropdown title={value3}>
@@ -38,21 +38,13 @@ export const Slide2 = () => {
         {value3 === 'График 5' ? <BarChart color={'pink'}/> : <PieChart/>}
       </div>
       <div className={styles.block}>
-        <Dropdown title={value4}>
-          <Dropdown.Item onClick={() => setValue4('График 7')}>Бар чарт</Dropdown.Item>
-          <Dropdown.Item onClick={() => setValue4('График 8')}>Пай чарт</Dropdown.Item>
-        </Dropdown>
-
-        {/*{value4 === 'График 7' ? <BarChart color={'red'}/> : <PieChart/>}*/}
-
         <iframe
-          title={'Bar'}
-          src={`https://datalens.yandex.cloud/2r8hmpf3k1wep-hml-analiz-kategorii-piva#dl_embed_token=${TOKEN}`}
-          width="600"
-          height="400"
+          title={'test'}
           frameBorder="0"
+          src="https://datalens.yandex/z2uxl5pbztkep?shopid_vj2j=sp-15&shopid_vj2j=sp-18&shopid_vj2j=sp-20&_embedded=1&_no_controls=1&_theme=light&_lang=ru"
+          width="100%"
+          height="100%"
         />
-
       </div>
     </div>
   );

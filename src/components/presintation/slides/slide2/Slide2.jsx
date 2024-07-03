@@ -5,13 +5,12 @@ import {PieChart} from "../../../charts/PieChart";
 import {BarChart} from "../../../charts/BarChart";
 import {CustomChart} from "../../../charts/CustomChart";
 import {WaterfallChart} from "../../../charts/WaterFallChart";
-import {TOKEN} from "../../../../consts/token";
+import {TOKEN, TOKEN2, TOKEN3, TOKEN4} from "../../../../consts/token";
 
 
 export const Slide2 = () => {
   const [value, setValue] = useState('График 2')
   const [value2, setValue2] = useState('Выбор')
-  const [value3, setValue3] = useState('Выбор')
 
   return (
     <div className={styles.container}>
@@ -31,24 +30,32 @@ export const Slide2 = () => {
         {value2 === 'График 4' ? <BarChart color={'green'}/> : <WaterfallChart/>}
       </div>
       <div className={styles.block}>
-        <Dropdown title={value3}>
-          <Dropdown.Item onClick={() => setValue3('График 5')}>Бар чарт</Dropdown.Item>
-          <Dropdown.Item onClick={() => setValue3('График 6')}>Пай чарт</Dropdown.Item>
-        </Dropdown>
-
-        {value3 === 'График 5' ? <BarChart color={'pink'}/> : <PieChart/>}
+        <p style={{fontSize: 16, color: 'black'}}>Пенетрация 18+</p>
+        <div style={{overflow: 'auto'}}>
+          <iframe
+            src={`https://datalens.yandex.cloud/embeds/chart#dl_embed_token=${TOKEN2}`}
+            width="33%"
+            height="380"
+            frameBorder="0"
+          />
+          <iframe
+            src={`https://datalens.yandex.cloud/embeds/chart#dl_embed_token=${TOKEN3}`}
+            width="33%"
+            height="380"
+            frameBorder="0"
+          />
+          <iframe
+            src={`https://datalens.yandex.cloud/embeds/chart#dl_embed_token=${TOKEN4}`}
+            width="33%"
+            height="380"
+            frameBorder="0"
+          />
+        </div>
       </div>
       <div className={styles.block}>
-        {/*<iframe*/}
-        {/*  title={'test'}*/}
-        {/*  frameBorder="0"*/}
-        {/*  src="https://datalens.yandex/z2uxl5pbztkep?shopid_vj2j=sp-15&shopid_vj2j=sp-18&shopid_vj2j=sp-20&_embedded=1&_no_controls=1&_theme=light&_lang=ru"*/}
-        {/*  width="100%"*/}
-        {/*  height="100%"*/}
-        {/*/>*/}
         <iframe
           src={`https://datalens.yandex.cloud/embeds/chart#dl_embed_token=${TOKEN}`}
-          width="600"
+          width="100%"
           height="400"
           frameBorder="0"
         />

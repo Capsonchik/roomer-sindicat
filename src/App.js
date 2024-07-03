@@ -18,7 +18,7 @@ function App() {
   return (
     <Container className="App">
       <div className={'appContainer'}>
-        <h4>Войдите в систему или <span onClick={handleSetAuthRoute} className={'authRoute'}>зарегистрируйтесь</span></h4>
+        <h4 className={'title'}>Войдите в систему или <span onClick={handleSetAuthRoute} className={'authRoute'}>зарегистрируйтесь</span></h4>
         {startPage === 'logIn' ? <LoginForm/> : <AuthForm/>}
       </div>
     </Container>

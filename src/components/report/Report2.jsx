@@ -5,12 +5,19 @@ import { mockTreeData } from '../../consts/mock'
 import {useState} from "react";
 import {AdvancedAnalytics} from "@rsuite/icons";
 import {DownloadMethods} from "../downloadMethods/DownloadMethods";
+import {BASE_CATEGORY, BERR_CREATOR, REGION, BEER_NETWORK, BEER_CHANEL, BEER_BRAND} from "../../consts/beer/beer";
 
 export const Report2 = () => {
-  const data = stack1.map(item => ({ label: item, value: item }));
+  const category = BASE_CATEGORY.map(item => ({ label: item, value: item }));
+  const creator = BERR_CREATOR.map(item => ({ label: item, value: item }));
+  const region = REGION.map(item => ({ label: item, value: item }));
+  const network = BEER_NETWORK.map(item => ({ label: item, value: item }));
+  const chanel = BEER_CHANEL.map(item => ({ label: item, value: item }));
+  const brand = BEER_BRAND.map(item => ({ label: item, value: item }));
 
   const [categoryFilled, setCategoryFilled] = useState(false);
   const [manufacturerFilled, setManufacturerFilled] = useState(false);
+  const [checkout, setCheckout] = useState(false);
   const [brandField, setBrandField] = useState(false);
   const [regionField, setRegionField] = useState(false);
   const [chanelField, setChanelField] = useState(false);
@@ -48,6 +55,7 @@ export const Report2 = () => {
     setTimeout(() => {
       setReportLoader(false)
       console.log('Отчет запрошен');
+      setCheckout(true);
     }, 3000);
   };
 
@@ -58,7 +66,7 @@ export const Report2 = () => {
           <div className={styles.inputContainer}>
             <h6>Категория</h6>
             <CheckPicker
-              data={data}
+              data={category}
               style={{width: 224}}
               placeholder={'Категория'}
               onChange={handleCategoryChange}
@@ -68,7 +76,7 @@ export const Report2 = () => {
           <div className={styles.inputContainer}>
             <h6>Производитель</h6>
             <CheckPicker
-              data={data}
+              data={creator}
               style={{width: 224}}
               placeholder={'Производитель'}
               disabled={!categoryFilled}
@@ -79,7 +87,7 @@ export const Report2 = () => {
           <div className={styles.inputContainer}>
             <h6>Бренд</h6>
             <CheckPicker
-              data={data}
+              data={brand}
               style={{width: 224}}
               placeholder={'Бренд'}
               disabled={!manufacturerFilled}
@@ -90,7 +98,7 @@ export const Report2 = () => {
           <div className={styles.inputContainer}>
             <h6>Регион</h6>
             <CheckPicker
-              data={data}
+              data={region}
               style={{width: 224}}
               placeholder={'Регион'}
               disabled={!brandField}
@@ -101,7 +109,7 @@ export const Report2 = () => {
           <div className={styles.inputContainer}>
             <h6>Канал</h6>
             <CheckPicker
-              data={data}
+              data={chanel}
               style={{width: 224}}
               placeholder={'Канал'}
               disabled={!regionField}
@@ -112,7 +120,7 @@ export const Report2 = () => {
           <div className={styles.inputContainer}>
             <h6>Сеть</h6>
             <CheckPicker
-              data={data}
+              data={network}
               style={{width: 224}}
               placeholder={'Сеть'}
               disabled={!chanelField}
@@ -129,7 +137,7 @@ export const Report2 = () => {
           Запросить отчет
         </Button>
       </Panel>
-      <DownloadMethods/>
+      {checkout ? <DownloadMethods/> : null}
       <Divider>Описание работы системы</Divider>
       <Text muted>*Допустим всего 6 фильтров</Text>
       <Text muted>*Начинается с 1-го, после того как выбрали категорию уходит запрос на бек, для запроса списка производителей, и так далее</Text>

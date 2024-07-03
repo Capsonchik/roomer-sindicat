@@ -5,6 +5,7 @@ import {PieChart} from "../../../charts/PieChart";
 import {BarChart} from "../../../charts/BarChart";
 import {CustomChart} from "../../../charts/CustomChart";
 import {WaterfallChart} from "../../../charts/WaterFallChart";
+import {TOKEN} from "../../../../consts/token";
 
 
 export const Slide2 = () => {
@@ -38,12 +39,18 @@ export const Slide2 = () => {
         {value3 === 'График 5' ? <BarChart color={'pink'}/> : <PieChart/>}
       </div>
       <div className={styles.block}>
+        {/*<iframe*/}
+        {/*  title={'test'}*/}
+        {/*  frameBorder="0"*/}
+        {/*  src="https://datalens.yandex/z2uxl5pbztkep?shopid_vj2j=sp-15&shopid_vj2j=sp-18&shopid_vj2j=sp-20&_embedded=1&_no_controls=1&_theme=light&_lang=ru"*/}
+        {/*  width="100%"*/}
+        {/*  height="100%"*/}
+        {/*/>*/}
         <iframe
-          title={'test'}
+          src={`https://datalens.yandex.cloud/embeds/chart#dl_embed_token=${TOKEN}`}
+          width="600"
+          height="400"
           frameBorder="0"
-          src="https://datalens.yandex/z2uxl5pbztkep?shopid_vj2j=sp-15&shopid_vj2j=sp-18&shopid_vj2j=sp-20&_embedded=1&_no_controls=1&_theme=light&_lang=ru"
-          width="100%"
-          height="100%"
         />
       </div>
     </div>

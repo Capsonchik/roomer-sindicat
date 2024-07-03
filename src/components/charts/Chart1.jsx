@@ -51,6 +51,9 @@ export const Chart1 = () => {
   });
 
   const option = {
+    // title: {
+    //   text: 'Доля объемов (л)'
+    // },
     legend: {
       selectedMode: false
     },

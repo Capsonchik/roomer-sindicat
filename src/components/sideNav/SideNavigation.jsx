@@ -38,6 +38,7 @@ export const SideNavigation = () => {
             <Nav.Item onClick={() => test('/main')} eventKey="1" icon={<DashboardIcon/>}>Главная</Nav.Item>
             <Nav.Menu title={'Пользователь'} eventKey="2" icon={<GroupIcon/>}>
               <Nav.Item onClick={() => test('/main/reportList')} eventKey="2-1">Мои отчеты</Nav.Item>
+              <Nav.Item onClick={() => test('/main/addNewReport')} eventKey="2-2">Подготовить отчет</Nav.Item>
             </Nav.Menu>
             <Nav.Item onClick={() => test('/main/report1')} eventKey="3" icon={<MagicIcon/>}>Отчет</Nav.Item>
             {/*<Nav.Menu eventKey="3" title="Отчет" icon={<MagicIcon/>}>*/}

@@ -4,6 +4,8 @@ import {useEffect, useState} from "react";
 import {selectIsAuth, selectLogInLoader} from "../../store/main.selectors";
 import {useNavigate} from "react-router-dom";
 import {fetchLogIn} from "../../store/main.actions";
+import {setCurrentUser, setRole, setUserName} from "../../store/userSlice/userSlice";
+import {selectRole, selectCurrentUser} from "../../store/userSlice/user.selectors";
 
 export const LoginForm = () => {
   const dispatch = useDispatch();
@@ -20,8 +22,15 @@ export const LoginForm = () => {
   }, [isAuth, navigate]);
 
   const handleFormSubmit = () => {
+    if(formData.username === 'admin') {
+      dispatch(setRole('admin'))
+      dispatch(setCurrentUser(formData))
+    } else {
+      dispatch(setRole('user'))
+      dispatch(setCurrentUser(formData))
+    }
     // dispatch(fetchLogIn(formData))
-    console.log(formData);
+    // console.log(formData);
     navigate("/main")
   };
 

@@ -10,11 +10,13 @@ import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {selectToggleMenu} from "../../store/main.selectors";
 import {setToggleMenu} from "../../store/main.slice";
+import {selectRole} from "../../store/userSlice/user.selectors";
 
 export const SideNavigation = () => {
   const navigate = useNavigate();
   const menu = useSelector(selectToggleMenu);
   const dispatch = useDispatch();
+  const userRole = useSelector(selectRole)
   const [onExpand, setOnExpand] = useState(false)
 
   const handleOpenExpand = () => {
@@ -38,7 +40,10 @@ export const SideNavigation = () => {
             <Nav.Item onClick={() => test('/main')} eventKey="1" icon={<DashboardIcon/>}>Главная</Nav.Item>
             <Nav.Menu title={'Пользователь'} eventKey="2" icon={<GroupIcon/>}>
               <Nav.Item onClick={() => test('/main/reportList')} eventKey="2-1">Мои отчеты</Nav.Item>
-              <Nav.Item onClick={() => test('/main/addNewReport')} eventKey="2-2">Подготовить отчет</Nav.Item>
+              {userRole === 'admin'
+                ? <Nav.Item onClick={() => test('/main/addNewReport')} eventKey="2-2">Подготовить отчет</Nav.Item>
+                : null
+              }
             </Nav.Menu>
             <Nav.Item onClick={() => test('/main/report1')} eventKey="3" icon={<MagicIcon/>}>Отчет</Nav.Item>
             {/*<Nav.Menu eventKey="3" title="Отчет" icon={<MagicIcon/>}>*/}

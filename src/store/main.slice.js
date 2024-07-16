@@ -8,7 +8,10 @@ const initialState = {
   user: null,
   logInLoader: false,
   stepOneData: ['Пиво', 'Коньяк', 'Сидр', 'Вино', 'Виски', 'Шампанское', 'Текила', 'Абсент'],
-  stepOneValues: []
+  stepOneValues: [],
+  clientList: '',
+  reportList: '',
+  reports: ''
 }
 
 export const mainSlice = createSlice({
@@ -29,7 +32,18 @@ export const mainSlice = createSlice({
     },
     setToggleMenu: (state, action) => {
       state.toggleMenu = action.payload;
+    },
+    setClientList: (state, action) => {
+      state.clientList = action.payload;
+    },
+    setReportList: (state, action) => {
+      state.reportList = action.payload;
+    },
+    setReports: (state, action) => {
+      state.reports = action.payload;
     }
+
+
   },
   extraReducers: builder => {
     builder
@@ -49,7 +63,10 @@ export const {
   setAuthStatus,
   setLogInLoader,
   setStepOneValues,
-  setToggleMenu
+  setToggleMenu,
+  setClientList,
+  setReportList,
+  setReports
 } = mainSlice.actions
 
 export default mainSlice.reducer

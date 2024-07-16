@@ -5,3 +5,6 @@ export const selectIsAuth = (state) => state.main.isAuth
 export const selectStepOneData = (state) => state.main.stepOneData
 export const selectStepOneValues = (state) => state.main.stepOneValues
 export const selectToggleMenu = (state) => state.main.toggleMenu
+export const selectClientList = (state) => state.main.clientList
+export const selectReportList = (state) => state.main.reportList
+export const selectReports = (state) => state.main.reports

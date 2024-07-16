@@ -2,9 +2,13 @@
   padding: 5px;
   width: 100%;
   display: flex;
-  flex-direction: column;
+  //flex-direction: column;
   gap: 16px;
   overflow: auto;
+}
+
+.containerBlock {
+  width: 33%;
 }
 
 .topPanel {

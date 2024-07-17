@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchGetAllClients} from "./reportSlice.actions";
+import {fetchGetAllClients, fetchGetClientReports} from "./reportSlice.actions";
 
 const initialState = {
   allClients: [],
@@ -26,6 +26,9 @@ export const reportSlice = createSlice({
       })
       .addCase(fetchGetAllClients.pending, (state) => {
         state.clientLoader = true
+      })
+      .addCase(fetchGetClientReports.fulfilled, (state, action) => {
+        state.clientReports = action.payload;
       })
   }
 })

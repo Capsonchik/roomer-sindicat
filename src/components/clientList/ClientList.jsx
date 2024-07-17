@@ -2,8 +2,9 @@ import styles from './styles.module.scss'
 import {List, Panel} from "rsuite";
 import {setClientList} from "../../store/main.slice";
 import {useDispatch, useSelector} from "react-redux";
-import {selectAllClients, selectClientLoader} from "../../store/reportSlice/reportSlice.selectors";
+import {selectAllClients} from "../../store/reportSlice/reportSlice.selectors";
 import {setCurrentClient} from "../../store/reportSlice/reportSlice";
+import {fetchGetClientReports} from "../../store/reportSlice/reportSlice.actions";
 
 export const ClientList = ({listTitle}) => {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ export const ClientList = ({listTitle}) => {
   const handleClick = (item) => {
     dispatch(setClientList('value'));
     dispatch(setCurrentClient(item))
+    dispatch(fetchGetClientReports(item.client_id))
   }
 
   return (

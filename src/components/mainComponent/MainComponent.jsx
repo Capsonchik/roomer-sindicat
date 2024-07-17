@@ -1,12 +1,18 @@
 import styles from './styles.module.scss'
-import {Panel} from "rsuite";
-import {News} from "../news/News";
-import {FunnelTime, Scatter, Speaker, Trend} from "@rsuite/icons";
 import {ClientList} from "../clientList/ClientList";
 import {StatList} from "../statList/StatList";
 import {ReportList} from "../reportList/ReportList";
+import {useEffect} from "react";
+import {useDispatch} from "react-redux";
+import {fetchGetAllClients} from "../../store/reportSlice/reportSlice.actions";
 
 export const MainComponent = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchGetAllClients())
+  }, []);
+
   return (
     <div className={styles.container}>
       {/*<Panel header="Статистика" shaded>*/}

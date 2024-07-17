@@ -14,7 +14,9 @@ export const reportSlice = createSlice({
   name: 'reportSlice',
   initialState,
   reducers: {
-
+    setCurrentClient: (state, action) => {
+      state.currentClient = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -29,7 +31,7 @@ export const reportSlice = createSlice({
 })
 
 export const {
-
+  setCurrentClient
 } = reportSlice.actions;
 
 export default reportSlice.reducer;

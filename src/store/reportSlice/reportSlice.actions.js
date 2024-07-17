@@ -5,7 +5,7 @@ export const fetchGetAllClients = createAsyncThunk(
   'getAllClients',
   async () => {
     try {
-      const response = await axiosClientRequest.get(`get_client`);
+      const response = await axiosClientRequest.get(`get_clients`);
       if (response.status === 200) {
         return response.data;
       } else {

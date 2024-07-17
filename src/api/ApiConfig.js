@@ -36,4 +36,4 @@ const createAxiosClientInstance = () => {
   return instance;
 };
 
-export const axiosClientRequest = createAxiosLoginInstance();
+export const axiosClientRequest = createAxiosClientInstance();

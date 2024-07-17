@@ -1,0 +1,8 @@
+.listItem {
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out; /* Плавная анимация изменения цвета фона */
+}
+
+.listItem:hover {
+  background-color: lightgray; /* Изменение цвета фона при наведении */
+}

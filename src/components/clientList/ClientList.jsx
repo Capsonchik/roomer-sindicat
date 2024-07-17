@@ -5,6 +5,7 @@ import {useDispatch} from "react-redux";
 export const ClientList = ({listTitle}) => {
   const data = ['Roses are red', 'Violets are blue', 'Sugar is sweet', 'And so are you'];
   const dispatch = useDispatch();
+
   const handleClick = () => {
     dispatch(setClientList('value'));
   }

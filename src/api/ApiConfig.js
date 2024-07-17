@@ -17,3 +17,23 @@ const createAxiosLoginInstance = () => {
 };
 
 export const axiosLoginRequest = createAxiosLoginInstance();
+
+
+
+export const CLIENT_API = 'http://192.168.9.239:8808/'
+
+const createAxiosClientInstance = () => {
+  const instance = axios.create({
+    baseURL: CLIENT_API,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept-Language': 'ru',
+    },
+    withCredentials: true
+  });
+
+  return instance;
+};
+
+export const axiosClientRequest = createAxiosLoginInstance();

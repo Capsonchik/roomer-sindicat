@@ -20,12 +20,21 @@ export const StatList = () => {
         {report && data.map((item, index) => (
           <List.Item key={index} index={index}>
             {item}
+            {/*<iframe*/}
+            {/*  src={`https://datalens.yandex.cloud/embeds/chart#dl_embed_token=${TOKEN2}`}*/}
+            {/*  width="100%"*/}
+            {/*  height="200"*/}
+            {/*  frameBorder="0"*/}
+            {/*/>*/}
             <iframe
-              src={`https://datalens.yandex.cloud/embeds/chart#dl_embed_token=${TOKEN2}`}
-              width="100%"
-              height="200"
+              width="600"
+              height="400"
+              seamless
               frameBorder="0"
-            />
+              scrolling="no"
+              src="https://bi.romir.ru/superset/explore/p/R1ng7Q0EqlW//?standalone=1&height=400"
+            >
+            </iframe>
           </List.Item>
         ))}
       </List>

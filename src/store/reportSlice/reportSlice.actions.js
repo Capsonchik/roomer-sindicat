@@ -5,7 +5,7 @@ export const fetchGetAllClients = createAsyncThunk(
   'getAllClients',
   async () => {
     try {
-      const response = await axiosClientRequest.get(`get_clients`);
+      const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_clients`);
       if (response.status === 200) {
         return response.data;
       } else {
@@ -21,7 +21,7 @@ export const fetchGetClientReports = createAsyncThunk(
   'getClientReports',
   async (id) => {
     try {
-      const response = await axiosClientRequest.get(`get_reports?client_id=${id}`);
+      const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_reports?client_id=${id}`);
       if (response.status === 200) {
         return response.data;
       } else {
@@ -37,7 +37,7 @@ export const fetchGetGraphs = createAsyncThunk(
   'getGraphs',
   async (id) => {
     try {
-      const response = await axiosClientRequest.get(`get_graphs?report_id=${id}`);
+      const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_graphs?report_id=${id}`);
       if (response.status === 200) {
         return response.data;
       } else {

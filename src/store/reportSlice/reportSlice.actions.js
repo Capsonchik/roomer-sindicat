@@ -32,3 +32,19 @@ export const fetchGetClientReports = createAsyncThunk(
     }
   }
 );
+
+export const fetchGetGraphs = createAsyncThunk(
+  'getGraphs',
+  async (id) => {
+    try {
+      const response = await axiosClientRequest.get(`get_graphs?report_id=${id}`);
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return 'error';
+      }
+    } catch (error) {
+      return 'throwError(error)';
+    }
+  }
+);

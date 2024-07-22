@@ -1,0 +1,61 @@
+.filtersBlock {
+  padding: 0 20px;
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+}
+
+.tabs {
+  margin-top: 16px;
+  padding: 0 20px;
+}
+
+.content {
+  margin-top: 16px;
+  padding: 0 20px;
+}
+
+.graphContent {
+  width: 100%;
+  margin-top: 16px;
+  display: flex;
+}
+
+.graphsBlock {
+  display: flex;
+  flex-direction: column;
+  width: 33%;
+  text-align: center;
+}
+
+.graphBig {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+}
+
+.graphMedium {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  text-align: center;
+}
+
+.graphSmall {
+  display: flex;
+  flex-direction: column;
+  width: 33%;
+  text-align: center;
+}
+
+.graphTitle {
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+}
+
+.graphDescription {
+
+}

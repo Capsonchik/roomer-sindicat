@@ -10,6 +10,7 @@ import {ReportList} from "../components/report/reportList/ReportList";
 import {Report2} from "../components/report/Report2";
 import ReportPage from "../pages/reportPage/ReportPage";
 import {AddNewReport} from "../components/addNewReport/AddNewReport";
+import {TestPage} from "../pages/testPage/TestPage";
 
 
 
@@ -34,5 +35,9 @@ export const router = createBrowserRouter([
   {
     path: ROUTES_PATH.reportPage,
     element: <ReportPage/>,
+  },
+  {
+    path: 'test',
+    element: <TestPage/>
   }
 ]);

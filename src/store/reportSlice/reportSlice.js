@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchGetAllClients, fetchGetClientReports, fetchGetGraphs} from "./reportSlice.actions";
+import {fetchGetAllClients, fetchGetClientReports, fetchGetGraphs, fetchGetGroups} from "./reportSlice.actions";
 
 const initialState = {
   allClients: [],
@@ -8,7 +8,11 @@ const initialState = {
   clientReports: [],
   reportLoader: false,
   currentReport: null,
-  graphs: null
+  graphs: null,
+  groups: null,
+  groupId: null,
+  reportId: null,
+  reportTitle: ''
 }
 
 export const reportSlice = createSlice({
@@ -18,6 +22,18 @@ export const reportSlice = createSlice({
     setCurrentClient: (state, action) => {
       state.currentClient = action.payload;
     },
+    setGroupId: (state, action) => {
+      state.groupId = action.payload;
+    },
+    setReportId: (state, action) => {
+      state.reportId = action.payload;
+    },
+    setReportTitle: (state, action) => {
+      state.reportTitle = action.payload;
+    },
+    clearGraphs: (state) => {
+      state.graphs = [];
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -34,11 +50,18 @@ export const reportSlice = createSlice({
       .addCase(fetchGetGraphs.fulfilled, (state, action) => {
         state.graphs = action.payload;
       })
+      .addCase(fetchGetGroups.fulfilled, (state, action) => {
+        state.groups = action.payload;
+      })
   }
 })
 
 export const {
-  setCurrentClient
+  setCurrentClient,
+  setGroupId,
+  setReportId,
+  setReportTitle,
+  clearGraphs
 } = reportSlice.actions;
 
 export default reportSlice.reducer;

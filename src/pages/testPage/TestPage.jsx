@@ -74,6 +74,8 @@ export const TestPage = () => {
         return styles.graphMedium;
       case 3:
         return styles.graphSmall;
+      case 4:
+        return styles.graph4;
       default:
         return styles.graphsBlock;
     }
@@ -101,9 +103,12 @@ export const TestPage = () => {
         </Nav>
       </Navbar>
       <div className={styles.filtersBlock}>
-        <SelectPicker data={allClients && clientData} style={{width: 224}} placeholder={'Клиент'} onChange={handleClientSelectChange}/>
-        <SelectPicker data={allClientReports && reportData} style={{width: 224}} placeholder={'Отчеты'} onChange={handleReportSelect}/>
-        <SelectPicker data={groups ? graphData : data} style={{width: 224}} placeholder={'Группы отчетов'} onChange={handleGraphGroupSelect}/>
+        <SelectPicker data={allClients && clientData} style={{width: 224}} placeholder={'Клиент'}
+                      onChange={handleClientSelectChange}/>
+        <SelectPicker data={allClientReports && reportData} style={{width: 224}} placeholder={'Отчеты'}
+                      onChange={handleReportSelect}/>
+        <SelectPicker data={groups ? graphData : data} style={{width: 224}} placeholder={'Группы отчетов'}
+                      onChange={handleGraphGroupSelect}/>
       </div>
       <div className={styles.content}>
         {reportTitle ? <Heading level={4}>{reportTitle}</Heading> : null}
@@ -128,7 +133,6 @@ export const TestPage = () => {
           })}
         </div>
       </div>
-
     </Container>
   );
 };

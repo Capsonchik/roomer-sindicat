@@ -3,41 +3,43 @@ import App from "../App";
 import React from "react";
 import {ROUTES_PATH} from "./RoutesPath";
 import ErrorPage from "../error-page";
-import Main from "../pages/main/Main";
-import {MainComponent} from "../components/mainComponent/MainComponent";
-import {Report} from "../components/report/Report";
-import {ReportList} from "../components/report/reportList/ReportList";
-import {Report2} from "../components/report/Report2";
 import ReportPage from "../pages/reportPage/ReportPage";
-import {AddNewReport} from "../components/addNewReport/AddNewReport";
-import {TestPage} from "../pages/testPage/TestPage";
-
-
+import TestPage from "../pages/testPage/TestPage";
+import {TestPageReportComponent} from "../components/testPageComponents/reportComponent/TestPageReportComponent";
+import {TestPageMainComponent} from "../components/testPageComponents/testPageMainComponent/TestPageMainComponent";
 
 export const router = createBrowserRouter([
   {
-    path: ROUTES_PATH.root,
+    path: '/',
     element: <App/>,
     errorElement: <ErrorPage/>,
   },
   {
-    path: ROUTES_PATH.main,
-    element: <Main/>,
-    errorElement: <ErrorPage/>,
+    path: '/main',
+    element: <TestPage/>,
     children: [
-      { index: true, element: <MainComponent /> },
-      { path: '/main/report', element: <Report/> },
-      { path: '/main/report1', element: <Report2/> },
-      { path: '/main/reportList', element: <ReportList/> },
-      { path: '/main/addNewReport', element: <AddNewReport/>}
-    ],
+      { index: true, element: <TestPageMainComponent/> },
+      { path: '/main/report', element: <TestPageReportComponent/> },
+      { path: '/main/reportList', element: <span>ReportList</span> },
+    ]
   },
+  // {
+  //   path: ROUTES_PATH.main,
+  //   element: <Main/>,
+  //   children: [
+  //     { index: true, element: <MainComponent /> },
+  //     { path: '/main/report', element: <Report/> },
+  //     { path: '/main/report1', element: <Report2/> },
+  //     { path: '/main/reportList', element: <ReportList/> },
+  //     { path: '/main/addNewReport', element: <AddNewReport/>}
+  //   ],
+  // },
   {
     path: ROUTES_PATH.reportPage,
     element: <ReportPage/>,
   },
-  {
-    path: 'test',
-    element: <TestPage/>
-  }
+  // {
+  //   path: 'test',
+  //   element: <TestPage/>
+  // }
 ]);

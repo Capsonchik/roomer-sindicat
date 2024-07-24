@@ -6,3 +6,8 @@ export const selectGraphs = (state) => state.reports.graphs;
 export const selectGroups = (state) => state.reports.groups;
 export const selectReportId = (state) => state.reports.reportId;
 export const selectReportTitle = (state) => state.reports.reportTitle;
+export const selectTableLoader = (state) => state.reports.tableLoader;
+export const selectAllGraphs = (state) => state.reports.allGraphs;
+export const selectError = (state) => state.reports.error;
+export const selectIsDrawerOpen = (state) => state.reports.isDrawerOpen;
+export const selectGraphPreview = (state) => state.reports.graphPreview;

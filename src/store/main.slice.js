@@ -46,15 +46,15 @@ export const mainSlice = createSlice({
 
   },
   extraReducers: builder => {
-    builder
-      .addCase(fetchLogIn.fulfilled, (state, action) => {
-        state.logInLoader = false;
-        state.isAuth = true;
-        state.user = action.payload;
-      })
-      .addCase(fetchLogIn.pending, (state, action) => {
-        state.logInLoader = true;
-      })
+    // builder
+      // .addCase(fetchLogIn.fulfilled, (state, action) => {
+      //   state.logInLoader = false;
+      //   state.isAuth = true;
+      //   state.user = action.payload;
+      // })
+      // .addCase(fetchLogIn.pending, (state, action) => {
+      //   state.logInLoader = true;
+      // })
   }
 })
 

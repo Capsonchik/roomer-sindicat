@@ -9,6 +9,7 @@ const createAxiosLoginInstance = () => {
       Accept: 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept-Language': 'ru',
+      "ngrok-skip-browser-warning": 'true',
     },
     withCredentials: true
   });

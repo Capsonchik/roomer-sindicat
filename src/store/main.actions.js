@@ -7,6 +7,7 @@ export const fetchLogIn = createAsyncThunk(
     try {
       const response = await axiosLoginRequest.post(`auth/jwt/login`, userData);
       if (response.status === 200) {
+        console.log('post');
         return response.data;
       } else {
         return 'error';

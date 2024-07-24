@@ -1,9 +1,13 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {fetchLogIn} from "../main.actions";
 
 const initialState = {
+  isAuth: false,
+  user: '',
   userName: '',
   currentUser: '',
-  role: ''
+  role: '',
+  userLoader: false
 }
 
 export const userSlice = createSlice({
@@ -19,6 +23,16 @@ export const userSlice = createSlice({
     setUserName: (state, action) => {
       state.userName = action.payload;
     }
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchLogIn.fulfilled, (state, action) => {
+        state.userLoader = false
+        state.isAuth = true
+      })
+      .addCase(fetchLogIn.pending, (state, action) => {
+        state.userLoader = true
+      })
   }
 })
 

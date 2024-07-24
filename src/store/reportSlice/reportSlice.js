@@ -1,5 +1,11 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchGetAllClients, fetchGetClientReports, fetchGetGraphs, fetchGetGroups} from "./reportSlice.actions";
+import {
+  fetchGetAllClients,
+  fetchGetAllGraphs,
+  fetchGetClientReports,
+  fetchGetGraphs,
+  fetchGetGroups
+} from "./reportSlice.actions";
 
 const initialState = {
   allClients: [],
@@ -12,7 +18,8 @@ const initialState = {
   groups: null,
   groupId: null,
   reportId: null,
-  reportTitle: ''
+  reportTitle: '',
+  allGraphs: []
 }
 
 export const reportSlice = createSlice({
@@ -52,6 +59,9 @@ export const reportSlice = createSlice({
       })
       .addCase(fetchGetGroups.fulfilled, (state, action) => {
         state.groups = action.payload;
+      })
+      .addCase(fetchGetAllGraphs.fulfilled, (state, action) => {
+        state.allGraphs = action.payload;
       })
   }
 })

@@ -31,7 +31,7 @@ const createAxiosClientInstance = () => {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept-Language': 'ru',
     },
-    withCredentials: true
+    // withCredentials: true
   });
 
   return instance;

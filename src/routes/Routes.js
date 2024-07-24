@@ -7,6 +7,7 @@ import ReportPage from "../pages/reportPage/ReportPage";
 import TestPage from "../pages/testPage/TestPage";
 import {TestPageReportComponent} from "../components/testPageComponents/reportComponent/TestPageReportComponent";
 import {TestPageMainComponent} from "../components/testPageComponents/testPageMainComponent/TestPageMainComponent";
+import {TestPageReportList} from "../components/testPageComponents/testPageReportListComponent/TestPageReportList";
 
 export const router = createBrowserRouter([
   {
@@ -20,7 +21,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <TestPageMainComponent/> },
       { path: '/main/report', element: <TestPageReportComponent/> },
-      { path: '/main/reportList', element: <span>ReportList</span> },
+      { path: '/main/reportList', element: <TestPageReportList/> },
     ]
   },
   // {

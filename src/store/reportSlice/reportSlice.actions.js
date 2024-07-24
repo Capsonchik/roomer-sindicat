@@ -65,3 +65,19 @@ export const fetchGetGroups = createAsyncThunk(
   }
 );
 
+export const fetchGetAllGraphs = createAsyncThunk(
+  'getAllGraphs',
+  async () => {
+    try {
+      const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_allgraphs`);
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return 'error';
+      }
+    } catch (error) {
+      return 'throwError(error)';
+    }
+  }
+);
+

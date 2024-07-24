@@ -34,7 +34,7 @@ export const LoginForm = () => {
     // }
     dispatch(fetchLogIn(formData))
     // console.log(formData);
-    // navigate("/main")
+    navigate("/main")
   };
 
   const handleInputChange = (value, name) => {

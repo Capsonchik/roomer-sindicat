@@ -14,22 +14,24 @@ export const PreviewDrawer = () => {
   return (
     <Drawer open={isOpen} onClose={() => dispatch(setIsDrawerOpen(false))}>
       <Drawer.Header>
-        <Drawer.Title>{preview.reportName}</Drawer.Title>
+        <Drawer.Title>{preview && preview.reportName}</Drawer.Title>
       </Drawer.Header>
       <Drawer.Body className={styles.body}>
-        <span>Автор: {preview.authorName}</span>
-        <span>Дата создания: {dateFormatter(preview.createdAt)}</span>
+        <span>Автор: {preview && preview.authorName ? preview.authorName : 'Автор не указан'}</span>
+        <span>Дата создания: {preview && dateFormatter(preview.createdAt)}</span>
 
         <iframe
-          title={preview.reportName}
+          title={preview && preview.reportName}
           width="100%"
           height="500"
           seamless
           frameBorder="0"
           scrolling="no"
-          src={preview.link}
+          src={preview && preview.link }
         >
         </iframe>
+
+
       </Drawer.Body>
     </Drawer>
   );

@@ -15,6 +15,7 @@ export const LoginForm = () => {
   const logInLoader = useSelector(selectLogInLoader);
   const userLoader = useSelector(selectUserLoader);
   const navigate = useNavigate();
+  const [loader, setLoader] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -32,9 +33,14 @@ export const LoginForm = () => {
     //   dispatch(setRole('user'))
     //   dispatch(setCurrentUser(formData))
     // }
-    dispatch(fetchLogIn(formData))
+    setLoader(true)
+    // dispatch(fetchLogIn(formData))
+    setTimeout(() => {
+      setLoader(false);
+      navigate("/main")
+    }, 3000);
     // console.log(formData);
-    navigate("/main")
+    // navigate("/main")
   };
 
   const handleInputChange = (value, name) => {
@@ -71,7 +77,7 @@ export const LoginForm = () => {
         <ButtonToolbar>
           <Button
             className={styles.btn}
-            loading={logInLoader}
+            loading={loader}
             style={{width: '100%'}}
             appearance="primary"
             onClick={handleFormSubmit}

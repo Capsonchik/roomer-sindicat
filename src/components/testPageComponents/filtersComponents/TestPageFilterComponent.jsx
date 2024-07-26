@@ -1,5 +1,5 @@
 import styles from './styles.module.scss';
-import {SelectPicker} from "rsuite";
+import {Button, SelectPicker} from "rsuite";
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectAllClients,
@@ -67,6 +67,7 @@ export const TestPageFilterComponent = () => {
                     onChange={handleReportSelect}/>
       <SelectPicker data={groups ? graphData : data} style={{width: 224}} placeholder={'Группы отчетов'}
                     onChange={handleGraphGroupSelect}/>
+      {/*<Button>Save to ppt</Button>*/}
     </div>
   );
 };

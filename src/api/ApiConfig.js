@@ -28,7 +28,7 @@ const createAxiosClientInstance = () => {
     baseURL: CLIENT_API,
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
       'Accept-Language': 'ru',
     },
     // withCredentials: true

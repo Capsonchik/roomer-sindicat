@@ -31,6 +31,7 @@ const createAxiosClientInstance = () => {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language': 'ru',
+      "ngrok-skip-browser-warning": 'true',
     },
     // withCredentials: true
   });

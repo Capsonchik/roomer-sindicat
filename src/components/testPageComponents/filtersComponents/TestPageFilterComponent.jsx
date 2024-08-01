@@ -56,6 +56,7 @@ export const TestPageFilterComponent = () => {
       dispatch(clearClientReports())
       dispatch(setReportId(null))
       dispatch(setCurrentClient(null))
+      dispatch(clearGroupReports())
       setSelectedReport(null);
       return
     }

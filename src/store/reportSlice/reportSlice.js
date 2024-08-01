@@ -51,6 +51,12 @@ export const reportSlice = createSlice({
     setGraphPreview: (state, action) => {
       state.graphPreview = action.payload;
     },
+    clearGroupReports: (state) => {
+      state.groups = null;
+    }  ,
+    clearClientReports: (state) => {
+      state.clientReports = [];
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -91,7 +97,9 @@ export const {
   setReportTitle,
   clearGraphs,
   setIsDrawerOpen,
-  setGraphPreview
+  setGraphPreview,
+  clearGroupReports,
+  clearClientReports
 } = reportSlice.actions;
 
 export default reportSlice.reducer;

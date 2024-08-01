@@ -3,22 +3,33 @@ import {Button, SelectPicker} from "rsuite";
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectAllClients,
-  selectClientReports,
+  selectClientReports, selectCurrentClient,
   selectGroups,
 } from "../../../store/reportSlice/reportSlice.selectors";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {
   fetchGetAllClients,
   fetchGetClientReports, fetchGetGraphs,
   fetchGetGroups
 } from "../../../store/reportSlice/reportSlice.actions";
-import {clearGraphs, setReportId, setReportTitle} from "../../../store/reportSlice/reportSlice";
+import {
+  clearGraphs,
+  setReportId,
+  setReportTitle,
+  clearGroupReports,
+  setCurrentClient, clearClientReports
+} from "../../../store/reportSlice/reportSlice";
 
 export const TestPageFilterComponent = () => {
   const dispatch = useDispatch();
   const allClients = useSelector(selectAllClients);
   const allClientReports = useSelector(selectClientReports);
+  const currentClient = useSelector(selectCurrentClient);
   const groups = useSelector(selectGroups);
+
+
+  const [selectedReport, setSelectedReport] = useState(null);
+
 
   const data = ['Необходимо выполнить предыдущие шаги'].map(
     item => ({ label: item, value: item })
@@ -41,11 +52,25 @@ export const TestPageFilterComponent = () => {
   }, [dispatch]);
 
   const handleClientSelectChange = (selectedOption) => {
+    if(!selectedOption) {
+      dispatch(clearClientReports())
+      dispatch(setReportId(null))
+      dispatch(setCurrentClient(null))
+      setSelectedReport(null);
+      return
+    }
     const foundClient = clientData.find(client => client.value === selectedOption);
     dispatch(fetchGetClientReports(foundClient.id))
+    dispatch(setCurrentClient(foundClient))
+    setSelectedReport(null);
   };
 
   const handleReportSelect = (value) => {
+    setSelectedReport(value);
+    if(!value) {
+      dispatch(clearGroupReports())
+      return
+    }
     const foundClient = reportData.find(client => client.value === value);
     dispatch(fetchGetGroups(foundClient.id))
     dispatch(setReportId(foundClient.id))
@@ -62,11 +87,12 @@ export const TestPageFilterComponent = () => {
 
     <div className={styles.filtersBlock}>
       <SelectPicker data={allClients && clientData} style={{width: 224}} placeholder={'Клиент'}
-                    onChange={handleClientSelectChange}/>
-      <SelectPicker data={allClientReports && reportData} style={{width: 224}} placeholder={'Отчеты'}
+                    onChange={handleClientSelectChange}
+      />
+      <SelectPicker value={selectedReport} data={allClients && reportData} style={{width: 224}} placeholder={'Отчеты'}
                     onChange={handleReportSelect}/>
-      <SelectPicker data={groups ? graphData : data} style={{width: 224}} placeholder={'Группы отчетов'}
-                    onChange={handleGraphGroupSelect}/>
+      {/*<SelectPicker data={groups ? graphData : data} style={{width: 224}} placeholder={'Группы отчетов'}*/}
+      {/*              onChange={handleGraphGroupSelect}/>*/}
       {/*<Button>Save to ppt</Button>*/}
     </div>
   );

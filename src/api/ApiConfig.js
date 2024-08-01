@@ -22,7 +22,7 @@ export const axiosLoginRequest = createAxiosLoginInstance();
 
 
 // export const CLIENT_API = 'http://192.168.9.239:8808/'
-export const CLIENT_API = 'https://aee1-212-45-6-6.ngrok-free.app'
+export const CLIENT_API = 'https://492c-212-45-6-6.ngrok-free.app/'
 
 const createAxiosClientInstance = () => {
   const instance = axios.create({

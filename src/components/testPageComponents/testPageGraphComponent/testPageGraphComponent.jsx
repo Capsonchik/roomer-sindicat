@@ -46,7 +46,7 @@ export const TestPageGraphComponent = () => {
           : (
             graphs && graphs.map((graph) => {
               return (
-                <div className={checkGraphsLength(graphs)}>
+                <div className={checkGraphsLength(graphs)} key={graph.id}>
                   <span className={styles.graphTitle}>{graph.title}</span>
                   <iframe
                     title={graph.title}

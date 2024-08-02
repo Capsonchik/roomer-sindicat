@@ -31,6 +31,15 @@ export const TestPageGraphComponent = () => {
     }
   }
 
+  if (!graphs) {
+    return (
+      <div className={styles.loaderWrapper}>
+        <Loader size="md" content="Загрузка"/>
+        <hr/>
+      </div>
+    )
+  }
+
   return (
     <div ref={graphRef} className={styles.content}>
       {reportTitle ? <Heading level={4}>{reportTitle}</Heading> : null}

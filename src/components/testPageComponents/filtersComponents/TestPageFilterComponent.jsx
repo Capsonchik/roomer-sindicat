@@ -1,5 +1,5 @@
 import styles from './styles.module.scss';
-import {Button, SelectPicker} from "rsuite";
+import {Button, Loader, SelectPicker} from "rsuite";
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectAllClients,
@@ -32,19 +32,19 @@ export const TestPageFilterComponent = () => {
 
 
   const data = ['Необходимо выполнить предыдущие шаги'].map(
-    item => ({ label: item, value: item })
+    item => ({label: item, value: item})
   );
 
-  const clientData = allClients.map(
-    item => ({ label: item.client_name, value: item.client_name, id: item.client_id })
+  const clientData = allClients?.map(
+    item => ({label: item.client_name, value: item.client_name, id: item.client_id})
   )
 
   const reportData = allClientReports.map(
-    item => ({ label: item.report_name, value: item.report_name, id: item.report_id })
+    item => ({label: item.report_name, value: item.report_name, id: item.report_id})
   )
 
   const graphData = groups && groups.map(
-    item => ({ label: item.group_name, value: item.group_name, id: item.group_id })
+    item => ({label: item.group_name, value: item.group_name, id: item.group_id})
   )
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export const TestPageFilterComponent = () => {
   }, [dispatch]);
 
   const handleClientSelectChange = (selectedOption) => {
-    if(!selectedOption) {
+    if (!selectedOption) {
       dispatch(clearClientReports())
       dispatch(setReportId(null))
       dispatch(setCurrentClient(null))
@@ -68,7 +68,7 @@ export const TestPageFilterComponent = () => {
 
   const handleReportSelect = (value) => {
     setSelectedReport(value);
-    if(!value) {
+    if (!value) {
       dispatch(clearGroupReports())
       return
     }
@@ -78,12 +78,21 @@ export const TestPageFilterComponent = () => {
 
   }
 
-  const handleGraphGroupSelect = (value) => {
-    const foundClient = graphData.find(client => client.value === value);
-    dispatch(clearGraphs())
-    dispatch(fetchGetGraphs(foundClient.id))
-    dispatch(setReportTitle(value))
+  if (!allClients) {
+    return (
+      <div className={styles.loaderWrapper}>
+        <Loader size="md" content="Загрузка"/>
+        <hr/>
+      </div>
+    )
   }
+
+  // const handleGraphGroupSelect = (value) => {
+  //   const foundClient = graphData.find(client => client.value === value);
+  //   dispatch(clearGraphs())
+  //   dispatch(fetchGetGraphs(foundClient.id))
+  //   dispatch(setReportTitle(value))
+  // }
   return (
 
     <div className={styles.filtersBlock}>

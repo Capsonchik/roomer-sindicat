@@ -30,6 +30,7 @@ export const ReportingTabs = () => {
   return (
     <div className={styles.wrapper}>
       <Tabs
+        className={styles.tabs}
         defaultActiveKey={defaultActiveKey}
         appearance="subtle"
         onSelect={handleSelect}

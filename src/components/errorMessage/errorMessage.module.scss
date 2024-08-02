@@ -1,0 +1,15 @@
+
+.wrapper {
+  display: flex;
+  flex-grow: 1;
+
+  .messageBody {
+    width: 100%;
+    .content{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+  }
+}

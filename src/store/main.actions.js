@@ -13,7 +13,7 @@ export const fetchLogIn = createAsyncThunk(
         return 'error';
       }
     } catch (error) {
-      return 'throwError(error)';
+      throw new Error('fetchLogIn error');
     }
   }
 );
@@ -29,7 +29,7 @@ export const fetchGetUser = createAsyncThunk(
         return 'error';
       }
     } catch (error) {
-      return 'throwError(error)';
+      throw new Error('fetchGetUser error');
     }
   }
 );
@@ -46,7 +46,7 @@ export const fetchPostLogOut = createAsyncThunk(
         return 'error';
       }
     } catch (error) {
-      return 'throwError(error)';
+      throw new Error('fetchPostLogOut error');
     }
   }
 );

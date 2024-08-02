@@ -10,7 +10,7 @@ import {clearGraphs, setReportTitle} from "../../../store/reportSlice/reportSlic
 export const ReportingTabs = () => {
   const groups = useSelector(selectGroups);
   const dispatch = useDispatch();
-  const defaultActiveKey = groups.length > 0 ? groups[0].group_id : null;
+  const defaultActiveKey = groups.length > 0 ? groups[0].group_id.toString() : null;
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
   const currentClient = useSelector(selectCurrentClient);
 
@@ -37,8 +37,8 @@ export const ReportingTabs = () => {
       >
         {groups.map((group, index) => {
           return (
-            <Tabs.Tab key={group.group_id} eventKey={group.group_id} title={group.group_name}>
-              {group.group_id === activeKey
+            <Tabs.Tab key={group.group_id} eventKey={group.group_id.toString()} title={group.group_name}>
+              {group.group_id.toString() === activeKey
                 ? <TestPageGraphComponent/>
                 : null
               }

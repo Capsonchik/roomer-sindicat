@@ -12,7 +12,7 @@ export const fetchGetAllClients = createAsyncThunk(
         return 'error';
       }
     } catch (error) {
-      return 'throwError(error)';
+      throw new Error('fetchGetAllClients error');
     }
   }
 );
@@ -24,11 +24,14 @@ export const fetchGetClientReports = createAsyncThunk(
       const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_reports?client_id=${id}`);
       if (response.status === 200) {
         return response.data;
-      } else {
+      }
+
+      else {
         return 'error';
       }
     } catch (error) {
-      return 'throwError(error)';
+
+      throw new Error('fetchGetClientReports error');
     }
   }
 );
@@ -36,7 +39,7 @@ export const fetchGetClientReports = createAsyncThunk(
 export const fetchGetGraphs = createAsyncThunk(
   'getGraphs',
   async (id) => {
-    console.log('fetch')
+
     try {
       const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_graphs?group_id=${id}`);
       if (response.status === 200) {
@@ -45,7 +48,7 @@ export const fetchGetGraphs = createAsyncThunk(
         return 'error';
       }
     } catch (error) {
-      return 'throwError(error)';
+      throw new Error('fetchGetGraphs error');
     }
   }
 );
@@ -61,7 +64,7 @@ export const fetchGetGroups = createAsyncThunk(
         return 'error';
       }
     } catch (error) {
-      return 'throwError(error)';
+      throw new Error('fetchGetGroups error');
     }
   }
 );
@@ -77,7 +80,7 @@ export const fetchGetAllGraphs = createAsyncThunk(
         return 'error';
       }
     } catch (error) {
-      return 'throwError(error)';
+      throw new Error('fetchGetAllGraphs error');
     }
   }
 );

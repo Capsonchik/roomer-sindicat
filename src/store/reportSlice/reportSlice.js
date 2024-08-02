@@ -25,7 +25,8 @@ const initialState = {
   tableLoader: false,
   error: false,
   isDrawerOpen: false,
-  graphPreview: null
+  graphPreview: null,
+
 }
 
 export const reportSlice = createSlice({
@@ -69,8 +70,14 @@ export const reportSlice = createSlice({
       .addCase(fetchGetAllClients.pending, (state) => {
         state.clientLoader = true
       })
+      .addCase(fetchGetAllClients.rejected, (state) => {
+        state.error = true
+      })
       .addCase(fetchGetClientReports.fulfilled, (state, action) => {
         state.clientReports = action.payload;
+      })
+      .addCase(fetchGetClientReports.rejected, (state) => {
+        state.error = true
       })
       .addCase(fetchGetGraphs.fulfilled, (state, action) => {
         state.graphs = action.payload;
@@ -79,12 +86,18 @@ export const reportSlice = createSlice({
       .addCase(fetchGetGraphs.pending, (state, action) => {
         state.graphsLoader = true
       })
+      .addCase(fetchGetGraphs.rejected, (state) => {
+        state.error = true
+      })
       .addCase(fetchGetGroups.fulfilled, (state, action) => {
         state.groups = action.payload;
         state.groupsLoader = false
       })
       .addCase(fetchGetGroups.pending, (state, action) => {
         state.groupsLoader = true
+      })
+      .addCase(fetchGetGroups.rejected, (state) => {
+        state.error = true
       })
       .addCase(fetchGetAllGraphs.fulfilled, (state, action) => {
         state.allGraphs = action.payload;

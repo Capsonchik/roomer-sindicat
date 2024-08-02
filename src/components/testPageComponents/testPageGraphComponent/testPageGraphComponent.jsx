@@ -1,7 +1,11 @@
 import styles from './styles.module.scss'
-import {Button, Heading, Text} from "rsuite";
+import {Button, Heading, Loader, Text} from "rsuite";
 import {useSelector} from "react-redux";
-import {selectGraphs, selectReportTitle} from "../../../store/reportSlice/reportSlice.selectors";
+import {
+  selectGraphs,
+  selectGraphsLoader,
+  selectReportTitle,
+} from "../../../store/reportSlice/reportSlice.selectors";
 import {useRef} from "react";
 import {saveToPpt} from "../../helpers/saveToPPT";
 
@@ -10,6 +14,7 @@ export const TestPageGraphComponent = () => {
 
   const graphs = useSelector(selectGraphs);
   const reportTitle = useSelector(selectReportTitle)
+  const graphsLoader = useSelector(selectGraphsLoader)
 
   function checkGraphsLength(graphs) {
     switch (graphs.length) {
@@ -26,28 +31,49 @@ export const TestPageGraphComponent = () => {
     }
   }
 
+  if (!graphs) {
+    return (
+      <div className={styles.loaderWrapper}>
+        <Loader size="md" content="Загрузка"/>
+        <hr/>
+      </div>
+    )
+  }
+
   return (
     <div ref={graphRef} className={styles.content}>
       {reportTitle ? <Heading level={4}>{reportTitle}</Heading> : null}
       <div className={styles.graphContent}>
-        {graphs && graphs.map((graph) => {
-          return (
-            <div className={checkGraphsLength(graphs)}>
-              <span className={styles.graphTitle}>{graph.title}</span>
-                <iframe
-                  title={graph.title}
-                  width="100%"
-                  height="500"
-                  // seamless
-                  frameBorder="0"
-                  scrolling="no"
-                  src={graph.link}
-                >
-                </iframe>
-              <Text muted>{graph.description}</Text>
+
+        {graphsLoader
+          ? (
+            <div className={styles.loaderWrapper}>
+              <Loader size="md" content="Загрузка"/>
+              <hr/>
             </div>
           )
-        })}
+          : (
+            graphs && graphs.map((graph) => {
+              return (
+                <div className={checkGraphsLength(graphs)} key={graph.id}>
+                  <span className={styles.graphTitle}>{graph.title}</span>
+                  <iframe
+                    title={graph.title}
+                    width="100%"
+                    height="500"
+                    // seamless
+                    frameBorder="0"
+                    scrolling="no"
+                    src={graph.link}
+                  >
+                  </iframe>
+                  <Text muted>{graph.description}</Text>
+                </div>
+              )
+            })
+          )
+        }
+
       </div>
       {/*<Button appearance={'primary'} onClick={() => saveToPpt(graphRef)}>test</Button>*/}
     </div>

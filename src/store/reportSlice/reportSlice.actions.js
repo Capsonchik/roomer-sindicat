@@ -36,6 +36,7 @@ export const fetchGetClientReports = createAsyncThunk(
 export const fetchGetGraphs = createAsyncThunk(
   'getGraphs',
   async (id) => {
+    console.log('fetch')
     try {
       const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_graphs?group_id=${id}`);
       if (response.status === 200) {

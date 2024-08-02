@@ -15,7 +15,9 @@ const initialState = {
   reportLoader: false,
   currentReport: null,
   graphs: null,
+  graphsLoader: false,
   groups: null,
+  groupsLoader: false,
   groupId: null,
   reportId: null,
   reportTitle: '',
@@ -51,6 +53,12 @@ export const reportSlice = createSlice({
     setGraphPreview: (state, action) => {
       state.graphPreview = action.payload;
     },
+    clearGroupReports: (state) => {
+      state.groups = null;
+    }  ,
+    clearClientReports: (state) => {
+      state.clientReports = [];
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -66,9 +74,17 @@ export const reportSlice = createSlice({
       })
       .addCase(fetchGetGraphs.fulfilled, (state, action) => {
         state.graphs = action.payload;
+        state.graphsLoader = false
+      })
+      .addCase(fetchGetGraphs.pending, (state, action) => {
+        state.graphsLoader = true
       })
       .addCase(fetchGetGroups.fulfilled, (state, action) => {
         state.groups = action.payload;
+        state.groupsLoader = false
+      })
+      .addCase(fetchGetGroups.pending, (state, action) => {
+        state.groupsLoader = true
       })
       .addCase(fetchGetAllGraphs.fulfilled, (state, action) => {
         state.allGraphs = action.payload;
@@ -91,7 +107,9 @@ export const {
   setReportTitle,
   clearGraphs,
   setIsDrawerOpen,
-  setGraphPreview
+  setGraphPreview,
+  clearGroupReports,
+  clearClientReports
 } = reportSlice.actions;
 
 export default reportSlice.reducer;

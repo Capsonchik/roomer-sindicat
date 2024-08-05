@@ -4,7 +4,7 @@ export const LOGIN_API = 'https://192.168.9.239/'
 
 const createAxiosLoginInstance = () => {
   const instance = axios.create({
-    baseURL: '/proxy_cors_login',
+    baseURL: LOGIN_API,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -22,11 +22,11 @@ export const axiosLoginRequest = createAxiosLoginInstance();
 
 
 // export const CLIENT_API = 'http://192.168.9.239:8808/'
-// export const CLIENT_API = 'https://21ce-212-45-6-6.ngrok-free.app'
+export const CLIENT_API = 'https://21ce-212-45-6-6.ngrok-free.app'
 
 const createAxiosClientInstance = () => {
   const instance = axios.create({
-    baseURL: '/proxy_cors_main',
+    baseURL: CLIENT_API,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

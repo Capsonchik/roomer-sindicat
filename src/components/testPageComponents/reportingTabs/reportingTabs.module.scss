@@ -5,6 +5,14 @@
   width: 100%;
   display: flex;
   gap: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  .filter{
+    .search{
+      width: fit-content;
+    }
+  }
 
   .tabs{
     flex-grow: 1;

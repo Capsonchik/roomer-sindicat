@@ -14,3 +14,4 @@ export const selectAllGraphs = (state) => state.reports.allGraphs;
 export const selectError = (state) => state.reports.error;
 export const selectIsDrawerOpen = (state) => state.reports.isDrawerOpen;
 export const selectGraphPreview = (state) => state.reports.graphPreview;
+export const selectSearchString = (state) => state.reports.searchString;

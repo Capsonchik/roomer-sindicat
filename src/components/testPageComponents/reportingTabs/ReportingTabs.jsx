@@ -1,11 +1,11 @@
-import {Tabs, Placeholder} from "rsuite";
+import {Tabs, Placeholder, Input, InputGroup} from "rsuite";
 import {useDispatch, useSelector} from "react-redux";
 import {selectCurrentClient, selectGroups} from "../../../store/reportSlice/reportSlice.selectors";
 import styles from './reportingTabs.module.scss'
 import {TestPageGraphComponent} from "../testPageGraphComponent/testPageGraphComponent";
 import {fetchGetGraphs} from "../../../store/reportSlice/reportSlice.actions";
 import {useEffect, useState} from "react";
-import {clearGraphs, setReportTitle} from "../../../store/reportSlice/reportSlice";
+import {clearGraphs, setReportTitle, setSearchString} from "../../../store/reportSlice/reportSlice";
 
 export const ReportingTabs = () => {
   const groups = useSelector(selectGroups);
@@ -29,6 +29,19 @@ export const ReportingTabs = () => {
   }
   return (
     <div className={styles.wrapper}>
+      {currentClient.value === 'Тестовый клиент' && (
+        <>
+          {/*<p>Фильтры</p>*/}
+          <div className={styles.filter}>
+            <div className={styles.search}>
+              <label>Введите параметр:</label>
+              <Input onChange={(e) => {
+                dispatch(setSearchString(e))
+              }} />
+            </div>
+          </div>
+        </>
+      )}
       <Tabs
         className={styles.tabs}
         defaultActiveKey={defaultActiveKey}

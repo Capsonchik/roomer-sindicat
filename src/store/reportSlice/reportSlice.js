@@ -26,7 +26,7 @@ const initialState = {
   error: false,
   isDrawerOpen: false,
   graphPreview: null,
-
+  searchString: ''
 }
 
 export const reportSlice = createSlice({
@@ -56,9 +56,12 @@ export const reportSlice = createSlice({
     },
     clearGroupReports: (state) => {
       state.groups = null;
-    }  ,
+    },
     clearClientReports: (state) => {
       state.clientReports = [];
+    },
+    setSearchString: (state, action) => {
+      state.searchString = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -122,7 +125,8 @@ export const {
   setIsDrawerOpen,
   setGraphPreview,
   clearGroupReports,
-  clearClientReports
+  clearClientReports,
+  setSearchString
 } = reportSlice.actions;
 
 export default reportSlice.reducer;

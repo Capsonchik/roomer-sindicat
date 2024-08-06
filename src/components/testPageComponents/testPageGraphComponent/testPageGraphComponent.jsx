@@ -4,7 +4,7 @@ import {useSelector} from "react-redux";
 import {
   selectGraphs,
   selectGraphsLoader,
-  selectReportTitle,
+  selectReportTitle, selectSearchString,
 } from "../../../store/reportSlice/reportSlice.selectors";
 import {useRef} from "react";
 import {saveToPpt} from "../../helpers/saveToPPT";
@@ -15,7 +15,8 @@ export const TestPageGraphComponent = () => {
   const graphs = useSelector(selectGraphs);
   const reportTitle = useSelector(selectReportTitle)
   const graphsLoader = useSelector(selectGraphsLoader)
-
+  const searchString = useSelector(selectSearchString)
+  console.log(searchString)
   function checkGraphsLength(graphs) {
     switch (graphs.length) {
       case 1:
@@ -54,6 +55,9 @@ export const TestPageGraphComponent = () => {
           )
           : (
             graphs && graphs.map((graph) => {
+              const insertIndex = graph.link.indexOf('#');
+              const filter = `?searchString=${searchString}`;
+              const filterLink = graph.link.slice(0,insertIndex) + filter + graph.link.slice(insertIndex);
               return (
                 <div className={checkGraphsLength(graphs)} key={graph.id}>
                   <span className={styles.graphTitle}>{graph.title}</span>
@@ -64,7 +68,7 @@ export const TestPageGraphComponent = () => {
                     // seamless
                     frameBorder="0"
                     scrolling="no"
-                    src={graph.link}
+                    src={filterLink}
                   >
                   </iframe>
                   <Text muted>{graph.description}</Text>

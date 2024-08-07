@@ -37,7 +37,7 @@ export const LoginForm = () => {
     dispatch(fetchLogIn(formData))
     setTimeout(() => {
       setLoader(false);
-      // navigate("/main")
+      navigate("/main")
     }, 3000);
     // console.log(formData);
     // navigate("/main")

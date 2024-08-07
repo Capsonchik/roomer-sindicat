@@ -11,6 +11,13 @@
   .filter{
     .search{
       width: fit-content;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+
+      .filterAttribute{
+        min-width: 200px;
+      }
     }
   }
 

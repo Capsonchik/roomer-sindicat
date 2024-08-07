@@ -16,7 +16,7 @@ export const TestPageGraphComponent = () => {
   const reportTitle = useSelector(selectReportTitle)
   const graphsLoader = useSelector(selectGraphsLoader)
   const searchString = useSelector(selectSearchString)
-  console.log(searchString)
+  // console.log(searchString)
   function checkGraphsLength(graphs) {
     switch (graphs.length) {
       case 1:
@@ -55,9 +55,11 @@ export const TestPageGraphComponent = () => {
           )
           : (
             graphs && graphs.map((graph) => {
-              const insertIndex = graph.link.indexOf('#');
-              const filter = `?searchString=${searchString}`;
-              const filterLink = graph.link.slice(0,insertIndex) + filter + graph.link.slice(insertIndex);
+              const encodedSearchString = encodeURIComponent(searchString); // Экранирование строки
+              const insertIndex = graph.link.indexOf('#'); // Найти индекс символа #
+              const filter = `?searchStringAttribute=${encodedSearchString}`; // Создать фильтр с экранированной строкой
+              const filterLink = graph.link.slice(0, insertIndex) + filter + graph.link.slice(insertIndex); // Сформировать новый URL
+
               return (
                 <div className={checkGraphsLength(graphs)} key={graph.id}>
                   <span className={styles.graphTitle}>{graph.title}</span>

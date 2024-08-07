@@ -1,4 +1,4 @@
-import {Tabs, Placeholder, Input, InputGroup} from "rsuite";
+import {Tabs, Placeholder, Input, InputGroup, TagPicker} from "rsuite";
 import {useDispatch, useSelector} from "react-redux";
 import {selectCurrentClient, selectGroups} from "../../../store/reportSlice/reportSlice.selectors";
 import styles from './reportingTabs.module.scss'
@@ -7,6 +7,7 @@ import {fetchGetGraphs} from "../../../store/reportSlice/reportSlice.actions";
 import {useEffect, useState} from "react";
 import {clearGraphs, setReportTitle, setSearchString} from "../../../store/reportSlice/reportSlice";
 import {debounce} from "../../../lib/debounce";
+import {attributeMocks} from "./attributeMocks";
 
 export const ReportingTabs = () => {
   const groups = useSelector(selectGroups);
@@ -14,6 +15,10 @@ export const ReportingTabs = () => {
   const defaultActiveKey = groups.length > 0 ? groups[0].group_id.toString() : null;
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
   const currentClient = useSelector(selectCurrentClient);
+
+  const data = attributeMocks.map(
+    item => ({ label: item, value: item })
+  );
   // const debouncedResize = debounce(onResize, 300);
   useEffect(() => {
     if (groups.length) {
@@ -33,7 +38,12 @@ export const ReportingTabs = () => {
     dispatch(setSearchString(value));
   };
 
-  const debouncedSearchString = debounce(handleInputChange, 400);
+  const filterAttribute = (data) => {
+    console.log(data.join(','))
+    dispatch(setSearchString(data.join(',')));
+  }
+
+  // const debouncedSearchString = debounce(handleInputChange, 400);
   return (
     <div className={styles.wrapper}>
       {currentClient.value === 'Тестовый клиент' && (
@@ -41,8 +51,9 @@ export const ReportingTabs = () => {
           {/*<p>Фильтры</p>*/}
           <div className={styles.filter}>
             <div className={styles.search}>
-              <label>Введите параметр:</label>
-              <Input onChange={(value) => debouncedSearchString(value)} />
+              <label>Выберите параметр:</label>
+              <TagPicker placeholder={'attribute'} data={data} className={styles.filterAttribute} onChange={filterAttribute}/>
+              {/*<Input onChange={(value) => debouncedSearchString(value)} />*/}
             </div>
           </div>
         </>

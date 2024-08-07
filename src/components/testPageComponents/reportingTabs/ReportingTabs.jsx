@@ -51,8 +51,8 @@ export const ReportingTabs = () => {
           {/*<p>Фильтры</p>*/}
           <div className={styles.filter}>
             <div className={styles.search}>
-              <label>Выберите параметр:</label>
-              <TagPicker placeholder={'attribute'} data={data} className={styles.filterAttribute} onChange={filterAttribute}/>
+              {/*<label>Выберите параметр:</label>*/}
+              <TagPicker placeholder={'Параметр'} data={data} className={styles.filterAttribute} onChange={filterAttribute}/>
               {/*<Input onChange={(value) => debouncedSearchString(value)} />*/}
             </div>
           </div>

@@ -6,6 +6,7 @@ import {TestPageGraphComponent} from "../testPageGraphComponent/testPageGraphCom
 import {fetchGetGraphs} from "../../../store/reportSlice/reportSlice.actions";
 import {useEffect, useState} from "react";
 import {clearGraphs, setReportTitle, setSearchString} from "../../../store/reportSlice/reportSlice";
+import {debounce} from "../../../lib/debounce";
 
 export const ReportingTabs = () => {
   const groups = useSelector(selectGroups);
@@ -13,7 +14,7 @@ export const ReportingTabs = () => {
   const defaultActiveKey = groups.length > 0 ? groups[0].group_id.toString() : null;
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
   const currentClient = useSelector(selectCurrentClient);
-
+  // const debouncedResize = debounce(onResize, 300);
   useEffect(() => {
     if (groups.length) {
       dispatch(fetchGetGraphs(defaultActiveKey))
@@ -27,6 +28,12 @@ export const ReportingTabs = () => {
     dispatch(clearGraphs())
     dispatch(fetchGetGraphs(selectedKey))
   }
+
+  const handleInputChange = (value) => {
+    dispatch(setSearchString(value));
+  };
+
+  const debouncedSearchString = debounce(handleInputChange, 400);
   return (
     <div className={styles.wrapper}>
       {currentClient.value === 'Тестовый клиент' && (
@@ -35,9 +42,7 @@ export const ReportingTabs = () => {
           <div className={styles.filter}>
             <div className={styles.search}>
               <label>Введите параметр:</label>
-              <Input onChange={(e) => {
-                dispatch(setSearchString(e))
-              }} />
+              <Input onChange={(value) => debouncedSearchString(value)} />
             </div>
           </div>
         </>

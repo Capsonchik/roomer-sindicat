@@ -3,13 +3,24 @@ import PptxGenJS from "pptxgenjs";
 
 export const saveToPpt = async (ref) => {
   const canvas = await html2canvas(ref.current);
-  const imgData = canvas.toDataURL('image/jpg');
+  const imgData = canvas.toDataURL('image/jpeg');
+  console.log(imgData)
 
+  // Создаем презентацию PowerPoint
   let pptx = new PptxGenJS();
   let slide = pptx.addSlide();
   slide.addImage({ data: imgData, x: 0, y: 0, w: 9, h: 4.5 });
 
-  pptx.writeFile({ fileName: 'ScreenshotPresentation.pptx' });
+  // Сохраняем презентацию
+  // pptx.writeFile({ fileName: 'ScreenshotPresentation.pptx' });
+
+  // Создаем элемент <a> для скачивания изображения
+  const link = document.createElement('a');
+  link.href = imgData;
+  link.download = 'screenshot.jpg';
+
+  // Симулируем клик для скачивания изображения
+  link.click();
 };
 
 // export const saveToPpt = async (ref) => {

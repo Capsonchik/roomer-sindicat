@@ -8,12 +8,17 @@ import TestPage from "../pages/testPage/TestPage";
 import {TestPageReportComponent} from "../components/testPageComponents/reportComponent/TestPageReportComponent";
 import {TestPageMainComponent} from "../components/testPageComponents/testPageMainComponent/TestPageMainComponent";
 import {TestPageReportList} from "../components/testPageComponents/testPageReportListComponent/TestPageReportList";
+import {SnapShot} from "../pages/snapshot/SnapShot";
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <App/>,
     errorElement: <ErrorPage/>,
+  },
+  {
+    path: '/snapshot',
+    element: <SnapShot/>,
   },
   {
     path: '/main',

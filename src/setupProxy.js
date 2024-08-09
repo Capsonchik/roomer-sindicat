@@ -2,6 +2,23 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function(app) {
+  app.use(
+    '/proxy_iframe',
+    createProxyMiddleware({
+      target: 'https://datalens.yandex.cloud',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/proxy_iframe': '', // Убираем /proxy_iframe из пути
+      },
+      onProxyRequest: function(req, res) {
+        console.log(1111)
+      },
+      onProxyRes: (proxyRes, req, res) => {
+        // Убедитесь, что тип содержимого правильно установлен
+        res.header('Content-Type', 'image/jpeg');
+      },
+    })
+  );
   // Прокси для домена 1
   app.use(
     '/proxy_cors_login',

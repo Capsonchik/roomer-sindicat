@@ -16,6 +16,7 @@ function App() {
     dispatch(setStartPage('auth'));
   }
 
+
   return (
     <CustomProvider locale={'ru_RU'}>
       <Container className="App">

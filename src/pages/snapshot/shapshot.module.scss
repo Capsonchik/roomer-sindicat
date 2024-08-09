@@ -1,0 +1,22 @@
+
+
+.wrapper{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  max-width: 1200px;
+
+  &.col_2{
+    grid-template-columns: 1fr 1fr;
+  }
+  &.col_3{
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  img{
+    height: 400px;
+    width: 100%;
+  }
+  .item{
+    text-align: center;
+  }
+}

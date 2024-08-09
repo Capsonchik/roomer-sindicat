@@ -22,11 +22,11 @@ export const axiosLoginRequest = createAxiosLoginInstance();
 
 
 // export const CLIENT_API = 'http://192.168.9.239:8808/'
-export const CLIENT_API = 'https://21ce-212-45-6-6.ngrok-free.app'
+export const CLIENT_API = 'https://21ce-212-45-6-6.ngrok-free.app';
 
 const createAxiosClientInstance = () => {
   const instance = axios.create({
-    baseURL: CLIENT_API,
+    baseURL: '/proxy_cors_main',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -35,6 +35,29 @@ const createAxiosClientInstance = () => {
     },
     // withCredentials: true
   });
+
+  // Перехватчик для обработки ошибок
+  instance.interceptors.response.use(
+    response => response, // Просто возвращаем ответ, если все хорошо
+    async error => {
+      const { config, response } = error;
+      const originalRequest = config;
+
+      // Если статус 500, пробуем повторить запрос
+      if (response && response.status === 500) {
+        try {
+          // Повторяем запрос
+          return await instance(originalRequest);
+        } catch (retryError) {
+          // Если повторный запрос также провалился, выбрасываем ошибку
+          return Promise.reject(retryError);
+        }
+      }
+
+      // Если ошибка не 500, выбрасываем её как есть
+      return Promise.reject(error);
+    }
+  );
 
   return instance;
 };

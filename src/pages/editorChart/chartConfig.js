@@ -54,10 +54,10 @@ export const chartOption = (data) => ({
     left: 'right',
     top: 'center',
     feature: {
-      mark: { show: true },
-      dataView: { show: true, readOnly: false },
-      magicType: { show: true, type: ['line', 'bar', 'stack'] },
-      restore: { show: true },
+      // mark: { show: true },
+      // dataView: { show: true, readOnly: false },
+      // magicType: { show: true, type: ['line', 'bar', 'stack'] },
+      // restore: { show: true },
       saveAsImage: { show: true }
     }
   },
@@ -83,6 +83,8 @@ export const chartOption = (data) => ({
     data: data.seriesData[key],
     itemStyle: {
       color: colors[index] // Цвет для каждой серии
-    }
+    },
+    barCategoryGap: '30%', // Задает промежуток между столбцами
+    barGap: '0%' // Задает промежуток между группами столбцов
   }))
 });

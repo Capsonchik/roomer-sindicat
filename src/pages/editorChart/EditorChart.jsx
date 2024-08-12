@@ -8,6 +8,7 @@ import { Button } from "rsuite";
 
 // Функция для преобразования данных в формат PptxGenJS
 const prepareDataForPptx = (data, visibleSeries) => {
+
   return Object.keys(data.seriesData)
     .filter(name => visibleSeries[name]) // Учитываем только видимые серии
     .map(name => ({
@@ -27,16 +28,18 @@ const getSumValues = (data, visibleSeries) => {
   return Math.max(...sums);
 };
 
+const colors ={
+  Forest: '#5470c6',
+  Steppe: '#91cc75',
+  Desert: '#fac858',
+  Wetland: '#ee6666'
+}
+
 export const EditorChart = () => {
   const [chartType, setChartType] = useState('bar'); // Состояние для типа графика
   const [isStacked, setIsStacked] = useState(false); // Состояние для стэка
   const [labelPosition, setLabelPosition] = useState('insideBottom'); // Состояние для позиции меток
-  const [lineColors, setLineColors] = useState({
-    Forest: '#5470c6',
-    Steppe: '#91cc75',
-    Desert: '#fac858',
-    Wetland: '#ee6666'
-  }); // Состояния для цветов линий
+  const [lineColors, setLineColors] = useState(colors); // Состояния для цветов линий
   const [rotate, setRotate] = useState(90); // Состояние для угла поворота меток
 
   const [chartInstance, setChartInstance] = useState(null);
@@ -44,8 +47,11 @@ export const EditorChart = () => {
     Object.fromEntries(Object.keys(chartData.seriesData).map(name => [name, true]))
   ); // Изначально все серии видимы
   const [yAxisMax, setYAxisMax] = useState(0); // Состояние для максимального значения оси Y
+  const [barCategoryGap, setBarCategoryGap] = useState('30%'); // New state for bar category gap
+  const [barGap, setBarGap] = useState('0%'); // New state for bar gap
 
   useEffect(() => {
+    // console.log(2)
     const chartDom = document.getElementById('main');
     if (!chartDom) return;
 
@@ -54,6 +60,20 @@ export const EditorChart = () => {
 
     // Событие для обновления видимости серий
     myChart.on('legendselectchanged', (params) => {
+      console.log(2,params)
+      const arrayParams = Object.entries(params.selected)
+      if(arrayParams.some(([key, value]) => !value)) {
+        const newColors = {}
+        arrayParams.forEach(([key, value]) => {
+          if(value === true) {
+            newColors[key] = colors[key];
+          }
+        })
+        setLineColors(newColors)
+      }
+      else {
+        setLineColors(colors)
+      }
       setVisibleSeries(prevVisibleSeries => ({
         ...prevVisibleSeries,
         ...params.selected
@@ -67,6 +87,7 @@ export const EditorChart = () => {
 
   // Пересчитываем максимальное значение оси Y и цвета линий при изменении видимых серий
   useEffect(() => {
+    // console.log(1)
     // Обновляем максимальное значение оси Y
     const calculateYAxisMax = () => {
       if (chartType === 'bar' && isStacked) {
@@ -110,7 +131,9 @@ export const EditorChart = () => {
       },
       lineStyle: {
         opacity: visibleSeries[seriesName] ? 1 : 0,
-      }
+      },
+      barCategoryGap: barCategoryGap, // Use the state for bar category gap
+      barGap: barGap // Use the state for bar gap
     }));
 
     const option = {
@@ -123,7 +146,7 @@ export const EditorChart = () => {
     };
 
     chartInstance.setOption(option);
-  }, [chartInstance, chartType, isStacked, labelPosition, lineColors, rotate, yAxisMax, visibleSeries]);
+  }, [chartInstance, chartType, isStacked, labelPosition, lineColors, rotate, yAxisMax, visibleSeries,barGap,barCategoryGap]);
 
   // Функция для создания слайда с изображением графика
   const addChartSlide = () => {
@@ -204,7 +227,8 @@ export const EditorChart = () => {
       dataLabelPos: 'ctr',
       lineSize: 2,
       barGrouping: isStacked ? 'stacked' : 'standard',
-      // Используем текущее состояние для стэка
+      barGapWidthPct: Math.min(500, Math.max(0, parseFloat(barCategoryGap) * 5)),  // Преобразование значения barCategoryGap в barGapWidthPct
+      barOverlapPct: -parseFloat(barGap) // Преобразование значения barGap в barOverlapPct
     });
 
     // Сохранение презентации
@@ -277,6 +301,22 @@ export const EditorChart = () => {
             max="360"
             value={rotate}
             onChange={(e) => setRotate(Number(e.target.value))}
+          />
+        </label>
+        <label>
+          Bar Category Gap (%):
+          <input
+            type="number"
+            value={parseFloat(barCategoryGap)}
+            onChange={(e) => setBarCategoryGap(`${e.target.value}%`)}
+          />
+        </label>
+        <label>
+          Bar Gap (%):
+          <input
+            type="number"
+            value={parseFloat(barGap)}
+            onChange={(e) => setBarGap(`${e.target.value}%`)}
           />
         </label>
       </div>

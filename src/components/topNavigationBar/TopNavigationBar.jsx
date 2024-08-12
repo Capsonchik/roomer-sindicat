@@ -1,6 +1,7 @@
 import {Nav, Navbar} from "rsuite";
 import CogIcon from "@rsuite/icons/legacy/Cog";
 import {useNavigate} from "react-router-dom";
+import {ROUTES_PATH} from "../../routes/RoutesPath";
 
 export const TopNavigationBar = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export const TopNavigationBar = () => {
         <Nav.Item onClick={() => handleNavigate('/main')}>Главная</Nav.Item>
         <Nav.Item onClick={() => handleNavigate('/main/report')}>Отчет</Nav.Item>
         <Nav.Item onClick={() => handleNavigate('/main/reportList')}>Список отчетов</Nav.Item>
+        <Nav.Item onClick={() => handleNavigate('/main' + ROUTES_PATH.editorChart)}>Чарты</Nav.Item>
       </Nav>
       <Nav pullRight>
         <Nav.Item icon={<CogIcon/>}>Settings</Nav.Item>

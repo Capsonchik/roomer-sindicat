@@ -85,7 +85,7 @@ export const TestPageGraphComponent = () => {
     setSnapshot([...array]);
     setIsLoadingImg(false)
   };
-  useEffect(() => {
+  useEffect(()   => {
     setLoading(false);
   }, [graphsLoader]);
   // console.log(snapshot)
@@ -127,11 +127,11 @@ export const TestPageGraphComponent = () => {
           })
         )}
       </div>
-      <Button appearance={'primary'} onClick={downloadImageFromIframe} disabled={loading} loading={isLoadingImg}>
-        Сохранить как изображение
-      </Button>
+      {/*<Button appearance={'primary'} onClick={downloadImageFromIframe} disabled={loading} loading={isLoadingImg}>*/}
+      {/*  Сохранить как изображение*/}
+      {/*</Button>*/}
 
-      <SnapShot items={snapshot} graphLength={graphs?.length}/>
+      {/*<SnapShot items={snapshot} graphLength={graphs?.length}/>*/}
     </div>
   );
 };

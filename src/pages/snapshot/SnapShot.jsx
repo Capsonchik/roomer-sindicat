@@ -27,35 +27,53 @@ export const SnapShot = ({ items, graphLength }) => {
 
       // Обрабатываем каждый элемент, чтобы добавить слайд с изображением и заголовком
       for (const item of items) {
-        const response = await fetch(item.link);
-        const blob = await response.blob();
-        const base64 = await blobToBase64(blob);
+        try {
+          const response = await fetch(item.link);
+          if (!response.ok) {
+            console.error(`Failed to fetch image: ${response.statusText}`);
+            continue;
+          }
 
-        const slide = pptx.addSlide();
+          const blob = await response.blob();
+          let base64 = await blobToBase64(blob);
 
-        // Добавляем заголовок к слайду
-        slide.addText(item.title, {
-          x: 0.5,
-          y: 0.3,
-          fontSize: 24,
-          bold: true,
-          align: 'center',
-          w: slideWidth - 1, // ширина текста, чтобы он занимал весь слайд
-        });
+          // Проверяем, начинается ли строка base64 с префикса
+          if (!base64.startsWith('data:image')) {
+            console.warn('Base64 string does not contain image prefix. Adding prefix manually.');
+            const imageType = blob.type || 'image/png'; // определяем тип изображения или используем PNG по умолчанию
+            base64 = `data:${imageType};base64,` + base64.split(',')[1];
+          }
 
-        // Добавляем изображение к слайду
-        slide.addImage({
-          x: 0,
-          y: 1, // отступ сверху, чтобы было место для заголовка
-          data: base64, // используем данные изображения в формате base64
-          w: 300, // устанавливаем ширину изображения по ширине слайда
-          h: 400, // устанавливаем высоту изображения по высоте слайда, минус место для заголовка
-          sizing: { type: 'contain', scale: true }, // сохраняем пропорции изображения
-        });
+          console.log(`Image base64: ${base64.substring(0, 50)}...`); // Выводим первые 50 символов base64 для проверки
+
+          const slide = pptx.addSlide();
+
+          // Добавляем заголовок к слайду
+          slide.addText(item.title, {
+            x: 0.5,
+            y: 0.3,
+            fontSize: 24,
+            bold: true,
+            align: 'center',
+            // w: slideWidth - 1, // ширина текста, чтобы он занимал весь слайд
+          });
+
+          // Добавляем изображение к слайду
+          slide.addImage({
+            x: 1.5,
+            y: 1, // отступ сверху, чтобы было место для заголовка
+            data: base64, // используем данные изображения в формате base64
+            w: 6, // устанавливаем ширину изображения по ширине слайда
+            h: 4, // устанавливаем высоту изображения по высоте слайда, минус место для заголовка
+            sizing: { type: 'contain', scale: true }, // сохраняем пропорции изображения
+          });
+        } catch (error) {
+          console.error('Error processing image:', error);
+        }
       }
 
       // Сохраняем презентацию в файл
-      pptx.writeFile('SnapshotPresentation.pptx');
+      pptx.writeFile({ fileName: 'SnapshotPresentation.pptx' });
     };
 
     createPowerPoint(); // Вызываем функцию для создания PowerPoint файла
@@ -69,7 +87,7 @@ export const SnapShot = ({ items, graphLength }) => {
       {items.map((item, index) => (
         <div key={index} className={styles.item}>
           <Heading level={4}>{item.title}</Heading>
-          <img src={item.link} alt={item.title} />
+          <img src={item.link} alt={item.title} onError={(e) => console.error('Image failed to load:', e)} />
         </div>
       ))}
     </div>

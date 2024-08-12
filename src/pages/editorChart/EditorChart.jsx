@@ -311,14 +311,17 @@ export const EditorChart = () => {
             onChange={(e) => setBarCategoryGap(`${e.target.value}%`)}
           />
         </label>
-        <label>
-          Bar Gap (%):
-          <input
-            type="number"
-            value={parseFloat(barGap)}
-            onChange={(e) => setBarGap(`${e.target.value}%`)}
-          />
-        </label>
+        {!isStacked && (
+          <label>
+            Bar Gap (%):
+            <input
+              type="number"
+              value={parseFloat(barGap)}
+              onChange={(e) => setBarGap(`${e.target.value}%`)}
+            />
+          </label>
+        )}
+
       </div>
       <div className={styles.buttons}>
         <Button onClick={downloadPpt}>Download as PPTX</Button>

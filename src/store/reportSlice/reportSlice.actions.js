@@ -8,8 +8,6 @@ export const fetchGetAllClients = createAsyncThunk(
       const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_clients`);
       if (response.status === 200) {
         return response.data;
-      } else {
-        return 'error';
       }
     } catch (error) {
       throw new Error('fetchGetAllClients error');
@@ -26,9 +24,7 @@ export const fetchGetClientReports = createAsyncThunk(
         return response.data;
       }
 
-      else {
-        return 'error';
-      }
+
     } catch (error) {
 
       throw new Error('fetchGetClientReports error');
@@ -44,8 +40,6 @@ export const fetchGetGraphs = createAsyncThunk(
       const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_graphs?group_id=${id}`);
       if (response.status === 200) {
         return response.data;
-      } else {
-        return 'error';
       }
     } catch (error) {
       throw new Error('fetchGetGraphs error');
@@ -60,8 +54,6 @@ export const fetchGetGroups = createAsyncThunk(
       const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_groups?report_id=${id}`);
       if (response.status === 200) {
         return response.data;
-      } else {
-        return 'error';
       }
     } catch (error) {
       throw new Error('fetchGetGroups error');
@@ -76,8 +68,6 @@ export const fetchGetAllGraphs = createAsyncThunk(
       const response = await axiosClientRequest.get(`api/v1/report_cabinet/get_allgraphs`);
       if (response.status === 200) {
         return response.data;
-      } else {
-        return 'error';
       }
     } catch (error) {
       throw new Error('fetchGetAllGraphs error');

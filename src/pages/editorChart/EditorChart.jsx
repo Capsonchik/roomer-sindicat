@@ -19,13 +19,24 @@ const prepareDataForPptx = (data, visibleSeries) => {
 };
 
 // Функция для получения суммы значений по каждой категории
-const getSumValues = (data, visibleSeries) => {
-  const sums = data.xAxisData.map((_, index) => {
-    return Object.keys(data.seriesData)
-      .filter(name => visibleSeries[name]) // Учитываем только видимые серии
-      .reduce((sum, series) => sum + data.seriesData[series][index], 0);
-  });
-  return Math.max(...sums);
+const getSumValues = (data, visibleSeries, isStacked) => {
+  if (isStacked) {
+    // Если график стэковый, вычисляем сумму значений для каждой категории
+    const sums = data.xAxisData.map((_, index) => {
+      return Object.keys(data.seriesData)
+        .filter(name => visibleSeries[name]) // Учитываем только видимые серии
+        .reduce((sum, series) => sum + data.seriesData[series][index], 0);
+    });
+    console.log(Math.max(...sums))
+    return Math.max(...sums);
+  } else {
+    // Если график обычный, находим максимальное значение среди всех видимых данных
+    return Math.max(
+      ...Object.keys(data.seriesData)
+        .filter(name => visibleSeries[name]) // Учитываем только видимые серии
+        .map(name => Math.max(...data.seriesData[name]))
+    );
+  }
 };
 
 const colors ={
@@ -85,14 +96,12 @@ export const EditorChart = () => {
     };
   }, []);
 
-  // Пересчитываем максимальное значение оси Y и цвета линий при изменении видимых серий
   useEffect(() => {
-    // console.log(1)
     // Обновляем максимальное значение оси Y
     const calculateYAxisMax = () => {
       if (chartType === 'bar' && isStacked) {
         // Стэковый бар график: вычисляем максимальную сумму
-        const maxSum = getSumValues(chartData, visibleSeries);
+        const maxSum = getSumValues(chartData, visibleSeries, isStacked);
         setYAxisMax(Math.ceil(maxSum * 1.1)); // Увеличиваем максимальное значение на 10%
       } else {
         // Обычный бар график или линия: находим максимальное значение среди всех видимых данных
@@ -106,7 +115,7 @@ export const EditorChart = () => {
     };
 
     calculateYAxisMax();
-  }, [visibleSeries, chartType, isStacked]);
+  }, [isStacked]); // Зависимость только от isStacked
 
   useEffect(() => {
     if (!chartInstance) return;
@@ -205,7 +214,7 @@ export const EditorChart = () => {
 
     // Подготовка данных для графика
     const dataForChart = prepareDataForPptx(chartData, visibleSeries);
-    const sumValues = getSumValues(chartData, visibleSeries);
+    const sumValues = getSumValues(chartData, visibleSeries,isStacked);
     const valAxisMaxVal = Math.ceil(sumValues * 1.1); // Увеличиваем максимальное значение на 10%
 
     // Добавляем график

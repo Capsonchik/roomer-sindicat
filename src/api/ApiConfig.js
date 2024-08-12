@@ -26,7 +26,7 @@ export const CLIENT_API = 'https://21ce-212-45-6-6.ngrok-free.app';
 
 const createAxiosClientInstance = () => {
   const instance = axios.create({
-    baseURL: '/proxy_cors_main',
+    baseURL: CLIENT_API,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

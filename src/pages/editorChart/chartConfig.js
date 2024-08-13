@@ -46,7 +46,8 @@ export const chartOption = (data) => ({
     }
   },
   legend: {
-    data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+    show:false
+    // data: ['Forest', 'Steppe', 'Desert', 'Wetland']
   },
   toolbox: {
     show: true,

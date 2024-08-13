@@ -12,6 +12,17 @@
   display: flex;
   align-items: center;
   gap: 24px;
+  flex-wrap: wrap;
+  .select{
+    min-width: 100%;
+    &  div > span > span {
+      display: flex;
+    }
+  }
+
+  .type{
+    width: 200px;
+  }
 }
 
 .buttons{

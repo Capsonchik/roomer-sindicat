@@ -9,3 +9,19 @@ export const chartData = {
     Wetland: [98, 77, 101, 99, 40]
   }
 };
+
+export const labelArray = [
+  'left',
+  'right',
+  'top',
+  'bottom',
+  'inside',
+  'insideTop',
+  'insideLeft',
+  'insideRight',
+  'insideBottom',
+  'insideTopLeft',
+  'insideTopRight',
+  'insideBottomLeft',
+  'insideBottomRight',
+]

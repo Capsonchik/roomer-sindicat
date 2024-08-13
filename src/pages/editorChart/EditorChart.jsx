@@ -1,341 +1,241 @@
-import React, { useEffect, useState } from 'react';
-import * as echarts from 'echarts';
-import PptxGenJS from 'pptxgenjs';
-import styles from './editorChart.module.scss';
-import { chartData } from './stackBarMock';
-import { chartOption, labelOption } from './chartConfig';
-import { Button } from "rsuite";
+  import React, { useEffect, useState } from 'react';
+  import * as echarts from 'echarts';
+  import styles from './editorChart.module.scss';
+  import { chartData, labelArray } from './stackBarMock';
+  import { chartOption, labelOption } from './chartConfig';
+  import { Button, CheckPicker, SelectPicker, Toggle } from 'rsuite';
+  import { prepareDataForPptx } from './prepareDataForPptx';
+  import { getSumValues } from './getSumValues';
+  import { downloadPpt } from './downloadPptx';
+  import { downloadSnapshotPptx } from './downloadSnapshotPptx';
 
-// Функция для преобразования данных в формат PptxGenJS
-const prepareDataForPptx = (data, visibleSeries) => {
+  const initialColors = {
+    Forest: '#5470c6',
+    Steppe: '#91cc75',
+    Desert: '#fac858',
+    Wetland: '#ee6666',
+  };
 
-  return Object.keys(data.seriesData)
-    .filter(name => visibleSeries[name]) // Учитываем только видимые серии
-    .map(name => ({
-      name,
-      labels: data.xAxisData,
-      values: data.seriesData[name]
-    }));
-};
+  export const EditorChart = () => {
+    const [chartType, setChartType] = useState('bar'); // Состояние для типа графика
+    const [isStacked, setIsStacked] = useState(false); // Состояние для стэка
+    const [labelPosition, setLabelPosition] = useState('insideBottom'); // Состояние для позиции меток
+    const [lineColors, setLineColors] = useState(initialColors); // Состояния для цветов линий
+    const [rotate, setRotate] = useState(90); // Состояние для угла поворота меток
 
-// Функция для получения суммы значений по каждой категории
-const getSumValues = (data, visibleSeries, isStacked) => {
-  if (isStacked) {
-    // Если график стэковый, вычисляем сумму значений для каждой категории
-    const sums = data.xAxisData.map((_, index) => {
-      return Object.keys(data.seriesData)
-        .filter(name => visibleSeries[name]) // Учитываем только видимые серии
-        .reduce((sum, series) => sum + data.seriesData[series][index], 0);
-    });
-    console.log(Math.max(...sums))
-    return Math.max(...sums);
-  } else {
-    // Если график обычный, находим максимальное значение среди всех видимых данных
-    return Math.max(
-      ...Object.keys(data.seriesData)
-        .filter(name => visibleSeries[name]) // Учитываем только видимые серии
-        .map(name => Math.max(...data.seriesData[name]))
-    );
-  }
-};
+    const [chartInstance, setChartInstance] = useState(null);
+    const [visibleSeries, setVisibleSeries] = useState(
+      Object.fromEntries(Object.keys(chartData.seriesData).map((name) => [name, true]))
+    ); // Изначально все серии видимы
+    const [yAxisMax, setYAxisMax] = useState(0); // Состояние для максимального значения оси Y
+    const [barCategoryGap, setBarCategoryGap] = useState('30%'); // New state for bar category gap
+    const [barGap, setBarGap] = useState('0%'); // New state for bar gap
 
-const colors ={
-  Forest: '#5470c6',
-  Steppe: '#91cc75',
-  Desert: '#fac858',
-  Wetland: '#ee6666'
-}
+    useEffect(() => {
+      const chartDom = document.getElementById('main');
+      if (!chartDom) return;
 
-export const EditorChart = () => {
-  const [chartType, setChartType] = useState('bar'); // Состояние для типа графика
-  const [isStacked, setIsStacked] = useState(false); // Состояние для стэка
-  const [labelPosition, setLabelPosition] = useState('insideBottom'); // Состояние для позиции меток
-  const [lineColors, setLineColors] = useState(colors); // Состояния для цветов линий
-  const [rotate, setRotate] = useState(90); // Состояние для угла поворота меток
+      const myChart = echarts.init(chartDom);
+      setChartInstance(myChart);
 
-  const [chartInstance, setChartInstance] = useState(null);
-  const [visibleSeries, setVisibleSeries] = useState(
-    Object.fromEntries(Object.keys(chartData.seriesData).map(name => [name, true]))
-  ); // Изначально все серии видимы
-  const [yAxisMax, setYAxisMax] = useState(0); // Состояние для максимального значения оси Y
-  const [barCategoryGap, setBarCategoryGap] = useState('30%'); // New state for bar category gap
-  const [barGap, setBarGap] = useState('0%'); // New state for bar gap
+      return () => {
+        myChart.dispose();
+      };
+    }, []);
 
-  useEffect(() => {
-    // console.log(2)
-    const chartDom = document.getElementById('main');
-    if (!chartDom) return;
+    useEffect(() => {
+      // Обновляем максимальное значение оси Y
+      const calculateYAxisMax = () => {
+        if (chartType === 'bar' && isStacked) {
+          // Стэковый бар график: вычисляем максимальную сумму
+          const maxSum = getSumValues(chartData, visibleSeries, isStacked);
+          setYAxisMax(Math.ceil(maxSum * 1.1)); // Увеличиваем максимальное значение на 10%
+        } else {
+          // Обычный бар график или линия: находим максимальное значение среди всех видимых данных
+          const maxValue = Math.max(
+            ...Object.keys(chartData.seriesData)
+              .filter((name) => visibleSeries[name]) // Учитываем только видимые серии
+              .map((name) => Math.max(...chartData.seriesData[name]))
+          );
+          setYAxisMax(Math.ceil(maxValue * 1.1)); // Увеличиваем максимальное значение на 10%
+        }
+      };
 
-    const myChart = echarts.init(chartDom);
-    setChartInstance(myChart);
+      calculateYAxisMax();
+    }, [isStacked, visibleSeries]); // Зависимость от isStacked и visibleSeries
 
-    // Событие для обновления видимости серий
-    myChart.on('legendselectchanged', (params) => {
-      console.log(2,params)
-      const arrayParams = Object.entries(params.selected)
-      if(arrayParams.some(([key, value]) => !value)) {
-        const newColors = {}
-        arrayParams.forEach(([key, value]) => {
-          if(value === true) {
-            newColors[key] = colors[key];
-          }
-        })
-        setLineColors(newColors)
-      }
-      else {
-        setLineColors(colors)
-      }
-      setVisibleSeries(prevVisibleSeries => ({
-        ...prevVisibleSeries,
-        ...params.selected
+    useEffect(() => {
+      if (!chartInstance) return;
+
+      // Фильтруем серии, чтобы включать только видимые
+      const filteredArray = Object.keys(chartData.seriesData).filter(series => visibleSeries[series]);
+
+      // Создаем опции для серий
+      const seriesOptions = filteredArray.map((seriesName) => ({
+        name: seriesName,
+        type: chartType,
+        stack: isStacked ? 'total' : null, // Устанавливаем стэк на основе состояния
+        label: {
+          ...labelOption,
+          position: labelPosition,
+          rotate: rotate, // Угол поворота меток
+        },
+        itemStyle: {
+          color: lineColors[seriesName], // Цвет линии для каждой серии
+        },
+        data: chartData.seriesData[seriesName], // Данные для видимых серий
+
+        barCategoryGap: barCategoryGap, // Используем состояние для зазора между категориями
+        barGap: barGap, // Используем состояние для зазора между столбиками
       }));
-    });
 
-    return () => {
-      myChart.dispose();
+      const option = {
+        ...chartOption(chartData),
+        legend: {
+          show: false, // Скрываем встроенную легенду
+        },
+        series: seriesOptions,
+        yAxis: {
+          ...chartOption(chartData).yAxis,
+          max: yAxisMax, // Используем состояние для максимального значения оси Y
+        },
+        animation: true, // Включаем анимацию
+        animationDuration: 1000, // Продолжительность анимации (в миллисекундах)
+        animationEasing: 'cubicOut', // Эффект анимации
+      };
+
+      chartInstance.setOption(option, {
+        notMerge: true, // Обновляем опции с учетом существующих
+        lazyUpdate: false, // Обновляем сразу
+      });
+
+    }, [
+      chartInstance,
+      chartType,
+      isStacked,
+      labelPosition,
+      lineColors,
+      rotate,
+      yAxisMax,
+      visibleSeries,
+      barGap,
+      barCategoryGap,
+    ]);
+
+    const handleAddChartSlide = () => {
+      downloadSnapshotPptx({
+        chartInstance, // Экземпляр графика
+      });
     };
-  }, []);
 
-  useEffect(() => {
-    // Обновляем максимальное значение оси Y
-    const calculateYAxisMax = () => {
-      if (chartType === 'bar' && isStacked) {
-        // Стэковый бар график: вычисляем максимальную сумму
-        const maxSum = getSumValues(chartData, visibleSeries, isStacked);
-        setYAxisMax(Math.ceil(maxSum * 1.1)); // Увеличиваем максимальное значение на 10%
-      } else {
-        // Обычный бар график или линия: находим максимальное значение среди всех видимых данных
-        const maxValue = Math.max(
-          ...Object.keys(chartData.seriesData)
-            .filter(name => visibleSeries[name]) // Учитываем только видимые серии
-            .map(name => Math.max(...chartData.seriesData[name]))
-        );
-        setYAxisMax(Math.ceil(maxValue * 1.1)); // Увеличиваем максимальное значение на 10%
-      }
+    const handleDownload = () => {
+      downloadPpt({
+        chartData, // Данные графика
+        visibleSeries, // Видимые серии данных
+        isStacked, // Флаг стэка
+        chartType, // Тип графика
+        lineColors, // Цвета линий
+        barCategoryGap, // Зазор между категориями столбиков
+        barGap, // Зазор между столбиками
+        prepareDataForPptx, // Функция для подготовки данных для PPTX
+        getSumValues, // Функция для получения сумм значений
+      });
     };
 
-    calculateYAxisMax();
-  }, [isStacked]); // Зависимость только от isStacked
+    const handleColorChange = (seriesName, color) => {
+      setLineColors((prevColors) => ({
+        ...prevColors,
+        [seriesName]: color,
+      }));
+    };
 
-  useEffect(() => {
-    if (!chartInstance) return;
-
-    // Создание опций для серий
-    const seriesOptions = Object.keys(chartData.seriesData).map(seriesName => ({
-      name: seriesName,
-      type: chartType,
-      stack: isStacked ? 'total' : null, // Установка стэка в зависимости от состояния
-      label: {
-        ...labelOption,
-        position: labelPosition,
-        rotate: rotate // Угол поворота меток
-      },
-      itemStyle: {
-        color: lineColors[seriesName], // Цвет линии для каждой серии
-      },
-      data: chartData.seriesData[seriesName], // Убедитесь, что данные предоставлены
-      // Применяем видимость серии
-      emphasis: {
-        disabled: !visibleSeries[seriesName],
-      },
-      lineStyle: {
-        opacity: visibleSeries[seriesName] ? 1 : 0,
-      },
-      barCategoryGap: barCategoryGap, // Use the state for bar category gap
-      barGap: barGap // Use the state for bar gap
+    const checkPickerData = Object.keys(chartData.seriesData).map((name) => ({
+      label: (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input
+            type="color"
+            value={lineColors[name]}
+            onChange={(e) => handleColorChange(name, e.target.value)}
+            style={{ marginRight: 8 }}
+          />
+          {name}
+        </div>
+      ),
+      value: name,
     }));
 
-    const option = {
-      ...chartOption(chartData),
-      series: seriesOptions,
-      yAxis: {
-        ...chartOption(chartData).yAxis,
-        max: yAxisMax // Используем состояние для максимального значения оси Y
-      }
-    };
-
-    chartInstance.setOption(option);
-  }, [chartInstance, chartType, isStacked, labelPosition, lineColors, rotate, yAxisMax, visibleSeries,barGap,barCategoryGap]);
-
-  // Функция для создания слайда с изображением графика
-  const addChartSlide = () => {
-    if (!chartInstance) return;
-
-    // Capture the chart as an image
-    const dataUrl = chartInstance.getDataURL({ type: 'png' });
-
-    // Ensure the dataUrl is valid
-    if (!dataUrl) {
-      console.error('Failed to capture chart image');
-      return;
-    }
-
-    const pptx = new PptxGenJS();
-    const slide = pptx.addSlide();
-
-    // Добавляем изображение графика на слайд
-    slide.addImage({ data: dataUrl, x: 1, y: 1, w: 8, h: 3, sizing: { type: 'contain', scale: true } });
-
-    // Сохранение презентации
-    pptx.writeFile({ fileName: 'ChartPresentationWithSnapshot.pptx' });
-  };
-
-  // Функция для скачивания презентации
-  const downloadPpt = () => {
-    const pptx = new PptxGenJS();
-    const slide = pptx.addSlide();
-
-    // Настройки сетки
-    const slideWidth = pptx.width; // ширина слайда в дюймах
-    const slideHeight = pptx.height; // высота слайда в дюймах
-    const gridColor = 'D3D3D3'; // Светло-серый цвет для сетки
-    const lineWidth = 0.5; // Толщина линий сетки
-
-    // Добавляем горизонтальные и вертикальные линии сетки
-    for (let y = 0; y <= slideHeight; y += 0.5) {
-      slide.addShape(PptxGenJS.ShapeType.line, {
-        x: 0,
-        y: y,
-        w: slideWidth,
-        h: 0,
-        line: { color: gridColor, width: lineWidth }
-      });
-    }
-
-    for (let x = 0; x <= slideWidth; x += 0.5) {
-      slide.addShape(PptxGenJS.ShapeType.line, {
-        x: x,
-        y: 0,
-        w: 0,
-        h: slideHeight,
-        line: { color: gridColor, width: lineWidth }
-      });
-    }
-
-    // Подготовка данных для графика
-    const dataForChart = prepareDataForPptx(chartData, visibleSeries);
-    const sumValues = getSumValues(chartData, visibleSeries,isStacked);
-    const valAxisMaxVal = Math.ceil(sumValues * 1.1); // Увеличиваем максимальное значение на 10%
-
-    // Добавляем график
-    slide.addChart(chartType, dataForChart, {
-      x: 1,
-      y: 1,
-      w: 8,
-      h: 4,
-      chartColors: Object.values(lineColors), // Используем цвета для каждой серии
-      title: "График",
-      showLegend: true,
-      legendPos: 'r',
-      catAxisTitle: "Месяцы",
-      valAxisTitle: "Значения",
-      showValue: true,
-      dataLabelColor: 'FFFFFF',
-      valAxisMinVal: 0,
-      valAxisMaxVal, // Используем вычисленное максимальное значение
-      dataLabelPos: 'ctr',
-      lineSize: 2,
-      barGrouping: isStacked ? 'stacked' : 'standard',
-      barGapWidthPct: Math.min(500, Math.max(0, parseFloat(barCategoryGap) * 5)),  // Преобразование значения barCategoryGap в barGapWidthPct
-      barOverlapPct: -parseFloat(barGap) // Преобразование значения barGap в barOverlapPct
-    });
-
-    // Сохранение презентации
-    pptx.writeFile({ fileName: 'ChartPresentation.pptx' });
-  };
-
-  return (
-    <div className={styles.wrapper}>
-      <div id="main" className={styles.chartContainer}></div>
-      <div className={styles.menu}>
-        <label>
-          Chart Type:
-          <select value={chartType} onChange={(e) => setChartType(e.target.value)}>
-            <option value="bar">Bar</option>
-            <option value="line">Line</option>
-          </select>
-        </label>
-        <label>
-          Stack:
-          <button onClick={() => setIsStacked(!isStacked)}>
-            {isStacked ? 'Unstack' : 'Stack'}
-          </button>
-        </label>
-        <label>
-          Label Position:
-          <select value={labelPosition} onChange={(e) => setLabelPosition(e.target.value)}>
-            {[
-              'left',
-              'right',
-              'top',
-              'bottom',
-              'inside',
-              'insideTop',
-              'insideLeft',
-              'insideRight',
-              'insideBottom',
-              'insideTopLeft',
-              'insideTopRight',
-              'insideBottomLeft',
-              'insideBottomRight',
-            ].map((pos) => (
-              <option key={pos} value={pos}>
-                {pos}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {Object.keys(lineColors).map((seriesName) => (
-            <div key={seriesName}>
-              <span>{seriesName} Color:</span>
-              <input
-                type="color"
-                value={lineColors[seriesName]}
-                onChange={(e) =>
-                  setLineColors((prevColors) => ({
-                    ...prevColors,
-                    [seriesName]: e.target.value,
-                  }))
-                }
-              />
-            </div>
-          ))}
-        </label>
-        <label>
-          Label Rotation:
-          <input
-            type="number"
-            min="0"
-            max="360"
-            value={rotate}
-            onChange={(e) => setRotate(Number(e.target.value))}
+    return (
+      <div className={styles.wrapper}>
+        <div id="main" className={styles.chartContainer}></div>
+        <div className={styles.menu}>
+          <CheckPicker
+            data={checkPickerData}
+            value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])} // Initially selected series
+            onChange={(value) => {
+              const newVisibleSeries = Object.fromEntries(
+                Object.keys(chartData.seriesData).map((name) => [name, value.includes(name)])
+              );
+              setVisibleSeries(newVisibleSeries);
+            }}
+            searchable={false}
+            appearance="default"
+            placeholder="Select series to display"
+            className={styles.select}
           />
-        </label>
-        <label>
-          Bar Category Gap (%):
-          <input
-            type="number"
-            value={parseFloat(barCategoryGap)}
-            onChange={(e) => setBarCategoryGap(`${e.target.value}%`)}
+          <SelectPicker
+            data={['bar', 'line'].map((item) => ({ label: item, value: item }))}
+            searchable={false}
+            placeholder="Выберите тип графика"
+            onChange={(value) => setChartType(value)}
+            className={styles.type}
           />
-        </label>
-        {!isStacked && (
+          <Toggle
+            size="lg"
+            checkedChildren="Stack"
+            unCheckedChildren="UnStack"
+            checked={isStacked}
+            onChange={() => setIsStacked(!isStacked)}
+          />
+          <SelectPicker
+            data={labelArray.map((item) => ({ label: item, value: item }))}
+            searchable={false}
+            placeholder="Положение label"
+            onChange={(value) => setLabelPosition(value)}
+            className={styles.type}
+          />
           <label>
-            Bar Gap (%):
+            Label Rotation:
             <input
               type="number"
-              value={parseFloat(barGap)}
-              onChange={(e) => setBarGap(`${e.target.value}%`)}
+              min="0"
+              max="360"
+              value={rotate}
+              onChange={(e) => setRotate(Number(e.target.value))}
             />
           </label>
-        )}
-
+          <label>
+            Bar Category Gap (%):
+            <input
+              type="number"
+              value={parseFloat(barCategoryGap)}
+              onChange={(e) => setBarCategoryGap(`${e.target.value}%`)}
+            />
+          </label>
+          {!isStacked && (
+            <label>
+              Bar Gap (%):
+              <input
+                type="number"
+                value={parseFloat(barGap)}
+                onChange={(e) => setBarGap(`${e.target.value}%`)}
+              />
+            </label>
+          )}
+        </div>
+        <div className={styles.buttons}>
+          <Button onClick={handleDownload}>Download as PPTX</Button>
+          <Button onClick={handleAddChartSlide}>Add Chart Snapshot to PPTX</Button>
+        </div>
       </div>
-      <div className={styles.buttons}>
-        <Button onClick={downloadPpt}>Download as PPTX</Button>
-        <Button onClick={addChartSlide}>Add Chart Snapshot to PPTX</Button>
-      </div>
-    </div>
-  );
-};
+    );
+  };

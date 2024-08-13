@@ -23,9 +23,24 @@
   .type{
     width: 200px;
   }
+  .rotate_wrapper{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .rotate{
+      width: 100px;
+    }
+  }
+  .barWidth_wrapper{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
 }
 
 .buttons{
+  margin-top: 24px;
   display: flex;
   gap: 24px;
 }

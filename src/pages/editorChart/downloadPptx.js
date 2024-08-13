@@ -17,6 +17,12 @@ export const downloadPpt = (
   const pptx = new PptxGenJS();
   const slide = pptx.addSlide();
 
+  const filteredColors = Object.fromEntries(Object.entries(lineColors).filter(([colorName, color]) => {
+    return visibleSeries[colorName]
+  }))
+
+
+
   // Подготовка данных для графика
   const dataForChart = prepareDataForPptx(chartData, visibleSeries);
   const sumValues = getSumValues(chartData, visibleSeries, isStacked);
@@ -28,7 +34,7 @@ export const downloadPpt = (
     y: 1,
     w: 8,
     h: 4,
-    chartColors: Object.values(lineColors), // Используем цвета для каждой серии
+    chartColors: Object.values(filteredColors), // Используем цвета для каждой серии
     title: "График",
     showLegend: true,
     legendPos: 'r',

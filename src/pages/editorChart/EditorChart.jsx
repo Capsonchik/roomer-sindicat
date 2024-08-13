@@ -3,7 +3,7 @@
   import styles from './editorChart.module.scss';
   import { chartData, labelArray } from './stackBarMock';
   import { chartOption, labelOption } from './chartConfig';
-  import { Button, CheckPicker, SelectPicker, Toggle } from 'rsuite';
+  import {Button, CheckPicker, InputNumber, SelectPicker, Toggle} from 'rsuite';
   import { prepareDataForPptx } from './prepareDataForPptx';
   import { getSumValues } from './getSumValues';
   import { downloadPpt } from './downloadPptx';
@@ -183,7 +183,7 @@
             className={styles.select}
           />
           <SelectPicker
-            data={['bar', 'line'].map((item) => ({ label: item, value: item }))}
+            data={['bar', 'line'].map((item) => ({label: item, value: item}))}
             searchable={false}
             placeholder="Выберите тип графика"
             onChange={(value) => setChartType(value)}
@@ -197,45 +197,60 @@
             onChange={() => setIsStacked(!isStacked)}
           />
           <SelectPicker
-            data={labelArray.map((item) => ({ label: item, value: item }))}
+            data={labelArray.map((item) => ({label: item, value: item}))}
             searchable={false}
             placeholder="Положение label"
             onChange={(value) => setLabelPosition(value)}
             className={styles.type}
           />
-          <label>
-            Label Rotation:
-            <input
-              type="number"
-              min="0"
-              max="360"
+          <div className={styles.rotate_wrapper}>
+            <label>Угол подписи</label>
+            <InputNumber
               value={rotate}
-              onChange={(e) => setRotate(Number(e.target.value))}
+              defaultValue={0}
+              formatter={value => `${value} °`}
+              onChange={(value) => setRotate(Number(value))}
+              className={styles.rotate}
+              placeholder={'Угол наклона'}
             />
-          </label>
-          <label>
-            Bar Category Gap (%):
-            <input
-              type="number"
-              value={parseFloat(barCategoryGap)}
-              onChange={(e) => setBarCategoryGap(`${e.target.value}%`)}
-            />
-          </label>
+          </div>
+
+          {
+            chartType === 'bar' && (
+              <div className={styles.barWidth_wrapper}>
+                <label>Ширина бара</label>
+                <InputNumber
+                  value={parseFloat(barCategoryGap)}
+                  formatter={value => `${value} %`}
+                  onChange={(value) => setBarCategoryGap(Number(value))}
+                  className={styles.barWidth}
+                  placeholder={'Ширина бара'}
+                />
+              </div>
+            )
+          }
+
+
           {!isStacked && (
-            <label>
-              Bar Gap (%):
-              <input
-                type="number"
+            <div className={styles.barWidth_wrapper}>
+              <label>Bar Gap</label>
+              <InputNumber
                 value={parseFloat(barGap)}
-                onChange={(e) => setBarGap(`${e.target.value}%`)}
+                formatter={value => `${value} %`}
+                onChange={(value) => setBarGap(`${value}%`)}
+                className={styles.barWidth}
+                placeholder={'Ширина бара'}
               />
-            </label>
-          )}
-        </div>
-        <div className={styles.buttons}>
-          <Button onClick={handleDownload}>Download as PPTX</Button>
-          <Button onClick={handleAddChartSlide}>Add Chart Snapshot to PPTX</Button>
-        </div>
-      </div>
-    );
+            </div>
+
+    )
+  }
+  </div>
+    <div className={styles.buttons}>
+      <Button onClick={handleDownload}>Скачать редактируемый pptx</Button>
+      <Button onClick={handleAddChartSlide}>Скачать скриншот pptx</Button>
+    </div>
+  </div>
+  )
+    ;
   };

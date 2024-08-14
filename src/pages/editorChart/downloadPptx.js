@@ -19,10 +19,11 @@ export const downloadPpt = (
   const pptx = new PptxGenJS();
   const slide = pptx.addSlide();
 
+
+
   const filteredColors = Object.fromEntries(Object.entries(lineColors).filter(([colorName, color]) => {
     return visibleSeries[colorName]
   }))
-
 
 
   // Подготовка данных для графика

@@ -125,7 +125,11 @@ export const EditorChart = () => {
 
     // Фильтруем серии, чтобы включать только видимые
     const filteredArray = Object.keys(series.seriesData).filter(series => visibleSeries[series]);
+    const filteredColor = filteredArray.map((item, index) => {
+      return lineColors[item]
+    })
     console.log(filteredArray)
+    // console.log(filteredArray)
     // Создаем опции для серий
     const seriesOptions = filteredArray.map((seriesName, i) => ({
       name: seriesName,
@@ -137,7 +141,7 @@ export const EditorChart = () => {
         rotate: rotate, // Угол поворота меток
       },
       itemStyle: {
-        color: currentChart.data.additionalFields.colorsForSingleItem ? currentChart.data.additionalFields.colorsForSingleItem[i] : lineColors[seriesName], // Цвет линии для каждой серии
+        color: filteredColor[i], // Цвет линии для каждой серии
       },
 
       data: series.seriesData[seriesName], // Данные для видимых серий

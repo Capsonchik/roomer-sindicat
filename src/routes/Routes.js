@@ -10,6 +10,8 @@ import {TestPageMainComponent} from "../components/testPageComponents/testPageMa
 import {TestPageReportList} from "../components/testPageComponents/testPageReportListComponent/TestPageReportList";
 import {SnapShot} from "../pages/snapshot/SnapShot";
 import {EditorChart} from "../pages/editorChart/EditorChart";
+import {Charts} from "../pages/charts/Charts";
+import {Chart} from "../pages/chart/Chart";
 
 export const router = createBrowserRouter([
   {
@@ -28,7 +30,20 @@ export const router = createBrowserRouter([
       { index: true, element: <TestPageMainComponent/> },
       { path: '/main/report', element: <TestPageReportComponent/> },
       { path: '/main/reportList', element: <TestPageReportList/> },
-      { path: '/main' + ROUTES_PATH.editorChart, element: <EditorChart/> },
+      {
+        path: '/main' + ROUTES_PATH.editorChart,
+        element: <Charts/>,
+        children: [
+          {
+            path: '/main' + ROUTES_PATH.editorChart + '/:id',
+            element: <EditorChart/>,
+          },
+          {
+            path: '/main' + ROUTES_PATH.editorChart,
+            element: <Chart/>,
+          }
+        ]
+      },
     ]
   },
   // {

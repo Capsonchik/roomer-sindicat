@@ -3,7 +3,7 @@ import PptxGenJS from "pptxgenjs";
 
 export const downloadPpt = (
   {
-    chartData,
+    series,
     visibleSeries,
     isStacked,
     chartType,
@@ -11,7 +11,8 @@ export const downloadPpt = (
     barCategoryGap,
     barGap,
     prepareDataForPptx,
-    getSumValues
+    getSumValues,
+    currentChart
   }
 ) => {
   const pptx = new PptxGenJS();
@@ -24,15 +25,27 @@ export const downloadPpt = (
 
 
   // Подготовка данных для графика
-  const dataForChart = prepareDataForPptx(chartData, visibleSeries);
-  const sumValues = getSumValues(chartData, visibleSeries, isStacked);
+  const dataForChart = prepareDataForPptx(series, visibleSeries);
+  const sumValues = getSumValues(series, visibleSeries, isStacked);
   const valAxisMaxVal = Math.ceil(sumValues * 1.1); // Увеличиваем максимальное значение на 10%
+
+  slide.addText(currentChart.title, {
+    x:1,
+    y:0.5,
+    align:'center'
+  })
+
+  slide.addText(currentChart.description, {
+    x:0.5,
+    y:1,
+    align:'left'
+  })
 
   // Добавляем график
   slide.addChart(chartType, dataForChart, {
-    x: 1,
+    x: 3,
     y: 1,
-    w: 8,
+    w: 7,
     h: 4,
     chartColors: Object.values(filteredColors), // Используем цвета для каждой серии
     title: "График",
@@ -41,7 +54,7 @@ export const downloadPpt = (
     catAxisTitle: "Месяцы",
     valAxisTitle: "Значения",
     showValue: true,
-    dataLabelColor: 'FFFFFF',
+    dataLabelColor: '#FFFFFF',
     valAxisMinVal: 0,
     valAxisMaxVal, // Используем вычисленное максимальное значение
     dataLabelPos: 'ctr',

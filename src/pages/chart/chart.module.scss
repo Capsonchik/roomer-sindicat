@@ -1,0 +1,28 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
+
+  .link {
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    overflow: hidden; /* Ensure content doesn't overflow during transform */
+    position: relative;
+
+    .title {
+      margin-bottom: 20px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s ease-in-out; /* Smooth transition effect */
+      transform-origin: center center; /* Scale from the center */
+    }
+
+    &:hover img {
+      transform: scale(1.10); /* Scale image by 5% */
+    }
+  }
+}

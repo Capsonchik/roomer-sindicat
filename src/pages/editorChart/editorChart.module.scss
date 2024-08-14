@@ -5,8 +5,17 @@
 
 .chartContainer {
   width: 100%;
+  max-width: 800px;
   height: 400px; // Adjust the height as needed
 
+}
+
+.layout{
+  display: flex;
+}
+
+.controls{
+  max-width: 400px;
 }
 .menu{
   display: flex;
@@ -14,7 +23,7 @@
   gap: 24px;
   flex-wrap: wrap;
   .select{
-    min-width: 100%;
+    max-width: 300px;
     &  div > span > span {
       display: flex;
     }

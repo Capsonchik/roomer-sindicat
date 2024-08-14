@@ -64,3 +64,24 @@ const createAxiosClientInstance = () => {
 
 export const axiosClientRequest = createAxiosClientInstance();
 
+
+
+
+export const GRAPH_API = 'http://192.168.9.239:8808'
+
+const createAxiosGraphnstance = () => {
+  const instance = axios.create({
+    baseURL: GRAPH_API,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': 'ru',
+      "ngrok-skip-browser-warning": 'true',
+    },
+  });
+
+  return instance;
+};
+
+export const axiosGraphRequest = createAxiosGraphnstance();
+

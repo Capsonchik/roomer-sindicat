@@ -50,7 +50,7 @@ export const chartOption = (data) => ({
     // data: ['Forest', 'Steppe', 'Desert', 'Wetland']
   },
   toolbox: {
-    show: true,
+    show: false,
     orient: 'vertical',
     left: 'right',
     top: 'center',
@@ -82,9 +82,9 @@ export const chartOption = (data) => ({
       focus: 'series'
     },
     data: data.seriesData[key],
-    itemStyle: {
-      color: colors[index] // Цвет для каждой серии
-    },
+    // itemStyle: {
+    //   color: colors[index] // Цвет для каждой серии
+    // },
     barCategoryGap: '30%', // Задает промежуток между столбцами
     barGap: '0%' // Задает промежуток между группами столбцов
   }))

@@ -67,7 +67,7 @@ export const axiosClientRequest = createAxiosClientInstance();
 
 
 
-export const GRAPH_API = 'http://192.168.9.239:8808'
+export const GRAPH_API = 'https://27ac-212-45-6-6.ngrok-free.app'
 
 const createAxiosGraphnstance = () => {
   const instance = axios.create({

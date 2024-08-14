@@ -13,6 +13,7 @@ import {fetchChartById} from "../../store/chartSlice/chart.actions";
 import {useNavigate, useParams} from "react-router-dom";
 import {selectCurrentChartLoading, selectCurrentGraph} from "../../store/chartSlice/chart.selectors";
 import {ROUTES_PATH} from "../../routes/RoutesPath";
+import {handleRotate} from "./handleRotate";
 
 const initialColors = {
   Forest: '#5470c6',
@@ -47,7 +48,6 @@ export const EditorChart = () => {
     }
   }, [params]);
 
-  console.log(series)
   useEffect(() => {
     if (currentChart) {
       setChartType(currentChart.data.config.chartType)
@@ -62,7 +62,6 @@ export const EditorChart = () => {
       }
 
 
-      const colors = Object.values(initialColors)
       const newColors = Object.keys(currentChart.data.axes.seriesData).reduce((acc, item, index) => {
         acc[item] = currentChart.data.additionalFields.colorsForSingleItem[index];
         return acc
@@ -139,6 +138,7 @@ export const EditorChart = () => {
       legend: {
         show: false, // Скрываем встроенную легенду
       },
+
       series: seriesOptions,
       xAxis: isXAxis ? {type: 'category', data: series.xAxisData} : {type: 'value'}, // Toggle axis
       yAxis: isXAxis ? {type: 'value'} : {type: 'category', data: series.xAxisData}, // Toggle axis
@@ -224,14 +224,20 @@ export const EditorChart = () => {
               checkedChildren="Stack"
               unCheckedChildren="UnStack"
               checked={isStacked}
-              onChange={() => setIsStacked(!isStacked)}
+              onChange={() => {
+                handleRotate(isXAxis,isStacked,setRotate)
+                setIsStacked(!isStacked)
+              }}
             />
             <Toggle
               size="lg"
               checkedChildren="X Axis"
               unCheckedChildren="Y Axis"
               checked={isXAxis}
-              onChange={() => setIsXAxis(!isXAxis)}
+              onChange={() => {
+                handleRotate(isXAxis,isStacked,setRotate)
+                setIsXAxis(prev => !prev)
+              }}
               className={styles.axisToggle}
             />
             <SelectPicker

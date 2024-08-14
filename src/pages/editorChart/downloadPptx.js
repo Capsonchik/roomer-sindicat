@@ -12,7 +12,8 @@ export const downloadPpt = (
     barGap,
     prepareDataForPptx,
     getSumValues,
-    currentChart
+    currentChart,
+    isXAxis
   }
 ) => {
   const pptx = new PptxGenJS();
@@ -41,6 +42,11 @@ export const downloadPpt = (
     align:'left'
   })
 
+
+  // Определяем направление баров в зависимости от isXAxis
+  const barDirection = isXAxis ? undefined : 'bar';
+
+
   // Добавляем график
   slide.addChart(chartType, dataForChart, {
     x: 3,
@@ -51,8 +57,8 @@ export const downloadPpt = (
     title: "График",
     showLegend: true,
     legendPos: 'r',
-    catAxisTitle: "Месяцы",
-    valAxisTitle: "Значения",
+    // catAxisOrientation: catAxisOrientation,
+    // valAxisOrientation: valAxisOrientation,
     showValue: true,
     dataLabelColor: '#FFFFFF',
     valAxisMinVal: 0,
@@ -61,7 +67,10 @@ export const downloadPpt = (
     lineSize: 2,
     barGrouping: isStacked ? 'stacked' : 'standard',
     barGapWidthPct: Math.min(500, Math.max(0, parseFloat(barCategoryGap) * 5)),  // Преобразование значения barCategoryGap в barGapWidthPct
-    barOverlapPct: -parseFloat(barGap) // Преобразование значения barGap в barOverlapPct
+    barOverlapPct: -parseFloat(barGap) ,// Преобразование значения barGap в barOverlapPct
+
+    // Используем условное значение для направления баров
+    barDir: barDirection
   });
 
   // Сохранение презентации

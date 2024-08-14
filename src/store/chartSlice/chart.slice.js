@@ -5,15 +5,16 @@ const initialState = {
   graphs: [],
   currentGraph: null,
   currentChartLoading: false,
+  axes: null
 }
 
 export const chartSlice = createSlice({
   name: 'chartSlice',
   initialState,
   reducers: {
-    // setCurrentUser: (state, action) => {
-    //   state.currentUser = action.payload;
-    // },
+    setAxes: (state, action) => {
+      state.axes = action.payload;
+    },
 
   },
   extraReducers: builder => {
@@ -30,6 +31,6 @@ export const chartSlice = createSlice({
   }
 })
 
-export const {} = chartSlice.actions;
+export const {setAxes} = chartSlice.actions;
 
 export default chartSlice.reducer;

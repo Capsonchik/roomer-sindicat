@@ -50,7 +50,7 @@ export const chartOption = (data) => ({
     // data: ['Forest', 'Steppe', 'Desert', 'Wetland']
   },
   toolbox: {
-    show: true,
+    show: false,
     orient: 'vertical',
     left: 'right',
     top: 'center',

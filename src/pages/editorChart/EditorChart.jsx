@@ -3,7 +3,7 @@ import * as echarts from 'echarts';
 import styles from './editorChart.module.scss';
 import {chartData, labelArray} from './stackBarMock';
 import {chartOption, labelOption} from './chartConfig';
-import {Button, CheckPicker, InputNumber, Loader, SelectPicker, Toggle} from 'rsuite';
+import {Button, ButtonToolbar, CheckPicker, InputNumber, Loader, SelectPicker, Toggle} from 'rsuite';
 import {prepareDataForPptx} from './prepareDataForPptx';
 import {getSumValues} from './getSumValues';
 import {downloadPpt} from './downloadPptx';
@@ -11,9 +11,10 @@ import {downloadSnapshotPptx} from './downloadSnapshotPptx';
 import {useDispatch, useSelector} from "react-redux";
 import {fetchChartById} from "../../store/chartSlice/chart.actions";
 import {useNavigate, useParams} from "react-router-dom";
-import {selectCurrentChartLoading, selectCurrentGraph} from "../../store/chartSlice/chart.selectors";
+import {selectAxes, selectCurrentChartLoading, selectCurrentGraph} from "../../store/chartSlice/chart.selectors";
 import {ROUTES_PATH} from "../../routes/RoutesPath";
 import {handleRotate} from "./handleRotate";
+import {ChartDataTable} from "../../components/chartPage/chartDataTable/ChartDataTable";
 
 const initialColors = {
   Forest: '#5470c6',
@@ -23,8 +24,14 @@ const initialColors = {
 };
 
 export const EditorChart = () => {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  // const handleClose = () => setOpen(false);
+
+
   const [series, setSeries] = useState(chartData)
   const currentChart = useSelector(selectCurrentGraph)
+  const storeAxes = useSelector(selectAxes)
   const currentChartLoading = useSelector(selectCurrentChartLoading)
   const dispatch = useDispatch();
   const navigate = useNavigate()
@@ -47,6 +54,12 @@ export const EditorChart = () => {
       dispatch(fetchChartById(params.id))
     }
   }, [params]);
+
+  useEffect(() => {
+    if (storeAxes) {
+      setSeries(storeAxes)
+    }
+  }, [storeAxes]);
 
   useEffect(() => {
     if (currentChart) {
@@ -164,7 +177,8 @@ export const EditorChart = () => {
     barGap,
     barCategoryGap,
     isXAxis,
-    currentChart
+    currentChart,
+    series
   ]);
 
   const handleAddChartSlide = () => {
@@ -184,7 +198,8 @@ export const EditorChart = () => {
       barGap, // Зазор между столбиками
       prepareDataForPptx, // Функция для подготовки данных для PPTX
       getSumValues, // Функция для получения сумм значений
-      currentChart
+      currentChart,
+      isXAxis
     });
   };
 
@@ -212,6 +227,9 @@ export const EditorChart = () => {
               placeholder="Select series to display"
               className={styles.select}
             />
+            <ButtonToolbar>
+              <Button onClick={handleOpen}> Данные графика</Button>
+            </ButtonToolbar>
             <SelectPicker
               data={['bar', 'line'].map((item) => ({label: item, value: item}))}
               searchable={false}
@@ -297,6 +315,8 @@ export const EditorChart = () => {
             <Button onClick={handleAddChartSlide}>Скачать скриншот pptx</Button>
           </div>
         </div>
+
+        {currentChart && <ChartDataTable open={open} handleClose={() => setOpen(false)} axes={series}/>}
 
       </div>
 

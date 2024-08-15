@@ -45,10 +45,11 @@ export const chartOption = (data) => ({
       type: 'shadow'
     }
   },
-  legend: {
-    show:false
-    // data: ['Forest', 'Steppe', 'Desert', 'Wetland']
-  },
+
+  // legend: {
+  //   show:true,
+  //   data: ['Forest', 'Steppe', 'Desert', 'Wetland']
+  // },
   toolbox: {
     show: false,
     orient: 'vertical',

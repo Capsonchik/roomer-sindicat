@@ -35,7 +35,7 @@ module.exports = function(app) {
   app.use(
     '/proxy_cors_main',
     createProxyMiddleware({
-      target: 'https://21ce-212-45-6-6.ngrok-free.app',
+      target: 'https://7aa7-212-45-6-6.ngrok-free.app',
       changeOrigin: true,
       pathRewrite: {
         '^/proxy_cors_main': '', // Убираем /proxy_example из пути

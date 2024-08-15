@@ -3,13 +3,13 @@ import * as echarts from 'echarts';
 import styles from './editorChart.module.scss';
 import {chartData, labelArray} from './stackBarMock';
 import {chartOption, labelOption} from './chartConfig';
-import {Button, ButtonToolbar, CheckPicker, InputNumber, Loader, SelectPicker, Toggle} from 'rsuite';
+import {Button, ButtonToolbar, CheckPicker, InputNumber, Loader, Radio, RadioGroup, SelectPicker, Toggle} from 'rsuite';
 import {prepareDataForPptx} from './prepareDataForPptx';
 import {getSumValues} from './getSumValues';
 import {downloadPpt} from './downloadPptx';
 import {downloadSnapshotPptx} from './downloadSnapshotPptx';
 import {useDispatch, useSelector} from "react-redux";
-import {fetchChartById} from "../../store/chartSlice/chart.actions";
+import {fetchChartById, patchChartById} from "../../store/chartSlice/chart.actions";
 import {useNavigate, useParams} from "react-router-dom";
 import {selectAxes, selectCurrentChartLoading, selectCurrentGraph} from "../../store/chartSlice/chart.selectors";
 import {ROUTES_PATH} from "../../routes/RoutesPath";
@@ -48,6 +48,8 @@ export const EditorChart = () => {
   const [yAxisMax, setYAxisMax] = useState(0); // Состояние для максимального значения оси Y
   const [barCategoryGap, setBarCategoryGap] = useState('30%'); // New state for bar category gap
   const [barGap, setBarGap] = useState('0%'); // New state for bar gap
+  const [formatLabel, setFormatLabel] = useState('data')
+  const [sizeLabel, setSizeLabel] = useState(16)
 
   useEffect(() => {
     if (params.id) {
@@ -128,7 +130,6 @@ export const EditorChart = () => {
     const filteredColor = filteredArray.map((item, index) => {
       return lineColors[item]
     })
-    console.log(filteredArray)
     // console.log(filteredArray)
     // Создаем опции для серий
     const seriesOptions = filteredArray.map((seriesName, i) => ({
@@ -138,7 +139,14 @@ export const EditorChart = () => {
       label: {
         ...labelOption,
         position: labelPosition,
-        rotate: rotate, // Угол поворота меток
+        rotate: rotate,
+        fontSize: sizeLabel,
+        formatter: (value) => {
+          if (formatLabel === 'all') {
+            return `${value.data} ${value.seriesName}`
+          }
+          return value[formatLabel]
+        }
       },
       itemStyle: {
         color: filteredColor[i], // Цвет линии для каждой серии
@@ -150,10 +158,13 @@ export const EditorChart = () => {
       barGap: barGap, // Используем состояние для зазора между столбиками
     }));
 
+
     const option = {
       ...chartOption(chartData),
       legend: {
-        show: false, // Скрываем встроенную легенду
+        show: true,
+        bottom: 0,
+        selectedMode: false,
       },
 
       series: seriesOptions,
@@ -182,7 +193,9 @@ export const EditorChart = () => {
     barCategoryGap,
     isXAxis,
     currentChart,
-    series
+    series,
+    formatLabel,
+    sizeLabel
   ]);
 
   const handleAddChartSlide = () => {
@@ -207,6 +220,14 @@ export const EditorChart = () => {
     });
   };
 
+  const handlePatchGraph = () => {
+    const requestObj = {
+      id: currentChart.id,
+      title: currentChart.title +  "test"
+    }
+    dispatch(patchChartById(requestObj))
+  }
+
 
   return (
     <div className={styles.wrapper}>
@@ -217,107 +238,152 @@ export const EditorChart = () => {
         <div id="main" className={styles.chartContainer}></div>
         <div className={styles.controls}>
           <div className={styles.menu}>
-            <CheckPicker
-              data={Object.keys(series.seriesData).map(name => ({value: name, label: name}))}
-              value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])} // Initially selected series
-              onChange={(value) => {
-                const newVisibleSeries = Object.fromEntries(
-                  Object.keys(series.seriesData).map((name) => [name, value.includes(name)])
-                );
-                setVisibleSeries(newVisibleSeries);
-              }}
-              searchable={false}
-              appearance="default"
-              placeholder="Select series to display"
-              className={styles.select}
-            />
-            <ButtonToolbar>
-              <Button onClick={handleOpen}> Данные графика</Button>
-            </ButtonToolbar>
-            <SelectPicker
-              data={['bar', 'line'].map((item) => ({label: item, value: item}))}
-              searchable={false}
-              placeholder="Выберите тип графика"
-              onChange={(value) => setChartType(value)}
-              className={styles.type}
-            />
-            <Toggle
-              size="lg"
-              checkedChildren="Stack"
-              unCheckedChildren="UnStack"
-              checked={isStacked}
-              onChange={() => {
-                handleRotate(isXAxis,isStacked,setRotate)
-                setIsStacked(!isStacked)
-              }}
-            />
-            <Toggle
-              size="lg"
-              checkedChildren="X Axis"
-              unCheckedChildren="Y Axis"
-              checked={isXAxis}
-              onChange={() => {
-                handleRotate(isXAxis,isStacked,setRotate)
-                setIsXAxis(prev => !prev)
-              }}
-              className={styles.axisToggle}
-            />
-            <SelectPicker
-              data={labelArray.map((item) => ({label: item, value: item}))}
-              searchable={false}
-              placeholder="Положение label"
-              onChange={(value) => setLabelPosition(value)}
-              className={styles.type}
-            />
-            <div className={styles.rotate_wrapper}>
-              <label>Угол подписи</label>
-              <InputNumber
-                value={rotate}
-                defaultValue={0}
-                formatter={value => `${value} °`}
-                onChange={(value) => setRotate(Number(value))}
-                className={styles.rotate}
-                placeholder={'Угол наклона'}
-              />
+            <div className={styles.block}>
+              <h6>Основное</h6>
+              <div className={styles.line}>
+                <CheckPicker
+                  data={Object.keys(series.seriesData).map(name => ({value: name, label: name}))}
+                  value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])} // Initially selected series
+                  onChange={(value) => {
+                    const newVisibleSeries = Object.fromEntries(
+                      Object.keys(series.seriesData).map((name) => [name, value.includes(name)])
+                    );
+                    setVisibleSeries(newVisibleSeries);
+                  }}
+                  searchable={false}
+                  appearance="default"
+                  placeholder="Select series to display"
+                  className={styles.select}
+                />
+                <ButtonToolbar>
+                  <Button onClick={handleOpen}> Данные графика</Button>
+                </ButtonToolbar>
+              </div>
+              <div className={styles.line}>
+                <SelectPicker
+                  data={['bar', 'line'].map((item) => ({label: item, value: item}))}
+                  searchable={false}
+                  placeholder="Выберите тип графика"
+                  onChange={(value) => setChartType(value)}
+                  className={styles.type}
+                />
+
+                <Toggle
+                  size="lg"
+                  checkedChildren="X Axis"
+                  unCheckedChildren="Y Axis"
+                  checked={isXAxis}
+                  onChange={() => {
+                    handleRotate(isXAxis, isStacked, setRotate)
+                    setIsXAxis(prev => !prev)
+                  }}
+                  className={styles.axisToggle}
+                />
+              </div>
+
+
+            </div>
+
+            <div className={styles.block}>
+              <h6>Label</h6>
+              <div className={styles.line}>
+                <SelectPicker
+                  data={labelArray.map((item) => ({label: item, value: item}))}
+                  searchable={false}
+                  placeholder="Положение label"
+                  onChange={(value) => setLabelPosition(value)}
+                  className={styles.type}
+                />
+                <div className={styles.rotate_wrapper}>
+                  <label>Угол подписи</label>
+                  <InputNumber
+                    value={rotate}
+                    defaultValue={0}
+                    formatter={value => `${value} °`}
+                    onChange={(value) => setRotate(Number(value))}
+                    className={styles.rotate}
+                    placeholder={'Угол наклона'}
+                  />
+                </div>
+              </div>
+              <div className={styles.line}>
+                <RadioGroup name="radio-group-inline" inline defaultValue="data" onChange={(value) => {
+                  setFormatLabel(value)
+                }}>
+                  <Radio value="data">Значения</Radio>
+                  <Radio value="seriesName">Название</Radio>
+                  <Radio value="all">Значение и название</Radio>
+
+                </RadioGroup>
+                <InputNumber
+                  formatter={value => `${value}px`}
+                  value={sizeLabel}
+                  placeholder={'Размер'}
+                  onChange={(newValue) => {
+                    console.log(newValue)
+                    setSizeLabel(parseInt(newValue))
+                  }}
+                  style={{width: '100px'}}
+                />
+              </div>
             </div>
 
             {
               chartType === 'bar' && (
-                <div className={styles.barWidth_wrapper}>
-                  <label>Ширина бара</label>
-                  <InputNumber
-                    value={parseFloat(barCategoryGap)}
-                    formatter={value => `${value} %`}
-                    onChange={(value) => setBarCategoryGap(Number(value))}
-                    className={styles.barWidth}
-                    placeholder={'Ширина бара'}
-                  />
+                <div className={styles.block}>
+                  <h6>Bar</h6>
+                  <div className={styles.line}>
+                    <Toggle
+                      size="lg"
+                      checkedChildren="Stack"
+                      unCheckedChildren="UnStack"
+                      checked={isStacked}
+                      onChange={() => {
+                        handleRotate(isXAxis, isStacked, setRotate)
+                        setIsStacked(!isStacked)
+                      }}
+                    />
+                    <div className={styles.barWidth_wrapper}>
+                      <label>Ширина бара</label>
+                      <InputNumber
+                        value={parseFloat(barCategoryGap)}
+                        formatter={value => `${value} %`}
+                        onChange={(value) => setBarCategoryGap(Number(value))}
+                        className={styles.barWidth}
+                        placeholder={'Ширина бара'}
+                      />
+                    </div>
+                    {!isStacked && (
+                      <div className={styles.barWidth_wrapper}>
+                        <label>Bar Gap</label>
+                        <InputNumber
+                          value={parseFloat(barGap)}
+                          formatter={value => `${value} %`}
+                          onChange={(value) => setBarGap(`${value}%`)}
+                          className={styles.barWidth}
+                          placeholder={'Ширина бара'}
+                        />
+                      </div>
+
+                    )
+
+                    }
+                  </div>
                 </div>
               )
             }
 
 
-            {!isStacked && (
-              <div className={styles.barWidth_wrapper}>
-                <label>Bar Gap</label>
-                <InputNumber
-                  value={parseFloat(barGap)}
-                  formatter={value => `${value} %`}
-                  onChange={(value) => setBarGap(`${value}%`)}
-                  className={styles.barWidth}
-                  placeholder={'Ширина бара'}
-                />
-              </div>
 
-            )
 
-            }
+
 
           </div>
           <div className={styles.buttons}>
             <Button onClick={() => handleDownload(series)}>Скачать редактируемый pptx</Button>
             <Button onClick={handleAddChartSlide}>Скачать скриншот pptx</Button>
           </div>
+          <Button onClick={handlePatchGraph}>Сохранить</Button>
         </div>
 
         {currentChart && <ChartDataTable open={open} handleClose={() => setOpen(false)} axes={series}/>}

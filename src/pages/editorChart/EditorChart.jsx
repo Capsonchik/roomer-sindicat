@@ -15,6 +15,8 @@ import {selectAxes, selectCurrentChartLoading, selectCurrentGraph} from "../../s
 import {ROUTES_PATH} from "../../routes/RoutesPath";
 import {handleRotate} from "./handleRotate";
 import {ChartDataTable} from "../../components/chartPage/chartDataTable/ChartDataTable";
+import {ChartDrawer} from "../../components/chartPage/chartDrawer/ChartDrawer";
+import EditIcon from '@rsuite/icons/Edit';
 
 const initialColors = {
   Forest: '#5470c6',
@@ -50,6 +52,9 @@ export const EditorChart = () => {
   const [barGap, setBarGap] = useState('0%'); // New state for bar gap
   const [formatLabel, setFormatLabel] = useState('data')
   const [sizeLabel, setSizeLabel] = useState(16)
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [openDrawer, setOpenDrawer] = useState(false)
 
   useEffect(() => {
     if (params.id) {
@@ -63,11 +68,22 @@ export const EditorChart = () => {
     }
   }, [storeAxes]);
 
+
   useEffect(() => {
     if (currentChart) {
+      setTitle(currentChart.title)
+      setDescription(currentChart.description)
       setChartType(currentChart.data.config.chartType)
       setSeries(currentChart.data.axes)
-      setVisibleSeries(Object.fromEntries(Object.keys(currentChart.data.axes.seriesData).map((name) => [name, true])))
+      if (currentChart.data.additionalFields.visibleSeries) {
+        setVisibleSeries(currentChart.data.additionalFields.visibleSeries)
+      } else {
+        setVisibleSeries(Object.fromEntries(Object.keys(currentChart.data.axes.seriesData).map((name) => [name, true])))
+      }
+
+      if(typeof currentChart.data.additionalFields.isXAxis !== 'undefined') {
+        setIsXAxis(currentChart.data.additionalFields.isXAxis)
+      }
 
       if (currentChart.data.additionalFields.isStacked) {
         setIsStacked(true)
@@ -170,9 +186,7 @@ export const EditorChart = () => {
       series: seriesOptions,
       xAxis: isXAxis ? {type: 'category', data: series.xAxisData} : {type: 'value'}, // Toggle axis
       yAxis: isXAxis ? {type: 'value'} : {type: 'category', data: series.xAxisData}, // Toggle axis
-      animation: true, // Enable animation
-      animationDuration: 1000, // Animation duration (milliseconds)
-      animationEasing: 'cubicOut', // Animation easing effect
+
     };
 
     chartInstance.setOption(option, {
@@ -223,7 +237,21 @@ export const EditorChart = () => {
   const handlePatchGraph = () => {
     const requestObj = {
       id: currentChart.id,
-      title: currentChart.title +  "test"
+      title,
+      description,
+      data: {
+        ...currentChart.data,
+        axes: storeAxes ? storeAxes : currentChart.data.axes,
+        config:{
+          ...currentChart.data.config,
+          chartType
+        },
+        additionalFields: {
+          ...currentChart.data.additionalFields,
+          visibleSeries,
+          isXAxis
+        }
+      }
     }
     dispatch(patchChartById(requestObj))
   }
@@ -232,8 +260,15 @@ export const EditorChart = () => {
   return (
     <div className={styles.wrapper}>
       <Button onClick={() => navigate('/main' + ROUTES_PATH.editorChart)}>Назад</Button>
-      <h4>{currentChart?.title}</h4>
-      <p>{currentChart?.description}</p>
+      <div className={styles.title_wrapper}>
+        <h4>{title}</h4>
+        <Button onClick={() => setOpenDrawer(true)}>
+          <EditIcon/>
+        </Button>
+      </div>
+      <p>{description}</p>
+
+
       <div className={styles.layout}>
         <div id="main" className={styles.chartContainer}></div>
         <div className={styles.controls}>
@@ -262,6 +297,7 @@ export const EditorChart = () => {
               <div className={styles.line}>
                 <SelectPicker
                   data={['bar', 'line'].map((item) => ({label: item, value: item}))}
+                  value={chartType}
                   searchable={false}
                   placeholder="Выберите тип графика"
                   onChange={(value) => setChartType(value)}
@@ -374,10 +410,6 @@ export const EditorChart = () => {
             }
 
 
-
-
-
-
           </div>
           <div className={styles.buttons}>
             <Button onClick={() => handleDownload(series)}>Скачать редактируемый pptx</Button>
@@ -387,7 +419,14 @@ export const EditorChart = () => {
         </div>
 
         {currentChart && <ChartDataTable open={open} handleClose={() => setOpen(false)} axes={series}/>}
-
+        <ChartDrawer
+          open={openDrawer}
+          onClose={() => setOpenDrawer(false)}
+          title={title}
+          setTitle={setTitle}
+          description={description}
+          setDescription={setDescription}
+        />
       </div>
 
     </div>

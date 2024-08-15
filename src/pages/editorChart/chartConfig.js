@@ -50,20 +50,7 @@ export const chartOption = (data) => ({
   //   show:true,
   //   data: ['Forest', 'Steppe', 'Desert', 'Wetland']
   // },
-  toolbox: {
-    show: false,
-    orient: 'vertical',
-    left: 'right',
-    top: 'center',
 
-    feature: {
-      mark: { show: true },
-      dataView: { show: true, readOnly: false },
-      magicType: { show: true, type: ['line', 'bar', 'stack'] },
-      restore: { show: true },
-      saveAsImage: { show: true }
-    }
-  },
   xAxis: [
     {
       type: 'category',

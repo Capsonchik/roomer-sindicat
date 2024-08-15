@@ -2,6 +2,11 @@
 .wrapper{
   padding: 20px;
 }
+.title_wrapper{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 
 .chartContainer {
   width: 100%;

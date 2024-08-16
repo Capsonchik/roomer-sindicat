@@ -3,15 +3,31 @@ import * as echarts from 'echarts';
 import styles from './editorChart.module.scss';
 import {chartData, labelArray} from './stackBarMock';
 import {chartOption, labelOption} from './chartConfig';
-import {Button, ButtonToolbar, CheckPicker, InputNumber, Loader, Radio, RadioGroup, SelectPicker, Toggle} from 'rsuite';
+import {
+  Button,
+  ButtonToolbar,
+  CheckPicker,
+  InputNumber,
+  Loader, Message,
+  Radio,
+  RadioGroup,
+  SelectPicker,
+  Toggle,
+  useToaster
+} from 'rsuite';
 import {prepareDataForPptx} from './prepareDataForPptx';
 import {getSumValues} from './getSumValues';
 import {downloadPpt} from './downloadPptx';
 import {downloadSnapshotPptx} from './downloadSnapshotPptx';
 import {useDispatch, useSelector} from "react-redux";
-import {fetchChartById, patchChartById} from "../../store/chartSlice/chart.actions";
+import {fetchAllCharts, fetchChartById, patchChartById} from "../../store/chartSlice/chart.actions";
 import {useNavigate, useParams} from "react-router-dom";
-import {selectAxes, selectCurrentChartLoading, selectCurrentGraph} from "../../store/chartSlice/chart.selectors";
+import {
+  selectAxes,
+  selectCurrentChartLoading,
+  selectCurrentGraph,
+  selectSaveChartLoading
+} from "../../store/chartSlice/chart.selectors";
 import {ROUTES_PATH} from "../../routes/RoutesPath";
 import {handleRotate} from "./handleRotate";
 import {ChartDataTable} from "../../components/chartPage/chartDataTable/ChartDataTable";
@@ -35,6 +51,7 @@ export const EditorChart = () => {
   const currentChart = useSelector(selectCurrentGraph)
   const storeAxes = useSelector(selectAxes)
   const currentChartLoading = useSelector(selectCurrentChartLoading)
+  const saveChartLoading = useSelector(selectSaveChartLoading)
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const params = useParams();
@@ -55,6 +72,7 @@ export const EditorChart = () => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [openDrawer, setOpenDrawer] = useState(false)
+  const toaster = useToaster();
 
   useEffect(() => {
     if (params.id) {
@@ -234,7 +252,23 @@ export const EditorChart = () => {
     });
   };
 
+  const getChartBase64 = () => {
+    if (chartInstance) {
+      const dataURL = chartInstance.getDataURL({
+        type: 'png', // можно использовать 'png', 'jpeg'
+        pixelRatio: 5, // коэффициент пикселей для более высокого качества изображения
+        backgroundColor: '#fff' // цвет фона для изображения
+      });
+      return dataURL; // Возвращает строку в формате base64
+    }
+    return null;
+  };
+
+
+
   const handlePatchGraph = () => {
+    const base64Image = getChartBase64(); // Получаем снимок графика
+
     const requestObj = {
       id: currentChart.id,
       title,
@@ -242,7 +276,7 @@ export const EditorChart = () => {
       data: {
         ...currentChart.data,
         axes: storeAxes ? storeAxes : currentChart.data.axes,
-        config:{
+        config: {
           ...currentChart.data.config,
           chartType
         },
@@ -250,11 +284,16 @@ export const EditorChart = () => {
           ...currentChart.data.additionalFields,
           visibleSeries,
           isXAxis
-        }
+        },
+        preview: base64Image // Вставляем base64 строку в поле preview
       }
-    }
-    dispatch(patchChartById(requestObj))
-  }
+    };
+
+    dispatch(patchChartById(requestObj)).then((res) => {
+      dispatch(fetchAllCharts())
+      toaster.push(<Message>Сохранено</Message>);
+    });
+  };
 
 
   return (
@@ -415,7 +454,7 @@ export const EditorChart = () => {
             <Button onClick={() => handleDownload(series)}>Скачать редактируемый pptx</Button>
             <Button onClick={handleAddChartSlide}>Скачать скриншот pptx</Button>
           </div>
-          <Button onClick={handlePatchGraph}>Сохранить</Button>
+          <Button onClick={handlePatchGraph} loading={saveChartLoading} disabled={saveChartLoading}>Сохранить</Button>
         </div>
 
         {currentChart && <ChartDataTable open={open} handleClose={() => setOpen(false)} axes={series}/>}

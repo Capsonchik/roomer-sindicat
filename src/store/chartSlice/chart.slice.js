@@ -1,11 +1,12 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchAllCharts, fetchChartById} from "./chart.actions";
+import {fetchAllCharts, fetchChartById, patchChartById} from "./chart.actions";
 
 const initialState = {
   graphs: [],
   currentGraph: null,
   currentChartLoading: false,
-  axes: null
+  axes: null,
+  saveChartLoading: false,
 }
 
 export const chartSlice = createSlice({
@@ -26,6 +27,18 @@ export const chartSlice = createSlice({
       .addCase(fetchChartById.fulfilled, (state, action) => {
         state.currentGraph = action.payload;
         state.currentChartLoading = true
+      })
+      .addCase(patchChartById.fulfilled, (state, action) => {
+        state.saveChartLoading = false
+        // state.graphs = state.graphs.map(graph => {
+        //   if (graph.id === action.payload.id) {
+        //     return action.payload;
+        //   }
+        //   return graph
+        // })
+      })
+      .addCase(patchChartById.pending, (state, action) => {
+        state.saveChartLoading = true
       })
 
   }

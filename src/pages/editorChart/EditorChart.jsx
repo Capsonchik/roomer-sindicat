@@ -283,7 +283,8 @@ export const EditorChart = () => {
         additionalFields: {
           ...currentChart.data.additionalFields,
           visibleSeries,
-          isXAxis
+          isXAxis,
+          colorsForSingleItem: Object.values(lineColors)
         },
         preview: base64Image // Вставляем base64 строку в поле preview
       }
@@ -295,15 +296,23 @@ export const EditorChart = () => {
     });
   };
 
+  const handleColorChange = (seriesName, color) => {
+    setLineColors((prevColors) => ({
+      ...prevColors,
+      [seriesName]: color,
+    }));
+  };
+
+
 
   return (
     <div className={styles.wrapper}>
       <Button onClick={() => navigate('/main' + ROUTES_PATH.editorChart)}>Назад</Button>
       <div className={styles.title_wrapper}>
         <h4>{title}</h4>
-        <Button onClick={() => setOpenDrawer(true)}>
+        {title && <Button onClick={() => setOpenDrawer(true)}>
           <EditIcon/>
-        </Button>
+        </Button>}
       </div>
       <p>{description}</p>
 
@@ -328,6 +337,17 @@ export const EditorChart = () => {
                   appearance="default"
                   placeholder="Select series to display"
                   className={styles.select}
+                  renderMenuItem={(label, item) => (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <input
+                        type="color"
+                        value={lineColors[item.value]}
+                        onChange={(e) => handleColorChange(item.value, e.target.value)}
+                        style={{ marginRight: 8 }}
+                      />
+                      {label}
+                    </div>
+                  )}
                 />
                 <ButtonToolbar>
                   <Button onClick={handleOpen}> Данные графика</Button>

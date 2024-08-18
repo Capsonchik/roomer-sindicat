@@ -1,18 +1,4 @@
-export const posList = [
-  'left',
-  'right',
-  'top',
-  'bottom',
-  'inside',
-  'insideTop',
-  'insideLeft',
-  'insideRight',
-  'insideBottom',
-  'insideTopLeft',
-  'insideTopRight',
-  'insideBottomLeft',
-  'insideBottomRight'
-];
+
 
 export const defaultConfig = {
   rotate: 90,

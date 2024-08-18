@@ -11,17 +11,18 @@ export const chartData = {
 };
 
 export const labelArray = [
-  'left',
-  'right',
-  'top',
-  'bottom',
-  'inside',
-  'insideTop',
-  'insideLeft',
-  'insideRight',
-  'insideBottom',
-  'insideTopLeft',
-  'insideTopRight',
   'insideBottomLeft',
-  'insideBottomRight',
-]
+  'insideTopLeft',
+  'inside',    // В центре
+  'top',       // Сверху
+
+];
+
+// Преобразуем позицию меток в формат, понятный PptxGenJS
+export const dataLabelPosMap = {
+  insideBottomLeft: 'inBase',         // Внизу
+  insideTopLeft: 'inEnd',           // Сверху
+  inside: 'ctr',       // В центре
+  top: 'outEnd',// Снаружи, у вершины
+
+};

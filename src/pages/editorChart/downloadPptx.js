@@ -1,5 +1,6 @@
 // Чистая функция для скачивания презентации
 import PptxGenJS from "pptxgenjs";
+import {dataLabelPosMap} from "./stackBarMock";
 
 export const downloadPpt = (
   {
@@ -13,7 +14,9 @@ export const downloadPpt = (
     prepareDataForPptx,
     getSumValues,
     currentChart,
-    isXAxis
+    isXAxis,
+    labelPosition,
+    rotate
   }
 ) => {
   const pptx = new PptxGenJS();
@@ -25,6 +28,7 @@ export const downloadPpt = (
     return visibleSeries[colorName]
   }))
 
+  console.log(filteredColors)
 
   // Подготовка данных для графика
   const dataForChart = prepareDataForPptx(series, visibleSeries);
@@ -47,6 +51,8 @@ export const downloadPpt = (
   // Определяем направление баров в зависимости от isXAxis
   const barDirection = isXAxis ? undefined : 'bar';
 
+  const pptxLabelPosition = dataLabelPosMap[labelPosition] || 'bestFit'; // Используем 'ctr' по умолчанию
+  console.log(rotate)
 
   // Добавляем график
   slide.addChart(chartType, dataForChart, {
@@ -54,24 +60,29 @@ export const downloadPpt = (
     y: 1,
     w: 7,
     h: 4,
-    chartColors: Object.values(filteredColors), // Используем цвета для каждой серии
+    // chartColors: ['#ccc118', '#ffc122', '#122fff', '#122fff'], // Используем цвета для каждой серии
+    chartColors: Object.values(filteredColors), /// Используем цвета для каждой серии
     title: "График",
     showLegend: true,
     legendPos: 'r',
     // catAxisOrientation: catAxisOrientation,
     // valAxisOrientation: valAxisOrientation,
     showValue: true,
-    dataLabelColor: '#FFFFFF',
+    // dataLabelColor: '#FFFFFF',
     valAxisMinVal: 0,
     valAxisMaxVal, // Используем вычисленное максимальное значение
-    dataLabelPos: 'ctr',
+    dataLabelPosition: pptxLabelPosition, // Используем позицию меток
+    valAxisTitleRotate: rotate, // Угол поворота меток
+    // catAxisLabelRotate: rotate, // Угол поворота меток
     lineSize: 2,
     barGrouping: isStacked ? 'stacked' : 'standard',
     barGapWidthPct: Math.min(500, Math.max(0, parseFloat(barCategoryGap) * 5)),  // Преобразование значения barCategoryGap в barGapWidthPct
     barOverlapPct: -parseFloat(barGap) ,// Преобразование значения barGap в barOverlapPct
 
     // Используем условное значение для направления баров
-    barDir: barDirection
+    barDir: barDirection,
+    // valueBarColors: true, // Включаем группировку цветов для групп
+    dataLabelColor: 'ffffff'
   });
 
   // Сохранение презентации

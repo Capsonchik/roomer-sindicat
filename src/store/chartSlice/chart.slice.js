@@ -1,5 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {fetchAllCharts, fetchChartById, patchChartById} from "./chart.actions";
+import {fa} from "@faker-js/faker";
 
 const initialState = {
   graphs: [],
@@ -26,6 +27,9 @@ export const chartSlice = createSlice({
       })
       .addCase(fetchChartById.fulfilled, (state, action) => {
         state.currentGraph = action.payload;
+        state.currentChartLoading = false
+      })
+      .addCase(fetchChartById.pending, (state, action) => {
         state.currentChartLoading = true
       })
       .addCase(patchChartById.fulfilled, (state, action) => {

@@ -72,6 +72,8 @@ export const EditorChart = () => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [openDrawer, setOpenDrawer] = useState(false)
+  const [colorBySeries, setColorBySeries] = useState(true)
+  const [colorGroup, setColorGroup] = useState([])
   const toaster = useToaster();
 
   useEffect(() => {
@@ -99,16 +101,32 @@ export const EditorChart = () => {
         setVisibleSeries(Object.fromEntries(Object.keys(currentChart.data.axes.seriesData).map((name) => [name, true])))
       }
 
-      if(typeof currentChart.data.additionalFields.isXAxis !== 'undefined') {
+      if (typeof currentChart.data.additionalFields.isXAxis !== 'undefined') {
         setIsXAxis(currentChart.data.additionalFields.isXAxis)
       }
 
       if (currentChart.data.additionalFields.isStacked) {
         setIsStacked(true)
       }
+      if (typeof currentChart.data.additionalFields.colorBySeries !== 'undefined') {
+        setColorBySeries(currentChart.data.additionalFields.colorBySeries)
+      }
       if (typeof currentChart.data.additionalFields.rotateLabel === 'number') {
         setRotate(currentChart.data.additionalFields.rotateLabel)
       }
+      if (currentChart.data.additionalFields.labelPosition) {
+        setLabelPosition(currentChart.data.additionalFields.labelPosition)
+      }
+
+      if(currentChart.data.additionalFields.colorGroup) {
+        const newColorGroup = currentChart.data.axes.xAxisData.reduce((acc, item, index) => {
+          acc[item] = currentChart.data.additionalFields.colorGroup[index];
+          return acc
+        }, {});
+        setColorGroup(newColorGroup)
+
+      }
+
 
 
       const newColors = Object.keys(currentChart.data.axes.seriesData).reduce((acc, item, index) => {
@@ -164,6 +182,9 @@ export const EditorChart = () => {
     const filteredColor = filteredArray.map((item, index) => {
       return lineColors[item]
     })
+    const filteredColorGroup = series.xAxisData.map((item, index) => {
+      return colorGroup[item]
+    })
     // console.log(filteredArray)
     // Создаем опции для серий
     const seriesOptions = filteredArray.map((seriesName, i) => ({
@@ -182,9 +203,14 @@ export const EditorChart = () => {
           return value[formatLabel]
         }
       },
-      itemStyle: {
-        color: filteredColor[i], // Цвет линии для каждой серии
-      },
+      // backgroundStyle: {
+      //   color: 'red'
+      // },
+      // color: 'green',
+      // itemStyle: {
+      //   color: filteredColor[i], // Цвет линии для каждой серии
+      // },
+      // colorBy: colorBySeries,
 
       data: series.seriesData[seriesName], // Данные для видимых серий
 
@@ -200,7 +226,7 @@ export const EditorChart = () => {
         bottom: 0,
         selectedMode: false,
       },
-
+      color:  filteredColor ,
       series: seriesOptions,
       xAxis: isXAxis ? {type: 'category', data: series.xAxisData} : {type: 'value'}, // Toggle axis
       yAxis: isXAxis ? {type: 'value'} : {type: 'category', data: series.xAxisData}, // Toggle axis
@@ -227,7 +253,9 @@ export const EditorChart = () => {
     currentChart,
     series,
     formatLabel,
-    sizeLabel
+    sizeLabel,
+    colorBySeries,
+    colorGroup
   ]);
 
   const handleAddChartSlide = () => {
@@ -248,7 +276,9 @@ export const EditorChart = () => {
       prepareDataForPptx, // Функция для подготовки данных для PPTX
       getSumValues, // Функция для получения сумм значений
       currentChart,
-      isXAxis
+      isXAxis,
+      labelPosition,
+      rotate
     });
   };
 
@@ -263,7 +293,6 @@ export const EditorChart = () => {
     }
     return null;
   };
-
 
 
   const handlePatchGraph = () => {
@@ -284,7 +313,11 @@ export const EditorChart = () => {
           ...currentChart.data.additionalFields,
           visibleSeries,
           isXAxis,
-          colorsForSingleItem: Object.values(lineColors)
+          colorsForSingleItem: Object.values(lineColors),
+          rotateLabel: rotate,
+          labelPosition,
+          // colorGroup: Object.values(colorGroup),
+          // colorBySeries
         },
         preview: base64Image // Вставляем base64 строку в поле preview
       }
@@ -303,8 +336,14 @@ export const EditorChart = () => {
     }));
   };
 
+  const handleColorChangeGroup = (seriesName, color) => {
+    setColorGroup((prevColors) => ({
+      ...prevColors,
+      [seriesName]: color,
+    }));
+  };
 
-
+  console.log(colorGroup)
   return (
     <div className={styles.wrapper}>
       <Button onClick={() => navigate('/main' + ROUTES_PATH.editorChart)}>Назад</Button>
@@ -317,8 +356,13 @@ export const EditorChart = () => {
       <p>{description}</p>
 
 
-      <div className={styles.layout}>
+      <div className={`${styles.layout} ${!currentChart ? '' : ''}`}>
         <div id="main" className={styles.chartContainer}></div>
+        {/*  : */}
+        {/*{currentChartLoading*/}
+        {/*  ? <div className={styles.saveLoading}><Loader size={'lg'}/></div>*/}
+        {/*}*/}
+
         <div className={styles.controls}>
           <div className={styles.menu}>
             <div className={styles.block}>
@@ -338,12 +382,12 @@ export const EditorChart = () => {
                   placeholder="Select series to display"
                   className={styles.select}
                   renderMenuItem={(label, item) => (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
                       <input
                         type="color"
                         value={lineColors[item.value]}
                         onChange={(e) => handleColorChange(item.value, e.target.value)}
-                        style={{ marginRight: 8 }}
+                        style={{marginRight: 8}}
                       />
                       {label}
                     </div>
@@ -379,6 +423,67 @@ export const EditorChart = () => {
 
             </div>
 
+            {/*<div className={styles.block}>*/}
+            {/*  <h6>Цвет</h6>*/}
+            {/*  <div className={styles.line}>*/}
+            {/*    <Toggle*/}
+            {/*      size="lg"*/}
+            {/*      checkedChildren="Группы"*/}
+            {/*      unCheckedChildren="Kолонки"*/}
+            {/*      checked={colorBySeries}*/}
+            {/*      onChange={() => {*/}
+            {/*        setColorBySeries(!colorBySeries)*/}
+            {/*      }}*/}
+            {/*    />*/}
+            {/*    {!colorBySeries && (*/}
+            {/*      <CheckPicker*/}
+            {/*        data={Object.keys(series.seriesData).map(name => ({value: name, label: name}))}*/}
+            {/*        searchable={false}*/}
+            {/*        c*/}
+            {/*        appearance="default"*/}
+            {/*        placeholder="Цвет колонок"*/}
+            {/*        className={styles.select}*/}
+            {/*        disabledItemValues={Object.keys(series.seriesData).map(name => name)}*/}
+            {/*        renderMenuItem={(label, item) => (*/}
+            {/*          <div style={{display: 'flex', alignItems: 'center'}}>*/}
+            {/*            <input*/}
+            {/*              type="color"*/}
+            {/*              value={lineColors[item.value]}*/}
+            {/*              onChange={(e) => handleColorChange(item.value, e.target.value)}*/}
+            {/*              style={{marginRight: 8}}*/}
+            {/*            />*/}
+            {/*            {label}*/}
+            {/*          </div>*/}
+            {/*        )}*/}
+
+            {/*      />*/}
+            {/*    )}*/}
+            {/*    {colorBySeries && (*/}
+            {/*      <CheckPicker*/}
+            {/*        data={series.xAxisData.map(name => ({value: name, label: name}))}*/}
+            {/*        searchable={false}*/}
+            {/*        c*/}
+            {/*        appearance="default"*/}
+            {/*        placeholder="Цвет групп"*/}
+            {/*        className={styles.select}*/}
+            {/*        disabledItemValues={Object.keys(series.xAxisData).map(name => name)}*/}
+            {/*        renderMenuItem={(label, item) => (*/}
+            {/*          <div style={{display: 'flex', alignItems: 'center'}}>*/}
+            {/*            <input*/}
+            {/*              type="color"*/}
+            {/*              value={colorGroup[item.value]}*/}
+            {/*              onChange={(e) => handleColorChangeGroup(item.value, e.target.value)}*/}
+            {/*              style={{marginRight: 8}}*/}
+            {/*            />*/}
+            {/*            {label}*/}
+            {/*          </div>*/}
+            {/*        )}*/}
+
+            {/*      />*/}
+            {/*    )}*/}
+            {/*  </div>*/}
+            {/*</div>*/}
+
             <div className={styles.block}>
               <h6>Label</h6>
               <div className={styles.line}>
@@ -388,6 +493,7 @@ export const EditorChart = () => {
                   placeholder="Положение label"
                   onChange={(value) => setLabelPosition(value)}
                   className={styles.type}
+                  value={labelPosition}
                 />
                 <div className={styles.rotate_wrapper}>
                   <label>Угол подписи</label>

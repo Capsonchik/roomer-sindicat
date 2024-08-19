@@ -3,6 +3,7 @@ import { Chart } from "./chart/Chart";
 import { Button } from "rsuite";
 import {ChartDrawer} from "../../components/chartPage/chartDrawer/ChartDrawer";
 import React, {useState} from "react";
+import {downloadPpt} from "./downloadPptx";
 
 export const ChartList = (props) => {
 
@@ -48,7 +49,7 @@ export const ChartList = (props) => {
                 <Chart key={index} chart={chart} />
             ))}
             <Button
-                onClick={() => {}} // Передаем весь массив charts
+                onClick={() => downloadPpt(charts)} // Передаем весь массив charts
                 className={styles.save_pptx}
             >
                 Скачать pptx

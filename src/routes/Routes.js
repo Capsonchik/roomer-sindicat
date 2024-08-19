@@ -12,6 +12,7 @@ import {SnapShot} from "../pages/snapshot/SnapShot";
 import {EditorChart} from "../pages/editorChart/EditorChart";
 import {Charts} from "../pages/charts/Charts";
 import {Chart} from "../pages/chart/Chart";
+import {ChartList} from "../pages/chartList/ChartList";
 
 export const router = createBrowserRouter([
   {
@@ -40,7 +41,7 @@ export const router = createBrowserRouter([
           },
           {
             path: '/main' + ROUTES_PATH.editorChart,
-            element: <Chart/>,
+            element: <ChartList/>,
           }
         ]
       },

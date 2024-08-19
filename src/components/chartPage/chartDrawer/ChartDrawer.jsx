@@ -1,20 +1,15 @@
 import {Button, Drawer, Input} from "rsuite";
 import styles from "./chartDrawer.module.scss";
 import {useEffect, useState} from "react";
-export const ChartDrawer = ({open,onClose,setTitle,title,setDescription,description}) => {
-  const [inputTitle, setInputTitle] = useState(title)
-  const [inputDescription, setInputDescription] = useState(description)
+export const ChartDrawer = ({open,onClose,chart}) => {
+  const [inputTitle, setInputTitle] = useState(chart.title)
+  const [inputDescription, setInputDescription] = useState(chart.description)
 
-  useEffect(()=>{
-    setInputTitle(title)
-    setInputDescription(description)
-
-  },[title,description])
 
   const handleSave = () => {
-    setTitle(inputTitle)
-    setDescription(inputDescription)
-    onClose()
+    // setTitle(inputTitle)
+    // setDescription(inputDescription)
+    // onClose()
   }
   return (
     <Drawer open={open} onClose={onClose} style={{maxWidth:600,width:'100%'}}>

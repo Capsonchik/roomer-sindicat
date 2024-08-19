@@ -1,0 +1,14 @@
+
+.wrapper {
+  margin-top: 50px;
+  padding-inline: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  text-align: center;
+
+
+  .save_pptx {
+    width: max-content;
+    margin-top: 50px;
+  }
+}

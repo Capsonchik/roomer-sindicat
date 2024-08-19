@@ -11,6 +11,7 @@ export const downloadSnapshotPptx = ({ chartInstance}) => {
 
   // Захватываем график как изображение
   const dataUrl = chartInstance.getDataURL({ type: 'png' });
+  console.log('1111',dataUrl)
 
   // Проверяем, что dataUrl валиден
   if (!dataUrl) {

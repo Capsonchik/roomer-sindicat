@@ -33,11 +33,12 @@ export const LoginForm = () => {
     //   dispatch(setRole('user'))
     //   dispatch(setCurrentUser(formData))
     // }
+    console.log(formData)
     setLoader(true)
     dispatch(fetchLogIn(formData))
     setTimeout(() => {
       setLoader(false);
-      navigate("/main")
+      // navigate("/main")
     }, 3000);
     // console.log(formData);
     // navigate("/main")

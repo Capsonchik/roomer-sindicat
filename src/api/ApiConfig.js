@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const LOGIN_API = 'https://192.168.9.239/'
+export const LOGIN_API = 'http://192.168.9.239:8807/'
 
 const createAxiosLoginInstance = () => {
   const instance = axios.create({

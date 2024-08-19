@@ -150,6 +150,7 @@ export const EditorChart = () => {
       myChart.dispose();
     };
   }, []);
+  console.log(chartInstance)
 
   // console.log(yAxisMax)
   useEffect(() => {
@@ -289,6 +290,7 @@ export const EditorChart = () => {
         pixelRatio: 5, // коэффициент пикселей для более высокого качества изображения
         backgroundColor: '#fff' // цвет фона для изображения
       });
+      // console.log('1111',dataUrl)
       return dataURL; // Возвращает строку в формате base64
     }
     return null;

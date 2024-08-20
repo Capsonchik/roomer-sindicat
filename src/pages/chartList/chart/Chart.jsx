@@ -5,9 +5,9 @@ import {chartOption} from "../../editorChart/chartConfig";
 import {colors} from "./config";
 import EditIcon from "@rsuite/icons/Edit";
 import {Button} from "rsuite";
-import {ChartDrawer} from "../../../components/chartPage/chartDrawer/ChartDrawer";
+import {ChartDrawer} from "../chartDrawer/ChartDrawer";
 
-export const Chart = ({chart}) => {
+export const Chart = ({chart,editBtn = true}) => {
     const chartRef = useRef(null);
     const [chartInstance, setChartInstance] = useState(null);
     const [openDrawer, setOpenDrawer] = useState(false)
@@ -58,11 +58,11 @@ export const Chart = ({chart}) => {
         <div className={styles.wrapper}>
             <div className={styles.title_wrapper}>
                 <h6>{chart.title}</h6>
-                <Button onClick={() => {
+                {editBtn && <Button onClick={() => {
                     setOpenDrawer(true)
                 }}>
                     <EditIcon/>
-                </Button>
+                </Button>}
             </div>
             <p>{chart.description}</p>
             <div ref={chartRef} style={{width: '100%', height: '400px'}}></div>

@@ -4,31 +4,44 @@ import {
   TestPageGraphComponent
 } from "../../../components/testPageComponents/testPageGraphComponent/testPageGraphComponent";
 import {useDispatch, useSelector} from "react-redux";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {selectGroups} from "../../../store/reportSlice/reportSlice.selectors";
 import {selectGroupsReports} from "../../../store/chartSlice/chart.selectors";
 import {ChartList} from "../ChartList";
+import {Chart} from "../chart/Chart";
+import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
 
-export  const GroupTabs = () => {
-  const groups = useSelector(selectGroupsReports);
+export const GroupTabs = ({groupsReports}) => {
+  // const groups = useSelector(selectGroupsReports);
   const dispatch = useDispatch();
-  const defaultActiveKey = groups.length > 0 ? groups[0].group_id.toString() : null;
+  const defaultActiveKey = groupsReports.length > 0 ? groupsReports[0].group_id.toString() : null;
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
+
+  useEffect(() => {
+    dispatch(fetchAllChartsByGroupId(activeKey)).then(() => {
+      dispatch(fetchAllChartsFormatByGroupId(activeKey))
+    })
+  }, [groupsReports]);
+
   return (
     <div className={styles.wrapper}>
       <Tabs
         className={styles.tabs}
         defaultActiveKey={defaultActiveKey}
         appearance="subtle"
-        // onSelect={handleSelect}
+        onSelect={(key) => {
+          dispatch(fetchAllChartsByGroupId(key)).then(() => {
+            dispatch(fetchAllChartsFormatByGroupId(key))
+          })
+        }}
       >
-        {groups.map((group, index) => {
+        {groupsReports.map((group, index) => {
           return (
             <Tabs.Tab key={group.group_id} eventKey={group.group_id.toString()} title={group.group_name}>
-              {group.group_id.toString() === activeKey
-                ? <ChartList/>
-                : null
-              }
+              {/*{group.group_id.toString() === activeKey*/}
+              {/*  ? <ChartList/>*/}
+              {/*  : null*/}
+              {/*}*/}
 
             </Tabs.Tab>
           )

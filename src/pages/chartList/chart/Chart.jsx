@@ -28,10 +28,10 @@ export const Chart = ({chart, editBtn = true}) => {
   useEffect(() => {
     if (!chartInstance) return;
 
-    const seriesOptions = Object.keys(chart.axes.seriesData).map((seriesName) => ({
+    const seriesOptions = Object.keys(chart.seriesData).map((seriesName) => ({
       name: seriesName,
       type: chart.formatting.type_chart,
-      data: chart.axes.seriesData[seriesName],
+      data: chart.seriesData[seriesName],
     }));
 
     const option = {
@@ -39,7 +39,7 @@ export const Chart = ({chart, editBtn = true}) => {
       ...legendConfig,
       color: colors,
       series: seriesOptions,
-      xAxis: {type: 'category', data: chart.axes.xAxisData},
+      xAxis: {type: 'category', data: chart.xAxisData},
       yAxis: {type: 'value'},
     };
 

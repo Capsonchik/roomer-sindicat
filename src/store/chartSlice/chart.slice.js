@@ -1,8 +1,8 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {
-  fetchAllCharts,
-  fetchAllClients,
-  fetchAllGroups,
+  fetchAllCharts, fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId,
+  fetchAllClients, fetchAllGroups,
+  // fetchAllGroups,
   fetchAllReports,
   fetchChartById,
   patchChartById
@@ -10,10 +10,11 @@ import {
 import {fa} from "@faker-js/faker";
 
 const initialState = {
-  clients:[],
+  clients: [],
   reports: [],
-  groups: [],
-  graphs: [],
+  groupsChart: [],
+  charts: [],
+  isChartLoading: false,
   currentGraph: null,
   currentChartLoading: false,
   axes: null,
@@ -51,10 +52,33 @@ export const chartSlice = createSlice({
 
       })
       .addCase(fetchAllReports.fulfilled, (state, action) => {
+        console.log(action.payload)
         state.reports = action.payload
       })
       .addCase(fetchAllGroups.fulfilled, (state, action) => {
-        state.groups = action.payload
+        console.log(action.payload)
+        state.groupsChart = action.payload
+      })
+      .addCase(fetchAllChartsByGroupId.fulfilled, (state, action) => {
+        state.charts = action.payload
+        // state.isChartLoading = false
+      })
+      .addCase(fetchAllChartsByGroupId.pending, (state, action) => {
+        // state.charts = action.payload
+        state.isChartLoading = true
+      })
+      .addCase(fetchAllChartsFormatByGroupId.fulfilled, (state, action) => {
+        state.charts = state.charts.map((chart,i) => {
+          console.log(chart,action.payload)
+          // const foundFormat = action.payload.find(f => f.id === chart.id)
+          // if(foundFormat) {
+            return {
+              ...chart,
+              ...action.payload[i],
+            // }
+          }
+        })
+        state.isChartLoading = false
       })
       .addCase(patchChartById.pending, (state, action) => {
         state.saveChartLoading = true

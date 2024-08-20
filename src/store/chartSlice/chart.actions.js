@@ -76,6 +76,35 @@ export const fetchAllGroups = createAsyncThunk(
   async (reportId) => {
     try {
       const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_groups?report_id=${reportId}`);
+      console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);
+export const fetchAllChartsByGroupId = createAsyncThunk(
+  'chart/fetchAllChartsByGroupId',
+  async (groupId) => {
+    try {
+      const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_echart_graphs_from_group?group_id=${groupId}`);
+      console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);
+export const fetchAllChartsFormatByGroupId = createAsyncThunk(
+  'chart/fetchAllChartsFormatByGroupId',
+  async (groupId) => {
+    try {
+      const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_echart_graphs_formatting_from_group?group_id=${groupId}`);
+      console.log(response)
       if (response.status === 200) {
         return response.data;
       }

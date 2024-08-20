@@ -1,17 +1,28 @@
 import styles from './chartList.module.scss';
 import {Chart} from "./chart/Chart";
-import {Button} from "rsuite";
+import {Button, Loader} from "rsuite";
 import React, {useEffect, useState} from "react";
 import {downloadPpt} from "./downloadPptx";
-import {charts} from "./chartMocks";
+// import {charts} from "./chartMocks";
 import {TopFilters} from "./topFilters/TopFilters";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchAllClients} from "../../store/chartSlice/chart.actions";
-import {selectClients, selectReportsClients} from "../../store/chartSlice/chart.selectors";
+import {
+  selectCharts,
+  selectClients,
+  selectIsChartLoading,
+  selectReportsClients
+} from "../../store/chartSlice/chart.selectors";
 
 export const ChartList = (props) => {
-  const clients = useSelector(selectClients)
-  const reportsClients = useSelector(selectReportsClients)
+  const charts = useSelector(selectCharts)
+  const isChartLoading = useSelector(selectIsChartLoading)
+  const [data, setData] = useState(charts)
+
+  useEffect(() => {
+    setData(charts)
+  },[charts])
+  console.log(data)
 
 
 
@@ -21,18 +32,22 @@ export const ChartList = (props) => {
     <>
       <TopFilters/>
       <div className={styles.wrapper}>
-        {charts.map((chart, index) => (
+        {/*{isChartLoading && (*/}
+        {/*  <Loader/>*/}
+        {/*)}*/}
+        {data && data[0]?.title && data.map((chart, index) => (
           <Chart key={index} chart={chart}/>
         ))}
-        <Button
-          onClick={() => downloadPpt(charts)} // Передаем весь массив charts
-          className={styles.save_pptx}
-        >
-          Скачать pptx
-        </Button>
+
 
 
       </div>
+      <Button
+        onClick={() => downloadPpt(charts)} // Передаем весь массив charts
+        className={styles.save_pptx}
+      >
+        Скачать pptx
+      </Button>
     </>
 
   );

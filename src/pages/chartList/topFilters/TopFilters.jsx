@@ -2,7 +2,11 @@ import styles from './topFilters.module.scss'
 import {useDispatch, useSelector} from "react-redux";
 import {selectClients, selectGroupsReports, selectReportsClients} from "../../../store/chartSlice/chart.selectors";
 import {useEffect} from "react";
-import {fetchAllClients, fetchAllGroups, fetchAllReports} from "../../../store/chartSlice/chart.actions";
+import {
+  fetchAllClients, fetchAllGroups,
+
+  fetchAllReports
+} from "../../../store/chartSlice/chart.actions";
 import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/SelectPicker";
 import {FormProvider, useForm} from "react-hook-form";
 import {GroupTabs} from "../groupTabs/GroupTabs";
@@ -47,7 +51,7 @@ export const TopFilters = () => {
         />
       </div>
       {!!groupsReports.length && (
-        <GroupTabs/>
+        <GroupTabs groupsReports={groupsReports}/>
       )}
 
     </FormProvider>

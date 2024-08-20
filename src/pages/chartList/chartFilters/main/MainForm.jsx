@@ -7,16 +7,16 @@ import {useFormContext} from "react-hook-form";
 export const MainForm = ({chart}) => {
   const [series, setSeries] = useState([])
   const {trigger,formState,handleSubmit} = useFormContext()
-  const [visibleSeries, setVisibleSeries] = useState(Object.keys(chart.axes.seriesData).map(item => {
+  const [visibleSeries, setVisibleSeries] = useState(Object.keys(chart.seriesData).map(item => {
     return {value: item, label: item};
   })); // Изначально все серии видимы
 
   useEffect(() => {
-    setVisibleSeries(Object.fromEntries(Object.keys(chart.axes.seriesData).map((name) => [name, true])))
+    setVisibleSeries(Object.fromEntries(Object.keys(chart.seriesData).map((name) => [name, true])))
   }, []);
 
   useEffect(() => {
-    setSeries(chart.axes.seriesData)
+    setSeries(chart.seriesData)
   }, [chart]);
 
   // const visibleSeries = Object.keys(chart.axes.seriesData).map(item => {

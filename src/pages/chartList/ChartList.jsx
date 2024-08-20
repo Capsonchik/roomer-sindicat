@@ -32,22 +32,22 @@ export const ChartList = (props) => {
     <>
       <TopFilters/>
       <div className={styles.wrapper}>
-        {/*{isChartLoading && (*/}
-        {/*  <Loader/>*/}
-        {/*)}*/}
-        {data && data[0]?.title && data.map((chart, index) => (
+        {isChartLoading && (
+          <Loader/>
+        )}
+        {!isChartLoading && data[0]?.title && data.map((chart, index) => (
           <Chart key={index} chart={chart}/>
         ))}
 
 
 
       </div>
-      <Button
+      {!isChartLoading && <Button
         onClick={() => downloadPpt(charts)} // Передаем весь массив charts
         className={styles.save_pptx}
       >
         Скачать pptx
-      </Button>
+      </Button>}
     </>
 
   );

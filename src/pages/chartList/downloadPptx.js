@@ -15,7 +15,7 @@ export const downloadPpt = (charts) => {
     let yOffset = yOffsetDefault; // Начальная позиция по вертикали
 
     charts.forEach((chart, index) => {
-        const {title, description, axes} = chart;
+        const {title, description, xAxisData,seriesData} = chart;
 
         // Добавляем заголовок графика
         slide.addText(title, {
@@ -35,7 +35,7 @@ export const downloadPpt = (charts) => {
         yOffset += 0.3;
 
         // Подготовка данных для графика
-        const dataForChart = prepareDataForPptx(axes);
+        const dataForChart = prepareDataForPptx({xAxisData,seriesData});
 
         // Увеличиваем отступ для графика
         // yOffset += 0.5; // Увеличиваем отступ перед графиком

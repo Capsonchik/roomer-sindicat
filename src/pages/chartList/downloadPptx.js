@@ -15,8 +15,8 @@ export const downloadPpt = (charts) => {
     let yOffset = yOffsetDefault; // Начальная позиция по вертикали
 
     charts.forEach((chart, index) => {
+        console.log(chart)
         const {title, description, xAxisData,seriesData} = chart;
-
         // Добавляем заголовок графика
         slide.addText(title, {
             x: xOffset,
@@ -36,11 +36,12 @@ export const downloadPpt = (charts) => {
 
         // Подготовка данных для графика
         const dataForChart = prepareDataForPptx({xAxisData,seriesData});
+        console.log(dataForChart)
 
         // Увеличиваем отступ для графика
         // yOffset += 0.5; // Увеличиваем отступ перед графиком
         slide.addChart('bar', dataForChart, {
-            chartColors:colors,
+            chartColors:colors.slice(0,dataForChart.length),
             x: xOffset,
             y: yOffset,
             w: chartWidth,

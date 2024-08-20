@@ -31,7 +31,7 @@ export const ChartList = (props) => {
 
     <>
       <TopFilters/>
-      <div className={styles.wrapper}>
+      <div className={`${styles.wrapper} ${data.length === 2 ? styles.col_2 :''} ${data.length === 3 ? styles.col_3 :''}`}>
         {isChartLoading && (
           <Loader/>
         )}
@@ -42,12 +42,15 @@ export const ChartList = (props) => {
 
 
       </div>
-      {!isChartLoading && <Button
-        onClick={() => downloadPpt(charts)} // Передаем весь массив charts
-        className={styles.save_pptx}
-      >
-        Скачать pptx
-      </Button>}
+      <div className={styles.btn_wrapper}>
+        {!isChartLoading && !!data.length && <Button
+          onClick={() => downloadPpt(charts)} // Передаем весь массив charts
+          className={styles.save_pptx}
+        >
+          Скачать pptx
+        </Button>}
+      </div>
+
     </>
 
   );

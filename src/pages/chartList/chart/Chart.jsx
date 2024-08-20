@@ -48,7 +48,7 @@ export const Chart = ({chart, editBtn = true}) => {
       lazyUpdate: false,
     });
   }, [chartInstance]);
-  console.log(methods.formState)
+
   const test = () => {
     console.log(1)
   }
@@ -65,7 +65,7 @@ export const Chart = ({chart, editBtn = true}) => {
       <p>{chart.description}</p>
       <div ref={chartRef} style={{width: '100%', height: '400px'}}></div>
       {!editBtn && <FormProvider {...methods}>
-        <ChartFilters chart={chart} test={test}/>
+        <ChartFilters chart={chart}/>
       </FormProvider>}
 
       {editBtn && <ChartDrawer

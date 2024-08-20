@@ -1,8 +1,18 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchAllCharts, fetchChartById, patchChartById} from "./chart.actions";
+import {
+  fetchAllCharts,
+  fetchAllClients,
+  fetchAllGroups,
+  fetchAllReports,
+  fetchChartById,
+  patchChartById
+} from "./chart.actions";
 import {fa} from "@faker-js/faker";
 
 const initialState = {
+  clients:[],
+  reports: [],
+  groups: [],
   graphs: [],
   currentGraph: null,
   currentChartLoading: false,
@@ -34,12 +44,17 @@ export const chartSlice = createSlice({
       })
       .addCase(patchChartById.fulfilled, (state, action) => {
         state.saveChartLoading = false
-        // state.graphs = state.graphs.map(graph => {
-        //   if (graph.id === action.payload.id) {
-        //     return action.payload;
-        //   }
-        //   return graph
-        // })
+
+      })
+      .addCase(fetchAllClients.fulfilled, (state, action) => {
+        state.clients = action.payload
+
+      })
+      .addCase(fetchAllReports.fulfilled, (state, action) => {
+        state.reports = action.payload
+      })
+      .addCase(fetchAllGroups.fulfilled, (state, action) => {
+        state.groups = action.payload
       })
       .addCase(patchChartById.pending, (state, action) => {
         state.saveChartLoading = true

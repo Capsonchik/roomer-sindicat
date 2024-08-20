@@ -35,26 +35,26 @@ export const CustomCheckPicker = (
             onChangeOutside && onChangeOutside(selectedValues);
 
             // Update visible series
-            const newVisibleSeries = Object.fromEntries(
-              Object.keys(data).map((name) => [name, selectedValues.includes(name)])
-            );
-            setVisibleSeries(newVisibleSeries);
+            // const newVisibleSeries = Object.fromEntries(
+            //   Object.keys(data).map((name) => [name, selectedValues.includes(name)])
+            // );
+            // setVisibleSeries(newVisibleSeries);
           }}
           searchable={searchable}
           appearance={appearance}
           placeholder={placeholder}
           className={styles.select}
-          renderMenuItem={(label, item) => (
-            <div style={{display: "flex", alignItems: "center"}}>
-              <input
-                type="color"
-                value={lineColors[item.value]}
-                onChange={(e) => handleColorChange(item.value, e.target.value)}
-                style={{marginRight: 8}}
-              />
-              {label}
-            </div>
-          )}
+          // renderMenuItem={(label, item) => (
+          //   <div style={{display: "flex", alignItems: "center"}}>
+          //     <input
+          //       type="color"
+          //       value={lineColors[item.value]}
+          //       // onChange={(e) => handleColorChange(item.value, e.target.value)}
+          //       style={{marginRight: 8}}
+          //     />
+          //     {label}
+          //   </div>
+          // )}
         />
       )}
     />

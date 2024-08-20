@@ -65,12 +65,12 @@ const createAxiosClientInstance = () => {
 export const axiosClientRequest = createAxiosClientInstance();
 
 
-
+const GRAPH_API = 'https://7aa7-212-45-6-6.ngrok-free.app'
 
 
 const createAxiosGraphnstance = () => {
   const instance = axios.create({
-    baseURL: CLIENT_API,
+    baseURL: GRAPH_API,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

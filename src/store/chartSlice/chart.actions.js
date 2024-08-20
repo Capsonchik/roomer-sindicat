@@ -43,3 +43,44 @@ export const patchChartById = createAsyncThunk(
     }
   }
 );
+
+export const fetchAllClients = createAsyncThunk(
+  'chart/fetchAllClients',
+  async (userData) => {
+    try {
+      const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_clients`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);
+export const fetchAllReports = createAsyncThunk(
+  'chart/fetchAllReports',
+  async (clientId) => {
+    try {
+      const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_reports?client_id=${clientId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);
+
+export const fetchAllGroups = createAsyncThunk(
+  'chart/fetchAllGroups',
+  async (reportId) => {
+    try {
+      const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_groups?report_id=${reportId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);

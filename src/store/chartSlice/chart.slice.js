@@ -11,7 +11,9 @@ import {fa} from "@faker-js/faker";
 
 const initialState = {
   clients: [],
+  activeClient: null,
   reports: [],
+  activeReport: null,
   groupsChart: [],
   charts: [],
   isChartLoading: false,
@@ -27,6 +29,12 @@ export const chartSlice = createSlice({
   reducers: {
     setAxes: (state, action) => {
       state.axes = action.payload;
+    },
+    setActiveClient: (state, action) => {
+      state.activeClient = action.payload;
+    },
+    setActiveReport: (state, action) => {
+      state.activeReport = action.payload;
     },
 
   },
@@ -87,6 +95,6 @@ export const chartSlice = createSlice({
   }
 })
 
-export const {setAxes} = chartSlice.actions;
+export const {setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
 
 export default chartSlice.reducer;

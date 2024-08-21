@@ -1,6 +1,17 @@
+.list{
+  height: 100%;
+}
+
+.loader_wrapper {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
 
 .wrapper {
-  margin-top: 50px;
+  //margin-top: 50px;
   padding-inline: 15px;
   display: grid;
   grid-template-columns: 1fr;
@@ -27,4 +38,9 @@
     width: max-content;
     margin-top: 20px;
   }
+}
+
+.placeholder{
+  max-width: 500px;
+  margin: 100px  auto;
 }

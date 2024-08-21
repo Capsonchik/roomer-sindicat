@@ -8,3 +8,5 @@ export const selectReportsClients = (state) => state.charts.reports;
 export const selectGroupsReports = (state) => state.charts.groupsChart;
 export const selectCharts = (state) => state.charts.charts;
 export const selectIsChartLoading = (state) => state.charts.isChartLoading;
+export const selectActiveClient = (state) => state.charts.activeClient;
+export const selectActiveReport = (state) => state.charts.activeReport;

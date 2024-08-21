@@ -1,6 +1,6 @@
 import styles from './chartList.module.scss';
 import {Chart} from "./chart/Chart";
-import {Button, Loader} from "rsuite";
+import {Button, Divider, Loader} from "rsuite";
 import React, {useEffect, useState} from "react";
 import {downloadPpt} from "./downloadPptx";
 // import {charts} from "./chartMocks";
@@ -8,8 +8,9 @@ import {TopFilters} from "./topFilters/TopFilters";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchAllClients} from "../../store/chartSlice/chart.actions";
 import {
+  selectActiveClient, selectActiveReport,
   selectCharts,
-  selectClients,
+  selectClients, selectGroupsReports,
   selectIsChartLoading,
   selectReportsClients
 } from "../../store/chartSlice/chart.selectors";
@@ -17,39 +18,70 @@ import {
 export const ChartList = (props) => {
   const charts = useSelector(selectCharts)
   const isChartLoading = useSelector(selectIsChartLoading)
+  const clients = useSelector(selectClients)
+  const reportsClients = useSelector(selectReportsClients)
+  const groupsReports = useSelector(selectGroupsReports)
+  const activeClient = useSelector(selectActiveClient)
+  const activeReport = useSelector(selectActiveReport)
   const [data, setData] = useState(charts)
+  const [placeholderText, setPlaceholderText] = useState('')
+
+  useEffect(() => {
+    if(!activeClient) {
+      setPlaceholderText('Выберите клиента')
+    }
+    else if(!activeReport) {
+      setPlaceholderText('Выберите отчет')
+    }
+    else {
+      setPlaceholderText('')
+    }
+
+
+  }, [activeClient,activeReport]);
 
   useEffect(() => {
     setData(charts)
-  },[charts])
+  }, [charts])
   console.log(data)
-
-
 
 
   return (
 
     <>
       <TopFilters/>
-      <div className={`${styles.wrapper} ${data.length === 2 ? styles.col_2 :''} ${data.length === 3 ? styles.col_3 :''}`}>
+      <div
+        className={styles.list}>
         {isChartLoading && (
-          <Loader/>
+          <div className={styles.loader_wrapper}>
+            <Loader size={'lg'}/>
+          </div>
         )}
-        {!isChartLoading && data[0]?.title && data.map((chart, index) => (
-          <Chart key={index} chart={chart}/>
-        ))}
+        {activeReport && <div
+          className={`${styles.wrapper} ${data.length === 2 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}>
+          {!isChartLoading && data[0]?.title && data.map((chart, index) => (
 
+            <Chart key={index} chart={chart}/>
+          ))}
+        </div>}
 
 
       </div>
       <div className={styles.btn_wrapper}>
-        {!isChartLoading && !!data.length && <Button
+        {!isChartLoading && activeReport && <Button
           onClick={() => downloadPpt(charts)} // Передаем весь массив charts
           className={styles.save_pptx}
         >
           Скачать pptx
         </Button>}
+
+
+        {placeholderText && <div className={styles.placeholder}>
+          <Divider>{placeholderText}</Divider>
+        </div>}
       </div>
+
+
 
     </>
 

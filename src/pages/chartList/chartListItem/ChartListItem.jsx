@@ -1,5 +1,5 @@
 import styles from './chartListItem.module.scss';
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 import * as echarts from "echarts";
 import {chartOption} from "../../editorChart/chartConfig";
 // import {colors, legendConfig, tooltipConfig} from "./config";
@@ -21,9 +21,7 @@ export const ChartListItem = ({chart}) => {
   const chartRef = useRef(null);
   const [chartInstance, setChartInstance] = useState(null);
   const [chartState, setChartState] = useState(chart)
-  // const originalColors = useSelector(selectOriginalColors)
-  // console.log(chart)
-  const inputs = methods.watch()
+
 
 
   useEffect(() => {
@@ -31,24 +29,13 @@ export const ChartListItem = ({chart}) => {
     setChartInstance(myChart);
 
 
-    // const colorsTest = chart?.formatting?.colors || colors
-    // const colorEntrieis = colorsTest.map(color => [color, true])
-    // dispatch(setOriginalColors(colorEntrieis))
-
     return () => {
       myChart.dispose();
     };
   }, []);
-  // useEffect(() => {
-  //   // if(!chart) return
-  //   const colorsTest = chart?.formatting?.colors || colors.map(color => [color, true])
-  //
-  //   // console.log(colorEntrieis)
-  //   if(!editor) return
-  //   dispatch(setOriginalColors(colorsTest))
-  // }, []);
 
-  useEffect(() => {
+
+  useLayoutEffect(() => {
     const filteredSeries = !!chart.formatting.visible.length
       ? Object.fromEntries(Object.entries(chart.seriesData).filter(([series, value]) => {
         return chart.formatting.visible.includes(series);

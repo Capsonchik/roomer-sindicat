@@ -125,7 +125,7 @@ export const Chart = ({chart}) => {
 
       if (data.seriesData) {
         if (Object.keys(data.seriesData).length !== Object.keys(chart.seriesData).length && !!chart.formatting.visible.length) {
-          console.log(1)
+          // console.log(1)
           const visibleColumn = Object.fromEntries(Object.entries(chart.seriesData).filter(([name, value]) => {
             return data.seriesData.includes(name);
           }))
@@ -244,10 +244,17 @@ export const Chart = ({chart}) => {
         type: 'category',
         data: chartState.xAxisData
       },
+      // Настройки анимации
+      // animation: true, // Включает анимацию
+      // animationDuration: 1000, // Продолжительность анимации в миллисекундах
+      // animationEasing: 'cubicOut', // Эффект анимации
+      // animationDelay: function (idx) {
+      //   return idx * 100; // Задержка перед анимацией каждого элемента
+      // }
     };
 
     chartInstance.setOption(option, {
-      notMerge: true,
+      notMerge: false,
       lazyUpdate: false,
     });
   }, [chartInstance, chartState]);

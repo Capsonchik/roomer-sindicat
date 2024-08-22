@@ -13,6 +13,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectIsOpenDrawer, selectOriginalColors} from "../../../store/chartSlice/chart.selectors";
 import {patchChartFormatting} from "../../../store/chartSlice/chart.actions";
 import {colors, legendConfig, tooltipConfig} from "../chart/config";
+import {convertValuesByPercent} from "../chart/convertValuesByPercent";
 
 
 export const ChartListItem = ({chart}) => {
@@ -21,7 +22,6 @@ export const ChartListItem = ({chart}) => {
   const chartRef = useRef(null);
   const [chartInstance, setChartInstance] = useState(null);
   const [chartState, setChartState] = useState(chart)
-
 
 
   useEffect(() => {
@@ -43,42 +43,11 @@ export const ChartListItem = ({chart}) => {
       : chart.seriesData
 
 
-    let newTotalSum = 0
-    let filteredSeriesTest
-    if (Object.keys(filteredSeries).length !== Object.keys(chart.seriesData).length && !!chart.formatting.visible.length) {
-      console.log(1)
-      const visibleColumn = Object.fromEntries(Object.entries(chart.seriesData).filter(([name, value]) => {
-        return Object.keys(filteredSeries).includes(name);
-      }))
-      newTotalSum = Object.values(visibleColumn)
-        .reduce((acc, value, index) => {
-          value.forEach((_, indexInner) => {
-            acc[indexInner] += +value[indexInner] ? +value[indexInner] : 0;
-          })
-          return acc
-        }, [0, 0])
-
-      filteredSeriesTest = Object.fromEntries(
-        Object.entries(chart.seriesData)
-          .filter(([series, value]) => {
-            return Object.keys(filteredSeries).includes(series);
-          })
-          .map(([series, value]) => {
-            const newValue = value.map((val,index) => {
-              return Math.round((+val / newTotalSum[index]) * 100)
-            })
-            return [series, newValue]
-          })
-      )
-    } else {
-      filteredSeriesTest = Object.fromEntries(
-        Object.entries(chart.seriesData)
-          .filter(([series, value]) => {
-            return Object.keys(filteredSeries).includes(series);
-          })
-      )
-    }
-
+    const convertedSeriesData = convertValuesByPercent({
+      visibleListString: Object.keys(filteredSeries),
+      chart,
+      filteredSeriesData: chartState.seriesData
+    })
 
 
     const filteredColors = !!chart.formatting.colors
@@ -88,7 +57,7 @@ export const ChartListItem = ({chart}) => {
     setChartState(prev => {
       return {
         ...prev,
-        seriesData: filteredSeriesTest,
+        seriesData: convertedSeriesData,
         formatting: {
           ...prev.formatting,
           colors: filteredColors
@@ -102,12 +71,7 @@ export const ChartListItem = ({chart}) => {
 
 
   useEffect(() => {
-    // console.log(chartState.formatting.colors)
-    // dispatch(setActiveChart(chartState))
     if (!chartInstance) return;
-
-    // const colors = !!chartState.formatting.visible.length
-    // ?
 
     const seriesOptions = Object.keys(chartState.seriesData).map((seriesName) => ({
       name: seriesName,
@@ -152,7 +116,6 @@ export const ChartListItem = ({chart}) => {
       </div>
       <p>{chart.description}</p>
       <div ref={chartRef} style={{width: '100%', height: '400px'}}></div>
-
 
     </div>
   );

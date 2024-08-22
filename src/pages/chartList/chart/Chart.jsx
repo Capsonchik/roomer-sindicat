@@ -21,6 +21,7 @@ import {
   fetchAllChartsFormatByGroupId,
   patchChartFormatting
 } from "../../../store/chartSlice/chart.actions";
+import {convertValuesByPercent} from "./convertValuesByPercent";
 
 
 export const Chart = ({chart}) => {
@@ -67,48 +68,18 @@ export const Chart = ({chart}) => {
       : chart.seriesData
 
 
-    let newTotalSum = 0
-    let filteredSeriesTest
+    const convertedSeriesData = convertValuesByPercent({
+      visibleListString:Object.keys(filteredSeries),
+      chart,
+      filteredSeriesData:chartState.seriesData
+    })
 
-    if (Object.keys(filteredSeries).length !== Object.keys(chart.seriesData).length && !!chart.formatting.visible.length) {
-      console.log(1)
-      const visibleColumn = Object.fromEntries(Object.entries(chart.seriesData).filter(([name, value]) => {
-        return Object.keys(filteredSeries).includes(name);
-      }))
-      newTotalSum = Object.values(visibleColumn)
-        .reduce((acc, value, index) => {
-          value.forEach((_, indexInner) => {
-            acc[indexInner] += +value[indexInner] ? +value[indexInner] : 0;
-          })
-          return acc
-        }, [0, 0])
-
-      filteredSeriesTest = Object.fromEntries(
-        Object.entries(chart.seriesData)
-          .filter(([series, value]) => {
-            return Object.keys(filteredSeries).includes(series);
-          })
-          .map(([series, value]) => {
-            const newValue = value.map((val,index) => {
-              return Math.round((+val / newTotalSum[index]) * 100)
-            })
-            return [series, newValue]
-          })
-      )
-    } else {
-      filteredSeriesTest = Object.fromEntries(
-        Object.entries(chart.seriesData)
-          .filter(([series, value]) => {
-            return Object.keys(filteredSeries).includes(series);
-          })
-      )
-    }
 
 
     setChartState(prev => {
       return {
         ...prev,
-        seriesData: filteredSeriesTest,
+        seriesData: convertedSeriesData,
 
       }
     })
@@ -117,46 +88,16 @@ export const Chart = ({chart}) => {
 
   useEffect(() => {
     const handleForm = (data) => {
-      // console.log(data)
       let filteredSeries = chartState.seriesData
       let isXAxis = chartState.formatting.isXAxis
       let stack = chartState.formatting.stack
-      let newTotalSum = 0
 
       if (data.seriesData) {
-        if (Object.keys(data.seriesData).length !== Object.keys(chart.seriesData).length && !!chart.formatting.visible.length) {
-          // console.log(1)
-          const visibleColumn = Object.fromEntries(Object.entries(chart.seriesData).filter(([name, value]) => {
-            return data.seriesData.includes(name);
-          }))
-          newTotalSum = Object.values(visibleColumn)
-            .reduce((acc, value, index) => {
-              value.forEach((_, indexInner) => {
-                acc[indexInner] += +value[indexInner] ? +value[indexInner] : 0;
-              })
-              return acc
-            }, [0, 0])
-
-          filteredSeries = Object.fromEntries(
-            Object.entries(chart.seriesData)
-              .filter(([series, value]) => {
-                return data.seriesData.includes(series);
-              })
-              .map(([series, value]) => {
-                const newValue = value.map((val,index) => {
-                  return Math.round((+val / newTotalSum[index]) * 100)
-                })
-                return [series, newValue]
-              })
-          )
-        } else {
-          filteredSeries = Object.fromEntries(
-            Object.entries(chart.seriesData)
-              .filter(([series, value]) => {
-                return data.seriesData.includes(series);
-              })
-          )
-        }
+        filteredSeries = convertValuesByPercent({
+          visibleListString:data.seriesData,
+          chart,
+          filteredSeriesData:chartState.seriesData
+        })
 
       }
 
@@ -247,8 +188,8 @@ export const Chart = ({chart}) => {
     };
 
     chartInstance.setOption(option, {
-      notMerge: true,
-      replaceMerge: ['legend',],
+      notMerge: false,
+      replaceMerge: ['legend','series'],
       lazyUpdate: false,
 
     });

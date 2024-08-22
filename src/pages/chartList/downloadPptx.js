@@ -7,13 +7,26 @@ import {getSumValues} from "./getSumValues";
 export const downloadPpt = (charts) => {
   const pptx = new PptxGenJS();
   const slide = pptx.addSlide();
-  const yOffsetDefault = 2
+  let yOffsetDefault = 1.4
 
-  const chartWidth = 3; // Ширина графика
-  const chartHeight = 2; // Высота графика
+  let chartWidth = 3; // Ширина графика
+  let chartHeight = 2; // Высота графика
   const padding = 0.2; // Отступ между графиками
   let xOffset = 0.2; // Начальная позиция по горизонтали
   let yOffset = yOffsetDefault; // Начальная позиция по вертикали
+
+  if(charts.length === 2){
+    chartWidth = 4.8
+    chartHeight = 3
+    yOffset = 1
+    yOffsetDefault = 1
+  }
+  if(charts.length === 4){
+    chartWidth = 4.6
+    chartHeight = 2
+    yOffset = 0.2
+    yOffsetDefault = 0.2
+  }
 
   charts.forEach((chart, index) => {
     console.log(chart)
@@ -35,13 +48,6 @@ export const downloadPpt = (charts) => {
     });
     yOffset += 0.3;
 
-    console.log(chart)
-    // филььруем видимые колонки
-    // const filteredSeriesData = Object.fromEntries(
-    //   Object.entries(seriesData).filter(([name,data] )=> {
-    //   return formatting.visible.includes(name)
-    // })
-    // )
 
     const filteredSeriesData = formatting.visible.length
       ? Object.fromEntries(Object.entries(seriesData).filter(([name, data]) => {
@@ -87,8 +93,15 @@ export const downloadPpt = (charts) => {
       barGrouping: formatting.stack ? 'stacked' : 'standard',
     });
 
+    if(index === 1 && charts.length === 4) {
+      yOffsetDefault = 3
+    }
     yOffset = yOffsetDefault; // Увеличиваем отступ после графика
     xOffset += chartWidth + padding; // Переход к следующей колонке
+
+    if(index === 1 && charts.length === 4) {
+      xOffset = 0.2
+    }
   });
 
   // Сохранение презентации

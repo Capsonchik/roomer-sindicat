@@ -83,11 +83,47 @@ export const Chart = ({chart}) => {
       let filteredSeries = chartState.seriesData
       let isXAxis = chartState.formatting.isXAxis
       let stack = chartState.formatting.stack
+      let newTotalSum = 0
 
       if (data.seriesData) {
-        filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).filter(([series, value]) => {
-          return data.seriesData.includes(series);
-        }))
+        if (Object.keys(data.seriesData).length !== Object.keys(chart.seriesData).length && !!chart.formatting.visible.length) {
+          console.log(1)
+          const visibleColumn = Object.fromEntries(Object.entries(chart.seriesData).filter(([name, value]) => {
+            return data.seriesData.includes(name);
+          }))
+          newTotalSum = Object.values(visibleColumn)
+            .reduce((acc, value, index) => {
+              value.forEach((_, indexInner) => {
+                // console.log(value[index], acc[indexInner])
+                acc[indexInner] += +value[indexInner] ? +value[indexInner] : 0;
+              })
+              return acc
+            }, [0, 0])
+
+          filteredSeries = Object.fromEntries(
+            Object.entries(chart.seriesData)
+              .filter(([series, value]) => {
+                return data.seriesData.includes(series);
+              })
+              .map(([series, value]) => {
+                const newValue = value.map((val,index) => {
+                  // console.log(val,newTotalSum,index)
+                  return (+val / newTotalSum[index]) * 100
+                })
+                // console.log(newValue)
+                return [series, newValue]
+              })
+          )
+          // console.log('newTotalSum', filteredSeries)
+        } else {
+          filteredSeries = Object.fromEntries(
+            Object.entries(chart.seriesData)
+              .filter(([series, value]) => {
+                return data.seriesData.includes(series);
+              })
+          )
+        }
+
       }
 
       if (typeof data.isXAxis !== 'undefined') {
@@ -144,12 +180,17 @@ export const Chart = ({chart}) => {
   useEffect(() => {
     if (!chartInstance) return;
 
-    const seriesOptions = Object.keys(chartState.seriesData).map((seriesName) => ({
-      name: seriesName,
-      type: chartState.formatting.type_chart,
-      data: chartState.seriesData[seriesName],
-      stack: chartState.formatting.stack ? 'total' : null
-    }));
+    const seriesOptions = Object.keys(chartState.seriesData).map((seriesName) => {
+          // console.log(chartState.seriesData[seriesName])
+          return {
+            name: seriesName,
+            type: chartState.formatting.type_chart,
+            data: chartState.seriesData[seriesName],
+            stack: chartState.formatting.stack ? 'total' : null
+          }
+        }
+      )
+    ;
 
     const option = {
       ...tooltipConfig,

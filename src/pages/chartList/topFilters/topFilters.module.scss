@@ -3,8 +3,20 @@
 .wrapper{
   padding-inline: 15px;
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+
+  .filters{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
   .clients_select{
     width: 224px;
+  }
+  .save_pptx{
+    padding: 10px 20px;
+    background: #FF8200;
+    color: #fff;
   }
 }

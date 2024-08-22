@@ -71,12 +71,12 @@ export const ChartList = (props) => {
 
       </div>
       <div className={styles.btn_wrapper}>
-        {!isChartLoading && activeReport && <Button
-          onClick={() => downloadPpt(charts)} // Передаем весь массив charts
-          className={styles.save_pptx}
-        >
-          Скачать pptx
-        </Button>}
+        {/*{!isChartLoading && activeReport && <Button*/}
+        {/*  onClick={() => downloadPpt(charts)} // Передаем весь массив charts*/}
+        {/*  className={styles.save_pptx}*/}
+        {/*>*/}
+        {/*  Скачать pptx*/}
+        {/*</Button>}*/}
 
 
         {placeholderText && <div className={styles.placeholder}>

@@ -17,8 +17,8 @@ export const downloadPpt = (charts) => {
   let yOffset = yOffsetDefault; // Начальная позиция по вертикали
 
   if(charts.length === 2){
-    chartWidth = 4.8
-    chartHeight = 3
+    chartWidth = 4.6
+    chartHeight = 2.6
     yOffset = 1
     yOffsetDefault = 1
   }

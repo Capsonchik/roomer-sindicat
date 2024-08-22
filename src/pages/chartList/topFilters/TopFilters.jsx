@@ -1,12 +1,12 @@
 import styles from './topFilters.module.scss'
 import {useDispatch, useSelector} from "react-redux";
 import {
-  selectActiveClient, selectActiveReport,
+  selectActiveClient, selectActiveReport, selectCharts,
   selectClients,
-  selectGroupsReports,
+  selectGroupsReports, selectIsChartLoading,
   selectReportsClients
 } from "../../../store/chartSlice/chart.selectors";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {
   fetchAllClients, fetchAllGroups,
 
@@ -16,6 +16,8 @@ import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/Sel
 import {FormProvider, useForm} from "react-hook-form";
 import {GroupTabs} from "../groupTabs/GroupTabs";
 import {setActiveClient, setActiveReport} from "../../../store/chartSlice/chart.slice";
+import {Button} from "rsuite";
+import {downloadPpt} from "../downloadPptx";
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -25,6 +27,8 @@ export const TopFilters = () => {
   const groupsReports = useSelector(selectGroupsReports)
   const activeClient = useSelector(selectActiveClient)
   const activeReport = useSelector(selectActiveReport)
+  const charts = useSelector(selectCharts)
+  const isChartLoading = useSelector(selectIsChartLoading)
 
   useEffect(() => {
     dispatch(fetchAllClients())
@@ -58,24 +62,33 @@ export const TopFilters = () => {
   return (
     <FormProvider {...methods}>
       <div className={styles.wrapper}>
-        <CustomSelectPicker
-          className={styles.clients_select}
-          name={'clients'}
-
-          data={clients.map(client => ({value: client.client_id, label: client.client_name}))}
-          onChangeOutside={value => {
-            handleClientChange(value)
-          }}
-        />
-        <CustomSelectPicker
-          className={styles.clients_select}
-          name={'reports'}
-          value={activeReport}
-          data={reportsClients.map(report => ({value: report.report_id, label: report.report_name}))}
-          onChangeOutside={value => {
-            handleReportChange(value)
-          }}
-        />
+        <div className={styles.filters}>
+          <CustomSelectPicker
+            className={styles.clients_select}
+            name={'clients'}
+            placeholder={'Выберите клиента'}
+            data={clients.map(client => ({value: client.client_id, label: client.client_name}))}
+            onChangeOutside={value => {
+              handleClientChange(value)
+            }}
+          />
+          <CustomSelectPicker
+            className={styles.clients_select}
+            name={'reports'}
+            value={activeReport}
+            placeholder={'Выберите отчет'}
+            data={reportsClients.map(report => ({value: report.report_id, label: report.report_name}))}
+            onChangeOutside={value => {
+              handleReportChange(value)
+            }}
+          />
+        </div>
+        {!isChartLoading && activeReport && <Button
+          onClick={() => downloadPpt(charts)} // Передаем весь массив charts
+          className={styles.save_pptx}
+        >
+          Скачать редактируемый pptx
+        </Button>}
       </div>
       {!!groupsReports.length && activeReport && (
         <GroupTabs groupsReports={groupsReports}/>

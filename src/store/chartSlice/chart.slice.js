@@ -16,11 +16,16 @@ const initialState = {
   activeReport: null,
   groupsChart: [],
   charts: [],
+  activeChart: null,
+  activeGroupId: null,
   isChartLoading: false,
   currentGraph: null,
   currentChartLoading: false,
   axes: null,
   saveChartLoading: false,
+
+  isOpenDrawer: false,
+  originalColors: []
 }
 
 export const chartSlice = createSlice({
@@ -35,6 +40,18 @@ export const chartSlice = createSlice({
     },
     setActiveReport: (state, action) => {
       state.activeReport = action.payload;
+    },
+    setActiveChart: (state, action) => {
+      state.activeChart = action.payload;
+    },
+    setOpenDrawer: (state, action) => {
+      state.isOpenDrawer = action.payload;
+    },
+    setOriginalColors: (state, action) => {
+      state.originalColors = action.payload;
+    },
+    setActiveGroup: (state, action) => {
+      state.activeGroupId = action.payload;
     },
 
   },
@@ -60,11 +77,11 @@ export const chartSlice = createSlice({
 
       })
       .addCase(fetchAllReports.fulfilled, (state, action) => {
-        console.log(action.payload)
+        // console.log(action.payload)
         state.reports = action.payload
       })
       .addCase(fetchAllGroups.fulfilled, (state, action) => {
-        console.log(action.payload)
+        // console.log(action.payload)
         state.groupsChart = action.payload
       })
       .addCase(fetchAllChartsByGroupId.fulfilled, (state, action) => {
@@ -77,7 +94,7 @@ export const chartSlice = createSlice({
       })
       .addCase(fetchAllChartsFormatByGroupId.fulfilled, (state, action) => {
         state.charts = state.charts.map((chart,i) => {
-          console.log(chart,action.payload)
+          // console.log(chart,action.payload)
           // const foundFormat = action.payload.find(f => f.id === chart.id)
           // if(foundFormat) {
             return {
@@ -95,6 +112,6 @@ export const chartSlice = createSlice({
   }
 })
 
-export const {setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
+export const {setActiveGroup,setOriginalColors,setOpenDrawer,setActiveChart,setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
 
 export default chartSlice.reducer;

@@ -11,20 +11,23 @@ import {
   selectActiveClient, selectActiveReport,
   selectCharts,
   selectClients, selectGroupsReports,
-  selectIsChartLoading,
+  selectIsChartLoading, selectIsOpenDrawer,
   selectReportsClients
 } from "../../store/chartSlice/chart.selectors";
+import {ChartDrawer} from "./chartDrawer/ChartDrawer";
+import {setOpenDrawer} from "../../store/chartSlice/chart.slice";
+import {ChartListItem} from "./chartListItem/ChartListItem";
 
 export const ChartList = (props) => {
+  const dispatch = useDispatch();
   const charts = useSelector(selectCharts)
   const isChartLoading = useSelector(selectIsChartLoading)
-  const clients = useSelector(selectClients)
-  const reportsClients = useSelector(selectReportsClients)
-  const groupsReports = useSelector(selectGroupsReports)
   const activeClient = useSelector(selectActiveClient)
   const activeReport = useSelector(selectActiveReport)
+  const isOpenDrawer = useSelector(selectIsOpenDrawer)
   const [data, setData] = useState(charts)
   const [placeholderText, setPlaceholderText] = useState('')
+  // const [openDrawer, setOpenDrawer] = useState(false)
 
   useEffect(() => {
     if(!activeClient) {
@@ -61,7 +64,7 @@ export const ChartList = (props) => {
           className={`${styles.wrapper} ${data.length === 2 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}>
           {!isChartLoading && data[0]?.title && data.map((chart, index) => (
 
-            <Chart key={index} chart={chart}/>
+            <ChartListItem key={index} chart={chart}/>
           ))}
         </div>}
 
@@ -79,6 +82,12 @@ export const ChartList = (props) => {
         {placeholderText && <div className={styles.placeholder}>
           <Divider>{placeholderText}</Divider>
         </div>}
+
+        <ChartDrawer
+          open={isOpenDrawer}
+          onClose={() => dispatch(setOpenDrawer(false))}
+        />
+
       </div>
 
 

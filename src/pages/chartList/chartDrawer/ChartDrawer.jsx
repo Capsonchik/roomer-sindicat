@@ -3,12 +3,18 @@ import styles from "./chartDrawer.module.scss";
 import {useEffect, useState} from "react";
 import {ChartEditor} from "../chartEditor/ChartEditor";
 import {FormProvider, useForm} from "react-hook-form";
+import {useDispatch, useSelector} from "react-redux";
+import {selectActiveChart} from "../../../store/chartSlice/chart.selectors";
+import {patchChartFormatting} from "../../../store/chartSlice/chart.actions";
 
-export const ChartDrawer = ({open, onClose, chart}) => {
-
-
+export const ChartDrawer = ({open, onClose}) => {
+  const dispatch = useDispatch();
+  const chart = useSelector(selectActiveChart)
 
   const handleSave = () => {
+    const {graph_id,xAxisData,seriesData, ...rest} = chart
+    console.log(rest)
+    // dispatch(patchChartFormatting(rest))
     // setTitle(inputTitle)
     // setDescription(inputDescription)
     // onClose()
@@ -19,11 +25,11 @@ export const ChartDrawer = ({open, onClose, chart}) => {
         <div className={styles.wrapper}>
 
 
-            <ChartEditor chart={chart}/>
+            <ChartEditor chart={chart} editor={true}/>
 
 
 
-          <Button onClick={handleSave}>Сохранить</Button>
+          {/*<Button onClick={handleSave}>Сохранить</Button>*/}
         </div>
       </Drawer.Body>
     </Drawer>

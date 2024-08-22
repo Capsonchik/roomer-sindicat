@@ -90,7 +90,7 @@ export const fetchAllChartsByGroupId = createAsyncThunk(
   async (groupId) => {
     try {
       const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_echart_graphs_from_group?group_id=${groupId}`);
-      console.log(response)
+      // console.log(response)
       if (response.status === 200) {
         return response.data;
       }
@@ -104,7 +104,22 @@ export const fetchAllChartsFormatByGroupId = createAsyncThunk(
   async (groupId) => {
     try {
       const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_echart_graphs_formatting_from_group?group_id=${groupId}`);
-      console.log(response)
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);
+
+export const patchChartFormatting = createAsyncThunk(
+  'chart/fetchAllChartsFormatByGroupId',
+  async (rest) => {
+    try {
+      const response = await axiosGraphRequest.patch(`/api/v2/echart_graphs/update_echart_graph`,rest);
+      // console.log(response)
       if (response.status === 200) {
         return response.data;
       }

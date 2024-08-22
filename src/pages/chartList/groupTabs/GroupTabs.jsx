@@ -10,6 +10,7 @@ import {selectGroupsReports} from "../../../store/chartSlice/chart.selectors";
 import {ChartList} from "../ChartList";
 import {Chart} from "../chart/Chart";
 import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
+import {setActiveGroup} from "../../../store/chartSlice/chart.slice";
 
 export const GroupTabs = ({groupsReports}) => {
   // const groups = useSelector(selectGroupsReports);
@@ -30,6 +31,7 @@ export const GroupTabs = ({groupsReports}) => {
         defaultActiveKey={defaultActiveKey}
         appearance="subtle"
         onSelect={(key) => {
+          setActiveGroup(key)
           dispatch(fetchAllChartsByGroupId(key)).then(() => {
             dispatch(fetchAllChartsFormatByGroupId(key))
           })

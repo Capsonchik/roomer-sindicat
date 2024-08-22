@@ -14,7 +14,9 @@ export const CustomCheckPicker = (
     placeholder = "Select series to display",
     className,
     searchable = false,
-    appearance = "default"
+    appearance = "default",
+    disabled,
+    renderMenuItem
   }
 ) => {
   const {control} = useFormContext();
@@ -26,8 +28,10 @@ export const CustomCheckPicker = (
       render={({field}) => (
         <CheckPicker
           {...field}
+          className={className}
           data={data}
           value={value}
+          disabled={disabled}
           onChange={(selectedValues) => {
             // Update the form field value
             field.onChange(selectedValues);
@@ -43,18 +47,9 @@ export const CustomCheckPicker = (
           searchable={searchable}
           appearance={appearance}
           placeholder={placeholder}
-          className={styles.select}
-          // renderMenuItem={(label, item) => (
-          //   <div style={{display: "flex", alignItems: "center"}}>
-          //     <input
-          //       type="color"
-          //       value={lineColors[item.value]}
-          //       // onChange={(e) => handleColorChange(item.value, e.target.value)}
-          //       style={{marginRight: 8}}
-          //     />
-          //     {label}
-          //   </div>
-          // )}
+          // className={styles.select}
+          renderMenuItem={renderMenuItem}
+
         />
       )}
     />

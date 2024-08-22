@@ -10,3 +10,7 @@ export const selectCharts = (state) => state.charts.charts;
 export const selectIsChartLoading = (state) => state.charts.isChartLoading;
 export const selectActiveClient = (state) => state.charts.activeClient;
 export const selectActiveReport = (state) => state.charts.activeReport;
+export const selectActiveChart = (state) => state.charts.activeChart;
+export const selectIsOpenDrawer = (state) => state.charts.isOpenDrawer;
+export const selectOriginalColors = (state) => state.charts.originalColors;
+export const selectActiveGroupId = (state) => state.charts.activeGroupId;

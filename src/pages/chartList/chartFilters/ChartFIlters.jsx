@@ -4,9 +4,9 @@ import {MainForm} from "./main/MainForm";
 import {useFormContext} from "react-hook-form";
 
 export const ChartFilters = ({chart,test}) => {
-  const {trigger,formState,handleSubmit} = useFormContext()
+  const {watch,trigger,formState,handleSubmit} = useFormContext()
   // console.log(chart)
-  console.log(formState)
+  // console.log(watch)
 
   return (
     <div className={styles.wrapper}>

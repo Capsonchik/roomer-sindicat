@@ -87,6 +87,7 @@ export const MainForm = ({chart}) => {
         )}
       />
       <CustomToggle name={'isXAxis'}/>
+
     </div>
   );
 };

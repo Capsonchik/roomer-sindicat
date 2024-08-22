@@ -2,6 +2,7 @@
 import PptxGenJS from "pptxgenjs";
 import {prepareDataForPptx} from "./prepareDataForPptx";
 import {colors} from "./chart/config";
+import {getSumValues} from "./getSumValues";
 
 export const downloadPpt = (charts) => {
   const pptx = new PptxGenJS();
@@ -61,6 +62,8 @@ export const downloadPpt = (charts) => {
       ? formatting.colors.filter(([color, bool]) => bool).map(([color, bool]) => color)
       : colors.slice(0, dataForChart.length)
 
+    //определяем максимальное значение
+    const maxValue = getSumValues({stack:formatting.stack,seriesData:filteredSeriesData,seriesIndex: index})
 
     // Увеличиваем отступ для графика
     // yOffset += 0.5; // Увеличиваем отступ перед графиком
@@ -71,8 +74,13 @@ export const downloadPpt = (charts) => {
       w: chartWidth,
       h: chartHeight,
 
+      showValue: true,
+      valAxisMaxVal: Math.ceil(maxValue * 1.1) ,
+      valAxisMinVal: 0,
+
       // Используем условное значение для направления баров
       barDir: barDirection,
+      barGrouping: formatting.stack ? 'stacked' : 'standard',
     });
 
     yOffset = yOffsetDefault; // Увеличиваем отступ после графика

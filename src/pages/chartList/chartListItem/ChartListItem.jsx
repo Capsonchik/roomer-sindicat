@@ -87,6 +87,7 @@ export const ChartListItem = ({chart}) => {
       name: seriesName,
       type: chartState.formatting.type_chart,
       data: chartState.seriesData[seriesName],
+      stack: chartState.formatting.stack ? 'total' : null
     }));
 
     const option = {

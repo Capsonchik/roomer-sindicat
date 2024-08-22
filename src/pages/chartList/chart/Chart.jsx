@@ -35,11 +35,12 @@ export const Chart = ({chart}) => {
   // console.log(chart)
   const inputs = methods.watch()
 
-  // useEffect(() => {
-  //   methods.reset({
-  //     series: chart.seriesData
-  //   })
-  // }, []);
+  useEffect(() => {
+    methods.reset({
+      isXAxis: chart.formatting.isXAxis,
+      stack: chart.formatting.stack
+    })
+  }, []);
 
 
   useEffect(() => {
@@ -54,11 +55,7 @@ export const Chart = ({chart}) => {
     };
   }, []);
   useEffect(() => {
-    // if(!chart) return
     const colorsTest = chart?.formatting?.colors || colors.map(color => [color, true])
-
-    // console.log(colorEntrieis)
-
     dispatch(setOriginalColors(colorsTest))
   }, []);
 
@@ -79,14 +76,13 @@ export const Chart = ({chart}) => {
     })
   }, []);
 
-  // console.log(chart)
 
   useEffect(() => {
     const handleForm = (data) => {
-      console.log(data)
+      // console.log(data)
       let filteredSeries = chartState.seriesData
       let isXAxis = chartState.formatting.isXAxis
-      // console.log('111',filteredSeries)
+      let stack = chartState.formatting.stack
 
       if (data.seriesData) {
         filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).filter(([series, value]) => {
@@ -97,7 +93,9 @@ export const Chart = ({chart}) => {
       if (typeof data.isXAxis !== 'undefined') {
         isXAxis = data.isXAxis
       }
-      // console.log(filteredSeries);
+      if (typeof data.stack !== 'undefined') {
+        stack = data.stack
+      }
 
       setChartState(prev => {
         return {
@@ -107,6 +105,7 @@ export const Chart = ({chart}) => {
             ...prev.formatting,
             visible: Object.keys(filteredSeries),
             isXAxis: isXAxis,
+            stack
           }
 
         }
@@ -143,17 +142,13 @@ export const Chart = ({chart}) => {
   }, [originalColors]);
 
   useEffect(() => {
-    // console.log(chartState.formatting.colors)
-    // dispatch(setActiveChart(chartState))
     if (!chartInstance) return;
-
-    // const colors = !!chartState.formatting.visible.length
-    // ?
 
     const seriesOptions = Object.keys(chartState.seriesData).map((seriesName) => ({
       name: seriesName,
       type: chartState.formatting.type_chart,
       data: chartState.seriesData[seriesName],
+      stack: chartState.formatting.stack ? 'total' : null
     }));
 
     const option = {

@@ -61,7 +61,7 @@ export const ChartList = (props) => {
           </div>
         )}
         {activeReport && <div
-          className={`${styles.wrapper} ${data.length === 2 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}>
+          className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}>
           {!isChartLoading && data[0]?.title && data.map((chart, index) => (
 
             <ChartListItem key={index} chart={chart}/>

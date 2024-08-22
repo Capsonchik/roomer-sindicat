@@ -244,23 +244,18 @@ export const Chart = ({chart}) => {
         type: 'category',
         data: chartState.xAxisData
       },
-      // Настройки анимации
-      // animation: true, // Включает анимацию
-      // animationDuration: 1000, // Продолжительность анимации в миллисекундах
-      // animationEasing: 'cubicOut', // Эффект анимации
-      // animationDelay: function (idx) {
-      //   return idx * 100; // Задержка перед анимацией каждого элемента
-      // }
     };
 
     chartInstance.setOption(option, {
-      notMerge: false,
+      notMerge: true,
+      replaceMerge: ['legend',],
       lazyUpdate: false,
+
     });
   }, [chartInstance, chartState]);
 
   const handleSave = () => {
-    console.log(originalColors)
+    // console.log(originalColors)
     const {graph_id, xAxisData, seriesData, ...rest} = chartState
     const request = {...rest, formatting: {...rest.formatting, colors: originalColors}}
     dispatch(patchChartFormatting(request)).then(() => {
@@ -269,9 +264,7 @@ export const Chart = ({chart}) => {
         dispatch(fetchAllChartsFormatByGroupId(id))
       })
     })
-    // setTitle(inputTitle)
-    // setDescription(inputDescription)
-    // onClose()
+
     dispatch(setOpenDrawer(false))
   }
 

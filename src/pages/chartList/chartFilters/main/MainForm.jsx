@@ -63,7 +63,7 @@ export const MainForm = ({chart}) => {
 
   };
 
-  // console.log(Object.entries(visibleSeries).filter(([series,bool]) => bool))
+  console.log(originalColors)
   return (
     <div className={styles.wrapper}>
       <CustomCheckPicker
@@ -78,7 +78,7 @@ export const MainForm = ({chart}) => {
           <div style={{display: "flex", alignItems: "center"}}>
             <input
               type="color"
-              value={originalColors[item.index][0]} // Используем индекс для выбора цвета
+              value={originalColors?.[item.index]?.[0]} // Используем индекс для выбора цвета
               style={{marginRight: 8}}
               onChange={(e) => handleColorChange(item.index, e.target.value)}
             />

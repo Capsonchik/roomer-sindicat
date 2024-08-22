@@ -1,5 +1,9 @@
 
-export const getSumValues = ({stack,seriesData,seriesIndex}) => {
+export const getSumValues = ({stack,seriesData,seriesIndex,ispercent}) => {
+
+  if(ispercent) {
+    return 100
+  }
   if(stack) {
     return Object.values(seriesData).reduce((acc, curr) => {
       acc += curr[seriesIndex];

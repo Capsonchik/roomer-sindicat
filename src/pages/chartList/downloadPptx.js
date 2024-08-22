@@ -17,7 +17,7 @@ export const downloadPpt = (charts) => {
 
   charts.forEach((chart, index) => {
     console.log(chart)
-    const {title, description, xAxisData, seriesData, formatting} = chart;
+    const {title, description, xAxisData, seriesData, formatting,ispercent} = chart;
     // Добавляем заголовок графика
     slide.addText(title, {
       x: xOffset,
@@ -43,9 +43,11 @@ export const downloadPpt = (charts) => {
     // })
     // )
 
-    const filteredSeriesData = Object.fromEntries(Object.entries(seriesData).filter(([name, data]) => {
-      return formatting.visible.includes(name)
-    }))
+    const filteredSeriesData = formatting.visible.length
+      ? Object.fromEntries(Object.entries(seriesData).filter(([name, data]) => {
+        return formatting.visible.includes(name)
+      }))
+      : seriesData
 
     // console.log(filteredSeriesData)
     // Подготовка данных для графика
@@ -59,11 +61,13 @@ export const downloadPpt = (charts) => {
 
     // фильтруем цвета
     const filteredColors = formatting.colors
-      ? formatting.colors.filter(([color, bool]) => bool).map(([color, bool]) => color)
+      ? formatting.colors.filter(([color, bool]) => bool).map(([color, bool]) => color).slice(0, dataForChart.length)
       : colors.slice(0, dataForChart.length)
 
+    // console.log(filteredColors)
     //определяем максимальное значение
-    const maxValue = getSumValues({stack:formatting.stack,seriesData:filteredSeriesData,seriesIndex: index})
+    const maxValue = getSumValues({stack: formatting.stack, seriesData: filteredSeriesData, seriesIndex: index,ispercent})
+    // console.log(maxValue)
 
     // Увеличиваем отступ для графика
     // yOffset += 0.5; // Увеличиваем отступ перед графиком
@@ -74,7 +78,7 @@ export const downloadPpt = (charts) => {
       w: chartWidth,
       h: chartHeight,
 
-      showValue: true,
+      // showValue: true,
       valAxisMaxVal: Math.ceil(maxValue * 1.1) ,
       valAxisMinVal: 0,
 

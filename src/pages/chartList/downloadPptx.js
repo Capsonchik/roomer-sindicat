@@ -3,6 +3,7 @@ import PptxGenJS from "pptxgenjs";
 import {prepareDataForPptx} from "./prepareDataForPptx";
 import {colors} from "./chart/config";
 import {getSumValues} from "./getSumValues";
+import {convertValuesByPercent} from "./chart/convertValuesByPercent";
 
 export const downloadPpt = (charts) => {
   const pptx = new PptxGenJS();
@@ -49,17 +50,22 @@ export const downloadPpt = (charts) => {
     yOffset += 0.3;
 
 
-    const filteredSeriesData = formatting.visible.length
+    const filteredSeriesData = !!formatting.visible.length
       ? Object.fromEntries(Object.entries(seriesData).filter(([name, data]) => {
         return formatting.visible.includes(name)
       }))
       : seriesData
 
+    const convertedSeriesData = convertValuesByPercent({
+      visibleListString: Object.keys(filteredSeriesData),
+      chart,
+      filteredSeriesData: filteredSeriesData
+    })
     // console.log(filteredSeriesData)
     // Подготовка данных для графика
     const dataForChart = prepareDataForPptx({
       xAxisData,
-      seriesData: !!formatting.visible.length ? filteredSeriesData : seriesData
+      seriesData: !!formatting.visible.length ? convertedSeriesData : seriesData
     });
 
     // Определяем направление баров в зависимости от isXAxis

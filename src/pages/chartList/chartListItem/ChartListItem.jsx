@@ -46,7 +46,7 @@ export const ChartListItem = ({chart}) => {
     const convertedSeriesData = convertValuesByPercent({
       visibleListString: Object.keys(filteredSeries),
       chart,
-      filteredSeriesData: chartState.seriesData
+      filteredSeriesData: filteredSeries
     })
 
 

@@ -1,7 +1,11 @@
 
 
 .wrapper{
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
   .visible{
-    width: 100%;
+    width: 300px;
   }
 }

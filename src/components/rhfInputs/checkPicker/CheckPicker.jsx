@@ -49,7 +49,8 @@ export const CustomCheckPicker = (
           placeholder={placeholder}
           // className={styles.select}
           renderMenuItem={renderMenuItem}
-
+          placement="bottomStart" // Начальное направление открытия меню
+          // preventOverflow={true} // Включение автоматического определения переполнения
         />
       )}
     />

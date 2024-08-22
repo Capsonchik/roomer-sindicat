@@ -8,8 +8,8 @@ const CustomToggle = (
     name,
     checked,
     onChangeOutside,
-    checkedChildren = "X Axis",
-    unCheckedChildren = "Y Axis",
+    checkedChildren = "X Ось",
+    unCheckedChildren = "Y Ось",
     className,
     size = "lg"
   }

@@ -35,6 +35,12 @@ export const Chart = ({chart}) => {
   // console.log(chart)
   const inputs = methods.watch()
 
+  // useEffect(() => {
+  //   methods.reset({
+  //     series: chart.seriesData
+  //   })
+  // }, []);
+
 
   useEffect(() => {
     const myChart = echarts.init(chartRef.current);
@@ -77,14 +83,19 @@ export const Chart = ({chart}) => {
 
   useEffect(() => {
     const handleForm = (data) => {
-      // console.log(data.seriesData)
-      let filteredSeries = chart.seriesData
+      console.log(data)
+      let filteredSeries = chartState.seriesData
+      let isXAxis = chartState.formatting.isXAxis
       // console.log('111',filteredSeries)
 
       if (data.seriesData) {
         filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).filter(([series, value]) => {
           return data.seriesData.includes(series);
         }))
+      }
+
+      if (typeof data.isXAxis !== 'undefined') {
+        isXAxis = data.isXAxis
       }
       // console.log(filteredSeries);
 
@@ -94,7 +105,8 @@ export const Chart = ({chart}) => {
           seriesData: filteredSeries,
           formatting: {
             ...prev.formatting,
-            visible: Object.keys(filteredSeries)
+            visible: Object.keys(filteredSeries),
+            isXAxis: isXAxis,
           }
 
         }
@@ -149,8 +161,12 @@ export const Chart = ({chart}) => {
       ...legendConfig,
       color: chartState.formatting.colors || Object.values(originalColors).filter(color => color[1]).map(color => color[0]),
       series: seriesOptions,
-      xAxis: {type: 'category', data: chartState.xAxisData},
-      yAxis: {type: 'value'},
+
+      xAxis: chartState.formatting.isXAxis ? {type: 'category', data: chartState.xAxisData} : {type: 'value'}, // Toggle axis
+      yAxis: chartState.formatting.isXAxis ? {type: 'value', data: chartState.xAxisData} : {
+        type: 'category',
+        data: chartState.xAxisData
+      },
     };
 
     chartInstance.setOption(option, {

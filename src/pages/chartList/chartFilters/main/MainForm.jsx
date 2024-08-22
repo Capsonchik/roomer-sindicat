@@ -5,6 +5,7 @@ import {useFormContext} from "react-hook-form";
 import {useDispatch, useSelector} from "react-redux";
 import {selectOriginalColors} from "../../../../store/chartSlice/chart.selectors";
 import {setOriginalColors} from "../../../../store/chartSlice/chart.slice";
+import CustomToggle from "../../../../components/rhfInputs/customToggle/CustomToggle";
 
 export const MainForm = ({chart}) => {
   const [series, setSeries] = useState([]);
@@ -62,7 +63,7 @@ export const MainForm = ({chart}) => {
 
   };
 
-  console.log(Object.entries(visibleSeries).filter(([series,bool]) => bool))
+  // console.log(Object.entries(visibleSeries).filter(([series,bool]) => bool))
   return (
     <div className={styles.wrapper}>
       <CustomCheckPicker
@@ -85,6 +86,7 @@ export const MainForm = ({chart}) => {
           </div>
         )}
       />
+      <CustomToggle name={'isXAxis'}/>
     </div>
   );
 };

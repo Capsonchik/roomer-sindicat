@@ -16,7 +16,7 @@ export const downloadPpt = (charts) => {
 
     charts.forEach((chart, index) => {
         console.log(chart)
-        const {title, description, xAxisData,seriesData} = chart;
+        const {title, description, xAxisData,seriesData,formatting} = chart;
         // Добавляем заголовок графика
         slide.addText(title, {
             x: xOffset,
@@ -34,9 +34,12 @@ export const downloadPpt = (charts) => {
         });
         yOffset += 0.3;
 
+        console.log(chart)
         // Подготовка данных для графика
         const dataForChart = prepareDataForPptx({xAxisData,seriesData});
-        console.log(dataForChart)
+
+        // Определяем направление баров в зависимости от isXAxis
+        const barDirection = formatting.isXAxis ? undefined : 'bar';
 
         // Увеличиваем отступ для графика
         // yOffset += 0.5; // Увеличиваем отступ перед графиком
@@ -46,6 +49,9 @@ export const downloadPpt = (charts) => {
             y: yOffset,
             w: chartWidth,
             h: chartHeight,
+
+            // Используем условное значение для направления баров
+            barDir: barDirection,
         });
 
         yOffset = yOffsetDefault; // Увеличиваем отступ после графика

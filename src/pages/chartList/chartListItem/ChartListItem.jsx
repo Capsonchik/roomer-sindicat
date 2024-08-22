@@ -94,8 +94,11 @@ export const ChartListItem = ({chart}) => {
       ...legendConfig,
       color: chartState.formatting.colors,
       series: seriesOptions,
-      xAxis: {type: 'category', data: chartState.xAxisData},
-      yAxis: {type: 'value'},
+      xAxis: chartState.formatting.isXAxis ? {type: 'category', data: chartState.xAxisData} : {type: 'value'}, // Toggle axis
+      yAxis: chartState.formatting.isXAxis ? {type: 'value', data: chartState.xAxisData} : {
+        type: 'category',
+        data: chartState.xAxisData
+      },
     };
 
     chartInstance.setOption(option, {

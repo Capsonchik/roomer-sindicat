@@ -21,7 +21,7 @@ export const ChartDrawer = ({open, onClose}) => {
   }
   return (
     <Drawer open={open} onClose={onClose} style={{maxWidth: 600, width: '100%'}}>
-      <Drawer.Body>
+      <Drawer.Body style={{maxHeight:'100% !important'}}>
         <div className={styles.wrapper}>
 
 

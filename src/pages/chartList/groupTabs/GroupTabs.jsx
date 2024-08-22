@@ -31,7 +31,7 @@ export const GroupTabs = ({groupsReports}) => {
         defaultActiveKey={defaultActiveKey}
         appearance="subtle"
         onSelect={(key) => {
-          setActiveGroup(key)
+          dispatch(setActiveGroup(key))
           dispatch(fetchAllChartsByGroupId(key)).then(() => {
             dispatch(fetchAllChartsFormatByGroupId(key))
           })

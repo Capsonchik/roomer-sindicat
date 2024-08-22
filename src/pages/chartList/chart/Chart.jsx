@@ -157,8 +157,15 @@ export const Chart = ({chart}) => {
       color: chartState.formatting.colors || Object.values(originalColors).filter(color => color[1]).map(color => color[0]),
       series: seriesOptions,
 
-      xAxis: chartState.formatting.isXAxis ? {type: 'category', data: chartState.xAxisData} : {type: 'value'}, // Toggle axis
-      yAxis: chartState.formatting.isXAxis ? {type: 'value', data: chartState.xAxisData} : {
+      xAxis: chartState.formatting.isXAxis ? {type: 'category', data: chartState.xAxisData} : {
+        type: 'value',
+        max: chartState.ispercent ? 100 : null
+      },
+      yAxis: chartState.formatting.isXAxis ? {
+        type: 'value',
+        data: chartState.xAxisData,
+        max: chartState.ispercent ? 100 : null
+      } : {
         type: 'category',
         data: chartState.xAxisData
       },

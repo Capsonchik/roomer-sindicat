@@ -56,7 +56,7 @@ export const MainForm = ({chart}) => {
   const handleColorChange = (index, newColor) => {
     const temp = [
       ...originalColors.slice(0, index),
-      [newColor, originalColors[index][1]],
+      [newColor, originalColors?.[index]?.[1]],
       ...originalColors.slice(index + 1)
     ]
     dispatch(setOriginalColors(temp))
@@ -78,7 +78,7 @@ export const MainForm = ({chart}) => {
           <div style={{display: "flex", alignItems: "center"}}>
             <input
               type="color"
-              value={originalColors?.[item.index]?.[0]} // Используем индекс для выбора цвета
+              value={originalColors?.[item.index]?.[0] || 'green'} // Используем индекс для выбора цвета
               style={{marginRight: 8}}
               onChange={(e) => handleColorChange(item.index, e.target.value)}
             />

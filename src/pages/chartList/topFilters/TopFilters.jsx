@@ -83,7 +83,7 @@ export const TopFilters = () => {
             }}
           />
         </div>
-        {!isChartLoading && activeReport && <Button
+        {!isChartLoading && activeReport && !!charts.length && <Button
           onClick={() => downloadPpt(charts)} // Передаем весь массив charts
           className={styles.save_pptx}
         >

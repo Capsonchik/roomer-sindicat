@@ -48,6 +48,7 @@ export const Chart = ({chart}) => {
     const myChart = echarts.init(chartRef.current);
     setChartInstance(myChart);
     const colorsTest = chart?.formatting?.colors || colors
+    // console.log(chart?.formatting?.colors.length,Object.keys(chart.seriesData).length)
     const colorEntrieis = colorsTest.map(color => [color, true])
     dispatch(setOriginalColors(colorEntrieis))
 

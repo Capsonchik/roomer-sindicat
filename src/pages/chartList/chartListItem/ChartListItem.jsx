@@ -24,6 +24,7 @@ export const ChartListItem = ({chart}) => {
   const [chartState, setChartState] = useState(chart)
 
 
+
   useEffect(() => {
     const myChart = echarts.init(chartRef.current);
     setChartInstance(myChart);
@@ -79,6 +80,7 @@ export const ChartListItem = ({chart}) => {
       data: chartState.seriesData[seriesName],
       stack: chartState.formatting.stack ? 'total' : null
     }));
+
 
     const option = {
       ...tooltipConfig,

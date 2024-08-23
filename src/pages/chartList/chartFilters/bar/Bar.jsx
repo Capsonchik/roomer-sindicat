@@ -1,6 +1,7 @@
 import CustomToggle from "../../../../components/rhfInputs/customToggle/CustomToggle";
 import React from "react";
 import styles from './bar.module.scss'
+import {CustomSlider} from "../../../../components/rhfInputs/customSlider/CustomSlider";
 
 export const Bar = () => {
   return (
@@ -10,6 +11,7 @@ export const Bar = () => {
         checkedChildren={'Stack'}
         unCheckedChildren={'Unstack'}
       />
+      {/*<CustomSlider name={'column_width'}/>*/}
     </div>
   )
 }

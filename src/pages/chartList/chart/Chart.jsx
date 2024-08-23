@@ -92,6 +92,7 @@ export const Chart = ({chart}) => {
       let filteredSeries = chartState.seriesData
       let isXAxis = chartState.formatting.isXAxis
       let stack = chartState.formatting.stack
+      let isVisibleSeriesChange = false
 
       if (data.seriesData) {
         filteredSeries = convertValuesByPercent({
@@ -99,6 +100,7 @@ export const Chart = ({chart}) => {
           chart,
           filteredSeriesData:chartState.seriesData
         })
+        isVisibleSeriesChange = true
 
       }
 
@@ -117,7 +119,8 @@ export const Chart = ({chart}) => {
             ...prev.formatting,
             visible: Object.keys(filteredSeries),
             isXAxis: isXAxis,
-            stack
+            stack,
+            isVisibleSeriesChange
           }
 
         }
@@ -189,8 +192,8 @@ export const Chart = ({chart}) => {
     };
 
     chartInstance.setOption(option, {
-      notMerge: false,
-      replaceMerge: ['legend','series'],
+      notMerge: !chartState.formatting.isVisibleSeriesChange,
+      replaceMerge: !chartState.formatting.isVisibleSeriesChange ? ['legend','series'] : null,
       lazyUpdate: false,
 
     });
@@ -199,7 +202,8 @@ export const Chart = ({chart}) => {
   const handleSave = () => {
     // console.log(originalColors)
     const {graph_id, xAxisData, seriesData, ...rest} = chartState
-    const request = {...rest, formatting: {...rest.formatting, colors: originalColors}}
+    const {isVisibleSeriesChange, ...restFormatting} = rest.formatting
+    const request = {...rest, formatting: {...restFormatting, colors: originalColors}}
     dispatch(patchChartFormatting(request)).then(() => {
       const id = activeGroupId || groupsReports[0].group_id
       dispatch(fetchAllChartsByGroupId(id)).then(() => {

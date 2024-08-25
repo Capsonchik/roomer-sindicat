@@ -8,7 +8,7 @@ export const ChartFilters = ({chart,test}) => {
   const {watch,trigger,formState,handleSubmit} = useFormContext()
   // console.log(chart)
   // console.log(watch)
-  console.log(chart)
+  // console.log(chart)
   return (
     <div className={styles.wrapper}>
       <MainForm chart={chart} />

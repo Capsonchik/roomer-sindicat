@@ -63,7 +63,7 @@ export const MainForm = ({chart}) => {
 
   };
 
-  console.log(originalColors)
+  // console.log(originalColors)
   return (
     <div className={styles.wrapper}>
       <CustomCheckPicker

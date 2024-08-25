@@ -1,11 +1,8 @@
 import styles from './chart.module.scss';
 import React, {useEffect, useRef, useState} from "react";
 import * as echarts from "echarts";
-import {chartOption} from "../../editorChart/chartConfig";
 import {colors, legendConfig, tooltipConfig} from "./config";
-import EditIcon from "@rsuite/icons/Edit";
 import {Button} from "rsuite";
-import {ChartDrawer} from "../chartDrawer/ChartDrawer";
 import {FormProvider, useForm} from "react-hook-form";
 import {ChartFilters} from "../chartFilters/ChartFIlters";
 import {setActiveChart, setOpenDrawer, setOriginalColors} from "../../../store/chartSlice/chart.slice";
@@ -13,7 +10,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {
   selectActiveGroupId,
   selectGroupsReports,
-  selectIsOpenDrawer,
   selectOriginalColors
 } from "../../../store/chartSlice/chart.selectors";
 import {
@@ -70,11 +66,10 @@ export const Chart = ({chart}) => {
 
 
     const convertedSeriesData = convertValuesByPercent({
-      visibleListString:Object.keys(filteredSeries),
+      visibleListString: Object.keys(filteredSeries),
       chart,
-      filteredSeriesData:chartState.seriesData
+      filteredSeriesData: chartState.seriesData
     })
-
 
 
     setChartState(prev => {
@@ -86,21 +81,37 @@ export const Chart = ({chart}) => {
     })
   }, []);
 
+  useEffect(() => {
+
+    setChartState(prev => {
+      return {
+        ...prev,
+        formatting: {
+          ...prev.formatting,
+          colors: Object.values(originalColors).filter(color => color[1]).map(color => color[0]),
+          isVisibleSeriesChange: false
+        }
+      }
+    })
+    // isColorChange.current = true
+
+
+  }, [originalColors]);
+
 
   useEffect(() => {
+    // isColorChange.current = false
     const handleForm = (data) => {
       let filteredSeries = chartState.seriesData
       let isXAxis = chartState.formatting.isXAxis
       let stack = chartState.formatting.stack
-      let isVisibleSeriesChange = false
 
       if (data.seriesData) {
         filteredSeries = convertValuesByPercent({
-          visibleListString:data.seriesData,
+          visibleListString: data.seriesData,
           chart,
-          filteredSeriesData:chartState.seriesData
+          filteredSeriesData: chartState.seriesData
         })
-        isVisibleSeriesChange = true
 
       }
 
@@ -111,6 +122,7 @@ export const Chart = ({chart}) => {
         stack = data.stack
       }
 
+      // console.log(data.seriesData,Object.keys(chartState.seriesData).length)
       setChartState(prev => {
         return {
           ...prev,
@@ -120,7 +132,7 @@ export const Chart = ({chart}) => {
             visible: Object.keys(filteredSeries),
             isXAxis: isXAxis,
             stack,
-            isVisibleSeriesChange
+            isVisibleSeriesChange: data.seriesData.length !== Object.keys(chartState.seriesData).length ? true : false
           }
 
         }
@@ -141,24 +153,11 @@ export const Chart = ({chart}) => {
     };
   }, [methods, inputs]);
 
-  useEffect(() => {
-
-    setChartState(prev => {
-      return {
-        ...prev,
-        formatting: {
-          ...prev.formatting,
-          colors: Object.values(originalColors).filter(color => color[1]).map(color => color[0])
-        }
-      }
-    })
-
-
-  }, [originalColors]);
 
   useEffect(() => {
     if (!chartInstance) return;
 
+    // console.log(chartState.formatting)
     const seriesOptions = Object.keys(chartState.seriesData).map((seriesName) => {
           // console.log(chartState.seriesData[seriesName])
           return {
@@ -192,8 +191,8 @@ export const Chart = ({chart}) => {
     };
 
     chartInstance.setOption(option, {
-      notMerge: !chartState.formatting.isVisibleSeriesChange,
-      replaceMerge: !chartState.formatting.isVisibleSeriesChange ? ['legend','series'] : null,
+      notMerge: chartState.formatting.isVisibleSeriesChange ? false : true,
+      replaceMerge: ['legend', 'series'],
       lazyUpdate: false,
 
     });

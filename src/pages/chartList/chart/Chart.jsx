@@ -132,7 +132,7 @@ export const Chart = ({chart}) => {
             visible: Object.keys(filteredSeries),
             isXAxis: isXAxis,
             stack,
-            isVisibleSeriesChange: data.seriesData.length !== Object.keys(chartState.seriesData).length ? true : false
+            isVisibleSeriesChange: !!data.seriesData && data.seriesData?.length !== Object.keys(chartState?.seriesData)?.length
           }
 
         }

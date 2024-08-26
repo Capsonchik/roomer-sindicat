@@ -24,7 +24,6 @@ export const ChartListItem = ({chart}) => {
   const [chartState, setChartState] = useState(chart)
 
 
-
   useEffect(() => {
     const myChart = echarts.init(chartRef.current);
     setChartInstance(myChart);
@@ -37,11 +36,13 @@ export const ChartListItem = ({chart}) => {
 
 
   useLayoutEffect(() => {
-    const filteredSeries = !!chart.formatting.visible.length
+    const filteredSeries = !!chart.formatting?.visible?.length
       ? Object.fromEntries(Object.entries(chart.seriesData).filter(([series, value]) => {
         return chart.formatting.visible.includes(series);
       }))
       : chart.seriesData
+
+    // console.log(chart)
 
 
     const convertedSeriesData = convertValuesByPercent({
@@ -51,7 +52,7 @@ export const ChartListItem = ({chart}) => {
     })
 
 
-    const filteredColors = !!chart.formatting.colors
+    const filteredColors = !!chart?.formatting?.colors
       ? chart.formatting.colors.filter(([series, value]) => value).map(([series, value]) => series)
       : colors
 
@@ -80,12 +81,25 @@ export const ChartListItem = ({chart}) => {
       data: chartState.seriesData[seriesName],
       stack: chartState.formatting.stack ? 'total' : null
     }));
+    console.log(seriesOptions)
 
 
     const option = {
       ...tooltipConfig,
       ...legendConfig,
       color: chartState.formatting.colors,
+      // series: {
+      //   type: "bar",
+      //   radius: '50%',
+      //   data: seriesOptions,
+      //   // emphasis: {
+      //   //   itemStyle: {
+      //   //     shadowBlur: 10,
+      //   //     shadowOffsetX: 0,
+      //   //     shadowColor: 'rgba(0, 0, 0, 0.5)'
+      //   //   }
+      //   // }
+      // },
       series: seriesOptions,
       barCategoryGap: chartState.formatting.column_width,
       xAxis: chartState.formatting.isXAxis

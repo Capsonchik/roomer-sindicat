@@ -1,18 +1,55 @@
 
-
-.wrapper{
+.wrapper {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
-  .visible{
+  .visible {
     width: 300px;
     //max-height: 200px;
   }
-  .title{
-    margin-bottom: 16px;
-  }
-  .row{
+
+
+  .row {
     display: flex;
     align-items: center;
     gap: 16px;
+    flex-grow: 1;
+
+
+    .input_wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-grow: 1;
+      height: 80px;
+
+      .type_chart{
+        width: 120px;
+      }
+      .input{
+        margin:  auto 0;
+        position: relative;
+        &.slider{
+          width: 224px;
+        }
+      }
+
+      .label_input{
+
+      }
+
+      .title_input {
+        flex-grow: 1;
+      }
+
+      &.data_wrapper{
+        flex-grow: 0;
+        .title_input {
+          flex-grow: 0;
+        }
+      }
+    }
   }
 }

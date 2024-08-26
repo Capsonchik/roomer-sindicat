@@ -17,6 +17,7 @@ import {
 import {ChartDrawer} from "./chartDrawer/ChartDrawer";
 import {setOpenDrawer} from "../../store/chartSlice/chart.slice";
 import {ChartListItem} from "./chartListItem/ChartListItem";
+// import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
   const dispatch = useDispatch();
@@ -76,14 +77,20 @@ export const ChartList = (props) => {
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>
-        )}
-        {activeReport && <div
+        )}{activeReport && <div
           className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}>
           {!isChartLoading && data[0]?.title && data.map((chart, index) => (
 
             <ChartListItem key={index} chart={chart}/>
           ))}
         </div>}
+        {/*{activeReport && <div*/}
+        {/*  className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}>*/}
+        {/*  {!isChartLoading && data[0]?.title && data.map((chart, index) => (*/}
+
+        {/*    <ChartListItem key={index} chart={chart}/>*/}
+        {/*  ))}*/}
+        {/*</div>}*/}
 
 
       </div>

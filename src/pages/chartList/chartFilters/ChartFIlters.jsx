@@ -3,6 +3,7 @@ import styles from './chartFilters.module.scss'
 import {MainForm} from "./main/MainForm";
 import {useFormContext} from "react-hook-form";
 import {Bar} from "./bar/Bar";
+import {Label} from "./label/Label";
 
 export const ChartFilters = ({chart,test}) => {
   const {watch,trigger,formState,handleSubmit} = useFormContext()
@@ -15,6 +16,7 @@ export const ChartFilters = ({chart,test}) => {
       {typeof chart.formatting.stack !== 'undefined' && (
         <Bar/>
       )}
+      <Label/>
     </div>
   )
 }

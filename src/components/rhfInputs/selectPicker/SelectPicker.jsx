@@ -34,6 +34,7 @@ export const CustomSelectPicker = (
           }}
           searchable={searchable}
           appearance={appearance}
+
           placeholder={placeholder}
           className={className || styles.type}
         />

@@ -36,7 +36,12 @@ export const Chart = ({chart}) => {
     methods.reset({
       isXAxis: chart.formatting.isXAxis,
       stack: chart.formatting.stack,
-      column_width: chart.formatting.column_width
+      column_width: chart.formatting.column_width,
+      column_gap: chart.formatting.column_gap,
+      title: chart.title,
+      label_position: chart.formatting.label_position,
+      label_size: chart.formatting.label_size,
+      // type_chart: chart.formatting.type_chart,
     })
   }, []);
 
@@ -107,6 +112,10 @@ export const Chart = ({chart}) => {
       let isXAxis = chartState.formatting.isXAxis
       let stack = chartState.formatting.stack
       let column_width = chartState.formatting.column_width
+      let column_gap = chartState.formatting.column_gap
+      let label_position = chartState.formatting.label_position
+      let label_size = chartState.formatting.label_size
+      // let type_chart = chartState.formatting.type_chart
 
       if (data.seriesData) {
         filteredSeries = convertValuesByPercent({
@@ -126,6 +135,18 @@ export const Chart = ({chart}) => {
       if (typeof data.column_width !== 'undefined') {
         column_width = data.column_width
       }
+      if (typeof data.column_gap !== 'undefined') {
+        column_gap = data.column_gap
+      }
+      if (typeof data.label_position !== 'undefined') {
+        label_position = data.label_position
+      }
+      if (typeof data.label_size !== 'undefined') {
+        label_size = data.label_size
+      }
+      // if (typeof data.type_chart !== 'undefined') {
+      //   type_chart = data.type_chart
+      // }
       console.log(data)
       // console.log(data.seriesData,Object.keys(chartState.seriesData).length)
       setChartState(prev => {
@@ -138,7 +159,11 @@ export const Chart = ({chart}) => {
             isXAxis: isXAxis,
             stack,
             isVisibleSeriesChange: !!data.seriesData && data.seriesData?.length !== Object.keys(chartState?.seriesData)?.length,
-            column_width
+            column_width,
+            column_gap,
+            label_position,
+            label_size,
+            // type_chart
           }
 
         }
@@ -179,9 +204,16 @@ export const Chart = ({chart}) => {
     const option = {
       ...tooltipConfig,
       ...legendConfig,
+      label: {
+        show: true,
+        position: chartState.formatting.label_position,
+        verticalAlign: 'middle',
+        fontSize: chartState.formatting.label_size
+      },
       color: chartState.formatting.colors || Object.values(originalColors).filter(color => color[1]).map(color => color[0]),
       series: seriesOptions,
-      barCategoryGap: chartState.formatting.column_width,
+      barCategoryGap: `${50 - chartState.formatting.column_width} %`,
+      barGap: `${chartState.formatting.column_gap} %`,
 
       xAxis: chartState.formatting.isXAxis ? {type: 'category', data: chartState.xAxisData} : {
         type: 'value',

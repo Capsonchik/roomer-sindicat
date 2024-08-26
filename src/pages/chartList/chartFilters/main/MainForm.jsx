@@ -6,6 +6,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectOriginalColors} from "../../../../store/chartSlice/chart.selectors";
 import {setOriginalColors} from "../../../../store/chartSlice/chart.slice";
 import CustomToggle from "../../../../components/rhfInputs/customToggle/CustomToggle";
+import {CustomInput} from "../../../../components/rhfInputs/customInput/CustomInput";
+import cl from 'classnames'
+import {CustomSelectPicker} from "../../../../components/rhfInputs/selectPicker/SelectPicker";
+import {labelArray} from "../../label.config";
 
 export const MainForm = ({chart}) => {
   const [series, setSeries] = useState([]);
@@ -68,30 +72,49 @@ export const MainForm = ({chart}) => {
     <div className={styles.wrapper}>
       <h6 className={styles.title}>Основное</h6>
       <div className={styles.row}>
-        <label>Название</label>
+        <div className={styles.input_wrapper}>
+          <label className={styles.label_input}>Название</label>
+          <CustomInput name={'title'} className={styles.title_input}/>
+        </div>
       </div>
       <div className={styles.row}>
-        <CustomCheckPicker
-          className={styles.visible}
-          name={"seriesData"}
-          data={Object.keys(series).map((item, index) => {
-            return {value: item, label: item, index}; // Передаем индекс в объекте
-          })}
-          onChangeOutside={handleSeriesChange}
-          value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
-          renderMenuItem={(label, item) => (
-            <div style={{display: "flex", alignItems: "center"}}>
-              <input
-                type="color"
-                value={originalColors?.[item.index]?.[0] || 'green'} // Используем индекс для выбора цвета
-                style={{marginRight: 8}}
-                onChange={(e) => handleColorChange(item.index, e.target.value)}
-              />
-              {label}
-            </div>
-          )}
-        />
-        <CustomToggle name={'isXAxis'}/>
+        <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
+          <label className={styles.label_input}>Данные</label>
+          <CustomCheckPicker
+            className={styles.visible}
+            name={"seriesData"}
+            data={Object.keys(series).map((item, index) => {
+              return {value: item, label: item, index}; // Передаем индекс в объекте
+            })}
+            onChangeOutside={handleSeriesChange}
+            value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
+            renderMenuItem={(label, item) => (
+              <div style={{display: "flex", alignItems: "center"}}>
+                <input
+                  type="color"
+                  value={originalColors?.[item.index]?.[0] || 'green'} // Используем индекс для выбора цвета
+                  style={{marginRight: 8}}
+                  onChange={(e) => handleColorChange(item.index, e.target.value)}
+                />
+                {label}
+              </div>
+            )}
+          />
+        </div>
+        <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
+          <label className={styles.label_input}>Ориентация</label>
+          <CustomToggle name={'isXAxis'}/>
+        </div>
+        {/*<div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>*/}
+        {/*  <label className={styles.label_input}>Тип графика</label>*/}
+        {/*  <CustomSelectPicker*/}
+        {/*    name={'type_chart'}*/}
+        {/*    data={['bar', 'pie'].map((item) => ({label: item, value: item}))}*/}
+        {/*    searchable={false}*/}
+        {/*    placeholder="Тип графика"*/}
+        {/*    className={styles.type_chart}*/}
+        {/*  />*/}
+        {/*</div>*/}
       </div>
 
 

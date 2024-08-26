@@ -133,7 +133,7 @@ export const ChartListItem = ({chart}) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.title_wrapper}>
-        <h6>{chart.title}</h6>
+        <h5>{chart.title}</h5>
         <Button onClick={() => {
           dispatch(setActiveChart(chart))
           dispatch(setOpenDrawer(true))

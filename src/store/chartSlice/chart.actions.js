@@ -128,3 +128,17 @@ export const patchChartFormatting = createAsyncThunk(
     }
   }
 );
+export const patchGroupById = createAsyncThunk(
+  'chart/patchGroupById',
+  async (rest) => {
+    try {
+      const response = await axiosGraphRequest.patch(`/api/v2/echart_graphs/update_echart_group`,rest);
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);

@@ -1,0 +1,13 @@
+.wrapper{
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .label{
+    margin-bottom: 12px;
+  }
+  .patch_btn{
+    margin-top: 30px;
+  }
+}

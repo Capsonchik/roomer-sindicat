@@ -8,15 +8,17 @@ import {TopFilters} from "./topFilters/TopFilters";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchAllClients} from "../../store/chartSlice/chart.actions";
 import {
-  selectActiveClient, selectActiveReport,
+  selectActiveClient, selectActiveGroupId, selectActiveReport,
   selectCharts,
   selectClients, selectGroupsReports,
   selectIsChartLoading, selectIsOpenDrawer,
   selectReportsClients
 } from "../../store/chartSlice/chart.selectors";
 import {ChartDrawer} from "./chartDrawer/ChartDrawer";
-import {setOpenDrawer} from "../../store/chartSlice/chart.slice";
+import {setActiveChart, setOpenDrawer} from "../../store/chartSlice/chart.slice";
 import {ChartListItem} from "./chartListItem/ChartListItem";
+import {GroupDrawer} from "./groupDrawer/GroupDrawer";
+import EditIcon from "@rsuite/icons/Edit";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -26,23 +28,30 @@ export const ChartList = (props) => {
   const activeClient = useSelector(selectActiveClient)
   const activeReport = useSelector(selectActiveReport)
   const isOpenDrawer = useSelector(selectIsOpenDrawer)
+  const activeGroupId = useSelector(selectActiveGroupId)
+  const groups = useSelector(selectGroupsReports);
+  const [activeGroup, setActiveGroup] = useState()
   const [data, setData] = useState(charts)
   const [placeholderText, setPlaceholderText] = useState('')
-  // const [openDrawer, setOpenDrawer] = useState(false)
+  const [openGroupDrawer, setOpenGroupDrawer] = useState(false)
 
   useEffect(() => {
-    if(!activeClient) {
+    const foundGroup = groups.find((group) => group.group_id == activeGroupId)
+    setActiveGroup(foundGroup)
+
+  }, [activeGroupId,groups])
+
+  useEffect(() => {
+    if (!activeClient) {
       setPlaceholderText('Выберите клиента')
-    }
-    else if(!activeReport) {
+    } else if (!activeReport) {
       setPlaceholderText('Выберите отчет')
-    }
-    else {
+    } else {
       setPlaceholderText('')
     }
 
 
-  }, [activeClient,activeReport]);
+  }, [activeClient, activeReport]);
 
   useEffect(() => {
     setData(charts)
@@ -50,21 +59,21 @@ export const ChartList = (props) => {
   // console.log(data)
 
   // Добавьте хук useEffect для отслеживания изменения размера окна
-  useEffect(() => {
-    console.log(11)
-    const handleResize = () => {
-      // Обновите состояние, чтобы вызвать перерендеринг
-      setData([...charts]); // Перерендеринг списка
-    };
-
-    // Добавляем слушатель события resize
-    window.addEventListener('resize', handleResize);
-
-    // Удаляем слушатель при размонтировании компонента
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [charts]); // Зависимость от charts, чтобы следить за изменениями данных
+  // useEffect(() => {
+  //   console.log(11)
+  //   const handleResize = () => {
+  //     // Обновите состояние, чтобы вызвать перерендеринг
+  //     setData([...charts]); // Перерендеринг списка
+  //   };
+  //
+  //   // Добавляем слушатель события resize
+  //   window.addEventListener('resize', handleResize);
+  //
+  //   // Удаляем слушатель при размонтировании компонента
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // }, [charts]); // Зависимость от charts, чтобы следить за изменениями данных
 
 
   return (
@@ -77,8 +86,23 @@ export const ChartList = (props) => {
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>
-        )}{activeReport && <div
+        )}
+        {activeReport && !isChartLoading && (
+          <div className={styles.group_wrapper}>
+            <Button onClick={() => {
+              setOpenGroupDrawer(true)
+              // dispatch(setActiveChart(chart))
+              // dispatch(setOpenDrawer(true))
+            }}>
+              <EditIcon/>
+            </Button>
+            <h6 className={styles.title_group}>{activeGroup?.description}</h6>
+
+          </div>
+        )}
+        {activeReport && <div
           className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}>
+
           {!isChartLoading && data[0]?.title && data.map((chart, index) => (
 
             <ChartListItem key={index} chart={chart}/>
@@ -111,9 +135,13 @@ export const ChartList = (props) => {
           open={isOpenDrawer}
           onClose={() => dispatch(setOpenDrawer(false))}
         />
+        <GroupDrawer
+          activeGroup={activeGroup}
+          open={openGroupDrawer}
+          onClose={() => setOpenGroupDrawer(false)}
+        />
 
       </div>
-
 
 
     </>

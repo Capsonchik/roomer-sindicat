@@ -1,12 +1,12 @@
 import styles from './topFilters.module.scss'
 import {useDispatch, useSelector} from "react-redux";
 import {
-  selectActiveClient, selectActiveReport, selectCharts,
+  selectActiveClient, selectActiveGroupId, selectActiveReport, selectCharts,
   selectClients,
   selectGroupsReports, selectIsChartLoading,
   selectReportsClients
 } from "../../../store/chartSlice/chart.selectors";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
   fetchAllClients, fetchAllGroups,
 
@@ -27,8 +27,17 @@ export const TopFilters = () => {
   const groupsReports = useSelector(selectGroupsReports)
   const activeClient = useSelector(selectActiveClient)
   const activeReport = useSelector(selectActiveReport)
+  const activeGroupId = useSelector(selectActiveGroupId)
   const charts = useSelector(selectCharts)
   const isChartLoading = useSelector(selectIsChartLoading)
+  const [activeGroup, setActiveGroup] = useState()
+  const groups = useSelector(selectGroupsReports);
+
+  useEffect(() => {
+    const foundGroup = groups.find((group) => group.group_id == activeGroupId)
+    setActiveGroup(foundGroup)
+
+  }, [activeGroupId,groups])
 
   useEffect(() => {
     dispatch(fetchAllClients())
@@ -84,7 +93,7 @@ export const TopFilters = () => {
           />
         </div>
         {!isChartLoading && activeReport && !!charts.length && <Button
-          onClick={() => downloadPpt(charts)} // Передаем весь массив charts
+          onClick={() => downloadPpt(charts,activeGroup)} // Передаем весь массив charts
           className={styles.save_pptx}
         >
           Скачать редактируемый pptx

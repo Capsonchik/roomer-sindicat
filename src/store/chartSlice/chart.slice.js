@@ -5,7 +5,7 @@ import {
   // fetchAllGroups,
   fetchAllReports,
   fetchChartById,
-  patchChartById
+  patchChartById, patchGroupById
 } from "./chart.actions";
 import {fa} from "@faker-js/faker";
 
@@ -108,6 +108,9 @@ export const chartSlice = createSlice({
       .addCase(patchChartById.pending, (state, action) => {
         state.saveChartLoading = true
       })
+      // .addCase(patchGroupById.fulfilled, (state, action) => {
+      //   state.saveChartLoading = false
+      // })
 
   }
 })

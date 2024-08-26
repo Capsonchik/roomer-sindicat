@@ -12,7 +12,9 @@ export const CustomSelectPicker = (
     onChangeOutside,
     className,
     searchable = false,
-    appearance = "default"
+    appearance = "default",
+    container,
+    preventOverflow
   }
 ) => {
   const {control} = useFormContext();
@@ -34,9 +36,11 @@ export const CustomSelectPicker = (
           }}
           searchable={searchable}
           appearance={appearance}
-
+          placement="topEnd"
           placeholder={placeholder}
           className={className || styles.type}
+          container={container}
+          preventOverflow
         />
       )}
     />

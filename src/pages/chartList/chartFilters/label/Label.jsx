@@ -6,6 +6,7 @@ import {SelectPicker} from "rsuite";
 import {labelArray} from "../../label.config";
 import cl from "classnames";
 import {CustomSlider} from "../../../../components/rhfInputs/customSlider/CustomSlider";
+import {PreventOverflowContainer} from "../main/MainForm";
 
 export const Label = () => {
   return (
@@ -14,13 +15,20 @@ export const Label = () => {
       <div className={styles.row}>
         <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
           <label className={styles.label_input}>Положение</label>
-          <CustomSelectPicker
-            name={'label_position'}
-            data={labelArray.map((item) => ({label: item, value: item}))}
-            searchable={false}
-            placeholder="Положение label"
-            className={styles.position}
-          />
+          <PreventOverflowContainer>
+            {getContainer => (
+              <CustomSelectPicker
+                name={'label_position'}
+                data={labelArray.map((item) => ({label: item, value: item}))}
+                searchable={false}
+                placeholder="Положение label"
+                className={styles.position}
+                container={getContainer}
+                preventOverflow
+              />
+            )}
+
+          </PreventOverflowContainer>
         </div>
         <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
           <label className={styles.label_input}>Размер шрифта</label>

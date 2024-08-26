@@ -62,7 +62,8 @@ export const ChartListItem = ({chart}) => {
         seriesData: convertedSeriesData,
         formatting: {
           ...prev.formatting,
-          colors: filteredColors
+          colors: filteredColors,
+
         }
 
       }
@@ -88,6 +89,12 @@ export const ChartListItem = ({chart}) => {
       ...tooltipConfig,
       ...legendConfig,
       color: chartState.formatting.colors,
+      label: {
+        show: true,
+        position: chartState.formatting.label_position,
+        verticalAlign: 'middle',
+        fontSize: chartState.formatting.label_size
+      },
       // series: {
       //   type: "bar",
       //   radius: '50%',
@@ -100,8 +107,11 @@ export const ChartListItem = ({chart}) => {
       //   //   }
       //   // }
       // },
+      // column_width: chartState.formatting.column_width,
+      // column_gap: chartState.formatting.column_gap,
       series: seriesOptions,
-      barCategoryGap: chartState.formatting.column_width,
+      barCategoryGap: `${50 - chartState.formatting.column_width} %`,
+      barGap: `${chartState.formatting.column_gap} %`,
       xAxis: chartState.formatting.isXAxis
         ? {type: 'category', data: chartState.xAxisData}
         : {type: 'value', max: chartState.ispercent ? 100 : null}, // Toggle axis

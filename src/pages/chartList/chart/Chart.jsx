@@ -114,7 +114,7 @@ export const Chart = ({chart}) => {
       let column_width = chartState.formatting.column_width
       let column_gap = chartState.formatting.column_gap
       let label_position = chartState.formatting.label_position
-      let label_size = chartState.formatting.label_size
+      let label_size = chartState.formatting.label_size || 16
       // let type_chart = chartState.formatting.type_chart
 
       if (data.seriesData) {
@@ -153,6 +153,7 @@ export const Chart = ({chart}) => {
         return {
           ...prev,
           seriesData: filteredSeries,
+          title: data.title || chartState.title,
           formatting: {
             ...prev.formatting,
             visible: Object.keys(filteredSeries),

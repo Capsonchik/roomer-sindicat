@@ -11,23 +11,58 @@ import cl from 'classnames'
 import {CustomSelectPicker} from "../../../../components/rhfInputs/selectPicker/SelectPicker";
 import {labelArray} from "../../label.config";
 
+
+export function PreventOverflowContainer({children, height = 500}) {
+  const container = React.useRef();
+  const content = React.useRef();
+
+  const containerStyle = {
+    // overflow: 'auto',
+    position: 'relative',
+    // top:50
+  };
+
+  const contentStyle = {
+    // height: '300px',
+    // width: '230%',
+    // top: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'wrap'
+  };
+
+  React.useEffect(() => {
+    container.current.scrollTop = content.current.clientHeight / 2 - 60;
+    container.current.scrollLeft =
+      content.current.clientWidth / 2 - container.current.clientWidth / 2;
+  }, [container, content]);
+
+  return (
+    <div style={{...containerStyle, height}} ref={container}>
+      <div style={contentStyle} ref={content}>
+        {children(() => container.current)}
+      </div>
+    </div>
+  );
+}
+
 export const MainForm = ({chart}) => {
   const [series, setSeries] = useState([]);
   const dispatch = useDispatch();
   const originalColors = useSelector(selectOriginalColors)
   const {setValue, watch} = useFormContext();
   const [visibleSeries, setVisibleSeries] = useState([])
-   // Изначально все серии видимы
+  // Изначально все серии видимы
   // console.log(originalColors)
   useEffect(() => {
-    if(!chart.formatting.visible.length) {
+    if (!chart.formatting.visible.length) {
       setVisibleSeries(
         Object.fromEntries(
           Object.keys(chart.seriesData).map((name) => [name, true])
         )
       );
-    }
-    else {
+    } else {
       setVisibleSeries(
         Object.fromEntries(
           Object.keys(chart.seriesData).map((name) => [name, chart.formatting.visible.includes(name)])
@@ -49,7 +84,7 @@ export const MainForm = ({chart}) => {
     const temp = originalColors.slice()
     Object.values(newVisibleSeries).forEach((bool, index) => {
       // console.log([temp[index][0],value.includes(name)])
-      temp[index] = [temp[index][0],bool]
+      temp[index] = [temp[index][0], bool]
     })
     dispatch(setOriginalColors(temp))
     // console.log(temp)
@@ -80,26 +115,36 @@ export const MainForm = ({chart}) => {
       <div className={styles.row}>
         <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
           <label className={styles.label_input}>Данные</label>
-          <CustomCheckPicker
-            className={styles.visible}
-            name={"seriesData"}
-            data={Object.keys(series).map((item, index) => {
-              return {value: item, label: item, index}; // Передаем индекс в объекте
-            })}
-            onChangeOutside={handleSeriesChange}
-            value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
-            renderMenuItem={(label, item) => (
-              <div style={{display: "flex", alignItems: "center"}}>
-                <input
-                  type="color"
-                  value={originalColors?.[item.index]?.[0] || 'green'} // Используем индекс для выбора цвета
-                  style={{marginRight: 8}}
-                  onChange={(e) => handleColorChange(item.index, e.target.value)}
-                />
-                {label}
-              </div>
+          <PreventOverflowContainer>
+            {getContainer => (
+              <CustomCheckPicker
+                className={styles.visible}
+                // placement={'bottomStart'}
+                name={"seriesData"}
+                data={Object.keys(series).map((item, index) => {
+                  return {value: item, label: item, index}; // Передаем индекс в объекте
+                })}
+                onChangeOutside={handleSeriesChange}
+                value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
+                renderMenuItem={(label, item) => (
+                  <div style={{display: "flex", alignItems: "center"}}>
+                    <input
+                      type="color"
+                      value={originalColors?.[item.index]?.[0] || 'green'} // Используем индекс для выбора цвета
+                      style={{marginRight: 8}}
+                      onChange={(e) => handleColorChange(item.index, e.target.value)}
+                    />
+                    {label}
+                  </div>
+                )}
+                style={{ width: 224 }}
+                container={getContainer}
+                preventOverflow
+              />
             )}
-          />
+
+          </PreventOverflowContainer>
+
         </div>
         <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
           <label className={styles.label_input}>Ориентация</label>

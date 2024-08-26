@@ -36,7 +36,7 @@ export const CustomSelectPicker = (
           }}
           searchable={searchable}
           appearance={appearance}
-          placement="topEnd"
+          placement="bottomStart"
           placeholder={placeholder}
           className={className || styles.type}
           container={container}

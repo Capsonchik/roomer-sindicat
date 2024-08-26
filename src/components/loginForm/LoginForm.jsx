@@ -1,47 +1,47 @@
 import styles from './styles.module.scss';
-import {Button, ButtonToolbar, Form, Loader} from "rsuite";
+import {Button, ButtonToolbar, Form, Message, useToaster} from "rsuite";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
-import {selectIsAuth, selectLogInLoader} from "../../store/main.selectors";
+import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-
-import {setCurrentUser, setRole, setUserName} from "../../store/userSlice/userSlice";
-import {selectRole, selectCurrentUser, selectUserLoader} from "../../store/userSlice/user.selectors";
-import {fetchLogIn} from "../../store/main.actions";
+import {selectUserLoader} from "../../store/userSlice/user.selectors";
+import Cookies from "js-cookie";
+import {setRole} from "../../store/userSlice/userSlice";
 
 export const LoginForm = () => {
-  const dispatch = useDispatch();
-  const isAuth = useSelector(selectIsAuth);
-  const logInLoader = useSelector(selectLogInLoader);
   const userLoader = useSelector(selectUserLoader);
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
+  const placement = 'topEnd';
+  const toaster = useToaster();
+  const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   });
 
-  // useEffect(() => {
-  //   isAuth ? navigate("/main") : navigate("/");
-  // }, [isAuth, navigate]);
-
+  const message = (
+    <Message showIcon type={'error'} closable>
+      <strong>Неверный логин или пароль</strong>
+    </Message>
+  );
   const handleFormSubmit = () => {
-    // if(formData.username === 'admin') {
-    //   dispatch(setRole('admin'))
-    //   dispatch(setCurrentUser(formData))
-    // } else {
-    //   dispatch(setRole('user'))
-    //   dispatch(setCurrentUser(formData))
-    // }
-    // console.log(formData)
-    setLoader(true)
-    // dispatch(fetchLogIn(formData))
+    setLoader(true);
     setTimeout(() => {
-      setLoader(false);
-      navigate("/main")
-    }, 3000);
-    // console.log(formData);
-    // navigate("/main")
+      if(formData.username === 'user' && formData.password === 'user') {
+        Cookies.set('syndicateAuthToken', formData.username, {expires: 3});
+        dispatch(setRole('user'))
+        setLoader(false);
+        navigate('/main');
+      } else if(formData.username === 'admin' && formData.password === 'admin') {
+        Cookies.set('syndicateAuthToken', formData.username, {expires: 3});
+        dispatch(setRole('admin'))
+        setLoader(false);
+        navigate('/main');
+      } else {
+        toaster.push(message, {placement, duration: 3000});
+        setLoader(false);
+      }
+    }, 2000)
   };
 
   const handleInputChange = (value, name) => {

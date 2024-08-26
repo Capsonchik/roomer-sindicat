@@ -2,11 +2,17 @@
 
 .wrapper{
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 16px;
+
   .visible{
     width: 300px;
     //max-height: 200px;
+  }
+  .title{
+    margin-bottom: 16px;
+  }
+  .row{
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
 }

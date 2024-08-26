@@ -46,7 +46,24 @@ export const ChartList = (props) => {
   useEffect(() => {
     setData(charts)
   }, [charts])
-  console.log(data)
+  // console.log(data)
+
+  // Добавьте хук useEffect для отслеживания изменения размера окна
+  useEffect(() => {
+    console.log(11)
+    const handleResize = () => {
+      // Обновите состояние, чтобы вызвать перерендеринг
+      setData([...charts]); // Перерендеринг списка
+    };
+
+    // Добавляем слушатель события resize
+    window.addEventListener('resize', handleResize);
+
+    // Удаляем слушатель при размонтировании компонента
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [charts]); // Зависимость от charts, чтобы следить за изменениями данных
 
 
   return (

@@ -66,27 +66,34 @@ export const MainForm = ({chart}) => {
   // console.log(originalColors)
   return (
     <div className={styles.wrapper}>
-      <CustomCheckPicker
-        className={styles.visible}
-        name={"seriesData"}
-        data={Object.keys(series).map((item, index) => {
-          return {value: item, label: item, index}; // Передаем индекс в объекте
-        })}
-        onChangeOutside={handleSeriesChange}
-        value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
-        renderMenuItem={(label, item) => (
-          <div style={{display: "flex", alignItems: "center"}}>
-            <input
-              type="color"
-              value={originalColors?.[item.index]?.[0] || 'green'} // Используем индекс для выбора цвета
-              style={{marginRight: 8}}
-              onChange={(e) => handleColorChange(item.index, e.target.value)}
-            />
-            {label}
-          </div>
-        )}
-      />
-      <CustomToggle name={'isXAxis'}/>
+      <h6 className={styles.title}>Основное</h6>
+      <div className={styles.row}>
+        <label>Название</label>
+      </div>
+      <div className={styles.row}>
+        <CustomCheckPicker
+          className={styles.visible}
+          name={"seriesData"}
+          data={Object.keys(series).map((item, index) => {
+            return {value: item, label: item, index}; // Передаем индекс в объекте
+          })}
+          onChangeOutside={handleSeriesChange}
+          value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
+          renderMenuItem={(label, item) => (
+            <div style={{display: "flex", alignItems: "center"}}>
+              <input
+                type="color"
+                value={originalColors?.[item.index]?.[0] || 'green'} // Используем индекс для выбора цвета
+                style={{marginRight: 8}}
+                onChange={(e) => handleColorChange(item.index, e.target.value)}
+              />
+              {label}
+            </div>
+          )}
+        />
+        <CustomToggle name={'isXAxis'}/>
+      </div>
+
 
     </div>
   );

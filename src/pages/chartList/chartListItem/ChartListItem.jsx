@@ -87,6 +87,7 @@ export const ChartListItem = ({chart}) => {
       ...legendConfig,
       color: chartState.formatting.colors,
       series: seriesOptions,
+      barCategoryGap: chartState.formatting.column_width,
       xAxis: chartState.formatting.isXAxis
         ? {type: 'category', data: chartState.xAxisData}
         : {type: 'value', max: chartState.ispercent ? 100 : null}, // Toggle axis

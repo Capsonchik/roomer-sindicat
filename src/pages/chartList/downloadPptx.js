@@ -97,6 +97,7 @@ export const downloadPpt = (charts) => {
       // Используем условное значение для направления баров
       barDir: barDirection,
       barGrouping: formatting.stack ? 'stacked' : 'standard',
+      barGapWidthPct: Math.min(100, Math.max(0, parseFloat(chart.formatting.column_width) * 1)),  // Преобразование значения barCategoryGap в barGapWidthPct
     });
 
     if(index === 1 && charts.length === 4) {

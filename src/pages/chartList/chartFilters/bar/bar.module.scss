@@ -1,5 +1,23 @@
 
+.wrapper {
+  .title {
+    margin-bottom: 16px;
+  }
 
-.wrapper{
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 
+    .width_bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+        flex-grow: 1;
+
+      .slider {
+        flex-grow: 1;
+      }
+    }
+  }
 }

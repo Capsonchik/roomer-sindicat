@@ -35,7 +35,8 @@ export const Chart = ({chart}) => {
   useEffect(() => {
     methods.reset({
       isXAxis: chart.formatting.isXAxis,
-      stack: chart.formatting.stack
+      stack: chart.formatting.stack,
+      column_width: chart.formatting.column_width
     })
   }, []);
 
@@ -105,6 +106,7 @@ export const Chart = ({chart}) => {
       let filteredSeries = chartState.seriesData
       let isXAxis = chartState.formatting.isXAxis
       let stack = chartState.formatting.stack
+      let column_width = chartState.formatting.column_width
 
       if (data.seriesData) {
         filteredSeries = convertValuesByPercent({
@@ -121,7 +123,10 @@ export const Chart = ({chart}) => {
       if (typeof data.stack !== 'undefined') {
         stack = data.stack
       }
-
+      if (typeof data.column_width !== 'undefined') {
+        column_width = data.column_width
+      }
+      console.log(data)
       // console.log(data.seriesData,Object.keys(chartState.seriesData).length)
       setChartState(prev => {
         return {
@@ -132,7 +137,8 @@ export const Chart = ({chart}) => {
             visible: Object.keys(filteredSeries),
             isXAxis: isXAxis,
             stack,
-            isVisibleSeriesChange: !!data.seriesData && data.seriesData?.length !== Object.keys(chartState?.seriesData)?.length
+            isVisibleSeriesChange: !!data.seriesData && data.seriesData?.length !== Object.keys(chartState?.seriesData)?.length,
+            column_width
           }
 
         }
@@ -175,6 +181,7 @@ export const Chart = ({chart}) => {
       ...legendConfig,
       color: chartState.formatting.colors || Object.values(originalColors).filter(color => color[1]).map(color => color[0]),
       series: seriesOptions,
+      barCategoryGap: chartState.formatting.column_width,
 
       xAxis: chartState.formatting.isXAxis ? {type: 'category', data: chartState.xAxisData} : {
         type: 'value',

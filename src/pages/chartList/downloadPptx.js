@@ -116,7 +116,7 @@ export const downloadPpt = (charts, activeGroup) => {
       // valAxisLineColor: '#ccc',
       valGridLine: {
         size: 0.5,
-        color: '#FF0000'
+        // color: '#FF0000'
       },
       // catGridLine: {
       //   size: 0.5,

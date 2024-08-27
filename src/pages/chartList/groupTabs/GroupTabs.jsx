@@ -21,6 +21,7 @@ export const GroupTabs = ({groupsReports}) => {
   useEffect(() => {
     dispatch(fetchAllChartsByGroupId(activeKey)).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(activeKey))
+      dispatch(setActiveGroup(activeKey))
     })
   }, [groupsReports]);
 

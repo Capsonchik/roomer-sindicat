@@ -7,14 +7,25 @@ import {selectStartPage} from "./store/main.selectors";
 import {AuthForm} from "./components/authForm/AuthForm";
 import {setStartPage} from "./store/main.slice";
 import {PreviewDrawer} from "./components/drawers/PreviewDrower/PreviewDrawer";
+import {useEffect} from "react";
+import Cookies from "js-cookie";
+import {useNavigate} from "react-router-dom";
 
 function App() {
   const startPage = useSelector(selectStartPage);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSetAuthRoute = () => {
     dispatch(setStartPage('auth'));
   }
+
+  useEffect(() => {
+    const token = Cookies.get('syndicateAuthToken')
+    if(token) {
+      navigate('/main')
+    }
+  }, [dispatch]);
 
 
   return (

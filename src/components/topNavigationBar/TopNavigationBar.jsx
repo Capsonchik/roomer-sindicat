@@ -2,12 +2,18 @@ import {Nav, Navbar} from "rsuite";
 import CogIcon from "@rsuite/icons/legacy/Cog";
 import {useNavigate} from "react-router-dom";
 import {ROUTES_PATH} from "../../routes/RoutesPath";
+import Cookies from "js-cookie";
 
 export const TopNavigationBar = () => {
   const navigate = useNavigate();
 
   const handleNavigate = (path) => {
     navigate(path);
+  }
+
+  const handleLogOut = () => {
+    Cookies.remove('syndicateAuthToken');
+    handleNavigate('/')
   }
 
   return (
@@ -22,7 +28,7 @@ export const TopNavigationBar = () => {
         <Nav.Item onClick={() => handleNavigate('/main' + ROUTES_PATH.editorChart)}>Чарты</Nav.Item>
       </Nav>
       <Nav pullRight>
-        <Nav.Item icon={<CogIcon/>}>Settings</Nav.Item>
+        <Nav.Item onClick={handleLogOut} icon={<CogIcon/>}>Выйти из системы</Nav.Item>
       </Nav>
     </Navbar>
   );

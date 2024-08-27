@@ -11,8 +11,8 @@ import {TestPageReportList} from "../components/testPageComponents/testPageRepor
 import {SnapShot} from "../pages/snapshot/SnapShot";
 import {EditorChart} from "../pages/editorChart/EditorChart";
 import {Charts} from "../pages/charts/Charts";
-import {Chart} from "../pages/chart/Chart";
 import {ChartList} from "../pages/chartList/ChartList";
+import {PrivateRoute} from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -22,11 +22,11 @@ export const router = createBrowserRouter([
   },
   {
     path: '/snapshot',
-    element: <SnapShot/>,
+    element: <PrivateRoute><SnapShot/></PrivateRoute>,
   },
   {
     path: '/main',
-    element: <TestPage/>,
+    element: <PrivateRoute><TestPage/></PrivateRoute>,
     children: [
       { index: true, element: <TestPageMainComponent/> },
       { path: '/main/report', element: <TestPageReportComponent/> },
@@ -47,23 +47,8 @@ export const router = createBrowserRouter([
       },
     ]
   },
-  // {
-  //   path: ROUTES_PATH.main,
-  //   element: <Main/>,
-  //   children: [
-  //     { index: true, element: <MainComponent /> },
-  //     { path: '/main/report', element: <Report/> },
-  //     { path: '/main/report1', element: <Report2/> },
-  //     { path: '/main/reportList', element: <ReportList/> },
-  //     { path: '/main/addNewReport', element: <AddNewReport/>}
-  //   ],
-  // },
   {
     path: ROUTES_PATH.reportPage,
-    element: <ReportPage/>,
+    element: <PrivateRoute><ReportPage/></PrivateRoute>,
   },
-  // {
-  //   path: 'test',
-  //   element: <TestPage/>
-  // }
 ]);

@@ -111,6 +111,20 @@ export const downloadPpt = (charts, activeGroup) => {
       valAxisMinVal: 0,
       showValue: true,
 
+
+      valAxisLineShow: false,
+      // valAxisLineColor: '#ccc',
+      valGridLine: {
+        size: 0.5,
+        color: '#FF0000'
+      },
+      // catGridLine: {
+      //   size: 0.5,
+      //   color: 'red'
+      // },
+      // catAxisLineShow: false,
+      // catAxisLineColor: 'red',
+
       // Используем условное значение для направления баров
       barDir: barDirection,
       barGrouping: formatting.stack ? 'stacked' : 'standard',

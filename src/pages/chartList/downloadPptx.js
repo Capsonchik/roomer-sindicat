@@ -111,7 +111,12 @@ export const downloadPpt = (charts, activeGroup) => {
       // showValue: true,
       valAxisMaxVal: Math.ceil(maxValue * 1.1),
       valAxisMinVal: 0,
+
+
       showValue: true,
+      dataLabelFontSize: 8,
+      dataLabelFormatCode: '#,##0.0',
+      // dataLabel: { show: true, fontSize: 8, color: '646262' },
 
 
       valAxisLineShow: false,

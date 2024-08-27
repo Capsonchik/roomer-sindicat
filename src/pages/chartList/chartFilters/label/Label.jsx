@@ -30,16 +30,16 @@ export const Label = () => {
 
           </PreventOverflowContainer>
         </div>
-        <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
-          <label className={styles.label_input}>Размер шрифта</label>
-          <CustomSlider
-            className={cl(styles.input, {}, [])}
-            name={'label_size'}
-            max={24}
-            min={16}
-            step={1}
-          />
-        </div>
+        {/*<div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>*/}
+        {/*  <label className={styles.label_input}>Размер шрифта</label>*/}
+        {/*  <CustomSlider*/}
+        {/*    className={cl(styles.input, {}, [])}*/}
+        {/*    name={'label_size'}*/}
+        {/*    max={24}*/}
+        {/*    min={16}*/}
+        {/*    step={1}*/}
+        {/*  />*/}
+        {/*</div>*/}
       </div>
     </div>
   )

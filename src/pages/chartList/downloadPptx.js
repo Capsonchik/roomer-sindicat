@@ -122,9 +122,15 @@ export const downloadPpt = (charts, activeGroup) => {
       valAxisLineShow: false,
       valGridLine: {
         size: 0.5,
-
         color: 'dfdada'
       },
+
+      // catGridLine:{
+      //   size: 0.5,
+      //   color: 'dfdada'
+      // },
+      catAxisLineSize:1,
+      catAxisLineColor: 'b5b1b1',
       catAxisLabelFontSize: 8,
       catAxisLabelFontFace: 'Arial',
       catAxisLabelColor: '9d9898',

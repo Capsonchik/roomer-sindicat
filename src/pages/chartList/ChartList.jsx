@@ -108,24 +108,11 @@ export const ChartList = (props) => {
             <ChartListItem key={index} chart={chart}/>
           ))}
         </div>}
-        {/*{activeReport && <div*/}
-        {/*  className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}>*/}
-        {/*  {!isChartLoading && data[0]?.title && data.map((chart, index) => (*/}
 
-        {/*    <ChartListItem key={index} chart={chart}/>*/}
-        {/*  ))}*/}
-        {/*</div>}*/}
 
 
       </div>
       <div className={styles.btn_wrapper}>
-        {/*{!isChartLoading && activeReport && <Button*/}
-        {/*  onClick={() => downloadPpt(charts)} // Передаем весь массив charts*/}
-        {/*  className={styles.save_pptx}*/}
-        {/*>*/}
-        {/*  Скачать pptx*/}
-        {/*</Button>}*/}
-
 
         {placeholderText && <div className={styles.placeholder}>
           <Divider>{placeholderText}</Divider>

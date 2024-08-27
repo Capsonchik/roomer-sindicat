@@ -13,7 +13,7 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
   const methods = useForm()
   const dispatch = useDispatch();
   const activeReport = useSelector(selectActiveReport)
-  console.log(activeReport)
+  // console.log(activeReport)
   useEffect(() => {
     methods.reset({
       title: activeGroup?.group_name,

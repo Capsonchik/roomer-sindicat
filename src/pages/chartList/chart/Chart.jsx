@@ -40,8 +40,7 @@ export const Chart = ({chart}) => {
       column_gap: chart.formatting.column_gap,
       title: chart.title,
       label_position: chart.formatting.label_position,
-      label_size: chart.formatting.label_size,
-      // type_chart: chart.formatting.type_chart,
+      label_size: chart.formatting.label_size || 16,
     })
   }, []);
 
@@ -50,7 +49,6 @@ export const Chart = ({chart}) => {
     const myChart = echarts.init(chartRef.current);
     setChartInstance(myChart);
     const colorsTest = chart?.formatting?.colors || colors
-    // console.log(chart?.formatting?.colors.length,Object.keys(chart.seriesData).length)
     const colorEntrieis = colorsTest.map(color => [color, true])
     dispatch(setOriginalColors(colorEntrieis))
 
@@ -99,14 +97,12 @@ export const Chart = ({chart}) => {
         }
       }
     })
-    // isColorChange.current = true
 
 
   }, [originalColors]);
 
 
   useEffect(() => {
-    // isColorChange.current = false
     const handleForm = (data) => {
       let filteredSeries = chartState.seriesData
       let isXAxis = chartState.formatting.isXAxis
@@ -115,7 +111,6 @@ export const Chart = ({chart}) => {
       let column_gap = chartState.formatting.column_gap
       let label_position = chartState.formatting.label_position
       let label_size = chartState.formatting.label_size || 16
-      // let type_chart = chartState.formatting.type_chart
 
       if (data.seriesData) {
         filteredSeries = convertValuesByPercent({
@@ -144,11 +139,7 @@ export const Chart = ({chart}) => {
       if (typeof data.label_size !== 'undefined') {
         label_size = data.label_size
       }
-      // if (typeof data.type_chart !== 'undefined') {
-      //   type_chart = data.type_chart
-      // }
       console.log(data)
-      // console.log(data.seriesData,Object.keys(chartState.seriesData).length)
       setChartState(prev => {
         return {
           ...prev,
@@ -164,7 +155,6 @@ export const Chart = ({chart}) => {
             column_gap,
             label_position,
             label_size,
-            // type_chart
           }
 
         }
@@ -189,9 +179,7 @@ export const Chart = ({chart}) => {
   useEffect(() => {
     if (!chartInstance) return;
 
-    // console.log(chartState.formatting)
     const seriesOptions = Object.keys(chartState.seriesData).map((seriesName) => {
-          // console.log(chartState.seriesData[seriesName])
           return {
             name: seriesName,
             type: chartState.formatting.type_chart,

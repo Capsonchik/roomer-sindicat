@@ -68,7 +68,8 @@ export const downloadPpt = (charts, activeGroup) => {
     const convertedSeriesData = convertValuesByPercent({
       visibleListString: Object.keys(filteredSeriesData),
       chart,
-      filteredSeriesData: filteredSeriesData
+      filteredSeriesData: filteredSeriesData,
+      format_value: chart.formatting.format_value
     })
     // console.log(filteredSeriesData)
     // Подготовка данных для графика
@@ -118,7 +119,7 @@ export const downloadPpt = (charts, activeGroup) => {
 
       showValue: true,
       dataLabelFontSize: 8,
-      dataLabelFormatCode: '#,##0.0',
+      dataLabelFormatCode: `#,##0.${'0'.repeat(chart.formatting.format_value)}`,
       // dataLabel: { show: true, fontSize: 8, color: '646262' },
 
 

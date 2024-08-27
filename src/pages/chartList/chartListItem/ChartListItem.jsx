@@ -37,7 +37,7 @@ export const ChartListItem = ({chart}) => {
 
 
   useLayoutEffect(() => {
-    let format_value = chartState.formatting.format_value || 1
+    let format_value = chart.formatting.format_value || 1
     const filteredSeries = !!chart.formatting?.visible?.length
       ? Object.fromEntries(Object.entries(chart.seriesData).filter(([series, value]) => {
         return chart.formatting.visible.includes(series);

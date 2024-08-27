@@ -8,7 +8,16 @@ export const convertValuesByPercent = (
 ) => {
   let newTotalSum = 0
   let filteredSeries = filteredSeriesData
-  if (Object.keys(visibleListString).length !== Object.keys(chart.seriesData).length) {
+  // if (Object.keys(visibleListString).length === Object.keys(chart.seriesData).length) {
+    if(!chart.ispercent) {
+      return Object.fromEntries(
+        Object.entries(chart.seriesData)
+          .map(([series,value]) => [series, value.map(val => val.toFixed(format_value))])
+          .filter(([series, value]) => {
+            return visibleListString.includes(series);
+          })
+      )
+    }
     console.log(1111)
     const visibleColumn = Object.fromEntries(Object.entries(chart.seriesData).filter(([name, value]) => {
       return visibleListString.includes(name);
@@ -33,14 +42,14 @@ export const convertValuesByPercent = (
           return [series, newValue]
         })
     )
-  } else {
-    // console.log(2222)
-    filteredSeries = Object.fromEntries(
-      Object.entries(chart.seriesData)
-        .filter(([series, value]) => {
-          return visibleListString.includes(series);
-        })
-    )
-  }
+  // } else {
+  //   // console.log(2222)
+  //   filteredSeries = Object.fromEntries(
+  //     Object.entries(chart.seriesData)
+  //       .filter(([series, value]) => {
+  //         return visibleListString.includes(series);
+  //       })
+  //   )
+  // }
   return filteredSeries
 }

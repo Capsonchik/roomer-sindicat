@@ -37,6 +37,7 @@ export const ChartListItem = ({chart}) => {
 
 
   useLayoutEffect(() => {
+    let format_value = chartState.formatting.format_value || 1
     const filteredSeries = !!chart.formatting?.visible?.length
       ? Object.fromEntries(Object.entries(chart.seriesData).filter(([series, value]) => {
         return chart.formatting.visible.includes(series);
@@ -49,7 +50,8 @@ export const ChartListItem = ({chart}) => {
     const convertedSeriesData = convertValuesByPercent({
       visibleListString: Object.keys(filteredSeries),
       chart,
-      filteredSeriesData: filteredSeries
+      filteredSeriesData: filteredSeries,
+      format_value
     })
 
 

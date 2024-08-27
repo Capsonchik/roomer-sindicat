@@ -33,6 +33,20 @@ export const Chart = ({chart}) => {
   const inputs = methods.watch()
 
   useEffect(() => {
+    let series
+    if (!chart.formatting.visible.length) {
+      series =
+        Object.fromEntries(
+          Object.keys(chart.seriesData).map((name) => [name, true])
+        )
+
+    } else {
+      series =
+        Object.fromEntries(
+          Object.keys(chart.seriesData).map((name) => [name, chart.formatting.visible.includes(name)])
+        )
+
+    }
     methods.reset({
       isXAxis: chart.formatting.isXAxis,
       stack: chart.formatting.stack,
@@ -41,9 +55,11 @@ export const Chart = ({chart}) => {
       title: chart.title,
       label_position: chart.formatting.label_position,
       label_size: chart.formatting.label_size || 16,
+      format_value: chart.formatting.format_value || 1,
+      seriesData: Object.keys(series).filter((name) => series[name]),
     })
   }, []);
-
+  // console.log()
 
   useEffect(() => {
     const myChart = echarts.init(chartRef.current);
@@ -62,6 +78,7 @@ export const Chart = ({chart}) => {
   }, []);
 
   useEffect(() => {
+    let format_value = chartState.formatting.format_value || 1
     const filteredSeries = !!chart.formatting.visible.length
       ? Object.fromEntries(Object.entries(chart.seriesData).filter(([series, value]) => {
         return chartState.formatting.visible.includes(series);
@@ -72,7 +89,8 @@ export const Chart = ({chart}) => {
     const convertedSeriesData = convertValuesByPercent({
       visibleListString: Object.keys(filteredSeries),
       chart,
-      filteredSeriesData: chartState.seriesData
+      filteredSeriesData: chartState.seriesData,
+      format_value
     })
 
 
@@ -111,15 +129,27 @@ export const Chart = ({chart}) => {
       let column_gap = chartState.formatting.column_gap
       let label_position = chartState.formatting.label_position
       let label_size = chartState.formatting.label_size || 16
+      let format_value = data.format_value ? data.format_value : chartState.formatting.format_value || 1
+
+      console.log(data)
 
       if (data.seriesData) {
         filteredSeries = convertValuesByPercent({
           visibleListString: data.seriesData,
           chart,
-          filteredSeriesData: chartState.seriesData
+          filteredSeriesData: chartState.seriesData,
+          format_value
         })
-
       }
+
+      // if(data.format_value) {
+      //   filteredSeries = convertValuesByPercent({
+      //     visibleListString: methods.getValues('seriesData'),
+      //     chart,
+      //     filteredSeriesData: chartState.seriesData,
+      //     format_value
+      //   })
+      // }
 
       if (typeof data.isXAxis !== 'undefined') {
         isXAxis = data.isXAxis
@@ -139,7 +169,10 @@ export const Chart = ({chart}) => {
       if (typeof data.label_size !== 'undefined') {
         label_size = data.label_size
       }
-      console.log(data)
+      // if (typeof data.format_value !== 'undefined') {
+      //   format_value = data.format_value
+      // }
+      // console.log(data)
       setChartState(prev => {
         return {
           ...prev,
@@ -155,6 +188,7 @@ export const Chart = ({chart}) => {
             column_gap,
             label_position,
             label_size,
+            format_value
           }
 
         }

@@ -7,6 +7,7 @@ import {labelArray} from "../../label.config";
 import cl from "classnames";
 import {CustomSlider} from "../../../../components/rhfInputs/customSlider/CustomSlider";
 import {PreventOverflowContainer} from "../main/MainForm";
+import {CustomInputNumber} from "../../../../components/rhfInputs/customInputNumber/CustomInputNumber";
 
 export const Label = () => {
   return (
@@ -30,16 +31,17 @@ export const Label = () => {
 
           </PreventOverflowContainer>
         </div>
-        {/*<div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>*/}
-        {/*  <label className={styles.label_input}>Размер шрифта</label>*/}
-        {/*  <CustomSlider*/}
-        {/*    className={cl(styles.input, {}, [])}*/}
-        {/*    name={'label_size'}*/}
-        {/*    max={24}*/}
-        {/*    min={16}*/}
-        {/*    step={1}*/}
-        {/*  />*/}
-        {/*</div>*/}
+        <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
+          <label className={styles.label_input}>Количество чисел после запятой</label>
+          <CustomInputNumber name={'format_value'} min={1}/>
+          {/*<CustomSlider*/}
+          {/*  className={cl(styles.input, {}, [])}*/}
+          {/*  name={'label_size'}*/}
+          {/*  max={24}*/}
+          {/*  min={16}*/}
+          {/*  step={1}*/}
+          {/*/>*/}
+        </div>
       </div>
     </div>
   )

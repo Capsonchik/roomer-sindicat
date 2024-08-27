@@ -10,7 +10,8 @@ export const CustomInputNumber = (
     onChangeOutside,
     className,
     defaultValue,
-    formatter = (value) => `${value} %`,
+    formatter = (value) => `${value} `,
+    min
   }
 ) => {
   const {control} = useFormContext();
@@ -22,6 +23,7 @@ export const CustomInputNumber = (
       defaultValue={defaultValue}
       render={({field}) => (
         <InputNumber
+          min={min}
           {...field}
           value={field.value || 0}
           formatter={formatter}

@@ -44,7 +44,7 @@ export const TopFilters = () => {
   }, []);
 
 
-  console.log(activeGroup,activeGroupId)
+  // console.log(activeGroup,activeGroupId)
   const handleClientChange = (clientId) => {
     dispatch(fetchAllReports(clientId))
 

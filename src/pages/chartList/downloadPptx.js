@@ -51,7 +51,7 @@ export const downloadPpt = (charts, activeGroup) => {
   }
 
   charts.forEach((chart, index) => {
-    console.log(chart)
+    // console.log(chart)
     const {title, description, xAxisData, seriesData, formatting, ispercent} = chart;
     // Добавляем заголовок графика
 
@@ -113,10 +113,14 @@ export const downloadPpt = (charts, activeGroup) => {
 
 
       valAxisLineShow: false,
+      // valAxisLineStyle: 'dash',
       // valAxisLineColor: '#ccc',
       valGridLine: {
         size: 0.5,
-        // color: '#FF0000'
+        // color:"green",
+        // style: 'solid',
+        // color: 'red'
+        color: 'dfdada'
       },
       // catGridLine: {
       //   size: 0.5,

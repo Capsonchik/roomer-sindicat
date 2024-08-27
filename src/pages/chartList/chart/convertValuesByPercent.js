@@ -27,7 +27,7 @@ export const convertValuesByPercent = (
         })
         .map(([series, value]) => {
           const newValue = value.map((val,index) => {
-            return ((+val / newTotalSum[index]) * 100).toFixed(2)
+            return ((+val / newTotalSum[index]) * 100).toFixed(1)
           })
           return [series, newValue]
         })

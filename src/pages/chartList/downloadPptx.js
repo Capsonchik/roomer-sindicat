@@ -19,7 +19,7 @@ export const downloadPpt = (charts, activeGroup) => {
   if (charts.length === 2) {
     chartWidth = 4.6
     chartHeight = 3.8
-    yOffset = 0.5
+    yOffset = 0.2
     yOffsetDefault = 1
   }
   if (charts.length === 4) {
@@ -33,18 +33,21 @@ export const downloadPpt = (charts, activeGroup) => {
     x: xOffset,
     y: yOffset,
     align: 'justify',
-    fontSize: 14
+    fontSize: 14,
+    h: 0.2
   });
 
   yOffset += 0.3; // Увеличиваем отступ для описания
   slide.addText(activeGroup.description, {
     x: xOffset,
-    y: yOffset,
+    y:yOffset,
     align: 'justify',
-    fontSize: 12
+    fontSize: 12,
+    h: activeGroup.description.length > 100 ? 0.4 : 0.2,
+    w:9.2
   });
   if (charts.length === 4) {
-    yOffset += 0.3;
+    yOffset += activeGroup.description.length > 100 ? 0.4 : 0.3;
   } else {
     yOffset += 0.5;
 

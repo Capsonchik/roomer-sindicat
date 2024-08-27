@@ -58,7 +58,7 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
             </div>
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Описание</h6>
-              <CustomInput name={'description'}/>
+              <CustomInput name={'description'} as={'textarea'} className={styles.description}/>
 
             </div>
 

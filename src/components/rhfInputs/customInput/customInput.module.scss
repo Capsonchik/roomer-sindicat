@@ -8,7 +8,7 @@
   }
 
   .inputError {
-    z-index: var(--first);
+    z-index: 1000;
     position: absolute;
     bottom: -34px; // Расположите ошибку ниже инпута
     left: 0;

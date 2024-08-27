@@ -6,6 +6,10 @@ import {useNavigate} from "react-router-dom";
 import {selectUserLoader} from "../../store/userSlice/user.selectors";
 import Cookies from "js-cookie";
 import {setRole} from "../../store/userSlice/userSlice";
+import * as yup from "yup";
+import {FormProvider, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {CustomInput} from "../rhfInputs/customInput/CustomInput";
 
 export const LoginForm = () => {
   const userLoader = useSelector(selectUserLoader);
@@ -19,21 +23,31 @@ export const LoginForm = () => {
     password: ''
   });
 
+
+  const loginSchema = yup.object().shape({
+    username: yup.string().required("Поле обязательно"),
+    password: yup.string().required("Поле обязательно")
+  });
+
+  const methods = useForm({
+    resolver: yupResolver(loginSchema),
+  })
+
   const message = (
     <Message showIcon type={'error'} closable>
       <strong>Неверный логин или пароль</strong>
     </Message>
   );
-  const handleFormSubmit = () => {
+  const handleFormSubmit = (data) => {
     setLoader(true);
     setTimeout(() => {
-      if(formData.username === 'user' && formData.password === 'user') {
-        Cookies.set('syndicateAuthToken', formData.username, {expires: 3});
+      if (data.username === 'user' && data.password === 'user') {
+        Cookies.set('syndicateAuthToken', data.username, {expires: 3});
         dispatch(setRole('user'))
         setLoader(false);
         navigate('/main');
-      } else if(formData.username === 'admin' && formData.password === 'admin') {
-        Cookies.set('syndicateAuthToken', formData.username, {expires: 3});
+      } else if (data.username === 'admin' && data.password === 'admin') {
+        Cookies.set('syndicateAuthToken', data.username, {expires: 3});
         dispatch(setRole('admin'))
         setLoader(false);
         navigate('/main');
@@ -44,50 +58,116 @@ export const LoginForm = () => {
     }, 2000)
   };
 
-  const handleInputChange = (value, name) => {
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
+  // const handleInputChange = (value, name) => {
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value
+  //   });
+  // };
 
   return (
-    <Form>
-      <Form.Group controlId="username">
-        <Form.ControlLabel className={styles.formLabel}>Логин</Form.ControlLabel>
-        <Form.Control
-          name="username"
-          value={formData.username}
-          onChange={(value) => handleInputChange(value, 'username')}
-        />
-        <Form.HelpText>Поле обязательное для заполнения</Form.HelpText>
-      </Form.Group>
+    <FormProvider {...methods}>
+      <div className={styles.form}>
+        <div className={styles.input_wrapper}>
+          <label className={styles.label}>Логин</label>
+          <CustomInput name={'username'}/>
 
-      <Form.Group controlId="password">
-        <Form.ControlLabel className={styles.formLabel}>Пароль</Form.ControlLabel>
-        <Form.Control
-          name="password"
-          type="password"
-          autoComplete="off"
-          value={formData.password}
-          onChange={(value) => handleInputChange(value, 'password')}
-        />
-      </Form.Group>
+        </div>
+        <div className={styles.input_wrapper}>
+          <label className={styles.label}>Пароль</label>
+          <CustomInput name={'password'}/>
 
-      <Form.Group>
-        <ButtonToolbar>
-          <Button
-            className={styles.btn}
-            loading={loader}
-            style={{width: '100%'}}
-            appearance="primary"
-            onClick={handleFormSubmit}
-            onLoad={userLoader}
-          >
-            Войти
-          </Button>
-        </ButtonToolbar>
-      </Form.Group>
-    </Form>
+        </div>
+
+        <Button
+          className={styles.btn}
+          loading={loader}
+          style={{width: '100%'}}
+          appearance="primary"
+          onClick={(e) => {
+            e.stopPropagation()
+            methods.handleSubmit(handleFormSubmit)()
+          }}
+          onLoad={userLoader}
+        >
+          Войти
+        </Button>
+
+      </div>
+    </FormProvider>
+
   );
 };
+
+{/*<Form>*/
+}
+{/*  <Form.Group controlId="username">*/
+}
+{/*    <Form.ControlLabel className={styles.formLabel}>Логин</Form.ControlLabel>*/
+}
+{/*    <Form.Control*/
+}
+{/*      name="username"*/
+}
+{/*      value={formData.username}*/
+}
+{/*      onChange={(value) => handleInputChange(value, 'username')}*/
+}
+{/*    />*/
+}
+{/*    <Form.HelpText>Поле обязательное для заполнения</Form.HelpText>*/
+}
+{/*  </Form.Group>*/
+}
+
+{/*  <Form.Group controlId="password">*/
+}
+{/*    <Form.ControlLabel className={styles.formLabel}>Пароль</Form.ControlLabel>*/
+}
+{/*    <Form.Control*/
+}
+{/*      name="password"*/
+}
+{/*      type="password"*/
+}
+{/*      autoComplete="off"*/
+}
+{/*      value={formData.password}*/
+}
+{/*      onChange={(value) => handleInputChange(value, 'password')}*/
+}
+{/*    />*/
+}
+{/*  </Form.Group>*/
+}
+
+{/*  <Form.Group>*/
+}
+{/*    <ButtonToolbar>*/
+}
+{/*      <Button*/
+}
+{/*        className={styles.btn}*/
+}
+{/*        loading={loader}*/
+}
+{/*        style={{width: '100%'}}*/
+}
+{/*        appearance="primary"*/
+}
+{/*        onClick={handleFormSubmit}*/
+}
+{/*        onLoad={userLoader}*/
+}
+{/*      >*/
+}
+{/*        Войти*/
+}
+{/*      </Button>*/
+}
+{/*    </ButtonToolbar>*/
+}
+{/*  </Form.Group>*/
+}
+{/*</Form>*/
+}

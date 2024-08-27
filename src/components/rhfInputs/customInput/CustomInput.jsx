@@ -20,6 +20,7 @@ export const CustomInput = (
   const {
     control,
     formState: {errors},
+    clearErrors
   } = useFormContext();
 
   // Приведение ошибки к строке
@@ -38,6 +39,10 @@ export const CustomInput = (
               placeholder={placeholder}
               className={cl(styles.input)}
               onChange={(value) => field.onChange(value)}
+              onBlur={() => {
+                field.onBlur(); // Вызов onBlur для управления формой
+                clearErrors(name); // Очищаем ошибку при потере фокуса
+              }}
             />
             {after && after()}
           </InputGroup>

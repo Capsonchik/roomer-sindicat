@@ -24,6 +24,7 @@ export const ChartListItem = ({chart}) => {
   const [chartState, setChartState] = useState(chart)
 
 
+
   useEffect(() => {
     const myChart = echarts.init(chartRef.current);
     setChartInstance(myChart);

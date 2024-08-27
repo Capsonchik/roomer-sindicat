@@ -8,9 +8,20 @@ import {useDispatch, useSelector} from "react-redux";
 import {fetchAllGroups, patchGroupById} from "../../../store/chartSlice/chart.actions";
 import {selectActiveReport} from "../../../store/chartSlice/chart.selectors";
 
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 
 export const GroupDrawer = ({open, onClose, activeGroup}) => {
-  const methods = useForm()
+
+
+  const loginSchema = yup.object().shape({
+    title: yup.string().required("Название обязательно"),
+    description: yup.string().required("Описание обязательно").max(200, 'Маскимальное количетсво символов 200'), // Add the password field
+  });
+
+  const methods = useForm({
+    resolver: yupResolver(loginSchema),
+  })
   const dispatch = useDispatch();
   const activeReport = useSelector(selectActiveReport)
   // console.log(activeReport)

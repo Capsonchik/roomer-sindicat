@@ -98,8 +98,10 @@ export const downloadPpt = (charts, activeGroup) => {
       chartColors: filteredColors,
       title: chart.title,
       showTitle: true,
-      titleFontSize: 12,
+      titleFontSize: 10,
+      titleColor:'646262',
       showLegend: true,
+      legendColor: '646262',
       legendPos: 'b',
       x: xOffset,
       y: yOffset,
@@ -113,21 +115,18 @@ export const downloadPpt = (charts, activeGroup) => {
 
 
       valAxisLineShow: false,
-      // valAxisLineStyle: 'dash',
-      // valAxisLineColor: '#ccc',
       valGridLine: {
         size: 0.5,
-        // color:"green",
-        // style: 'solid',
-        // color: 'red'
+
         color: 'dfdada'
       },
-      // catGridLine: {
-      //   size: 0.5,
-      //   color: 'red'
-      // },
-      // catAxisLineShow: false,
-      // catAxisLineColor: 'red',
+      catAxisLabelFontSize: 8,
+      catAxisLabelFontFace: 'Arial',
+      catAxisLabelColor: '9d9898',
+
+      valAxisLabelFontSize: 8,
+      valAxisLabelColor: '9d9898',
+
 
       // Используем условное значение для направления баров
       barDir: barDirection,

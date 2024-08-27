@@ -41,12 +41,12 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
 
           <FormProvider {...methods}>
             <div className={styles.input_wrapper}>
-              <h6 className={styles.label}>{activeGroup?.group_name}</h6>
+              <h6 className={styles.label}>Название</h6>
               <CustomInput name={'title'}/>
 
             </div>
             <div className={styles.input_wrapper}>
-              <h6 className={styles.label}>{activeGroup?.description}</h6>
+              <h6 className={styles.label}>Описание</h6>
               <CustomInput name={'description'}/>
 
             </div>

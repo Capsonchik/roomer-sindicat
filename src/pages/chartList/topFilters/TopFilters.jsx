@@ -41,7 +41,7 @@ export const TopFilters = () => {
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
     setActiveGroup(foundGroup)
 
-  }, [activeGroupId,groups])
+  }, [activeGroupId, groups])
 
   useEffect(() => {
     dispatch(fetchAllClients())
@@ -52,10 +52,9 @@ export const TopFilters = () => {
   const handleClientChange = (clientId) => {
     dispatch(fetchAllReports(clientId))
 
-    if(clientId) {
+    if (clientId) {
       dispatch(setActiveClient(clientId))
-    }
-    else {
+    } else {
       dispatch(setActiveClient(null))
       dispatch(setActiveReport(null))
     }
@@ -63,18 +62,15 @@ export const TopFilters = () => {
   const handleReportChange = (reportId) => {
     dispatch(fetchAllGroups(reportId))
 
-    if(reportId) {
+    if (reportId) {
       dispatch(setActiveReport(reportId))
-    }
-    else {
+    } else {
       dispatch(setActiveReport(null))
     }
   }
 
-  const handleUpload = (file) => {
-    const formData = new FormData();
-    formData.append('file', file.blobFile);
-    formData.append('title', {
+  const data = {
+    title: JSON.stringify({
 
       text: 'HML - анализ',
       fontSize: 14,
@@ -82,18 +78,16 @@ export const TopFilters = () => {
       w: 8,
       yOffset: 0.2,
       xOffset: 0.2,
-    })
-    formData.append('description', {
+    }),
+    description: JSON.stringify({
       text: 'Описание HML - анализ',
       fontSize: 14,
       h: 0.2,
       w: 8,
       yOffset: 0.2,
       xOffset: 0.2,
-    })
-
-    // Добавляем дополнительные данные
-    formData.append('charts', [
+    }),
+    charts: JSON.stringify([
       {
         title: 'Пиво Хеви',
         description: "Описание",
@@ -117,10 +111,8 @@ export const TopFilters = () => {
           "2024-Q1": [1.4]
         }
       },
-    ]);
+    ])
 
-
-    return formData;
   };
 
 
@@ -154,7 +146,7 @@ export const TopFilters = () => {
             className={styles.uploader}
             autoUpload={false}
             onChange={setFileList}
-            beforeUpload={handleUpload}
+            data={data}
             action="https://7aa7-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data">
             <Button>Выбрать файл</Button>
           </Uploader>
@@ -171,7 +163,7 @@ export const TopFilters = () => {
           </Button>
         )}
         {!isChartLoading && activeReport && !!charts.length && <Button
-          onClick={() => downloadPpt(charts,activeGroup)} // Передаем весь массив charts
+          onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
           className={styles.save_pptx}
         >
           Скачать редактируемый pptx

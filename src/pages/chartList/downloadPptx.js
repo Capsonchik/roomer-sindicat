@@ -120,7 +120,6 @@ export const downloadPpt = (charts, activeGroup) => {
       showValue: true,
       dataLabelFontSize: 8,
       dataLabelFormatCode: `#,##0.${'0'.repeat(chart.formatting.format_value)}`,
-      // dataLabel: { show: true, fontSize: 8, color: '646262' },
 
 
       valAxisLineShow: false,
@@ -129,10 +128,7 @@ export const downloadPpt = (charts, activeGroup) => {
         color: 'dfdada'
       },
 
-      // catGridLine:{
-      //   size: 0.5,
-      //   color: 'dfdada'
-      // },
+
       catAxisLineSize:1,
       catAxisLineColor: 'b5b1b1',
       catAxisLabelFontSize: 8,

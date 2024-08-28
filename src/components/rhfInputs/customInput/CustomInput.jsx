@@ -43,7 +43,7 @@ export const CustomInput = (
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, [isSubmitting]);
+  }, []);
 
   // Приведение ошибки к строке
   const errorMessage = typeof errors[name]?.message === "string" ? errors[name]?.message : '';

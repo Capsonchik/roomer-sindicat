@@ -6,7 +6,7 @@ import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchAllGroups, patchGroupById} from "../../../store/chartSlice/chart.actions";
-import {selectActiveReport} from "../../../store/chartSlice/chart.selectors";
+import {selectActiveGroupId, selectActiveReport} from "../../../store/chartSlice/chart.selectors";
 
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -24,6 +24,7 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
   })
   const dispatch = useDispatch();
   const activeReport = useSelector(selectActiveReport)
+  const activeGroupId = useSelector(selectActiveGroupId)
   // console.log(activeReport)
   useEffect(() => {
     methods.reset({
@@ -62,7 +63,8 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
 
             </div>
 
-            <Button className={styles.patch_btn} onClick={() => {
+            <Button className={styles.patch_btn} onClick={(e) => {
+              e.stopPropagation()
               methods.handleSubmit(handlePatch)()
             }}>Сохранить</Button>
           </FormProvider>

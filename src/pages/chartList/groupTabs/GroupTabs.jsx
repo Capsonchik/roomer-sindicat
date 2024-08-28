@@ -6,7 +6,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {selectGroups} from "../../../store/reportSlice/reportSlice.selectors";
-import {selectGroupsReports} from "../../../store/chartSlice/chart.selectors";
+import {selectActiveGroupId, selectGroupsReports} from "../../../store/chartSlice/chart.selectors";
 import {ChartList} from "../ChartList";
 import {Chart} from "../chart/Chart";
 import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
@@ -15,6 +15,7 @@ import {setActiveGroup} from "../../../store/chartSlice/chart.slice";
 export const GroupTabs = ({groupsReports}) => {
   // const groups = useSelector(selectGroupsReports);
   const dispatch = useDispatch();
+  const activeGroupId = useSelector(selectActiveGroupId)
   const defaultActiveKey = groupsReports.length > 0 ? groupsReports[0].group_id.toString() : null;
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
 

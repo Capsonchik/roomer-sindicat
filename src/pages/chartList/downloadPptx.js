@@ -96,7 +96,7 @@ export const downloadPpt = (charts, activeGroup) => {
       ispercent
     })
     // console.log(maxValue)
-    console.log('chart.formatting.format_value',chart.formatting.format_value)
+    // console.log('chart.formatting.format_value',chart.formatting.label_position)
     // Увеличиваем отступ для графика
     // yOffset += 0.5; // Увеличиваем отступ перед графиком
     slide.addChart('bar', dataForChart, {
@@ -121,7 +121,7 @@ export const downloadPpt = (charts, activeGroup) => {
       showValue: true,
       dataLabelFontSize: 8,
       dataLabelFormatCode: `#,##0.${'0'.repeat(chart.formatting.format_value || 1)}`,
-      dataLabelPosition: dataLabelPosMap[chart.formatting.label_position],
+      dataLabelPosition: dataLabelPosMap[chart.formatting.label_position] || 'bestFit',
 
 
       valAxisLineShow: false,

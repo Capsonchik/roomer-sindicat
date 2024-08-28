@@ -19,7 +19,8 @@ export const CustomInput = (
   // Используем контекст формы для доступа к управлению и ошибкам
   const {
     control,
-    formState: {errors,isSubmitting},
+    setError,
+    formState: {errors,isSubmitting,isSubmitted},
     clearErrors
   } = useFormContext();
   const inputRef = useRef(null);
@@ -27,16 +28,22 @@ export const CustomInput = (
   useEffect(() => {
     const handleClickOutside = (e) => {
       // Если клик произошел за пределами input и форма не отправляется
-      if (!inputRef.current.contains(e.target) && !isSubmitting) {
+      if (!inputRef.current.contains(e.target)) {
         clearErrors(name);
       }
+      // if(inputRef.current.contains(e.target)) {
+      //   setError(name)
+      // }
+      // if (errors) {
+      //   setError(name);
+      // }
     };
 
     window.addEventListener("click", handleClickOutside);
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, [clearErrors, isSubmitting, name]);
+  }, [isSubmitting]);
 
   // Приведение ошибки к строке
   const errorMessage = typeof errors[name]?.message === "string" ? errors[name]?.message : '';

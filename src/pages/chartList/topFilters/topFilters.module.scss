@@ -5,6 +5,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
 
   .filters{
     display: flex;
@@ -19,5 +20,10 @@
     padding: 10px 20px;
     background: #FF8200;
     color: #fff;
+  }
+  .uploader{
+    display: flex;
+    align-items: center;
+    margin-right: auto;
   }
 }

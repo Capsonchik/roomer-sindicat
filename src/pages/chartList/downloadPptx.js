@@ -4,6 +4,7 @@ import {prepareDataForPptx} from "./prepareDataForPptx";
 import {colors} from "./chart/config";
 import {getSumValues} from "./getSumValues";
 import {convertValuesByPercent} from "./chart/convertValuesByPercent";
+import {dataLabelPosMap} from "./label.config";
 
 export const downloadPpt = (charts, activeGroup) => {
   const pptx = new PptxGenJS();
@@ -40,11 +41,11 @@ export const downloadPpt = (charts, activeGroup) => {
   yOffset += 0.3; // Увеличиваем отступ для описания
   slide.addText(activeGroup.description, {
     x: xOffset,
-    y:yOffset,
+    y: yOffset,
     align: 'justify',
     fontSize: 12,
     h: activeGroup.description.length > 100 ? 0.4 : 0.2,
-    w:9.2
+    w: 9.2
   });
   if (charts.length === 4) {
     yOffset += activeGroup.description.length > 100 ? 0.4 : 0.3;
@@ -95,7 +96,7 @@ export const downloadPpt = (charts, activeGroup) => {
       ispercent
     })
     // console.log(maxValue)
-
+    console.log('chart.formatting.format_value',chart.formatting.format_value)
     // Увеличиваем отступ для графика
     // yOffset += 0.5; // Увеличиваем отступ перед графиком
     slide.addChart('bar', dataForChart, {
@@ -103,7 +104,7 @@ export const downloadPpt = (charts, activeGroup) => {
       title: chart.title,
       showTitle: true,
       titleFontSize: 10,
-      titleColor:'646262',
+      titleColor: '646262',
       showLegend: true,
       legendColor: '646262',
       legendPos: 'b',
@@ -119,7 +120,8 @@ export const downloadPpt = (charts, activeGroup) => {
 
       showValue: true,
       dataLabelFontSize: 8,
-      dataLabelFormatCode: `#,##0.${'0'.repeat(chart.formatting.format_value)}`,
+      dataLabelFormatCode: `#,##0.${'0'.repeat(chart.formatting.format_value || 1)}`,
+      dataLabelPosition: dataLabelPosMap[chart.formatting.label_position],
 
 
       valAxisLineShow: false,
@@ -129,7 +131,7 @@ export const downloadPpt = (charts, activeGroup) => {
       },
 
 
-      catAxisLineSize:1,
+      catAxisLineSize: 1,
       catAxisLineColor: 'b5b1b1',
       catAxisLabelFontSize: 8,
       catAxisLabelFontFace: 'Arial',

@@ -59,6 +59,7 @@ export const ChartListItem = ({chart}) => {
       ? chart.formatting.colors.filter(([series, value]) => value).map(([series, value]) => series)
       : colors
 
+    // console.log(format_value)
     setChartState(prev => {
       return {
         ...prev,
@@ -66,7 +67,7 @@ export const ChartListItem = ({chart}) => {
         formatting: {
           ...prev.formatting,
           colors: filteredColors,
-
+          // format_value,
         }
 
       }

@@ -12,13 +12,13 @@ export const convertValuesByPercent = (
     if(!chart.ispercent) {
       return Object.fromEntries(
         Object.entries(chart.seriesData)
-          .map(([series,value]) => [series, value.map(val => val.toFixed(format_value))])
+          .map(([series,value]) => [series, value.map(val => val.toFixed(format_value || 1))])
           .filter(([series, value]) => {
             return visibleListString.includes(series);
           })
       )
     }
-    console.log(1111)
+    // console.log(1111)
     const visibleColumn = Object.fromEntries(Object.entries(chart.seriesData).filter(([name, value]) => {
       return visibleListString.includes(name);
     }))
@@ -37,7 +37,7 @@ export const convertValuesByPercent = (
         })
         .map(([series, value]) => {
           const newValue = value.map((val,index) => {
-            return ((+val / newTotalSum[index]) * 100).toFixed(format_value)
+            return ((+val / newTotalSum[index]) * 100).toFixed(format_value || 1)
           })
           return [series, newValue]
         })

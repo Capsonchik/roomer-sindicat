@@ -16,7 +16,7 @@ import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/Sel
 import {FormProvider, useForm} from "react-hook-form";
 import {GroupTabs} from "../groupTabs/GroupTabs";
 import {setActiveClient, setActiveReport} from "../../../store/chartSlice/chart.slice";
-import {Button} from "rsuite";
+import {Button, Uploader} from "rsuite";
 import {downloadPpt} from "../downloadPptx";
 
 export const TopFilters = () => {
@@ -92,12 +92,21 @@ export const TopFilters = () => {
             }}
           />
         </div>
+        {!isChartLoading && activeReport && !!charts.length && (
+          <Uploader
+            className={styles.uploader}
+            action="https://7aa7-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data">
+            <Button>Выбрать файл</Button>
+          </Uploader>
+        )}
         {!isChartLoading && activeReport && !!charts.length && <Button
           onClick={() => downloadPpt(charts,activeGroup)} // Передаем весь массив charts
           className={styles.save_pptx}
         >
           Скачать редактируемый pptx
         </Button>}
+
+
       </div>
       {!!groupsReports.length && activeReport && (
         <GroupTabs groupsReports={groupsReports}/>

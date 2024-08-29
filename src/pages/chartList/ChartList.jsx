@@ -100,7 +100,7 @@ export const ChartList = (props) => {
     };
   }, [charts]); // Зависимость от charts, чтобы следить за изменениями данных
 
-  console.log(isTablet)
+  // console.log(placeholderText)
   return (
 
     <>
@@ -140,13 +140,13 @@ export const ChartList = (props) => {
           ))}
         </div>}
 
+        {placeholderText && <div className={styles.placeholder}>
+          <Divider>{placeholderText}</Divider>
+        </div>}
 
       </div>
       <div className={styles.btn_wrapper}>
 
-        {placeholderText && <div className={styles.placeholder}>
-          <Divider>{placeholderText}</Divider>
-        </div>}
 
         <ChartDrawer
           open={isOpenDrawer}

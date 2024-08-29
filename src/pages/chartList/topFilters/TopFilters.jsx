@@ -140,28 +140,28 @@ export const TopFilters = () => {
             }}
           />
         </div>
-        {!isChartLoading && activeReport && !!charts.length && (
-          <Uploader
-            ref={uploader}
-            className={styles.uploader}
-            autoUpload={false}
-            onChange={setFileList}
-            data={data}
-            action="https://7aa7-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data">
-            <Button>Выбрать файл</Button>
-          </Uploader>
-        )}
+        {/*{!isChartLoading && activeReport && !!charts.length && (*/}
+        {/*  <Uploader*/}
+        {/*    ref={uploader}*/}
+        {/*    className={styles.uploader}*/}
+        {/*    autoUpload={false}*/}
+        {/*    onChange={setFileList}*/}
+        {/*    data={data}*/}
+        {/*    action="https://7aa7-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data">*/}
+        {/*    <Button>Выбрать файл</Button>*/}
+        {/*  </Uploader>*/}
+        {/*)}*/}
 
-        {!!fileList.length && (
-          <Button
-            disabled={!fileList.length}
-            onClick={() => {
-              uploader.current.start();
-            }}
-          >
-            Добавить слайд к файлу
-          </Button>
-        )}
+        {/*{!!fileList.length && (*/}
+        {/*  <Button*/}
+        {/*    disabled={!fileList.length}*/}
+        {/*    onClick={() => {*/}
+        {/*      uploader.current.start();*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    Добавить слайд к файлу*/}
+        {/*  </Button>*/}
+        {/*)}*/}
         {!isChartLoading && activeReport && !!charts.length && <Button
           onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
           className={styles.save_pptx}

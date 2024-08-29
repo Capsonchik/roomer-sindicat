@@ -16,13 +16,15 @@ export const GroupTabs = ({groupsReports,activeGroupId}) => {
   // const groups = useSelector(selectGroupsReports);
   const dispatch = useDispatch();
   // const activeGroupId = useSelector(selectActiveGroupId)
+  console.log('activeGroupId',activeGroupId)
+  // const defaultActiveKey = activeGroupId ;
   const defaultActiveKey = activeGroupId ? activeGroupId : groupsReports.length > 0 ? groupsReports[0].group_id.toString() : null;
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
 
   useEffect(() => {
-    dispatch(fetchAllChartsByGroupId(activeKey)).then(() => {
-      dispatch(fetchAllChartsFormatByGroupId(activeKey))
-      !activeGroupId && dispatch(setActiveGroup(activeKey))
+    dispatch(fetchAllChartsByGroupId(defaultActiveKey)).then(() => {
+      dispatch(fetchAllChartsFormatByGroupId(defaultActiveKey))
+      // dispatch(setActiveGroup(activeKey))
     })
   }, [groupsReports]);
 

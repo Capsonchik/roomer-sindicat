@@ -32,7 +32,7 @@ export const GroupTabs = ({groupsReports,activeGroup}) => {
     <div className={styles.wrapper}>
       <Tabs
         className={styles.tabs}
-        defaultActiveKey={defaultActiveKey}
+        defaultActiveKey={groupsReports[0].group_id.toString()}
         appearance="subtle"
         onSelect={(key) => {
           dispatch(setActiveGroup(key))

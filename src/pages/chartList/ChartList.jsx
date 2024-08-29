@@ -37,6 +37,9 @@ export const ChartList = (props) => {
 
   useEffect(() => {
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
+    if(!foundGroup) {
+
+    }
     setActiveGroup(foundGroup)
 
   }, [activeGroupId,groups])

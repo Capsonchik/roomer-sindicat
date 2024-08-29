@@ -37,3 +37,7 @@
   width: 200px;
   height: 50px;
 }
+
+/*.chart_tooltip{*/
+/*  z-index: 10000000!important;*/
+/*}*/

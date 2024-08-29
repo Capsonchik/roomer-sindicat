@@ -126,7 +126,7 @@ export const downloadPpt = (charts, activeGroup) => {
 
       valAxisLineShow: false,
       valGridLine: {
-        size: 0.5,
+        size: 1.5,
         color: 'dfdada'
       },
 

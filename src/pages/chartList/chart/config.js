@@ -5,7 +5,9 @@ export const tooltipConfig = {
     trigger: 'axis',
     axisPointer: {
       type: 'shadow'
-    }
+    },
+    // className: 'chart_tooltip'
+    confine:true
   },
 }
 export const legendConfig = {

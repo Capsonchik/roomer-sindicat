@@ -18,6 +18,7 @@ import {GroupTabs} from "../groupTabs/GroupTabs";
 import {setActiveClient, setActiveReport} from "../../../store/chartSlice/chart.slice";
 import {Button, Uploader} from "rsuite";
 import {downloadPpt} from "../downloadPptx";
+import {convertDataCharts} from "./convertDataCharts";
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ export const TopFilters = () => {
   useEffect(() => {
 
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
-    setActiveGroup(foundGroup)
+    setActiveGroup(foundGroup ?? groups.length > 0 ? groups[0] : null)
 
   }, [activeGroupId, groups])
 
@@ -69,51 +70,54 @@ export const TopFilters = () => {
     }
   }
 
-  const data = {
-    title: JSON.stringify({
-
-      text: 'HML - анализ',
-      fontSize: 14,
-      h: 0.2,
-      w: 8,
-      yOffset: 0.2,
-      xOffset: 0.2,
-    }),
-    description: JSON.stringify({
-      text: 'Описание HML - анализ',
-      fontSize: 14,
-      h: 0.2,
-      w: 8,
-      yOffset: 0.2,
-      xOffset: 0.2,
-    }),
-    charts: JSON.stringify([
-      {
-        title: 'Пиво Хеви',
-        description: "Описание",
-        formatting: {
-          "type_chart": "bar",
-          "column_width": 30,
-          "column_gap": 0,
-          "stack": false,
-          "isXAxis": true,
-          "visible": [],
-          w: 3,
-          h: 3,
-          padding: 0.2,
-          xOffset: 0.2,
-          yOffset: 1
-
-        },
-        xAxisData: ["хеви"],
-        seriesData: {
-          "2023-Q1": [1.5],
-          "2024-Q1": [1.4]
-        }
-      },
-    ])
-
-  };
+  // const data = {
+  //   title: JSON.stringify({
+  //
+  //     text: 'HML - анализ',
+  //     fontSize: 14,
+  //     h: 0.2,
+  //     w: 8,
+  //     yOffset: 0.2,
+  //     xOffset: 0.2,
+  //   }),
+  //   description: JSON.stringify({
+  //     text: 'Описание HML - анализ',
+  //     fontSize: 14,
+  //     h: 0.2,
+  //     w: 8,
+  //     yOffset: 0.2,
+  //     xOffset: 0.2,
+  //   }),
+  //   charts: JSON.stringify([
+  //     {
+  //       title: 'Пиво Хеви',
+  //       description: "Описание",
+  //       formatting: {
+  //         "type_chart": "bar",
+  //         "column_width": 30,
+  //         "column_gap": 0,
+  //         "stack": false,
+  //         "isXAxis": true,
+  //         "visible": [],
+  //         w: 3,
+  //         h: 3,
+  //         padding: 0.2,
+  //         xOffset: 0.2,
+  //         yOffset: 1
+  //
+  //       },
+  //       xAxisData: ["хеви"],
+  //       seriesData: {
+  //         "2023-Q1": [1.5],
+  //         "2024-Q1": [1.4]
+  //       }
+  //     },
+  //   ])
+  //
+  // };
+  const getDataCharts = ({charts, activeGroup}) => {
+    return convertDataCharts({charts, activeGroup})
+  }
 
 
   return (
@@ -140,28 +144,28 @@ export const TopFilters = () => {
             }}
           />
         </div>
-        {/*{!isChartLoading && activeReport && !!charts.length && (*/}
-        {/*  <Uploader*/}
-        {/*    ref={uploader}*/}
-        {/*    className={styles.uploader}*/}
-        {/*    autoUpload={false}*/}
-        {/*    onChange={setFileList}*/}
-        {/*    data={data}*/}
-        {/*    action="https://7aa7-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data">*/}
-        {/*    <Button>Выбрать файл</Button>*/}
-        {/*  </Uploader>*/}
-        {/*)}*/}
+        {!isChartLoading && activeReport && !!charts.length && (
+          <Uploader
+            ref={uploader}
+            className={styles.uploader}
+            autoUpload={false}
+            onChange={setFileList}
+            data={getDataCharts({charts, activeGroup})}
+            action="https://7aa7-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data">
+            <Button>Выбрать файл</Button>
+          </Uploader>
+        )}
 
-        {/*{!!fileList.length && (*/}
-        {/*  <Button*/}
-        {/*    disabled={!fileList.length}*/}
-        {/*    onClick={() => {*/}
-        {/*      uploader.current.start();*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    Добавить слайд к файлу*/}
-        {/*  </Button>*/}
-        {/*)}*/}
+        {!!fileList.length && (
+          <Button
+            disabled={!fileList.length}
+            onClick={() => {
+              uploader.current.start();
+            }}
+          >
+            Добавить слайд к файлу
+          </Button>
+        )}
         {!isChartLoading && activeReport && !!charts.length && <Button
           onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
           className={styles.save_pptx}

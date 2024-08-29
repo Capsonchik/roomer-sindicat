@@ -35,6 +35,8 @@ export const Bar = () => {
 
 
         </div>
+      </div>
+      <div className={styles.row}>
         {!stack && <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
           <label>Растояние между колонками</label>
           <CustomSlider
@@ -42,13 +44,14 @@ export const Bar = () => {
             name={'column_gap'}
             min={-10}
             max={50}
-            step={1}
+            step={10}
           />
 
 
         </div>}
 
       </div>
+
 
     </div>
   )

@@ -66,7 +66,9 @@ export const ReportingTabs = () => {
       >
         {groups.map((group, index) => {
           return (
-            <Tabs.Tab key={group.group_id} eventKey={group.group_id.toString()} title={group.group_name}>
+            <Tabs.Tab
+              className={styles.tabs_content}
+              key={group.group_id} eventKey={group.group_id.toString()} title={group.group_name}>
               {group.group_id.toString() === activeKey
                 ? <TestPageGraphComponent/>
                 : null

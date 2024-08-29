@@ -24,12 +24,17 @@ export const CustomSlider = (
       defaultValue={defaultValue}
       render={({field}) => (
         <Slider
+          graduated
+          progress
           {...field}
-          progress={progress}
+          // progress={progress}
           defaultValue={field.value}
           min={min}
           max={max}
           step={step}
+          renderMark={mark => {
+            return mark;
+          }}
           onChange={value => {
             // Update the form field value
             field.onChange(value);

@@ -6,12 +6,16 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+    flex-wrap: wrap;
 
   .filters{
     display: flex;
     gap: 8px;
     align-items: center;
     height: 40px;
+    @media (max-width: 1500px) {
+      width: 100%;
+    }
   }
   .clients_select{
     width: 224px;

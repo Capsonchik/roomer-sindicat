@@ -25,7 +25,7 @@ export const TopNavigationBar = () => {
         <Nav.Item onClick={() => handleNavigate('/main')}>Главная</Nav.Item>
         <Nav.Item onClick={() => handleNavigate('/main/report')}>Отчет</Nav.Item>
         <Nav.Item onClick={() => handleNavigate('/main/reportList')}>Список отчетов</Nav.Item>
-        <Nav.Item onClick={() => handleNavigate('/main' + ROUTES_PATH.editorChart)}>Чарты</Nav.Item>
+        {/*<Nav.Item onClick={() => handleNavigate('/main' + ROUTES_PATH.editorChart)}>Чарты</Nav.Item>*/}
       </Nav>
       <Nav pullRight>
         <Nav.Item onClick={handleLogOut} icon={<CogIcon/>}>Выйти из системы</Nav.Item>

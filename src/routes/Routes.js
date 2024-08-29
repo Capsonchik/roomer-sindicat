@@ -28,23 +28,23 @@ export const router = createBrowserRouter([
     path: '/main',
     element: <PrivateRoute><TestPage/></PrivateRoute>,
     children: [
-      { index: true, element: <TestPageMainComponent/> },
-      { path: '/main/report', element: <TestPageReportComponent/> },
-      { path: '/main/reportList', element: <TestPageReportList/> },
-      {
-        path: '/main' + ROUTES_PATH.editorChart,
-        element: <Charts/>,
-        children: [
-          {
-            path: '/main' + ROUTES_PATH.editorChart + '/:id',
-            element: <EditorChart/>,
-          },
-          {
-            path: '/main' + ROUTES_PATH.editorChart,
-            element: <ChartList/>,
-          }
-        ]
-      },
+      {index: true, element: <ChartList/>},
+      {path: '/main/report', element: <TestPageReportComponent/>},
+      {path: '/main/reportList', element: <TestPageReportList/>},
+      // {
+      //   path: '/main' + ROUTES_PATH.editorChart,
+      //   element: <Charts/>,
+      //   children: [
+      //     {
+      //       path: '/main' + ROUTES_PATH.editorChart + '/:id',
+      //       element: <EditorChart/>,
+      //     },
+      //     {
+      //       path: '/main' + ROUTES_PATH.editorChart,
+      //       element: <ChartList/>,
+      //     }
+      //   ]
+      // },
     ]
   },
   {

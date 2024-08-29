@@ -1,6 +1,6 @@
 import styles from './chartList.module.scss';
 import {Chart} from "./chart/Chart";
-import {Button, Divider, Loader} from "rsuite";
+import {Button, Divider, Loader, useMediaQuery} from "rsuite";
 import React, {useEffect, useState} from "react";
 import {downloadPpt} from "./downloadPptx";
 // import {charts} from "./chartMocks";
@@ -19,6 +19,7 @@ import {setActiveChart, setOpenDrawer} from "../../store/chartSlice/chart.slice"
 import {ChartListItem} from "./chartListItem/ChartListItem";
 import {GroupDrawer} from "./groupDrawer/GroupDrawer";
 import EditIcon from "@rsuite/icons/Edit";
+import cl from "classnames";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -34,15 +35,20 @@ export const ChartList = (props) => {
   const [data, setData] = useState(charts)
   const [placeholderText, setPlaceholderText] = useState('')
   const [openGroupDrawer, setOpenGroupDrawer] = useState(false)
+  const [resize, setResize] = useState(false)
+
+  const [isTablet] = useMediaQuery('(max-width: 1200px)');
 
   useEffect(() => {
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
-    if(!foundGroup) {
-
+    if (foundGroup) {
+      setActiveGroup(foundGroup)
+    } else if (groups.length) {
+      setActiveGroup(groups[0])
     }
-    setActiveGroup(foundGroup)
+    // setActiveGroup(foundGroup)
 
-  }, [activeGroupId,groups])
+  }, [activeGroupId, groups])
 
   useEffect(() => {
     if (!activeClient) {
@@ -61,37 +67,52 @@ export const ChartList = (props) => {
   }, [charts])
   // console.log(data)
 
-  // Добавьте хук useEffect для отслеживания изменения размера окна
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //   console.log(11)
-  //     // Обновите состояние, чтобы вызвать перерендеринг
-  //     setData([]); // Перерендеринг списка
-  //     setData([...charts]); // Перерендеринг списка
-  //   };
-  //
-  //   // Добавляем слушатель события resize
-  //   window.addEventListener('resize', handleResize);
-  //
-  //   // Удаляем слушатель при размонтировании компонента
-  //   return () => {
-  //     window.removeEventListener('resize', handleResize);
-  //   };
-  // }, []); // Зависимость от charts, чтобы следить за изменениями данных
+  useEffect(() => {
+    let resizeTimeout;
 
+    const handleResize = () => {
+      setResize(true)
+      // setData([]); // Перерендеринг списка
+      if (resizeTimeout) {
+        clearTimeout(resizeTimeout);
+      }
 
+      resizeTimeout = setTimeout(() => {
+        console.log(11);
+        setResize(false)
+        setData([...charts]); // Перерендеринг списка
+        // setResize(false)
+        // setTimeout(() => {
+        //   setResize(false)
+        // }, 300);
+      }, 300); // Задержка в 300 мс перед вызовом функции
+    };
+
+    // Добавляем слушатель события resize
+    window.addEventListener('resize', handleResize);
+
+    // Удаляем слушатель при размонтировании компонента
+    return () => {
+      if (resizeTimeout) {
+        clearTimeout(resizeTimeout);
+      }
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [charts]); // Зависимость от charts, чтобы следить за изменениями данных
+
+  console.log(isTablet)
   return (
 
     <>
       <TopFilters/>
       <div
         className={styles.list}>
-        {isChartLoading && (
+        {(isChartLoading || resize) && (
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>
         )}
-        {activeReport && !isChartLoading && (
+        {activeReport && !isChartLoading && !resize && (
           <div className={styles.group_wrapper}>
             <Button onClick={() => {
               setOpenGroupDrawer(true)
@@ -105,14 +126,19 @@ export const ChartList = (props) => {
           </div>
         )}
         {activeReport && <div
-          className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}>
+          // className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}
+          className={cl(styles.wrapper,{
+            [styles.col_2]: data.length % 2 === 0,
+            [styles.col_3]:data.length === 3,
+            [styles.isTablet]: isTablet
+          })}
+        >
 
-          {!isChartLoading && data[0]?.title && data.map((chart, index) => (
+          {!isChartLoading && !resize && data[0]?.title && data.map((chart, index) => (
 
             <ChartListItem key={index} chart={chart}/>
           ))}
         </div>}
-
 
 
       </div>

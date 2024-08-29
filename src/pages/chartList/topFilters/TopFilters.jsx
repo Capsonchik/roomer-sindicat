@@ -40,7 +40,11 @@ export const TopFilters = () => {
   useEffect(() => {
 
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
-    setActiveGroup(foundGroup ?? groups.length > 0 ? groups[0] : null)
+    if (foundGroup) {
+      setActiveGroup(foundGroup)
+    } else if (groups.length) {
+      setActiveGroup(groups[0])
+    }
 
   }, [activeGroupId, groups])
 
@@ -150,7 +154,7 @@ export const TopFilters = () => {
             className={styles.uploader}
             autoUpload={false}
             onChange={setFileList}
-            data={getDataCharts({charts, activeGroup})}
+            data={activeGroup && charts.length && getDataCharts({charts, activeGroup})}
             action="https://7aa7-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data">
             <Button>Выбрать файл</Button>
           </Uploader>
@@ -176,7 +180,7 @@ export const TopFilters = () => {
 
       </div>
       {!!groupsReports.length && activeReport && (
-        <GroupTabs groupsReports={groupsReports} activeGroupId={activeGroupId}/>
+        <GroupTabs groupsReports={groupsReports} activeGroup={activeGroup}/>
       )}
 
     </FormProvider>

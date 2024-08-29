@@ -134,6 +134,9 @@ export const ChartListItem = ({chart}) => {
   }, [chartInstance, chartState]);
 
 
+
+
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.title_wrapper}>

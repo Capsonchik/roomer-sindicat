@@ -75,7 +75,7 @@ export const LoginForm = () => {
         </div>
         <div className={styles.input_wrapper}>
           <label className={styles.label}>Пароль</label>
-          <CustomInput name={'password'}/>
+          <CustomInput name={'password'} type={'password'}/>
 
         </div>
 

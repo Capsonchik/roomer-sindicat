@@ -6,6 +6,10 @@
   height: calc(100vh - 200px);
   overflow: auto;
   padding-bottom: 100px;
+
+  @media (max-width: 1500px) {
+    height: calc(100vh - 220px);
+  }
 }
 
 .group_wrapper {
@@ -40,6 +44,45 @@
   &.col_3 {
     grid-template-columns: 1fr 1fr 1fr;
   }
+
+  @media (max-width: 1200px) {
+    &.col_3 {
+      grid-template-columns: 1fr 1fr;
+
+      & > *:nth-child(2n + 1):last-child {
+        grid-column: span 2;
+      }
+    }
+  }
+  @media (max-width: 1000px) {
+    &.col_3, &.col_2 {
+      grid-template-columns: 1fr;
+
+      & > *:nth-child(2n + 1):last-child {
+        grid-column: auto;
+      }
+
+    }
+    //& > *:nth-child(2n + 1):last-child {
+    //  grid-column: span;
+    //}
+
+  }
+
+  //&.isTablet{
+  //  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  //
+  //
+  //    //& > *:nth-child(3n + 1):last-child {
+  //    //  grid-column: span 3;
+  //    //}
+  //
+  //}
+
+  // Обработка случая, когда последний элемент занимает всю строку
+  //& > *:nth-child(2n + 1):last-child {
+  //  grid-column: span 2;
+  //}
 
 
 }

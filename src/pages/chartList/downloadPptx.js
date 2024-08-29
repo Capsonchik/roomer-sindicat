@@ -103,6 +103,9 @@ export const downloadPpt = (charts, activeGroup) => {
       chartColors: filteredColors,
       title: chart.title,
       showTitle: true,
+      titlePos:{
+        y: 0
+      },
       titleFontSize: 10,
       titleColor: '646262',
       showLegend: true,

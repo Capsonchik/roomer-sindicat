@@ -149,7 +149,7 @@ export const ChartListItem = ({chart}) => {
         </Button>
       </div>
       <p>{chart.description}</p>
-      <div ref={chartRef} style={{width: '100%', height: '400px'}}></div>
+      <div ref={chartRef} style={{width: '100%', minHeight: '400px'}}></div>
 
     </div>
   );

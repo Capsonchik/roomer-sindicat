@@ -172,7 +172,7 @@ export const TopFilters = () => {
 
       </div>
       {!!groupsReports.length && activeReport && (
-        <GroupTabs groupsReports={groupsReports}/>
+        <GroupTabs groupsReports={groupsReports} activeGroupId={activeGroupId}/>
       )}
 
     </FormProvider>

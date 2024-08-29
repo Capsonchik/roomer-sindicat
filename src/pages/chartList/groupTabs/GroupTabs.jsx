@@ -12,17 +12,17 @@ import {Chart} from "../chart/Chart";
 import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
 import {setActiveGroup} from "../../../store/chartSlice/chart.slice";
 
-export const GroupTabs = ({groupsReports}) => {
+export const GroupTabs = ({groupsReports,activeGroupId}) => {
   // const groups = useSelector(selectGroupsReports);
   const dispatch = useDispatch();
-  const activeGroupId = useSelector(selectActiveGroupId)
-  const defaultActiveKey = groupsReports.length > 0 ? groupsReports[0].group_id.toString() : null;
+  // const activeGroupId = useSelector(selectActiveGroupId)
+  const defaultActiveKey = activeGroupId ? activeGroupId : groupsReports.length > 0 ? groupsReports[0].group_id.toString() : null;
   const [activeKey, setActiveKey] = useState(defaultActiveKey)
 
   useEffect(() => {
     dispatch(fetchAllChartsByGroupId(activeKey)).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(activeKey))
-      dispatch(setActiveGroup(activeKey))
+      !activeGroupId && dispatch(setActiveGroup(activeKey))
     })
   }, [groupsReports]);
 

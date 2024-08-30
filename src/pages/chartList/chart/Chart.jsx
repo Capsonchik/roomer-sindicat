@@ -18,6 +18,9 @@ import {
   patchChartFormatting
 } from "../../../store/chartSlice/chart.actions";
 import {convertValuesByPercent} from "./convertValuesByPercent";
+import {getSumValues} from "../getSumValues";
+import {calculateMaxValue} from "../calculateMaxValue";
+import {calculateStepSize} from "../calculateStepSize";
 
 
 export const Chart = ({chart}) => {
@@ -225,6 +228,16 @@ export const Chart = ({chart}) => {
       )
     ;
 
+    const maxValue = getSumValues({
+      stack: chartState.formatting.stack,
+      seriesData: chartState.seriesData,
+      // seriesIndex: 0,
+      ispercent: chartState.ispercent
+    })
+
+    const calculatedMaxValue = calculateMaxValue(0, maxValue ,6)
+    const step = calculateStepSize(0,calculatedMaxValue, 6)
+
     const option = {
       ...tooltipConfig,
       ...legendConfig,
@@ -241,12 +254,14 @@ export const Chart = ({chart}) => {
 
       xAxis: chartState.formatting.isXAxis ? {type: 'category', data: chartState.xAxisData} : {
         type: 'value',
-        max: chartState.ispercent ? 100 : null
+        max: chartState.ispercent ? 100 : calculatedMaxValue,
+        interval: step
       },
       yAxis: chartState.formatting.isXAxis ? {
         type: 'value',
         data: chartState.xAxisData,
-        max: chartState.ispercent ? 100 : null
+        max: chartState.ispercent ? 100 : calculatedMaxValue,
+        interval: step
       } : {
         type: 'category',
         data: chartState.xAxisData

@@ -27,7 +27,6 @@ export const ChartListItem = ({chart}) => {
   const [chartState, setChartState] = useState(chart)
 
 
-
   useEffect(() => {
     const myChart = echarts.init(chartRef.current);
     setChartInstance(myChart);
@@ -63,8 +62,6 @@ export const ChartListItem = ({chart}) => {
       : colors
 
 
-
-
     // const maxValue = getSumValues({
     //   stack: chart.formatting.stack,
     //   seriesData: convertedSeriesData,
@@ -98,7 +95,7 @@ export const ChartListItem = ({chart}) => {
   useEffect(() => {
     if (!chartInstance) return;
 
-    const seriesOptions = Object.keys(chartState.seriesData).map((seriesName,index) => {
+    const seriesOptions = Object.keys(chartState.seriesData).map((seriesName, index) => {
 
 
       return {
@@ -116,22 +113,9 @@ export const ChartListItem = ({chart}) => {
       ispercent: chartState.ispercent
     })
 
-    const calculatedMaxValue = calculateMaxValue(0, maxValue ,6)
-    const step = calculateStepSize(0,calculatedMaxValue, 6)
+    const calculatedMaxValue = calculateMaxValue(0, maxValue, 6)
+    const step = calculateStepSize(0, calculatedMaxValue, 6)
 
-    // setChartState(prev => {
-    //   return {
-    //     ...prev,
-    //     formatting: {
-    //       ...prev.formatting,
-    //       stepValue: step,
-    //       maxValue: calculatedMaxValue,
-    //       // format_value,
-    //     }
-    //
-    //   }
-    // })
-    // console.log(calculatedMaxValue)
 
     const option = {
       ...tooltipConfig,
@@ -149,9 +133,18 @@ export const ChartListItem = ({chart}) => {
       barGap: `${chartState.formatting.column_gap} %`,
       xAxis: chartState.formatting.isXAxis
         ? {type: 'category', data: chartState.xAxisData,}
-        : {type: 'value', max: chartState.ispercent ? 100 :calculatedMaxValue,interval: step}, // Toggle axis
+        : {
+          type: 'value',
+          max: chartState.ispercent ? 100 : calculatedMaxValue,
+          interval: step
+        }, // Toggle axis
       yAxis: chartState.formatting.isXAxis
-        ? {type: 'value', data: chartState.xAxisData, max: chartState.ispercent ? 100 : calculatedMaxValue,interval: step}
+        ? {
+          type: 'value',
+          data: chartState.xAxisData,
+          max: chartState.ispercent ? 100 : calculatedMaxValue,
+          interval: step
+        }
         : {
           type: 'category',
           data: chartState.xAxisData
@@ -163,9 +156,6 @@ export const ChartListItem = ({chart}) => {
       lazyUpdate: false,
     });
   }, [chartInstance, chartState]);
-
-
-
 
 
   return (

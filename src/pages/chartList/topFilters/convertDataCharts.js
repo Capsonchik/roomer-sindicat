@@ -1,4 +1,7 @@
 import {dataLabelPosMap} from "../label.config";
+import {getSumValues} from "../getSumValues";
+import {calculateMaxValue} from "../calculateMaxValue";
+import {calculateStepSize} from "../calculateStepSize";
 
 
 export const convertDataCharts = ({charts, activeGroup}) => {
@@ -49,6 +52,17 @@ export const convertDataCharts = ({charts, activeGroup}) => {
   }
 
   const convertedCharts = charts.reduce((acc, chart, index) => {
+
+    const maxValue = getSumValues({
+      stack: chart.formatting.stack,
+      seriesData: chart.seriesData,
+      // seriesIndex: 0,
+      ispercent: chart.ispercent
+    })
+
+    const calculatedMaxValue = calculateMaxValue(0, maxValue ,6)
+    const step = calculateStepSize(0,calculatedMaxValue, 6)
+
     // Определяем направление баров в зависимости от isXAxis
     const barDirection = chart.formatting.isXAxis ? undefined : 'bar';
     acc.push({
@@ -64,6 +78,8 @@ export const convertDataCharts = ({charts, activeGroup}) => {
         dataLabelPosition: dataLabelPosMap[chart.formatting.label_position] || 'bestFit',
         barDir: barDirection,
         barGrouping: chart.formatting.stack ? 'stacked' : 'standard',
+        step,
+        maxValue:calculatedMaxValue
         // valAxisMaxVal
       }
     })

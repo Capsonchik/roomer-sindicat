@@ -14,6 +14,9 @@ import {selectIsOpenDrawer, selectOriginalColors} from "../../../store/chartSlic
 import {patchChartFormatting} from "../../../store/chartSlice/chart.actions";
 import {colors, legendConfig, tooltipConfig} from "../chart/config";
 import {convertValuesByPercent} from "../chart/convertValuesByPercent";
+import {getSumValues} from "../getSumValues";
+import {calculateMaxValue} from "../calculateMaxValue";
+import {calculateStepSize} from "../calculateStepSize";
 
 
 export const ChartListItem = ({chart}) => {
@@ -53,7 +56,7 @@ export const ChartListItem = ({chart}) => {
       filteredSeriesData: filteredSeries,
       format_value
     })
-
+    // console.log()
 
     const filteredColors = !!chart?.formatting?.colors
       ? chart.formatting.colors.filter(([series, value]) => value).map(([series, value]) => series)
@@ -80,14 +83,29 @@ export const ChartListItem = ({chart}) => {
   useEffect(() => {
     if (!chartInstance) return;
 
-    const seriesOptions = Object.keys(chartState.seriesData).map((seriesName) => ({
-      name: seriesName,
-      type: chartState.formatting.type_chart,
-      data: chartState.seriesData[seriesName],
-      stack: chartState.formatting.stack ? 'total' : null
-    }));
-    // console.log(seriesOptions)
+    const seriesOptions = Object.keys(chartState.seriesData).map((seriesName,index) => {
 
+
+      return {
+        name: seriesName,
+        type: chartState.formatting.type_chart,
+        data: chartState.seriesData[seriesName],
+        stack: chartState.formatting.stack ? 'total' : null
+      }
+    });
+
+    const maxValue = getSumValues({
+      stack: chartState.formatting.stack,
+      seriesData: chartState.seriesData,
+      // seriesIndex: 0,
+      ispercent: chartState.ispercent
+    })
+
+    const calculatedMaxValue = calculateMaxValue(0, maxValue ,6)
+    const step = calculateStepSize(0,calculatedMaxValue, 6)
+
+
+    console.log(calculatedMaxValue)
 
     const option = {
       ...tooltipConfig,
@@ -99,28 +117,15 @@ export const ChartListItem = ({chart}) => {
         verticalAlign: 'middle',
         fontSize: chartState.formatting.label_size
       },
-      // series: {
-      //   type: "bar",
-      //   radius: '50%',
-      //   data: seriesOptions,
-      //   // emphasis: {
-      //   //   itemStyle: {
-      //   //     shadowBlur: 10,
-      //   //     shadowOffsetX: 0,
-      //   //     shadowColor: 'rgba(0, 0, 0, 0.5)'
-      //   //   }
-      //   // }
-      // },
-      // column_width: chartState.formatting.column_width,
-      // column_gap: chartState.formatting.column_gap,
+
       series: seriesOptions,
       barCategoryGap: `${50 - chartState.formatting.column_width} %`,
       barGap: `${chartState.formatting.column_gap} %`,
       xAxis: chartState.formatting.isXAxis
         ? {type: 'category', data: chartState.xAxisData,}
-        : {type: 'value', max: chartState.ispercent ? 100 : null}, // Toggle axis
+        : {type: 'value', max: chartState.ispercent ? 100 :calculatedMaxValue,intervel: step}, // Toggle axis
       yAxis: chartState.formatting.isXAxis
-        ? {type: 'value', data: chartState.xAxisData, max: chartState.ispercent ? 100 : null}
+        ? {type: 'value', data: chartState.xAxisData, max: chartState.ispercent ? 100 : calculatedMaxValue,intervel: step}
         : {
           type: 'category',
           data: chartState.xAxisData

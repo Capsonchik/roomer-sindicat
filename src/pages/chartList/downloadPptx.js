@@ -5,6 +5,8 @@ import {colors} from "./chart/config";
 import {getSumValues} from "./getSumValues";
 import {convertValuesByPercent} from "./chart/convertValuesByPercent";
 import {dataLabelPosMap} from "./label.config";
+import {calculateMaxValue} from "./calculateMaxValue";
+import {calculateStepSize} from "./calculateStepSize";
 
 export const downloadPpt = (charts, activeGroup) => {
   const pptx = new PptxGenJS();
@@ -92,18 +94,24 @@ export const downloadPpt = (charts, activeGroup) => {
     const maxValue = getSumValues({
       stack: formatting.stack,
       seriesData: filteredSeriesData,
-      seriesIndex: index,
+      // seriesIndex: index,
       ispercent
     })
-    // console.log(maxValue)
-    // console.log('chart.formatting.format_value',chart.formatting.label_position)
+
+    const valAxisMaxVal = calculateMaxValue(0,maxValue,6)
+    const step = calculateStepSize(0,valAxisMaxVal, 6)
+    // const valAxisMaxVal = chart.ispercent ? 100 : maxValue.toFixed(chart.formatting.format_value || 1) * 1.1
+    const valAxisMajorUnit = chart.ispercent ? 20 : Math.ceil((maxValue.toFixed(chart.formatting.format_value)) / 6)
+    console.log(maxValue)
+    const valAxisLabelFormatCode = chart.ispercent || +maxValue > 10 ? '#,##0' : `#,##0.${'0'.repeat(chart.formatting.format_value - 1 || 1)}`
+
     // Увеличиваем отступ для графика
     // yOffset += 0.5; // Увеличиваем отступ перед графиком
     slide.addChart('bar', dataForChart, {
       chartColors: filteredColors,
       title: chart.title,
       showTitle: true,
-      titlePos:{
+      titlePos: {
         y: 0
       },
       titleFontSize: 10,
@@ -117,7 +125,11 @@ export const downloadPpt = (charts, activeGroup) => {
       h: chartHeight,
 
       // showValue: true,
-      valAxisMaxVal: Math.ceil(maxValue * 1.1),
+      valAxisMaxVal,
+      valAxisLabelFormatCode,
+      valAxisMajorUnit: step,
+      // valAxisLabelFormat: `#,##0.${'0'.repeat(chart.formatting.format_value -1 || 1)}`,
+      // valAxisMaxVal: Math.ceil(maxValue * 1.1),
       valAxisMinVal: 0,
 
 
@@ -129,7 +141,7 @@ export const downloadPpt = (charts, activeGroup) => {
 
       valAxisLineShow: false,
       valGridLine: {
-        size: 1.5,
+        size: 0.5,
         color: 'dfdada'
       },
 

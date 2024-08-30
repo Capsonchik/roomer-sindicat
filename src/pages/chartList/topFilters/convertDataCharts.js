@@ -2,6 +2,8 @@ import {dataLabelPosMap} from "../label.config";
 import {getSumValues} from "../getSumValues";
 import {calculateMaxValue} from "../calculateMaxValue";
 import {calculateStepSize} from "../calculateStepSize";
+import {colors} from "../chart/config";
+import {convertValuesByPercent} from "../chart/convertValuesByPercent";
 
 
 export const convertDataCharts = ({charts, activeGroup}) => {
@@ -60,13 +62,31 @@ export const convertDataCharts = ({charts, activeGroup}) => {
       ispercent: chart.ispercent
     })
 
+    const filteredSeriesData = !!chart.formatting.visible.length
+      ? Object.fromEntries(Object.entries(chart.seriesData).filter(([name, data]) => {
+        return chart.formatting.visible.includes(name)
+      }))
+      : chart.seriesData
+
+    const convertedSeriesData = convertValuesByPercent({
+      visibleListString: Object.keys(filteredSeriesData),
+      chart,
+      filteredSeriesData: filteredSeriesData,
+      format_value: chart.formatting.format_value
+    })
+
+    const filteredColors = chart.formatting.colors
+      ? chart.formatting.colors.filter(([color, bool]) => bool).map(([color, bool]) => color).slice(0, Object.values(convertedSeriesData).length)
+      : colors.slice(0, Object.values(convertedSeriesData).length)
+
+
     const calculatedMaxValue = calculateMaxValue(0, maxValue ,6)
     const step = calculateStepSize(0,calculatedMaxValue, 6)
-
+    console.log(chart.formatting.colors)
     // Определяем направление баров в зависимости от isXAxis
     const barDirection = chart.formatting.isXAxis ? undefined : 'bar';
     acc.push({
-      seriesData: chart.seriesData,
+      seriesData: convertedSeriesData,
       xAxisData: chart.xAxisData,
       title: chart.title,
       formatting: {
@@ -79,7 +99,11 @@ export const convertDataCharts = ({charts, activeGroup}) => {
         barDir: barDirection,
         barGrouping: chart.formatting.stack ? 'stacked' : 'standard',
         step,
-        maxValue:calculatedMaxValue
+        maxValue:calculatedMaxValue,
+        column_width: chart.formatting.column_width,
+        column_gap: chart.formatting.column_gap,
+        colors: filteredColors,
+
         // valAxisMaxVal
       }
     })

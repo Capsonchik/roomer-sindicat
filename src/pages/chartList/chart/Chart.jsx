@@ -31,6 +31,7 @@ export const Chart = ({chart}) => {
   const groupsReports = useSelector(selectGroupsReports)
   // console.log(chart)
   const inputs = methods.watch()
+  console.log(chart)
 
   useEffect(() => {
     let series

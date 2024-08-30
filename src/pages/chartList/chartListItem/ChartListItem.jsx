@@ -117,7 +117,7 @@ export const ChartListItem = ({chart}) => {
       barCategoryGap: `${50 - chartState.formatting.column_width} %`,
       barGap: `${chartState.formatting.column_gap} %`,
       xAxis: chartState.formatting.isXAxis
-        ? {type: 'category', data: chartState.xAxisData}
+        ? {type: 'category', data: chartState.xAxisData,}
         : {type: 'value', max: chartState.ispercent ? 100 : null}, // Toggle axis
       yAxis: chartState.formatting.isXAxis
         ? {type: 'value', data: chartState.xAxisData, max: chartState.ispercent ? 100 : null}

@@ -16,7 +16,7 @@ export const GroupTabs = ({groupsReports,activeGroup}) => {
   // const groups = useSelector(selectGroupsReports);
   const dispatch = useDispatch();
   // const activeGroupId = useSelector(selectActiveGroupId)
-  console.log('activeGroupId',activeGroup)
+  // console.log('activeGroupId',activeGroup)
   // const defaultActiveKey = activeGroupId ;
   const defaultActiveKey = activeGroup ? activeGroup.group_id : groupsReports.length > 0 ? groupsReports[0].group_id.toString() : null;
   // const [activeKey, setActiveKey] = useState(defaultActiveKey)

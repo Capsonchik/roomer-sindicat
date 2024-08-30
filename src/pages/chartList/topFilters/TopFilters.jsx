@@ -19,6 +19,7 @@ import {setActiveClient, setActiveReport} from "../../../store/chartSlice/chart.
 import {Button, Uploader} from "rsuite";
 import {downloadPpt} from "../downloadPptx";
 import {convertDataCharts} from "./convertDataCharts";
+import {axiosGraphRequest} from "../../../api/ApiConfig";
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -148,28 +149,35 @@ export const TopFilters = () => {
             }}
           />
         </div>
-        {/*{!isChartLoading && activeReport && !!charts.length && (*/}
-        {/*  <Uploader*/}
-        {/*    ref={uploader}*/}
-        {/*    className={styles.uploader}*/}
-        {/*    autoUpload={false}*/}
-        {/*    onChange={setFileList}*/}
-        {/*    data={activeGroup && charts.length && getDataCharts({charts, activeGroup})}*/}
-        {/*    action="https://7aa7-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data">*/}
-        {/*    <Button>Выбрать файл</Button>*/}
-        {/*  </Uploader>*/}
-        {/*)}*/}
+        {!isChartLoading && activeReport && !!charts.length && (
+          <Uploader
+            ref={uploader}
+            className={styles.uploader}
+            autoUpload={false}
+            onChange={setFileList}
+            data={activeGroup && charts.length && getDataCharts({charts, activeGroup})}
+            action="https://8fe3-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data">
+            <Button>Выбрать файл</Button>
+          </Uploader>
+        )}
 
-        {/*{!!fileList.length && (*/}
-        {/*  <Button*/}
-        {/*    disabled={!fileList.length}*/}
-        {/*    onClick={() => {*/}
-        {/*      uploader.current.start();*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    Добавить слайд к файлу*/}
-        {/*  </Button>*/}
-        {/*)}*/}
+        {!!fileList.length && (
+          <Button
+            disabled={!fileList.length}
+            onClick={() => {
+              uploader.current.start();
+              // const {title, description, charts: convertedCharts} = getDataCharts({charts, activeGroup})
+              // const formData = new FormData()
+              // formData.append('file', fileList[0])
+              // formData.append('title', title)
+              // formData.append('description', description)
+              // formData.append('charts', convertedCharts)
+              // axiosGraphRequest.post('/api/v2/echart_graphs/form_data',formData)
+            }}
+          >
+            Добавить слайд к файлу
+          </Button>
+        )}
         {!isChartLoading && activeReport && !!charts.length && <Button
           onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
           className={styles.save_pptx}

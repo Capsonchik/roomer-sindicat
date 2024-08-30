@@ -31,6 +31,7 @@ export const convertDataCharts = ({charts, activeGroup}) => {
     h: 0.2,
     w: 9.2
   }
+  yOffset += 0.4;
   const description = {
     text: activeGroup.group_name,
     x: xOffset,

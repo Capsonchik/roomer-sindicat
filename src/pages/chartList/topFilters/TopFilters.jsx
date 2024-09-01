@@ -20,6 +20,7 @@ import {Button, Uploader} from "rsuite";
 import {downloadPpt} from "../downloadPptx";
 import {convertDataCharts} from "./convertDataCharts";
 import {axiosGraphRequest} from "../../../api/ApiConfig";
+import {PresentationDrawer} from "../presentationDrawer/PresentationDrawer";
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ export const TopFilters = () => {
 
   const [fileList, setFileList] = React.useState([]);
   const uploader = React.useRef();
+  const [openPresentationDrawer, setOpenPresentationDrawer] = useState(false)
 
   useEffect(() => {
 
@@ -46,6 +48,7 @@ export const TopFilters = () => {
     } else if (groups.length) {
       setActiveGroup(groups[0])
     }
+    setFileList([])
 
   }, [activeGroupId, groups])
 
@@ -124,73 +127,148 @@ export const TopFilters = () => {
     return convertDataCharts({charts, activeGroup})
   }
 
+  // const handleSuccess = async (response, file) => {
+  //   try {
+  //     // Преобразуем response в blob, если необходимо
+  //     const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+  //     const url = window.URL.createObjectURL(blob);
+  //     console.log(url)
+  //
+  //     // Создаем временную ссылку и программно нажимаем на неё для скачивания файла
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = 'updated-presentation.pptx'; // Название файла
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     a.remove();
+  //
+  //     // Очистка URL после загрузки файла
+  //     window.URL.revokeObjectURL(url);
+  //
+  //     // Очистка списка файлов (если необходимо)
+  //     setFileList([]);
+  //   } catch (error) {
+  //     console.error('Ошибка при загрузке файла:', error);
+  //   }
+  // };
+  const handleFileUpload = async () => {
+    if (fileList.length > 0) {
+      const file = fileList[0];
+
+      const { title_data, description, charts: chartForRequest } = getDataCharts({ charts, activeGroup });
+
+      const formData = new FormData();
+      formData.append('file', file.blobFile); // Binary file
+      formData.append('title_data', title_data); // JSON string
+      formData.append('description', description); // JSON string
+      formData.append('charts', chartForRequest); // JSON string
+
+      try {
+        const response = await axiosGraphRequest.post('/api/v2/echart_graphs/form_data', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data', // Ensure this is set to handle form data
+          },
+          responseType: 'arraybuffer', // Expecting a binary response
+        });
+
+        // Handling the response to download the file
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'updated-presentation.pptx'; // Name of the downloaded file
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        window.URL.revokeObjectURL(url);
+        setFileList([]); // Clear the file list after upload
+      } catch (error) {
+        console.error('Ошибка при загрузке файла:', error);
+      }
+    }
+  };
 
   return (
-    <FormProvider {...methods}>
-      <div className={styles.wrapper}>
-        <div className={styles.filters}>
-          <CustomSelectPicker
-            className={styles.clients_select}
-            name={'clients'}
-            placeholder={'Выберите клиента'}
-            data={clients.map(client => ({value: client.client_id, label: client.client_name}))}
-            onChangeOutside={value => {
-              handleClientChange(value)
-            }}
-          />
-          <CustomSelectPicker
-            className={styles.clients_select}
-            name={'reports'}
-            value={activeReport}
-            placeholder={'Выберите отчет'}
-            data={reportsClients.map(report => ({value: report.report_id, label: report.report_name}))}
-            onChangeOutside={value => {
-              handleReportChange(value)
-            }}
-          />
-        </div>
-        {!isChartLoading && activeReport && !!charts.length && (
-          <Uploader
-            ref={uploader}
-            className={styles.uploader}
-            autoUpload={false}
-            onChange={setFileList}
-            data={activeGroup && charts.length && getDataCharts({charts, activeGroup})}
-            action="https://8fe3-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data">
-            <Button>Выбрать файл</Button>
-          </Uploader>
-        )}
+    <>
+      <FormProvider {...methods}>
+        <div className={styles.wrapper}>
+          <div className={styles.filters}>
+            <CustomSelectPicker
+              className={styles.clients_select}
+              name={'clients'}
+              placeholder={'Выберите клиента'}
+              data={clients.map(client => ({value: client.client_id, label: client.client_name}))}
+              onChangeOutside={value => {
+                handleClientChange(value)
+              }}
+            />
+            <CustomSelectPicker
+              className={styles.clients_select}
+              name={'reports'}
+              value={activeReport}
+              placeholder={'Выберите отчет'}
+              data={reportsClients.map(report => ({value: report.report_id, label: report.report_name}))}
+              onChangeOutside={value => {
+                handleReportChange(value)
+              }}
+            />
+          </div>
+          {!isChartLoading && activeReport && !!charts.length && (
+            <Uploader
+              // onSuccess={handleSuccess}
+              // value={fileList[0]}
+              ref={uploader}
+              className={styles.uploader}
+              autoUpload={false}
+              onChange={setFileList}
+              // data={activeGroup && charts.length && getDataCharts({charts, activeGroup})}
+              // action="https://8fe3-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data"
+            >
+              <Button>Выбрать файл</Button>
+            </Uploader>
+          )}
 
-        {!!fileList.length && (
-          <Button
-            disabled={!fileList.length}
-            onClick={() => {
-              uploader.current.start();
-              // const {title, description, charts: convertedCharts} = getDataCharts({charts, activeGroup})
-              // const formData = new FormData()
-              // formData.append('file', fileList[0])
-              // formData.append('title', title)
-              // formData.append('description', description)
-              // formData.append('charts', convertedCharts)
-              // axiosGraphRequest.post('/api/v2/echart_graphs/form_data',formData)
-            }}
+          {!!fileList.length && !isChartLoading && activeReport && !!charts.length && (
+            <Button
+              disabled={!fileList.length}
+              onClick={() => {
+                handleFileUpload()
+                // uploader.current.start();
+                // const {title, description, charts: convertedCharts} = getDataCharts({charts, activeGroup})
+                // const formData = new FormData()
+                // formData.append('file', fileList[0])
+                // formData.append('title', title)
+                // formData.append('description', description)
+                // formData.append('charts', convertedCharts)
+                // axiosGraphRequest.post('/api/v2/echart_graphs/form_data',formData)
+              }}
+            >
+              Добавить слайд к файлу
+            </Button>
+          )}
+          {!isChartLoading && activeReport && !!charts.length && <Button
+            onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
+            className={styles.save_pptx}
           >
-            Добавить слайд к файлу
-          </Button>
+            Скачать редактируемый pptx
+          </Button>}
+
+
+        </div>
+        {!!groupsReports.length && activeReport && (
+          <GroupTabs groupsReports={groupsReports} activeGroup={activeGroup}/>
         )}
-        {!isChartLoading && activeReport && !!charts.length && <Button
-          onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
-          className={styles.save_pptx}
-        >
-          Скачать редактируемый pptx
-        </Button>}
 
 
-      </div>
-      {!!groupsReports.length && activeReport && (
-        <GroupTabs groupsReports={groupsReports} activeGroup={activeGroup}/>
-      )}
-
-    </FormProvider>
+      </FormProvider>
+      <PresentationDrawer
+        open={openPresentationDrawer}
+        onClose={setOpenPresentationDrawer}
+      />
+    </>
   )
 }

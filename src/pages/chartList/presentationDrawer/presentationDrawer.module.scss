@@ -1,0 +1,23 @@
+.wrapper {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .input_wrapper {
+
+    .label {
+      margin-bottom: 12px;
+    }
+
+    .description {
+      height: 90px;
+      resize: none;
+    }
+  }
+
+  .patch_btn {
+    margin-top: 30px;
+  }
+
+}

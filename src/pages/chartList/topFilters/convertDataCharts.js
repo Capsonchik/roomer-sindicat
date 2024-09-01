@@ -76,7 +76,8 @@ export const convertDataCharts = ({charts, activeGroup}) => {
     })
 
     const filteredColors = chart.formatting.colors
-      ? chart.formatting.colors.filter(([color, bool]) => bool).map(([color, bool]) => color).slice(0, Object.values(convertedSeriesData).length)
+      ? chart.formatting.colors.filter(([color, bool]) => bool).map(([color, bool]) => color).slice(0, Object.values(
+        convertedSeriesData).length)
       : colors.slice(0, Object.values(convertedSeriesData).length)
 
 
@@ -124,7 +125,7 @@ export const convertDataCharts = ({charts, activeGroup}) => {
   }, [])
 
   return {
-    title: JSON.stringify(title),
+    title_data: JSON.stringify(title),
     description: JSON.stringify(description),
     charts: JSON.stringify(convertedCharts),
   }

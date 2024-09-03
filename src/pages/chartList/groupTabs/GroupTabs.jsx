@@ -56,7 +56,9 @@ export const GroupTabs = ({groupsReports}) => {
 
   useEffect(() => {
     if (!swiperRef.current) return;
-    swiperRef.current.swiper.slideNext();
+    const lastIndex = groupsReports.length - 1;
+    swiperRef.current.swiper.slideTo(lastIndex);
+    // swiperRef.current.swiper.slideNext();
 
   }, [groupsReports.length]);
 

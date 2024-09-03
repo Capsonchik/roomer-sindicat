@@ -164,7 +164,7 @@ export const TopFilters = () => {
               dispatch(setTypeGroupDrawer('add'))
             }}
           >
-            Создать группу
+            Создать лист
           </Button>}
 
 

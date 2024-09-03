@@ -43,6 +43,19 @@ export const patchChartById = createAsyncThunk(
     }
   }
 );
+export const createChart = createAsyncThunk(
+  'chart/createChart',
+  async (graphData) => {
+    try {
+      const response = await axiosGraphRequest.patch(`/api/v1/update_client_object`,graphData);
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchPostLogOut error');
+    }
+  }
+);
 
 export const fetchAllClients = createAsyncThunk(
   'chart/fetchAllClients',

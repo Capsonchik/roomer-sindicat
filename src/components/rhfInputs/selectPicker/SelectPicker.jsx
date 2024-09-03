@@ -14,6 +14,7 @@ export const CustomSelectPicker = (
     searchable = false,
     appearance = "default",
     container,
+    defaultValue = null,
     preventOverflow
   }
 ) => {
@@ -25,6 +26,7 @@ export const CustomSelectPicker = (
       control={control}
       render={({field}) => (
         <SelectPicker
+          defaultValue={defaultValue}
           {...field}
           data={data}
           value={value}

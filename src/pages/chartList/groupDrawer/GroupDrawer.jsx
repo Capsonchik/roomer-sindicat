@@ -21,7 +21,7 @@ import cl from 'classnames'
 import {labelArray} from "../label.config";
 import {setActiveGroup} from "../../../store/chartSlice/chart.slice";
 
-export const GroupDrawer = ({open, onClose, activeGroup}) => {
+export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
   const reportsClients = useSelector(selectReportsClients)
 
   const loginSchema = yup.object().shape({
@@ -40,23 +40,27 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
   const [isDelete, setIsDelete] = useState(false)
   // console.log(activeReport)
   useEffect(() => {
-    methods.reset({
-      title: activeGroup?.group_name,
-      description: activeGroup?.description,
-    })
+    if (activeGroup ) {
+      methods.reset({
+        title: activeGroup?.group_name,
+        description: activeGroup?.description,
+        report_id: activeReport.toString(),
+      })
+    }
+
     // setIsDelete(false)
   }, [activeGroup])
 
   const handlePatch = (data) => {
     console.log(data)
-    dispatch(patchGroupById({
-      id: activeGroup.group_id,
-      title: data.title,
-      description: data.description,
-    })).then(() => {
-      onClose()
-      dispatch(fetchAllGroups(activeReport))
-    })
+    // dispatch(patchGroupById({
+    //   id: activeGroup.group_id,
+    //   title: data.title,
+    //   description: data.description,
+    // })).then(() => {
+    //   onClose()
+    //   dispatch(fetchAllGroups(activeReport))
+    // })
   }
 
   const handleCreateGroup = (data) => {
@@ -112,6 +116,7 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
                 {getContainer => (
                   <CustomSelectPicker
                     name={'report_id'}
+                    defaultValue={activeReport}
                     data={reportsClients.map((report) => ({label: report.report_name, value: report.report_id}))}
                     searchable={false}
                     placeholder="Отчет"

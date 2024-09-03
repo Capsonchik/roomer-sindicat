@@ -15,7 +15,7 @@ import {
 import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/SelectPicker";
 import {FormProvider, useForm} from "react-hook-form";
 import {GroupTabs} from "../groupTabs/GroupTabs";
-import {setActiveClient, setActiveReport} from "../../../store/chartSlice/chart.slice";
+import {setActiveClient, setActiveReport, setTypeGroupDrawer} from "../../../store/chartSlice/chart.slice";
 import {Button, Uploader} from "rsuite";
 import {downloadPpt} from "../downloadPptx";
 import {convertDataCharts} from "./convertDataCharts";
@@ -159,7 +159,10 @@ export const TopFilters = () => {
 
           {activeReport && <Button
             className={styles.create_pptx}
-            onClick={() => setOpenGroupDrawer(true)}
+            onClick={() => {
+              setOpenGroupDrawer(true)
+              dispatch(setTypeGroupDrawer('add'))
+            }}
           >
             Создать группу
           </Button>}

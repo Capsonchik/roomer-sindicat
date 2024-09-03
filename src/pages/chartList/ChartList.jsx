@@ -143,8 +143,11 @@ export const ChartList = (props) => {
           ))}
         </div>}
 
-        {errorCharts && (
-          <Divider>Нет графиков</Divider>
+        {!isChartLoading && errorCharts && !data.length &&  (
+          <div className={styles.placeholder}>
+            <Divider>Нет графиков</Divider>
+
+          </div>
         )}
 
 

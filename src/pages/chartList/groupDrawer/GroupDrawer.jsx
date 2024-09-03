@@ -5,7 +5,7 @@ import {FormProvider, useForm} from "react-hook-form";
 import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchAllGroups, patchGroupById} from "../../../store/chartSlice/chart.actions";
+import {fetchAllGroups, patchGroupById, postGroup} from "../../../store/chartSlice/chart.actions";
 import {
   selectActiveGroupId,
   selectActiveReport,
@@ -53,6 +53,11 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
       dispatch(fetchAllGroups(activeReport))
     })
   }
+
+  const handleCreateGroup = (data) => {
+    console.log(data)
+    // dispatch(postGroup(data))
+  }
   console.log(reportsClients)
 
   return (
@@ -76,7 +81,7 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Отчет</h6>
               <PreventOverflowContainer
-              // height={34}
+                // height={34}
               >
                 {getContainer => (
                   <CustomSelectPicker
@@ -87,6 +92,7 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
                     className={styles.report_select}
                     container={getContainer}
                     preventOverflow
+
                   />
                 )}
 
@@ -94,10 +100,19 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
             </div>
 
 
-            <Button className={styles.patch_btn} onClick={(e) => {
+            {typeGroupDrawer === 'edit' && (
+              <Button className={styles.patch_btn} onClick={(e) => {
                 e.stopPropagation()
                 methods.handleSubmit(handlePatch)()
               }}>Сохранить</Button>
+            )}
+            {typeGroupDrawer === 'add' && (
+              <Button className={styles.patch_btn} onClick={(e) => {
+                e.stopPropagation()
+                methods.handleSubmit(handleCreateGroup)()
+              }}>Создать</Button>
+            )}
+
           </FormProvider>
         </div>
       </Drawer.Body>

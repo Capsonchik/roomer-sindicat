@@ -3,16 +3,24 @@ import styles from "./groupDrawer.module.scss";
 import {ChartEditor} from "../chartEditor/ChartEditor";
 import {FormProvider, useForm} from "react-hook-form";
 import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchAllGroups, patchGroupById} from "../../../store/chartSlice/chart.actions";
-import {selectActiveGroupId, selectActiveReport} from "../../../store/chartSlice/chart.selectors";
+import {
+  selectActiveGroupId,
+  selectActiveReport,
+  selectReportsClients,
+  selectTypeGroupDrawer
+} from "../../../store/chartSlice/chart.selectors";
 
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
+import {PreventOverflowContainer} from "../chartFilters/main/MainForm";
+import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/SelectPicker";
+import {labelArray} from "../label.config";
 
 export const GroupDrawer = ({open, onClose, activeGroup}) => {
-
+  const reportsClients = useSelector(selectReportsClients)
 
   const loginSchema = yup.object().shape({
     title: yup.string().required("Название обязательно"),
@@ -25,6 +33,7 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
   const dispatch = useDispatch();
   const activeReport = useSelector(selectActiveReport)
   const activeGroupId = useSelector(selectActiveGroupId)
+  const typeGroupDrawer = useSelector(selectTypeGroupDrawer)
   // console.log(activeReport)
   useEffect(() => {
     methods.reset({
@@ -44,6 +53,7 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
       dispatch(fetchAllGroups(activeReport))
     })
   }
+  console.log(reportsClients)
 
   return (
     <Drawer open={open} onClose={onClose} style={{maxWidth: 700, width: '100%'}}>
@@ -63,10 +73,31 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
 
             </div>
 
+            <div className={styles.input_wrapper}>
+              <h6 className={styles.label}>Отчет</h6>
+              <PreventOverflowContainer
+              // height={34}
+              >
+                {getContainer => (
+                  <CustomSelectPicker
+                    name={'report_id'}
+                    data={reportsClients.map((report) => ({label: report.report_name, value: report.report_id}))}
+                    searchable={false}
+                    placeholder="Отчет"
+                    className={styles.report_select}
+                    container={getContainer}
+                    preventOverflow
+                  />
+                )}
+
+              </PreventOverflowContainer>
+            </div>
+
+
             <Button className={styles.patch_btn} onClick={(e) => {
-              e.stopPropagation()
-              methods.handleSubmit(handlePatch)()
-            }}>Сохранить</Button>
+                e.stopPropagation()
+                methods.handleSubmit(handlePatch)()
+              }}>Сохранить</Button>
           </FormProvider>
         </div>
       </Drawer.Body>

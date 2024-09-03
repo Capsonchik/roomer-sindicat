@@ -142,3 +142,18 @@ export const patchGroupById = createAsyncThunk(
     }
   }
 );
+
+export const postGroup = createAsyncThunk(
+  'chart/postGroup',
+  async (group) => {
+    try {
+      const response = await axiosGraphRequest.post(`/api/v2/echart_graphs/create_group`,group);
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);

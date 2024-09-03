@@ -10,7 +10,7 @@ import {fetchAllClients} from "../../store/chartSlice/chart.actions";
 import {
   selectActiveClient, selectActiveGroupId, selectActiveReport,
   selectCharts,
-  selectClients, selectGroupsReports,
+  selectClients, selectErrorCharts, selectGroupsReports,
   selectIsChartLoading, selectIsOpenDrawer,
   selectReportsClients
 } from "../../store/chartSlice/chart.selectors";
@@ -31,6 +31,7 @@ export const ChartList = (props) => {
   const activeReport = useSelector(selectActiveReport)
   const isOpenDrawer = useSelector(selectIsOpenDrawer)
   const activeGroupId = useSelector(selectActiveGroupId)
+  const errorCharts = useSelector(selectErrorCharts)
   const groups = useSelector(selectGroupsReports);
   const [activeGroup, setActiveGroup] = useState()
   const [data, setData] = useState(charts)
@@ -141,6 +142,11 @@ export const ChartList = (props) => {
             <ChartListItem key={index} chart={chart}/>
           ))}
         </div>}
+
+        {errorCharts && (
+          <Divider>Нет графиков</Divider>
+        )}
+
 
         {placeholderText && <div className={styles.placeholder}>
           <Divider>{placeholderText}</Divider>

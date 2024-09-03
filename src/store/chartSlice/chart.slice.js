@@ -25,7 +25,10 @@ const initialState = {
   saveChartLoading: false,
 
   isOpenDrawer: false,
-  originalColors: []
+  originalColors: [],
+
+  typeGroupDrawer: 'edit',
+  errorCharts: false,
 }
 
 export const chartSlice = createSlice({
@@ -52,6 +55,10 @@ export const chartSlice = createSlice({
     },
     setActiveGroup: (state, action) => {
       state.activeGroupId = action.payload;
+    },
+
+    setTypeGroupDrawer: (state, action) => {
+      state.typeGroupDrawer = action.payload;
     },
 
   },
@@ -92,6 +99,11 @@ export const chartSlice = createSlice({
         // state.charts = action.payload
         state.isChartLoading = true
       })
+      .addCase(fetchAllChartsByGroupId.rejected, (state, action) => {
+        state.errorCharts = true
+        state.isChartLoading = false
+        state.charts = []
+      })
       .addCase(fetchAllChartsFormatByGroupId.fulfilled, (state, action) => {
         state.charts = state.charts.map((chart,i) => {
           // console.log(chart,action.payload)
@@ -115,6 +127,6 @@ export const chartSlice = createSlice({
   }
 })
 
-export const {setActiveGroup,setOriginalColors,setOpenDrawer,setActiveChart,setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
+export const {setTypeGroupDrawer,setActiveGroup,setOriginalColors,setOpenDrawer,setActiveChart,setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
 
 export default chartSlice.reducer;

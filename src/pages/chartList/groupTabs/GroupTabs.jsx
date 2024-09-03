@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId } from "../../../store/chartSlice/chart.actions";
 import { setActiveGroup } from "../../../store/chartSlice/chart.slice";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Mousewheel, Keyboard } from 'swiper/modules';
+import { Navigation, Mousewheel, Keyboard,Scrollbar } from 'swiper/modules';
 
 export const GroupTabs = ({ groupsReports }) => {
   const dispatch = useDispatch();
@@ -68,11 +68,15 @@ export const GroupTabs = ({ groupsReports }) => {
         slidesPerView='auto'
         keyboard={true}
         modules={[Navigation, Mousewheel, Keyboard]}
+        // scrollbar={{
+        //   hide: false,
+        // }}
         className={styles.swiper}
         spaceBetween={12}
         // onSlideChange={(swiper) => setSelectedIndex(swiper.activeIndex)}
       >
         {groupsReports.map((group, index) => (
+          <div>
           <SwiperSlide
             className={`${styles.swiper_slide} ${selectedIndex === index ? styles.active : ''}`}
             key={group.group_id}
@@ -84,6 +88,7 @@ export const GroupTabs = ({ groupsReports }) => {
               {group.group_name}
             </div>
           </SwiperSlide>
+          </div>
         ))}
       </Swiper>
     </div>

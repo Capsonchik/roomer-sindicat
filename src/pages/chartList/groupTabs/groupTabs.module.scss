@@ -1,11 +1,76 @@
-
-
-.wrapper{
-  padding-inline: 15px;
+.wrapper {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
   margin-top: 24px;
-  
-  
-  .tabs{
-    overflow-x: auto;
+  padding-inline: 15px;
+  position: relative;
+  &:after{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+    right: 15px;
+    //width: 98%;
+    height: 1px;
+    background: #007bff;
+  }
+
+  //border-bottom: 1px solid #007bff;
+
+  & > div {
+    margin-left: 0;
+    padding-inline: 40px;
+
+
+    & > div {
+      align-items: center;
+    }
+
+
+    & > div:not(:first-child)::after {
+      font-size: 16px !important;
+    }
+  }
+
+  //width: calc(4 * 200px + 20px); // Ширина видимой области (4 элемента по 200px + отступы)
+}
+
+
+.container {
+  overflow: hidden;
+  flex: 1;
+  margin: 0 10px;
+}
+
+.slider {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.swiper_slide {
+  width: 280px !important;
+
+  &.active {
+    color: #007bff;
+  }
+
+}
+
+.carouselItem {
+  //width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //background-color: #f9f8f8;
+  //border-radius: ;
+  padding: 10px 20px;
+  cursor: pointer;
+  //border: 1px solid #ddd;
+  margin: 0 5px;
+  text-align: center;
+
+  &.active {
+    color: #007bff;
   }
 }

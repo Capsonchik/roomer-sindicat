@@ -40,17 +40,17 @@ export const TopFilters = () => {
   const uploader = React.useRef();
   const [openPresentationDrawer, setOpenPresentationDrawer] = useState(false)
 
-  useEffect(() => {
-
-    const foundGroup = groups.find((group) => group.group_id == activeGroupId)
-    if (foundGroup) {
-      setActiveGroup(foundGroup)
-    } else if (groups.length) {
-      setActiveGroup(groups[0])
-    }
-    setFileList([])
-
-  }, [activeGroupId, groups])
+  // useEffect(() => {
+  //
+  //   const foundGroup = groups.find((group) => group.group_id == activeGroupId)
+  //   if (foundGroup) {
+  //     setActiveGroup(foundGroup)
+  //   } else if (groups.length) {
+  //     setActiveGroup(groups[0])
+  //   }
+  //   setFileList([])
+  //
+  // }, [activeGroupId, groups])
 
   useEffect(() => {
     dispatch(fetchAllClients())
@@ -78,84 +78,16 @@ export const TopFilters = () => {
     }
   }
 
-  // const data = {
-  //   title: JSON.stringify({
-  //
-  //     text: 'HML - анализ',
-  //     fontSize: 14,
-  //     h: 0.2,
-  //     w: 8,
-  //     yOffset: 0.2,
-  //     xOffset: 0.2,
-  //   }),
-  //   description: JSON.stringify({
-  //     text: 'Описание HML - анализ',
-  //     fontSize: 14,
-  //     h: 0.2,
-  //     w: 8,
-  //     yOffset: 0.2,
-  //     xOffset: 0.2,
-  //   }),
-  //   charts: JSON.stringify([
-  //     {
-  //       title: 'Пиво Хеви',
-  //       description: "Описание",
-  //       formatting: {
-  //         "type_chart": "bar",
-  //         "column_width": 30,
-  //         "column_gap": 0,
-  //         "stack": false,
-  //         "isXAxis": true,
-  //         "visible": [],
-  //         w: 3,
-  //         h: 3,
-  //         padding: 0.2,
-  //         xOffset: 0.2,
-  //         yOffset: 1
-  //
-  //       },
-  //       xAxisData: ["хеви"],
-  //       seriesData: {
-  //         "2023-Q1": [1.5],
-  //         "2024-Q1": [1.4]
-  //       }
-  //     },
-  //   ])
-  //
-  // };
   const getDataCharts = ({charts, activeGroup}) => {
     return convertDataCharts({charts, activeGroup})
   }
 
-  // const handleSuccess = async (response, file) => {
-  //   try {
-  //     // Преобразуем response в blob, если необходимо
-  //     const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
-  //     const url = window.URL.createObjectURL(blob);
-  //     console.log(url)
-  //
-  //     // Создаем временную ссылку и программно нажимаем на неё для скачивания файла
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = 'updated-presentation.pptx'; // Название файла
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     a.remove();
-  //
-  //     // Очистка URL после загрузки файла
-  //     window.URL.revokeObjectURL(url);
-  //
-  //     // Очистка списка файлов (если необходимо)
-  //     setFileList([]);
-  //   } catch (error) {
-  //     console.error('Ошибка при загрузке файла:', error);
-  //   }
-  // };
+
   const handleFileUpload = async () => {
     if (fileList.length > 0) {
       const file = fileList[0];
 
-      const { title_data, description, charts: chartForRequest } = getDataCharts({ charts, activeGroup });
+      const {title_data, description, charts: chartForRequest} = getDataCharts({charts, activeGroup});
 
       const formData = new FormData();
       formData.append('file', file.blobFile); // Binary file
@@ -176,6 +108,7 @@ export const TopFilters = () => {
           type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         });
 
+
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -185,7 +118,11 @@ export const TopFilters = () => {
         a.remove();
 
         window.URL.revokeObjectURL(url);
-        setFileList([]); // Clear the file list after upload
+        // Очистка загрузчика после загрузки файла
+        setFileList([]); // Очистка списка файлов
+
+        // Если у вас есть ref на Uploader, можно также вызвать clearFiles
+        uploader.current?.clearFiles();
       } catch (error) {
         console.error('Ошибка при загрузке файла:', error);
       }
@@ -217,45 +154,46 @@ export const TopFilters = () => {
               }}
             />
           </div>
-          {!isChartLoading && activeReport && !!charts.length && (
-            <Uploader
-              // onSuccess={handleSuccess}
-              // value={fileList[0]}
-              ref={uploader}
-              className={styles.uploader}
-              autoUpload={false}
-              onChange={setFileList}
-              // data={activeGroup && charts.length && getDataCharts({charts, activeGroup})}
-              // action="https://8fe3-212-45-6-6.ngrok-free.app/api/v2/echart_graphs/form_data"
-            >
-              <Button>Выбрать файл</Button>
-            </Uploader>
-          )}
-
-          {!!fileList.length && !isChartLoading && activeReport && !!charts.length && (
-            <Button
-              disabled={!fileList.length}
-              onClick={() => {
-                handleFileUpload()
-                // uploader.current.start();
-                // const {title, description, charts: convertedCharts} = getDataCharts({charts, activeGroup})
-                // const formData = new FormData()
-                // formData.append('file', fileList[0])
-                // formData.append('title', title)
-                // formData.append('description', description)
-                // formData.append('charts', convertedCharts)
-                // axiosGraphRequest.post('/api/v2/echart_graphs/form_data',formData)
-              }}
-            >
-              Добавить слайд к файлу
-            </Button>
-          )}
-          {!isChartLoading && activeReport && !!charts.length && <Button
-            onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
-            className={styles.save_pptx}
+          {/*{!isChartLoading && activeReport && !!charts.length && <Button*/}
+          {/*  className={styles.create_pptx}*/}
+          {/*  onClick={() => setOpenPresentationDrawer(true)}*/}
+          {/*>*/}
+          {/*  Создать презентацию*/}
+          {/*</Button>}  */}
+          {activeReport && <Button
+            className={styles.create_pptx}
+            // onClick={() => setOpenPresentationDrawer(true)}
           >
-            Скачать редактируемый pptx
+            Создать группу
           </Button>}
+          {/*{!isChartLoading && activeReport && !!charts.length && (*/}
+          {/*  <Uploader*/}
+          {/*    fileList={fileList}*/}
+          {/*    ref={uploader}*/}
+          {/*    className={styles.uploader}*/}
+          {/*    autoUpload={false}*/}
+          {/*    onChange={setFileList}*/}
+          {/*  >*/}
+          {/*    <Button>Выбрать файл</Button>*/}
+          {/*  </Uploader>*/}
+          {/*)}*/}
+
+          {/*{!!fileList.length && !isChartLoading && activeReport && !!charts.length && (*/}
+          {/*  <Button*/}
+          {/*    disabled={!fileList.length}*/}
+          {/*    onClick={() => {*/}
+          {/*      handleFileUpload()*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    Добавить слайд к файлу*/}
+          {/*  </Button>*/}
+          {/*)}*/}
+          {/*{!isChartLoading && activeReport && !!charts.length && <Button*/}
+          {/*  onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts*/}
+          {/*  className={styles.save_pptx}*/}
+          {/*>*/}
+          {/*  Скачать слайд pptx*/}
+          {/*</Button>}*/}
 
 
         </div>
@@ -267,7 +205,7 @@ export const TopFilters = () => {
       </FormProvider>
       <PresentationDrawer
         open={openPresentationDrawer}
-        onClose={setOpenPresentationDrawer}
+        onClose={() => setOpenPresentationDrawer(false)}
       />
     </>
   )

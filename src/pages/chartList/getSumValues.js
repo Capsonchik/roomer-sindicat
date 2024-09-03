@@ -1,6 +1,6 @@
 
 export const getSumValues = ({stack,seriesData,ispercent}) => {
-
+  // console.log(stack,seriesData,ispercent)
   // console.log(stack,seriesData,seriesIndex,ispercent)
   if(ispercent) {
     return 100
@@ -11,8 +11,9 @@ export const getSumValues = ({stack,seriesData,ispercent}) => {
     //   acc += +curr;
     //   return acc
     // },0))
+
     return Object.values(seriesData).reduce((acc, curr) => {
-      acc += +curr;
+      acc += Math.max(...curr);
       return acc
     },0)
   }

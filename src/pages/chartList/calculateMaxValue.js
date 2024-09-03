@@ -24,5 +24,6 @@ export function calculateMaxValue(minValue, maxValue, targetStepCount) {
   // 4. Вычисление окончательного максимального значения
   const finalMaxValue = Math.ceil(maxValue / finalStep) * finalStep;
 
+  // console.log(minValue, maxValue, targetStepCount)
   return finalMaxValue;
 }

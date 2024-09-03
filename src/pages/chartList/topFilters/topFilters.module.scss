@@ -1,14 +1,13 @@
 
-
-.wrapper{
+.wrapper {
   padding-inline: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-    //flex-wrap: wrap;
+  //flex-wrap: wrap;
 
-  .filters{
+  .filters {
     display: flex;
     gap: 8px;
     align-items: center;
@@ -17,17 +16,29 @@
       width: 100%;
     }
   }
-  .clients_select{
+
+  .clients_select {
     width: 224px;
   }
-  .save_pptx{
+
+  .save_pptx {
     flex-shrink: 0;
-    margin-left: auto;
+    //margin-left: auto;
     padding: 10px 20px;
     background: #FF8200;
     color: #fff;
   }
-  .uploader{
+
+  .create_pptx {
+    margin-left: auto;
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 10px 20px;
+    //background: #FF8200;
+    //color: #fff;
+  }
+
+  .uploader {
     display: flex;
     align-items: center;
     //margin-right: auto;

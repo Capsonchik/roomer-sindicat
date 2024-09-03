@@ -1,0 +1,34 @@
+
+.wrapper {
+  display: flex;
+  gap: 16px;
+  padding-inline: 15px;
+  margin-top: 24px;
+
+  button:disabled{
+    opacity: 0.5;
+  }
+
+  .save_pptx {
+    flex-shrink: 0;
+    //margin-left: auto;
+    padding: 10px 20px;
+    background: #FF8200;
+    color: #fff;
+  }
+
+  .create_pptx {
+    //margin-left: auto;
+    flex-shrink: 0;
+    //margin-left: auto;
+    padding: 10px 20px;
+    background: #FF8200;
+    color: #fff;
+  }
+
+  .uploader {
+    display: flex;
+    align-items: center;
+    //margin-right: auto;
+  }
+}

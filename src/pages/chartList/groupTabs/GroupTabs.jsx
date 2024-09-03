@@ -1,59 +1,91 @@
-import styles from './groupTabs.module.scss'
-import {Tabs} from "rsuite";
-import {
-  TestPageGraphComponent
-} from "../../../components/testPageComponents/testPageGraphComponent/testPageGraphComponent";
-import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
-import {selectGroups} from "../../../store/reportSlice/reportSlice.selectors";
-import {selectActiveGroupId, selectGroupsReports} from "../../../store/chartSlice/chart.selectors";
-import {ChartList} from "../ChartList";
-import {Chart} from "../chart/Chart";
-import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
-import {setActiveGroup} from "../../../store/chartSlice/chart.slice";
+import styles from './groupTabs.module.scss';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { useDispatch } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import { fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId } from "../../../store/chartSlice/chart.actions";
+import { setActiveGroup } from "../../../store/chartSlice/chart.slice";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Mousewheel, Keyboard } from 'swiper/modules';
 
-export const GroupTabs = ({groupsReports,activeGroup}) => {
-  // const groups = useSelector(selectGroupsReports);
+export const GroupTabs = ({ groupsReports }) => {
   const dispatch = useDispatch();
-  // const activeGroupId = useSelector(selectActiveGroupId)
-  // console.log('activeGroupId',activeGroup)
-  // const defaultActiveKey = activeGroupId ;
-  const defaultActiveKey = activeGroup ? activeGroup.group_id : groupsReports.length > 0 ? groupsReports[0].group_id.toString() : null;
-  // const [activeKey, setActiveKey] = useState(defaultActiveKey)
+  const swiperRef = useRef(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    dispatch(fetchAllChartsByGroupId(defaultActiveKey)).then(() => {
-      dispatch(fetchAllChartsFormatByGroupId(defaultActiveKey))
-      // dispatch(setActiveGroup(activeKey))
-    })
-  }, [groupsReports]);
+    if(groupsReports.length > 0){
+      handleSelect(groupsReports[0].group_id);
+    }
+  }, []);
+
+  const handleSelect = (index) => {
+    const selectedGroup = groupsReports[index];
+    if (selectedGroup) {
+      dispatch(setActiveGroup(selectedGroup.group_id));
+      dispatch(fetchAllChartsByGroupId(selectedGroup.group_id)).then(() => {
+        dispatch(fetchAllChartsFormatByGroupId(selectedGroup.group_id));
+      });
+    }
+  };
+
+  const handleItemClick = (index) => {
+    setSelectedIndex(index);
+    handleSelect(index);
+  };
+
+  useEffect(() => {
+    const handleWheel = (event) => {
+      console.log(1)
+      if (!swiperRef.current) return;
+
+      if (event.deltaY > 0) {
+        swiperRef.current.swiper.slideNext();
+      } else if (event.deltaY < 0) {
+        swiperRef.current.swiper.slidePrev();
+      }
+    };
+
+    const swiperEl = swiperRef.current;
+    if (swiperEl) {
+      swiperEl.addEventListener('wheel', handleWheel);
+    }
+
+    return () => {
+      if (swiperEl) {
+        swiperEl.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, []);
 
   return (
     <div className={styles.wrapper}>
-      <Tabs
-        className={styles.tabs}
-        defaultActiveKey={groupsReports[0].group_id.toString()}
-        appearance="subtle"
-        onSelect={(key) => {
-          dispatch(setActiveGroup(key))
-          dispatch(fetchAllChartsByGroupId(key)).then(() => {
-            dispatch(fetchAllChartsFormatByGroupId(key))
-          })
-        }}
+      <Swiper
+        ref={swiperRef}
+        cssMode={true}
+        navigation={true}
+        mousewheel={true}  // Отключаем встроенную обработку колесика
+        slidesPerView='auto'
+        keyboard={true}
+        modules={[Navigation, Mousewheel, Keyboard]}
+        className={styles.swiper}
+        spaceBetween={12}
+        // onSlideChange={(swiper) => setSelectedIndex(swiper.activeIndex)}
       >
-        {groupsReports.map((group, index) => {
-          return (
-            <Tabs.Tab key={group.group_id} eventKey={group.group_id.toString()} title={group.group_name}>
-              {/*{group.group_id.toString() === activeKey*/}
-              {/*  ? <ChartList/>*/}
-              {/*  : null*/}
-              {/*}*/}
-
-            </Tabs.Tab>
-          )
-        })}
-
-      </Tabs>
+        {groupsReports.map((group, index) => (
+          <SwiperSlide
+            className={`${styles.swiper_slide} ${selectedIndex === index ? styles.active : ''}`}
+            key={group.group_id}
+          >
+            <div
+              className={styles.carouselItem}
+              onClick={() => handleItemClick(index)}
+            >
+              {group.group_name}
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
-  )
-}
+  );
+};

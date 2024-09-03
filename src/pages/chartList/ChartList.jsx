@@ -20,6 +20,7 @@ import {ChartListItem} from "./chartListItem/ChartListItem";
 import {GroupDrawer} from "./groupDrawer/GroupDrawer";
 import EditIcon from "@rsuite/icons/Edit";
 import cl from "classnames";
+import {GroupControlButtons} from "./groupControlButtons/GroupControlButtons";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -105,6 +106,7 @@ export const ChartList = (props) => {
 
     <>
       <TopFilters/>
+      {activeReport && <GroupControlButtons/>}
       <div
         className={styles.list}>
         {(isChartLoading || resize) && (
@@ -127,9 +129,9 @@ export const ChartList = (props) => {
         )}
         {activeReport && <div
           // className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}
-          className={cl(styles.wrapper,{
+          className={cl(styles.wrapper, {
             [styles.col_2]: data.length % 2 === 0,
-            [styles.col_3]:data.length === 3,
+            [styles.col_3]: data.length === 3,
             [styles.isTablet]: isTablet
           })}
         >

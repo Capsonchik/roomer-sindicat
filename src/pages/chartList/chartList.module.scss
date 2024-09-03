@@ -3,12 +3,12 @@
   margin-top: 30px;
   //margin-bottom: 100px;
 
-  height: calc(100vh - 200px);
+  height: calc(100vh - 220px);
   overflow: auto;
   padding-bottom: 100px;
 
   @media (max-width: 1500px) {
-    height: calc(100vh - 220px);
+    height: calc(100vh - 240px);
   }
 }
 

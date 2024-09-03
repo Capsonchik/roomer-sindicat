@@ -21,6 +21,7 @@ import {downloadPpt} from "../downloadPptx";
 import {convertDataCharts} from "./convertDataCharts";
 import {axiosGraphRequest} from "../../../api/ApiConfig";
 import {PresentationDrawer} from "../presentationDrawer/PresentationDrawer";
+import {GroupDrawer} from "../groupDrawer/GroupDrawer";
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -39,6 +40,7 @@ export const TopFilters = () => {
   const [fileList, setFileList] = React.useState([]);
   const uploader = React.useRef();
   const [openPresentationDrawer, setOpenPresentationDrawer] = useState(false)
+  const [openGroupDrawer, setOpenGroupDrawer] = useState(false)
 
   // useEffect(() => {
   //
@@ -154,46 +156,14 @@ export const TopFilters = () => {
               }}
             />
           </div>
-          {/*{!isChartLoading && activeReport && !!charts.length && <Button*/}
-          {/*  className={styles.create_pptx}*/}
-          {/*  onClick={() => setOpenPresentationDrawer(true)}*/}
-          {/*>*/}
-          {/*  Создать презентацию*/}
-          {/*</Button>}  */}
+
           {activeReport && <Button
             className={styles.create_pptx}
-            // onClick={() => setOpenPresentationDrawer(true)}
+            onClick={() => setOpenGroupDrawer(true)}
           >
             Создать группу
           </Button>}
-          {/*{!isChartLoading && activeReport && !!charts.length && (*/}
-          {/*  <Uploader*/}
-          {/*    fileList={fileList}*/}
-          {/*    ref={uploader}*/}
-          {/*    className={styles.uploader}*/}
-          {/*    autoUpload={false}*/}
-          {/*    onChange={setFileList}*/}
-          {/*  >*/}
-          {/*    <Button>Выбрать файл</Button>*/}
-          {/*  </Uploader>*/}
-          {/*)}*/}
 
-          {/*{!!fileList.length && !isChartLoading && activeReport && !!charts.length && (*/}
-          {/*  <Button*/}
-          {/*    disabled={!fileList.length}*/}
-          {/*    onClick={() => {*/}
-          {/*      handleFileUpload()*/}
-          {/*    }}*/}
-          {/*  >*/}
-          {/*    Добавить слайд к файлу*/}
-          {/*  </Button>*/}
-          {/*)}*/}
-          {/*{!isChartLoading && activeReport && !!charts.length && <Button*/}
-          {/*  onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts*/}
-          {/*  className={styles.save_pptx}*/}
-          {/*>*/}
-          {/*  Скачать слайд pptx*/}
-          {/*</Button>}*/}
 
 
         </div>
@@ -206,6 +176,12 @@ export const TopFilters = () => {
       <PresentationDrawer
         open={openPresentationDrawer}
         onClose={() => setOpenPresentationDrawer(false)}
+      />
+
+      <GroupDrawer
+        // activeGroup={activeGroup}
+        open={openGroupDrawer}
+        onClose={() => setOpenGroupDrawer(false)}
       />
     </>
   )

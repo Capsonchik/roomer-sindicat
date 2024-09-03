@@ -12,6 +12,7 @@ import {
   selectGroupsReports,
   selectIsChartLoading
 } from "../../../store/chartSlice/chart.selectors";
+import {CreateChartDrawer} from "../createChartDrawer/CreateChartDrawer";
 
 export const GroupControlButtons = () => {
   const [fileList, setFileList] = React.useState([]);
@@ -21,6 +22,7 @@ export const GroupControlButtons = () => {
   const isChartLoading = useSelector(selectIsChartLoading)
   const activeGroupId = useSelector(selectActiveGroupId)
   const [openPresentationDrawer, setOpenPresentationDrawer] = useState(false)
+  const [openChartDrawer, setOpenChartDrawer] = useState(false)
   const getDataCharts = ({charts, activeGroup}) => {
     return convertDataCharts({charts, activeGroup})
   }
@@ -58,10 +60,21 @@ export const GroupControlButtons = () => {
         >
           Скачать слайд pptx
         </Button>
+        <Button
+          disabled={isChartLoading}
+          onClick={() => setOpenChartDrawer(true)} // Передаем весь массив charts
+          className={styles.create_chart}
+        >
+          Создать график
+        </Button>
       </div>
       <PresentationDrawer
         open={openPresentationDrawer}
         onClose={() => setOpenPresentationDrawer(false)}
+      />
+      <CreateChartDrawer
+      open={openChartDrawer}
+      onClose={() => setOpenChartDrawer(false)}
       />
     </>
   )

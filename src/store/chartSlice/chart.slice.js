@@ -1,5 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {
+  deleteGroupById,
   fetchAllCharts, fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId,
   fetchAllClients, fetchAllGroups,
   // fetchAllGroups,
@@ -120,12 +121,13 @@ export const chartSlice = createSlice({
       .addCase(patchChartById.pending, (state, action) => {
         state.saveChartLoading = true
       })
-      .addCase(postGroup.pending, (state, action) => {
-        state.charts.push(action.payload)
+      .addCase(postGroup.fulfilled, (state, action) => {
+        state.groupsChart.push(action.payload)
       })
-      // .addCase(patchGroupById.fulfilled, (state, action) => {
-      //   state.saveChartLoading = false
-      // })
+      .addCase(deleteGroupById.fulfilled, (state, action) => {
+        state.groupsChart = state.groupsChart.filter(chart => chart.group_id !== action.payload)
+      })
+
 
   }
 })

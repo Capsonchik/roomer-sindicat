@@ -1,38 +1,64 @@
 import styles from './groupTabs.module.scss';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { useDispatch } from "react-redux";
-import { useEffect, useRef, useState } from "react";
-import { fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId } from "../../../store/chartSlice/chart.actions";
-import { setActiveGroup } from "../../../store/chartSlice/chart.slice";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Mousewheel, Keyboard,Scrollbar } from 'swiper/modules';
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect, useRef, useState} from "react";
+import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
+import {setActiveGroup} from "../../../store/chartSlice/chart.slice";
+import {Swiper, SwiperSlide} from 'swiper/react';
+import {Navigation, Mousewheel, Keyboard, Scrollbar} from 'swiper/modules';
+import {selectActiveGroupId} from "../../../store/chartSlice/chart.selectors";
 
-export const GroupTabs = ({ groupsReports }) => {
+export const GroupTabs = ({groupsReports}) => {
   const dispatch = useDispatch();
   const swiperRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const activeGroupId = useSelector(selectActiveGroupId)
 
   useEffect(() => {
-    if(groupsReports.length > 0){
+
+    if (groupsReports.length > 0) {
       handleSelect(groupsReports[0].group_id);
     }
+    // else {
+    //   handleSelect(activeGroupId);
+    // }
   }, []);
 
-  const handleSelect = (index) => {
-    const selectedGroup = groupsReports[index];
-    if (selectedGroup) {
-      dispatch(setActiveGroup(selectedGroup.group_id));
-      dispatch(fetchAllChartsByGroupId(selectedGroup.group_id)).then(() => {
-        dispatch(fetchAllChartsFormatByGroupId(selectedGroup.group_id));
-      });
+  useEffect(() => {
+    if (activeGroupId) {
+      fetchCharts(activeGroupId)
     }
+
+  }, [activeGroupId])
+
+
+  const fetchCharts = (id) => {
+    dispatch(fetchAllChartsByGroupId(id)).then(() => {
+      dispatch(fetchAllChartsFormatByGroupId(id));
+    });
+  }
+
+  const handleSelect = (id) => {
+    // const selectedGroup = groupsReports[index];
+    // if (selectedGroup) {
+    dispatch(setActiveGroup(id));
+    // dispatch(fetchAllChartsByGroupId(selectedGroup.group_id)).then(() => {
+    //   dispatch(fetchAllChartsFormatByGroupId(selectedGroup.group_id));
+    // });
+  }
+  // };
+
+  const handleItemClick = (id) => {
+    // setSelectedIndex(index);
+    handleSelect(id);
   };
 
-  const handleItemClick = (index) => {
-    setSelectedIndex(index);
-    handleSelect(index);
-  };
+  useEffect(() => {
+    if (!swiperRef.current) return;
+    swiperRef.current.swiper.slideNext();
+
+  }, [groupsReports.length]);
 
   useEffect(() => {
     const handleWheel = (event) => {
@@ -77,17 +103,17 @@ export const GroupTabs = ({ groupsReports }) => {
       >
         {groupsReports.map((group, index) => (
           <div>
-          <SwiperSlide
-            className={`${styles.swiper_slide} ${selectedIndex === index ? styles.active : ''}`}
-            key={group.group_id}
-          >
-            <div
-              className={styles.carouselItem}
-              onClick={() => handleItemClick(index)}
+            <SwiperSlide
+              className={`${styles.swiper_slide} ${activeGroupId === group.group_id ? styles.active : ''}`}
+              key={group.group_id}
             >
-              {group.group_name}
-            </div>
-          </SwiperSlide>
+              <div
+                className={styles.carouselItem}
+                onClick={() => handleItemClick(group.group_id)}
+              >
+                {group.group_name}
+              </div>
+            </SwiperSlide>
           </div>
         ))}
       </Swiper>

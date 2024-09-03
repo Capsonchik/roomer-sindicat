@@ -1,8 +1,17 @@
 .wrapper {
-  margin-top: 60px;
+  //margin-top: 60px;
+  padding-top: 60px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
+
+  .buttons{
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
 
   .input_wrapper {
     width: 100%;
@@ -24,6 +33,10 @@
 
   .patch_btn {
     margin-top: 30px;
+    &.isDelete{
+      background: indianred;
+      color: white;
+    }
   }
 
 }

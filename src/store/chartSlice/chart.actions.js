@@ -157,3 +157,17 @@ export const postGroup = createAsyncThunk(
     }
   }
 );
+export const deleteGroupById = createAsyncThunk(
+  'chart/deleteGroup',
+  async (id) => {
+    try {
+      const response = await axiosGraphRequest.delete(`/api/v2/echart_graphs/delete_group?group_id=${id}`);
+      // console.log(response)
+      if (response.status === 200) {
+        return id;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);

@@ -3,12 +3,12 @@ import styles from "./groupDrawer.module.scss";
 import {ChartEditor} from "../chartEditor/ChartEditor";
 import {FormProvider, useForm} from "react-hook-form";
 import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchAllGroups, patchGroupById, postGroup} from "../../../store/chartSlice/chart.actions";
+import {deleteGroupById, fetchAllGroups, patchGroupById, postGroup} from "../../../store/chartSlice/chart.actions";
 import {
   selectActiveGroupId,
-  selectActiveReport,
+  selectActiveReport, selectGroupsReports,
   selectReportsClients,
   selectTypeGroupDrawer
 } from "../../../store/chartSlice/chart.selectors";
@@ -17,7 +17,9 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {PreventOverflowContainer} from "../chartFilters/main/MainForm";
 import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/SelectPicker";
+import cl from 'classnames'
 import {labelArray} from "../label.config";
+import {setActiveGroup} from "../../../store/chartSlice/chart.slice";
 
 export const GroupDrawer = ({open, onClose, activeGroup}) => {
   const reportsClients = useSelector(selectReportsClients)
@@ -34,12 +36,15 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
   const activeReport = useSelector(selectActiveReport)
   const activeGroupId = useSelector(selectActiveGroupId)
   const typeGroupDrawer = useSelector(selectTypeGroupDrawer)
+  const groups = useSelector(selectGroupsReports);
+  const [isDelete, setIsDelete] = useState(false)
   // console.log(activeReport)
   useEffect(() => {
     methods.reset({
       title: activeGroup?.group_name,
       description: activeGroup?.description,
     })
+    // setIsDelete(false)
   }, [activeGroup])
 
   const handlePatch = (data) => {
@@ -55,13 +60,34 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
   }
 
   const handleCreateGroup = (data) => {
-    console.log(data)
-    // dispatch(postGroup(data))
+    // console.log(data)
+    dispatch(postGroup(data)).then((res) => {
+      // console.log(res)
+      dispatch(setActiveGroup(res.payload.group_id))
+    })
+    onClose()
   }
-  console.log(reportsClients)
+  const handleDeleteGroup = () => {
+    const index = groups.findIndex(group => group.group_id === activeGroup.group_id)
+    // console.log(data)
+    dispatch(deleteGroupById(activeGroup.group_id)).then(() => {
+      // const foundNewActive = groups.findIndex(group => )
+      if (groups[index - 1]) {
+        dispatch(setActiveGroup(groups[index - 1].group_id))
+
+      } else {
+        dispatch(setActiveGroup(groups[0].group_id))
+      }
+    })
+    onClose()
+  }
+  // console.log(reportsClients)
 
   return (
-    <Drawer open={open} onClose={onClose} style={{maxWidth: 700, width: '100%'}}>
+    <Drawer open={open} onClose={() => {
+      onClose()
+      setIsDelete(false)
+    }} style={{maxWidth: 700, width: '100%'}}>
       <Drawer.Body style={{maxHeight: '100% !important'}}>
         <div className={styles.wrapper}>
 
@@ -99,19 +125,35 @@ export const GroupDrawer = ({open, onClose, activeGroup}) => {
               </PreventOverflowContainer>
             </div>
 
+            <div className={styles.buttons}>
+              {typeGroupDrawer === 'edit' && (
+                <Button className={styles.patch_btn} onClick={(e) => {
+                  e.stopPropagation()
+                  methods.handleSubmit(handlePatch)()
+                }}>Сохранить</Button>
+              )}
+              {typeGroupDrawer === 'edit' && (
+                <Button
+                  className={cl(styles.patch_btn, {
+                    [styles.isDelete]: isDelete
+                  })}
+                  onClick={(e) => {
+                    if (!isDelete) {
+                      setIsDelete(true)
+                      return
+                    }
+                    // e.stopPropagation()
+                    handleDeleteGroup()
+                  }}>{!isDelete ? 'Удалить' : 'Да, удалить'}</Button>
+              )}
+              {typeGroupDrawer === 'add' && (
+                <Button className={styles.patch_btn} onClick={(e) => {
+                  e.stopPropagation()
+                  methods.handleSubmit(handleCreateGroup)()
+                }}>Создать</Button>
+              )}
+            </div>
 
-            {typeGroupDrawer === 'edit' && (
-              <Button className={styles.patch_btn} onClick={(e) => {
-                e.stopPropagation()
-                methods.handleSubmit(handlePatch)()
-              }}>Сохранить</Button>
-            )}
-            {typeGroupDrawer === 'add' && (
-              <Button className={styles.patch_btn} onClick={(e) => {
-                e.stopPropagation()
-                methods.handleSubmit(handleCreateGroup)()
-              }}>Создать</Button>
-            )}
 
           </FormProvider>
         </div>

@@ -15,7 +15,7 @@ import {
   selectReportsClients
 } from "../../store/chartSlice/chart.selectors";
 import {ChartDrawer} from "./chartDrawer/ChartDrawer";
-import {setActiveChart, setOpenDrawer} from "../../store/chartSlice/chart.slice";
+import {setActiveChart, setOpenDrawer, setTypeGroupDrawer} from "../../store/chartSlice/chart.slice";
 import {ChartListItem} from "./chartListItem/ChartListItem";
 import {GroupDrawer} from "./groupDrawer/GroupDrawer";
 import EditIcon from "@rsuite/icons/Edit";
@@ -118,6 +118,7 @@ export const ChartList = (props) => {
         {activeReport && !isChartLoading && !resize && (
           <div className={styles.group_wrapper}>
             <Button onClick={() => {
+              dispatch(setTypeGroupDrawer('edit'))
               setOpenGroupDrawer(true)
               // dispatch(setActiveChart(chart))
               // dispatch(setOpenDrawer(true))
@@ -143,7 +144,7 @@ export const ChartList = (props) => {
           ))}
         </div>}
 
-        {!isChartLoading && errorCharts && !data.length &&  (
+        {activeReport && !isChartLoading && errorCharts && !data.length &&  (
           <div className={styles.placeholder}>
             <Divider>Нет графиков</Divider>
 

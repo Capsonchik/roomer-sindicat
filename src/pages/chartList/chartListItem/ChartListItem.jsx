@@ -8,7 +8,12 @@ import {Button} from "rsuite";
 import {ChartDrawer} from "../chartDrawer/ChartDrawer";
 import {FormProvider, useForm} from "react-hook-form";
 import {ChartFilters} from "../chartFilters/ChartFIlters";
-import {setActiveChart, setOpenDrawer, setOriginalColors} from "../../../store/chartSlice/chart.slice";
+import {
+  setActiveChart,
+  setOpenDrawer,
+  setOriginalColors,
+  setTypeGroupDrawer
+} from "../../../store/chartSlice/chart.slice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectIsOpenDrawer, selectOriginalColors} from "../../../store/chartSlice/chart.selectors";
 import {patchChartFormatting} from "../../../store/chartSlice/chart.actions";
@@ -164,6 +169,7 @@ export const ChartListItem = ({chart}) => {
       <div className={styles.title_wrapper}>
         <h5>{chart.title}</h5>
         <Button onClick={() => {
+
           dispatch(setActiveChart(chart))
           dispatch(setOpenDrawer(true))
         }}>

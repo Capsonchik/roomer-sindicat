@@ -47,6 +47,10 @@ export const TopFilters = () => {
 
   useEffect(() => {
 
+  }, []);
+
+  useEffect(() => {
+
     const foundGroup = groupsReports.find((group) => group.group_id == activeGroupId)
     if (foundGroup) {
       setActiveGroup(foundGroup)
@@ -64,17 +68,25 @@ export const TopFilters = () => {
 
   // console.log(activeGroup,activeGroupId)
   const handleClientChange = (clientId) => {
-    dispatch(fetchAllReports(clientId))
+    if (clientId) {
+      dispatch(fetchAllReports(clientId))
+    }
 
     if (clientId) {
       dispatch(setActiveClient(clientId))
     } else {
       dispatch(setActiveClient(null))
       dispatch(setActiveReport(null))
+      methods.reset({
+        clients: null,
+        reports: null,
+      })
     }
   }
   const handleReportChange = (reportId) => {
-    dispatch(fetchAllGroups(reportId))
+    if (reportId) {
+      dispatch(fetchAllGroups(reportId))
+    }
 
     if (reportId) {
       dispatch(setActiveReport(reportId))
@@ -167,7 +179,7 @@ export const TopFilters = () => {
                 // dispatch(setActiveChart(chart))
                 // dispatch(setOpenDrawer(true))
               }}>
-               Редактировать лист
+                Редактировать лист
               </Button>
               {/*<h6 className={styles.title_group}>{activeGroup?.description}</h6>*/}
 

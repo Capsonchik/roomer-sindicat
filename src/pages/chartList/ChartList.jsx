@@ -65,6 +65,7 @@ export const ChartList = (props) => {
   }, [activeClient, activeReport]);
 
   useEffect(() => {
+    console.log('create')
     setData(charts)
   }, [charts])
   // console.log(data)

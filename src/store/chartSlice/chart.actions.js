@@ -89,7 +89,7 @@ export const fetchAllGroups = createAsyncThunk(
   async (reportId) => {
     try {
       const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_groups?report_id=${reportId}`);
-      console.log(response)
+      // console.log(response)
       if (response.status === 200) {
         return response.data;
       }

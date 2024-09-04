@@ -32,7 +32,15 @@
   }
 
   .patch_btn {
-    margin-top: 30px;
+    background: #FF8200;
+    color: #fff;
+    transition: filter 0.3s ease; /* Плавный переход */
+    &:hover {
+      filter: brightness(0.90); /* Уменьшаем яркость на 15% */
+    }
+  }
+  .delete_btn {
+    //margin-top: 30px;
     &.isDelete{
       background: indianred;
       color: white;

@@ -10,6 +10,9 @@
   @media (max-width: 1500px) {
     height: calc(100vh - 240px);
   }
+  @media (max-width: 1000px) {
+    height: calc(100vh - 270px);
+  }
 }
 
 .group_wrapper {

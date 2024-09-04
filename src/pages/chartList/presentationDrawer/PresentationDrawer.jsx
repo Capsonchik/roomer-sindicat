@@ -112,6 +112,7 @@ export const PresentationDrawer = ({open, onClose}) => {
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Пересите сюда или выберите файл</h6>
               <Uploader
+                action="#" // Add a placeholder value for action
                 draggable
                 fileList={fileList}
                 ref={uploader}

@@ -5,6 +5,15 @@
   flex-direction: column;
   gap: 16px;
   height: 100%;
+  .patch_btn{
+    margin-top: auto;
+    background: #FF8200;
+    color: #fff;
+    transition: filter 0.3s ease; /* Плавный переход */
+    &:hover {
+      filter: brightness(0.90); /* Уменьшаем яркость на 15% */
+    }
+  }
 
   .input_wrapper {
     width: 100%;

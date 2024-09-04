@@ -58,20 +58,20 @@ export const GroupTabs = ({groupsReports}) => {
   };
 
   useEffect(() => {
-    if(isFirstRender.current) {
+    if (isFirstRender.current) {
       isFirstRender.current = false
       return
     }
     if (!swiperRef.current) return;
     // const lastIndex = groupsReports.length - 1;
-    if(scrollTabs) {
+    if (scrollTabs) {
       swiperRef.current.swiper.slideTo(scrollTabs);
       // return
     }
     // swiperRef.current.swiper.slideTo(lastIndex);
     // swiperRef.current.swiper.slideNext();
 
-  }, [,scrollTabs]);
+  }, [, scrollTabs]);
 
   useEffect(() => {
     const handleWheel = (event) => {
@@ -105,6 +105,7 @@ export const GroupTabs = ({groupsReports}) => {
         navigation={true}
         mousewheel={true}  // Отключаем встроенную обработку колесика
         slidesPerView='auto'
+        slidesPerGroupAuto={true}  // Automatically switch by visible slides
         keyboard={true}
         modules={[Navigation, Mousewheel, Keyboard]}
         // scrollbar={{
@@ -115,19 +116,21 @@ export const GroupTabs = ({groupsReports}) => {
         // onSlideChange={(swiper) => setSelectedIndex(swiper.activeIndex)}
       >
         {groupsReports.map((group, index) => (
-          <div>
-            <SwiperSlide
-              className={`${styles.swiper_slide} ${activeGroupId === group.group_id ? styles.active : ''}`}
-              key={group.group_id}
+
+          <SwiperSlide
+            className={`${styles.swiper_slide}`}
+            key={group.group_id}
+          >
+            <div
+              className={`${styles.carouselItem} ${activeGroupId === group.group_id ? styles.active : ''}`}
+              onClick={() => handleItemClick(group.group_id)}
             >
-              <div
-                className={styles.carouselItem}
-                onClick={() => handleItemClick(group.group_id)}
-              >
+              <p>
                 {group.group_name}
-              </div>
-            </SwiperSlide>
-          </div>
+              </p>
+            </div>
+          </SwiperSlide>
+
         ))}
       </Swiper>
     </div>

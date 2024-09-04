@@ -10,7 +10,11 @@ import {PreventOverflowContainer} from "../chartFilters/main/MainForm";
 import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/SelectPicker";
 import React, {useEffect} from "react";
 import CustomToggle from "../../../components/rhfInputs/customToggle/CustomToggle";
-import {createChart} from "../../../store/chartSlice/chart.actions";
+import {
+  createChart,
+  fetchAllChartsByGroupId,
+  fetchAllChartsFormatByGroupId
+} from "../../../store/chartSlice/chart.actions";
 import {setActiveGroup, setScrollTabs} from "../../../store/chartSlice/chart.slice";
 
 export const CreateChartDrawer = ({open, onClose}) => {
@@ -38,6 +42,11 @@ export const CreateChartDrawer = ({open, onClose}) => {
     })
   }, []);
 
+  const fetchCharts = (id) => {
+    dispatch(fetchAllChartsByGroupId(id)).then(() => {
+      dispatch(fetchAllChartsFormatByGroupId(id));
+    });
+  }
 
   const handleCreateChart = (data) => {
     const request = {
@@ -52,11 +61,16 @@ export const CreateChartDrawer = ({open, onClose}) => {
       return +group.group_id === +data.group_id
     })
     dispatch(setScrollTabs(index))
+    fetchCharts(+data.group_id)
+    methods.reset({})
     onClose()
 
   }
   return (
-    <Drawer open={open} onClose={onClose} style={{maxWidth: 700, width: '100%'}}>
+    <Drawer open={open} onClose={() => {
+      onClose()
+
+    }} style={{maxWidth: 700, width: '100%'}}>
       <Drawer.Body style={{maxHeight: '100% !important'}}>
         <div className={styles.wrapper}>
 
@@ -142,7 +156,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
             <Button className={styles.patch_btn} onClick={(e) => {
               e.stopPropagation()
               methods.handleSubmit(handleCreateChart)()
-            }}>Сохранить</Button>
+            }}>Создать</Button>
           </FormProvider>
         </div>
       </Drawer.Body>

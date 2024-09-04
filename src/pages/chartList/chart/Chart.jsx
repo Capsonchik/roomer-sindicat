@@ -126,8 +126,16 @@ export const Chart = ({chart}) => {
 
   }, [originalColors]);
 
+  const fetchCharts = (id) => {
+    dispatch(fetchAllChartsByGroupId(id)).then(() => {
+      dispatch(fetchAllChartsFormatByGroupId(id));
+    });
+  }
+
   const handleDelete = () => {
-    dispatch(deleteChartById(chart.id))
+    dispatch(deleteChartById(chart.id)).then(() => {
+      fetchCharts(activeGroupId)
+    })
     dispatch(setOpenDrawer(false))
   }
 
@@ -312,7 +320,7 @@ export const Chart = ({chart}) => {
       </FormProvider>
       <div className={styles.buttons}>
         <Button
-          className={cl(styles.save_btn, {
+          className={cl(styles.delete_btn, {
             [styles.isDelete]: isDelete
           })}
           onClick={(e) => {

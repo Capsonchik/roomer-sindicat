@@ -26,11 +26,18 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
 
   const loginSchema = yup.object().shape({
     title: yup.string().required("Название обязательно"),
+    report_id: yup.string().required("Название обязательно"),
     description: yup.string().required("Описание обязательно").max(200, 'Маскимальное количетсво символов 200'), // Add the password field
   });
 
   const methods = useForm({
     resolver: yupResolver(loginSchema),
+    shouldFocusError: false,
+    defaultValues: {
+      title: '',
+      description: '',
+      report_id: null
+    }
   })
   const dispatch = useDispatch();
   const activeReport = useSelector(selectActiveReport)
@@ -46,10 +53,10 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
     if (typeGroupDrawer === 'edit') {
       // console.log(22)
       methods.reset({
-        title: activeGroup?.group_name,
-        description: activeGroup?.description,
-        report_id: activeReport,
-      })
+        title: activeGroup?.group_name || '', // Default to empty string
+        description: activeGroup?.description || '', // Default to empty string
+        report_id: activeReport || null
+      });
     }
     else {
       // console.log(typeGroupDrawer)
@@ -162,7 +169,7 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
             <div className={styles.buttons}>
               {typeGroupDrawer === 'edit' && (
                 <Button
-                  className={cl(styles.patch_btn, {
+                  className={cl(styles.delete_btn, {
                     [styles.isDelete]: isDelete
                   })}
                   onClick={(e) => {

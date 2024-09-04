@@ -16,7 +16,8 @@ export const Label = () => {
       <div className={styles.row}>
         <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
           <label className={styles.label_input}>Положение</label>
-          <PreventOverflowContainer>
+          <PreventOverflowContainer
+          height={40}>
             {getContainer => (
               <CustomSelectPicker
                 name={'label_position'}

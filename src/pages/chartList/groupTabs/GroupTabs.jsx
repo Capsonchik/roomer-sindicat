@@ -14,6 +14,7 @@ export const GroupTabs = ({groupsReports}) => {
   const swiperRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const activeGroupId = useSelector(selectActiveGroupId)
+  const isFirstRender = useRef(true)
 
   useEffect(() => {
 
@@ -55,6 +56,10 @@ export const GroupTabs = ({groupsReports}) => {
   };
 
   useEffect(() => {
+    if(isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
     if (!swiperRef.current) return;
     const lastIndex = groupsReports.length - 1;
     swiperRef.current.swiper.slideTo(lastIndex);
@@ -64,7 +69,7 @@ export const GroupTabs = ({groupsReports}) => {
 
   useEffect(() => {
     const handleWheel = (event) => {
-      console.log(1)
+      // console.log(1)
       if (!swiperRef.current) return;
 
       if (event.deltaY > 0) {

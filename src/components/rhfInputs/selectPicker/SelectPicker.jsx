@@ -29,7 +29,7 @@ export const CustomSelectPicker = (
           defaultValue={defaultValue}
           {...field}
           data={data}
-          value={value}
+          // value={value}
           onChange={(selectedValue) => {
             // Update the form field value
             field.onChange(selectedValue);

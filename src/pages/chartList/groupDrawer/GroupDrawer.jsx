@@ -1,4 +1,4 @@
-import {Button, Drawer} from "rsuite";
+import {Button, Drawer, Message} from "rsuite";
 import styles from "./groupDrawer.module.scss";
 import {ChartEditor} from "../chartEditor/ChartEditor";
 import {FormProvider, useForm} from "react-hook-form";
@@ -38,13 +38,13 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
   const typeGroupDrawer = useSelector(selectTypeGroupDrawer)
   const groups = useSelector(selectGroupsReports);
   const [isDelete, setIsDelete] = useState(false)
-  // console.log(activeReport)
+  console.log(methods.formState)
   useEffect(() => {
     if (activeGroup ) {
       methods.reset({
         title: activeGroup?.group_name,
         description: activeGroup?.description,
-        report_id: activeReport.toString(),
+        report_id: activeReport,
       })
     }
 
@@ -52,15 +52,15 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
   }, [activeGroup])
 
   const handlePatch = (data) => {
-    console.log(data)
-    // dispatch(patchGroupById({
-    //   id: activeGroup.group_id,
-    //   title: data.title,
-    //   description: data.description,
-    // })).then(() => {
-    //   onClose()
-    //   dispatch(fetchAllGroups(activeReport))
-    // })
+    // console.log(data)
+    dispatch(patchGroupById({
+      id: activeGroup.group_id,
+      title: data.title,
+      description: data.description,
+    })).then(() => {
+      onClose()
+      dispatch(fetchAllGroups(activeReport))
+    })
   }
 
   const handleCreateGroup = (data) => {
@@ -68,6 +68,8 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
     dispatch(postGroup(data)).then((res) => {
       // console.log(res)
       dispatch(setActiveGroup(res.payload.group_id))
+    }).catch((error) => {
+      console.log(error)
     })
     onClose()
   }
@@ -85,12 +87,19 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
     })
     onClose()
   }
+
+  const message = (
+    <Message showIcon type={'success'} closable>
+      <strong>Неверный логин или пароль</strong>
+    </Message>
+  );
   // console.log(reportsClients)
 
   return (
     <Drawer open={open} onClose={() => {
       onClose()
       setIsDelete(false)
+      methods.reset()
     }} style={{maxWidth: 700, width: '100%'}}>
       <Drawer.Body style={{maxHeight: '100% !important'}}>
         <div className={styles.wrapper}>
@@ -116,7 +125,7 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
                 {getContainer => (
                   <CustomSelectPicker
                     name={'report_id'}
-                    defaultValue={activeReport}
+                    // defaultValue={activeReport}
                     data={reportsClients.map((report) => ({label: report.report_name, value: report.report_id}))}
                     searchable={false}
                     placeholder="Отчет"

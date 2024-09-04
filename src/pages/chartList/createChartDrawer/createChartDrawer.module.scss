@@ -1,0 +1,27 @@
+
+.wrapper {
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+
+  .input_wrapper {
+    width: 100%;
+    position: relative;
+
+    .select {
+      width: 100%;
+      //height: 34px;
+    }
+
+    .label {
+      margin-bottom: 12px;
+    }
+
+    .description {
+      height: 90px;
+      resize: none;
+    }
+  }
+}

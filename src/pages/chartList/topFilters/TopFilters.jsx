@@ -35,7 +35,7 @@ export const TopFilters = () => {
   const charts = useSelector(selectCharts)
   const isChartLoading = useSelector(selectIsChartLoading)
   const [activeGroup, setActiveGroup] = useState()
-  const groups = useSelector(selectGroupsReports);
+  // const groups = useSelector(selectGroupsReports);
 
   const [fileList, setFileList] = React.useState([]);
   const uploader = React.useRef();

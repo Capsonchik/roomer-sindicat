@@ -12,13 +12,19 @@ import {CustomSelectPicker} from "../../../../components/rhfInputs/selectPicker/
 import {labelArray} from "../../label.config";
 
 
-export function PreventOverflowContainer({children, height = 500}) {
+export function PreventOverflowContainer({children, height = 500,marginHeight = 34}) {
   const container = React.useRef();
   const content = React.useRef();
 
   const containerStyle = {
     // overflow: 'auto',
     position: 'relative',
+    // right: 0,
+    // left: 0,
+    width: '100%',
+    height: 34,
+    marginBottom: -(height - marginHeight),
+    // minHeight:34
     // top:50
   };
 
@@ -29,7 +35,8 @@ export function PreventOverflowContainer({children, height = 500}) {
     justifyContent: 'center',
     alignItems: 'center',
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    // height:34
   };
 
   React.useEffect(() => {
@@ -39,6 +46,7 @@ export function PreventOverflowContainer({children, height = 500}) {
   }, [container, content]);
 
   return (
+
     <div style={{...containerStyle, height}} ref={container}>
       <div style={contentStyle} ref={content}>
         {children(() => container.current)}
@@ -137,7 +145,7 @@ export const MainForm = ({chart}) => {
                     {label}
                   </div>
                 )}
-                style={{ width: 224 }}
+                style={{width: 224}}
                 container={getContainer}
                 preventOverflow
               />

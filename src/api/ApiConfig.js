@@ -22,7 +22,7 @@ export const axiosLoginRequest = createAxiosLoginInstance();
 
 
 // export const CLIENT_API = 'http://192.168.9.239:8808/'
-export const CLIENT_API = 'https://8fe3-212-45-6-6.ngrok-free.app/';
+export const CLIENT_API = 'https://a889-212-45-6-6.ngrok-free.app';
 
 const createAxiosClientInstance = () => {
   const instance = axios.create({
@@ -65,7 +65,7 @@ const createAxiosClientInstance = () => {
 export const axiosClientRequest = createAxiosClientInstance();
 
 
-const GRAPH_API = 'https://8fe3-212-45-6-6.ngrok-free.app'
+const GRAPH_API = 'https://a889-212-45-6-6.ngrok-free.app'
 
 
 const createAxiosGraphnstance = () => {

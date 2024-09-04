@@ -4,24 +4,47 @@ import {FormProvider, useForm} from "react-hook-form";
 import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {selectGroupsReports, selectReportsClients} from "../../../store/chartSlice/chart.selectors";
 import {PreventOverflowContainer} from "../chartFilters/main/MainForm";
 import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/SelectPicker";
-import React from "react";
+import React, {useEffect} from "react";
+import CustomToggle from "../../../components/rhfInputs/customToggle/CustomToggle";
+import {createChart} from "../../../store/chartSlice/chart.actions";
 
 export const CreateChartDrawer = ({open, onClose}) => {
   const reportsClients = useSelector(selectReportsClients)
   const groupsReports = useSelector(selectGroupsReports)
+  const dispatch = useDispatch();
 
   const loginSchema = yup.object().shape({
-    // title: yup.string().required("Название обязательно"),
-    // description: yup.string().required("Описание обязательно").max(200, 'Маскимальное количетсво символов 200'), // Add the password field
+    title: yup.string().required("Название обязательно"),
+    description: yup.string().required("Описание обязательно").max(200, 'Маскимальное количетсво символов 200'), // Add the password field
+    // report_id: yup.string().required("Название обязательно"),
+    // group_id: yup.string().required("Название обязательно"),
   });
 
   const methods = useForm({
-    // resolver: yupResolver(loginSchema),
+    resolver: yupResolver(loginSchema),
+
   })
+  useEffect(() => {
+    methods.reset({
+      ispercent: false
+    })
+  }, []);
+
+
+  const handleCreateChart = (data) => {
+    const request = {
+      ...data,
+      author_id: 1,
+      graph_format_id: 1
+    }
+    console.log(request)
+    dispatch(createChart(request))
+
+  }
   return (
     <Drawer open={open} onClose={onClose} style={{maxWidth: 700, width: '100%'}}>
       <Drawer.Body style={{maxHeight: '100% !important'}}>
@@ -72,14 +95,43 @@ export const CreateChartDrawer = ({open, onClose}) => {
               </PreventOverflowContainer>
             </div>
             <div className={styles.input_wrapper}>
+              <h6 className={styles.label}>Заголовок</h6>
+              <CustomInput name={'title'} className={styles.input}/>
+            </div>
+            <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Описание</h6>
               <CustomInput name={'description'} as={'textarea'} className={styles.description}/>
-
             </div>
+            <div className={styles.input_wrapper}>
+              <h6 className={styles.label}>Адрес таблицы БД</h6>
+              <CustomInput name={'db_adress'} className={styles.input}/>
+            </div>
+            <div className={styles.input_wrapper}>
+              <h6 className={styles.label}>X значение</h6>
+              <CustomInput name={'xvalue'} className={styles.input}/>
+            </div>
+            <div className={styles.input_wrapper}>
+              <h6 className={styles.label}>Y значение</h6>
+              <CustomInput name={'yvalue'} className={styles.input}/>
+            </div>
+            <div className={styles.input_wrapper}>
+              <h6 className={styles.label}>Z значение</h6>
+              <CustomInput name={'zvalue'} className={styles.input} required={false}/>
+            </div>
+            <div className={styles.input_wrapper}>
+              <h6 className={styles.label}>Использовать проценты</h6>
+              <CustomToggle
+                defaultValue={false}
+                checkedChildren={'Проценты'}
+                unCheckedChildren={'Без процентов'}
+                name={'ispercent'}/>
+              {/*<CustomInput name={'zvalue'} className={styles.input} required={false}/>*/}
+            </div>
+
 
             <Button className={styles.patch_btn} onClick={(e) => {
               e.stopPropagation()
-              // methods.handleSubmit(handlePatch)()
+              methods.handleSubmit(handleCreateChart)()
             }}>Сохранить</Button>
           </FormProvider>
         </div>

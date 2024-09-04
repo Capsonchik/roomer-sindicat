@@ -11,7 +11,8 @@ const CustomToggle = (
     checkedChildren = "X Ось",
     unCheckedChildren = "Y Ось",
     className,
-    size = "lg"
+    size = "lg",
+    defaultValue = false
   }
 ) => {
   const {control} = useFormContext();
@@ -22,6 +23,7 @@ const CustomToggle = (
       control={control}
       render={({field}) => (
         <Toggle
+          // defaultChecked={defaultValue}
           {...field}
           size={size}
           checkedChildren={checkedChildren}

@@ -43,8 +43,8 @@ export const patchChartById = createAsyncThunk(
     }
   }
 );
-export const createChart = createAsyncThunk(
-  'chart/createChart',
+export const updateChart = createAsyncThunk(
+  'chart/updateChart',
   async (graphData) => {
     try {
       const response = await axiosGraphRequest.patch(`/api/v1/update_client_object`,graphData);
@@ -178,6 +178,21 @@ export const deleteGroupById = createAsyncThunk(
       // console.log(response)
       if (response.status === 200) {
         return id;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);
+
+export const createChart = createAsyncThunk(
+  'chart/createChart',
+  async (chart) => {
+    try {
+      const response = await axiosGraphRequest.post(`/api/v2/echart_graphs/create_chart`,chart);
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
       }
     } catch (error) {
       throw new Error('fetchAllClients error');

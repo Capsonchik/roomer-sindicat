@@ -60,22 +60,13 @@ export const GroupControlButtons = () => {
         >
           Скачать слайд pptx
         </Button>
-        <Button
-          disabled={isChartLoading}
-          onClick={() => setOpenChartDrawer(true)} // Передаем весь массив charts
-          className={styles.create_chart}
-        >
-          Создать график
-        </Button>
+
       </div>
       <PresentationDrawer
         open={openPresentationDrawer}
         onClose={() => setOpenPresentationDrawer(false)}
       />
-      <CreateChartDrawer
-      open={openChartDrawer}
-      onClose={() => setOpenChartDrawer(false)}
-      />
+
     </>
   )
 }

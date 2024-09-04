@@ -22,6 +22,7 @@ import {convertDataCharts} from "./convertDataCharts";
 import {axiosGraphRequest} from "../../../api/ApiConfig";
 import {PresentationDrawer} from "../presentationDrawer/PresentationDrawer";
 import {GroupDrawer} from "../groupDrawer/GroupDrawer";
+import {CreateChartDrawer} from "../createChartDrawer/CreateChartDrawer";
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ export const TopFilters = () => {
   const activeGroupId = useSelector(selectActiveGroupId)
   const charts = useSelector(selectCharts)
   const isChartLoading = useSelector(selectIsChartLoading)
+  const [openChartDrawer, setOpenChartDrawer] = useState(false)
   const [activeGroup, setActiveGroup] = useState()
   // const groups = useSelector(selectGroupsReports);
 
@@ -166,7 +168,13 @@ export const TopFilters = () => {
           >
             Создать лист
           </Button>}
-
+          {activeReport && <Button
+            disabled={isChartLoading}
+            onClick={() => setOpenChartDrawer(true)} // Передаем весь массив charts
+            className={styles.create_chart}
+          >
+            Создать график
+          </Button>}
 
 
         </div>
@@ -185,6 +193,10 @@ export const TopFilters = () => {
         // activeGroup={activeGroup}
         open={openGroupDrawer}
         onClose={() => setOpenGroupDrawer(false)}
+      />
+      <CreateChartDrawer
+        open={openChartDrawer}
+        onClose={() => setOpenChartDrawer(false)}
       />
     </>
   )

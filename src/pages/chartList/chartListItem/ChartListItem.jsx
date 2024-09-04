@@ -176,7 +176,7 @@ export const ChartListItem = ({chart}) => {
           <EditIcon/>
         </Button>
       </div>
-      <p>{chart.description}</p>
+      {/*<p>{chart.description}</p>*/}
       <div ref={chartRef} style={{width: '100%', minHeight: '400px'}}></div>
 
     </div>

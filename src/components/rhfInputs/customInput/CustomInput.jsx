@@ -13,7 +13,7 @@ export const CustomInput = (
     placeholder,
     className,
     after,
-    as = 'input'
+    as = 'input',
   }
 ) => {
   // Используем контекст формы для доступа к управлению и ошибкам
@@ -31,12 +31,6 @@ export const CustomInput = (
       if (!inputRef.current.contains(e.target)) {
         clearErrors(name);
       }
-      // if(inputRef.current.contains(e.target)) {
-      //   setError(name)
-      // }
-      // if (errors) {
-      //   setError(name);
-      // }
     };
 
     window.addEventListener("click", handleClickOutside);

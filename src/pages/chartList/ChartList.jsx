@@ -70,6 +70,7 @@ export const ChartList = (props) => {
   // console.log(data)
 
   useEffect(() => {
+    // console.log('444444444444444444')
     let resizeTimeout;
 
     const handleResize = () => {
@@ -100,7 +101,13 @@ export const ChartList = (props) => {
       }
       window.removeEventListener('resize', handleResize);
     };
-  }, [charts]); // Зависимость от charts, чтобы следить за изменениями данных
+  }, [charts]);
+
+  // useEffect(() => {
+  //   // setResize(true)
+  //   setData([...charts])
+  //   // setResize(false)
+  // }, [charts.length]);// Зависимость от charts, чтобы следить за изменениями данных
 
   // console.log(placeholderText)
   return (
@@ -115,18 +122,24 @@ export const ChartList = (props) => {
             <Loader size={'lg'}/>
           </div>
         )}
-        {activeReport && !isChartLoading && !resize && (
-          <div className={styles.group_wrapper}>
-            <Button onClick={() => {
-              dispatch(setTypeGroupDrawer('edit'))
-              setOpenGroupDrawer(true)
-              // dispatch(setActiveChart(chart))
-              // dispatch(setOpenDrawer(true))
-            }}>
-              <EditIcon/>
-            </Button>
-            <h6 className={styles.title_group}>{activeGroup?.description}</h6>
+        {/*{activeReport && !isChartLoading && !resize && (*/}
+        {/*  <div className={styles.group_wrapper}>*/}
+        {/*    <Button onClick={() => {*/}
+        {/*      dispatch(setTypeGroupDrawer('edit'))*/}
+        {/*      setOpenGroupDrawer(true)*/}
+        {/*      // dispatch(setActiveChart(chart))*/}
+        {/*      // dispatch(setOpenDrawer(true))*/}
+        {/*    }}>*/}
+        {/*      <EditIcon/>*/}
+        {/*    </Button>*/}
+        {/*    <h6 className={styles.title_group}>{activeGroup?.description}</h6>*/}
 
+        {/*  </div>*/}
+        {/*)}*/}
+        {activeReport && !isChartLoading && !resize &&(
+          <div className={styles.info}>
+            <h4 className={styles.group_name}>{activeGroup?.group_name}</h4>
+            <h6 className={styles.title_group}>{activeGroup?.description}</h6>
           </div>
         )}
         {activeReport && <div
@@ -164,11 +177,11 @@ export const ChartList = (props) => {
           open={isOpenDrawer}
           onClose={() => dispatch(setOpenDrawer(false))}
         />
-        <GroupDrawer
-          activeGroup={activeGroup}
-          open={openGroupDrawer}
-          onClose={() => setOpenGroupDrawer(false)}
-        />
+        {/*<GroupDrawer*/}
+        {/*  activeGroup={activeGroup}*/}
+        {/*  open={openGroupDrawer}*/}
+        {/*  onClose={() => setOpenGroupDrawer(false)}*/}
+        {/*/>*/}
 
       </div>
 

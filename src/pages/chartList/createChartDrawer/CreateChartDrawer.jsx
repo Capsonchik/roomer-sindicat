@@ -47,8 +47,10 @@ export const CreateChartDrawer = ({open, onClose}) => {
     }
     // console.log(request)
     dispatch(createChart(request))
-    dispatch(setActiveGroup(data.group_id))
-    const index = groupsReports.findIndex(group => group.group_id === data.group_id)
+    dispatch(setActiveGroup(+data.group_id))
+    const index = groupsReports.findIndex(group => {
+      return +group.group_id === +data.group_id
+    })
     dispatch(setScrollTabs(index))
     onClose()
 

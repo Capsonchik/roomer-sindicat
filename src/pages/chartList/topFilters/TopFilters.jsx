@@ -23,6 +23,7 @@ import {axiosGraphRequest} from "../../../api/ApiConfig";
 import {PresentationDrawer} from "../presentationDrawer/PresentationDrawer";
 import {GroupDrawer} from "../groupDrawer/GroupDrawer";
 import {CreateChartDrawer} from "../createChartDrawer/CreateChartDrawer";
+import EditIcon from "@rsuite/icons/Edit";
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -44,17 +45,17 @@ export const TopFilters = () => {
   const [openPresentationDrawer, setOpenPresentationDrawer] = useState(false)
   const [openGroupDrawer, setOpenGroupDrawer] = useState(false)
 
-  // useEffect(() => {
-  //
-  //   const foundGroup = groups.find((group) => group.group_id == activeGroupId)
-  //   if (foundGroup) {
-  //     setActiveGroup(foundGroup)
-  //   } else if (groups.length) {
-  //     setActiveGroup(groups[0])
-  //   }
-  //   setFileList([])
-  //
-  // }, [activeGroupId, groups])
+  useEffect(() => {
+
+    const foundGroup = groupsReports.find((group) => group.group_id == activeGroupId)
+    if (foundGroup) {
+      setActiveGroup(foundGroup)
+    } else if (groupsReports.length) {
+      setActiveGroup(groupsReports[0])
+    }
+    setFileList([])
+
+  }, [activeGroupId, groupsReports])
 
   useEffect(() => {
     dispatch(fetchAllClients())
@@ -158,12 +159,27 @@ export const TopFilters = () => {
               }}
             />
           </div>
+          {activeReport && (
+            <div className={styles.group_wrapper}>
+              <Button onClick={() => {
+                dispatch(setTypeGroupDrawer('edit'))
+                setOpenGroupDrawer(true)
+                // dispatch(setActiveChart(chart))
+                // dispatch(setOpenDrawer(true))
+              }}>
+               Редактировать лист
+              </Button>
+              {/*<h6 className={styles.title_group}>{activeGroup?.description}</h6>*/}
+
+            </div>
+          )}
 
           {activeReport && <Button
             className={styles.create_pptx}
             onClick={() => {
-              setOpenGroupDrawer(true)
+              // setActiveGroup(null)
               dispatch(setTypeGroupDrawer('add'))
+              setOpenGroupDrawer(true)
             }}
           >
             Создать лист
@@ -190,7 +206,7 @@ export const TopFilters = () => {
       />
 
       <GroupDrawer
-        // activeGroup={activeGroup}
+        activeGroup={activeGroup}
         open={openGroupDrawer}
         onClose={() => setOpenGroupDrawer(false)}
       />

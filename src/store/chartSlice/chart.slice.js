@@ -1,5 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {
+  deleteChartById,
   deleteGroupById,
   fetchAllCharts, fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId,
   fetchAllClients, fetchAllGroups,
@@ -30,6 +31,7 @@ const initialState = {
 
   typeGroupDrawer: 'edit',
   errorCharts: false,
+  scrollTabs: 1
 }
 
 export const chartSlice = createSlice({
@@ -60,6 +62,9 @@ export const chartSlice = createSlice({
 
     setTypeGroupDrawer: (state, action) => {
       state.typeGroupDrawer = action.payload;
+    },
+    setScrollTabs: (state, action) => {
+      state.scrollTabs = action.payload;
     },
 
   },
@@ -127,11 +132,14 @@ export const chartSlice = createSlice({
       .addCase(deleteGroupById.fulfilled, (state, action) => {
         state.groupsChart = state.groupsChart.filter(chart => chart.group_id !== action.payload)
       })
+      .addCase(deleteChartById.fulfilled, (state, action) => {
+        state.charts = state.charts.filter(chart => chart.id !== action.payload)
+      })
 
 
   }
 })
 
-export const {setTypeGroupDrawer,setActiveGroup,setOriginalColors,setOpenDrawer,setActiveChart,setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
+export const {setScrollTabs,setTypeGroupDrawer,setActiveGroup,setOriginalColors,setOpenDrawer,setActiveChart,setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
 
 export default chartSlice.reducer;

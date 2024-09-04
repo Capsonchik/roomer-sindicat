@@ -80,7 +80,7 @@ export const ChartList = (props) => {
       }
 
       resizeTimeout = setTimeout(() => {
-        console.log(11);
+        // console.log(11);
         setResize(false)
         setData([...charts]); // Перерендеринг списка
         // setResize(false)
@@ -133,7 +133,7 @@ export const ChartList = (props) => {
           // className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}
           className={cl(styles.wrapper, {
             [styles.col_2]: data.length % 2 === 0,
-            [styles.col_3]: data.length === 3,
+            [styles.col_3]: Boolean(data.length % 2),
             [styles.isTablet]: isTablet
           })}
         >

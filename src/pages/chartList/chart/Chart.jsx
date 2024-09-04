@@ -13,6 +13,7 @@ import {
   selectOriginalColors
 } from "../../../store/chartSlice/chart.selectors";
 import {
+  deleteChartById,
   fetchAllChartsByGroupId,
   fetchAllChartsFormatByGroupId,
   patchChartFormatting
@@ -21,6 +22,7 @@ import {convertValuesByPercent} from "./convertValuesByPercent";
 import {getSumValues} from "../getSumValues";
 import {calculateMaxValue} from "../calculateMaxValue";
 import {calculateStepSize} from "../calculateStepSize";
+import cl from "classnames";
 
 
 export const Chart = ({chart}) => {
@@ -32,6 +34,7 @@ export const Chart = ({chart}) => {
   const originalColors = useSelector(selectOriginalColors)
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
+  const [isDelete, setIsDelete] = useState(false)
   // console.log(chart)
   const inputs = methods.watch()
   console.log(chart)
@@ -122,6 +125,11 @@ export const Chart = ({chart}) => {
 
 
   }, [originalColors]);
+
+  const handleDelete = () => {
+    dispatch(deleteChartById(chart.id))
+    dispatch(setOpenDrawer(false))
+  }
 
 
   useEffect(() => {
@@ -302,8 +310,22 @@ export const Chart = ({chart}) => {
       <FormProvider {...methods}>
         <ChartFilters chart={{...chartState, seriesData: chart.seriesData}}/>
       </FormProvider>
-      <Button className={styles.save_btn} onClick={handleSave}>Сохранить</Button>
+      <div className={styles.buttons}>
+        <Button
+          className={cl(styles.save_btn, {
+            [styles.isDelete]: isDelete
+          })}
+          onClick={(e) => {
+            if (!isDelete) {
+              setIsDelete(true)
+              return
+            }
+            handleDelete()
+          }}>{!isDelete ? 'Удалить' : 'Да, удалить'}</Button>
+        <Button className={styles.save_btn} onClick={handleSave}>Сохранить</Button>
+      </div>
 
+      {/*deleteChartById*/}
     </div>
   );
 };

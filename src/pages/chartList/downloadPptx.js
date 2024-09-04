@@ -35,16 +35,17 @@ export const downloadPpt = (charts, activeGroup) => {
   slide.addText(activeGroup.group_name, {
     x: xOffset,
     y: yOffset,
-    align: 'justify',
+    align: 'center',
     fontSize: 14,
-    h: 0.2
+    h: 0.2,
+    w: 9.2
   });
 
   yOffset += 0.3; // Увеличиваем отступ для описания
   slide.addText(activeGroup.description, {
     x: xOffset,
     y: yOffset,
-    align: 'justify',
+    align: 'center',
     fontSize: 12,
     h: activeGroup.description.length > 100 ? 0.4 : 0.2,
     w: 9.2

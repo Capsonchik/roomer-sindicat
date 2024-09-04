@@ -7,13 +7,15 @@ import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../s
 import {setActiveGroup} from "../../../store/chartSlice/chart.slice";
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Navigation, Mousewheel, Keyboard, Scrollbar} from 'swiper/modules';
-import {selectActiveGroupId} from "../../../store/chartSlice/chart.selectors";
+import {selectActiveGroupId, selectCharts, selectScrollTabs} from "../../../store/chartSlice/chart.selectors";
 
 export const GroupTabs = ({groupsReports}) => {
   const dispatch = useDispatch();
   const swiperRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const activeGroupId = useSelector(selectActiveGroupId)
+  const scrollTabs = useSelector(selectScrollTabs)
+  const charts = useSelector(selectCharts)
   const isFirstRender = useRef(true)
 
   useEffect(() => {
@@ -61,11 +63,15 @@ export const GroupTabs = ({groupsReports}) => {
       return
     }
     if (!swiperRef.current) return;
-    const lastIndex = groupsReports.length - 1;
-    swiperRef.current.swiper.slideTo(lastIndex);
+    // const lastIndex = groupsReports.length - 1;
+    if(scrollTabs) {
+      swiperRef.current.swiper.slideTo(scrollTabs);
+      // return
+    }
+    // swiperRef.current.swiper.slideTo(lastIndex);
     // swiperRef.current.swiper.slideNext();
 
-  }, [groupsReports.length]);
+  }, [,scrollTabs]);
 
   useEffect(() => {
     const handleWheel = (event) => {

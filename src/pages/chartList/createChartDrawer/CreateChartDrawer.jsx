@@ -11,6 +11,7 @@ import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/Sel
 import React, {useEffect} from "react";
 import CustomToggle from "../../../components/rhfInputs/customToggle/CustomToggle";
 import {createChart} from "../../../store/chartSlice/chart.actions";
+import {setActiveGroup, setScrollTabs} from "../../../store/chartSlice/chart.slice";
 
 export const CreateChartDrawer = ({open, onClose}) => {
   const reportsClients = useSelector(selectReportsClients)
@@ -20,13 +21,16 @@ export const CreateChartDrawer = ({open, onClose}) => {
   const loginSchema = yup.object().shape({
     title: yup.string().required("Название обязательно"),
     description: yup.string().required("Описание обязательно").max(200, 'Маскимальное количетсво символов 200'), // Add the password field
-    // report_id: yup.string().required("Название обязательно"),
-    // group_id: yup.string().required("Название обязательно"),
+    db_adress: yup.string().required("Название обязательно"),
+    xvalue: yup.string().required("Название обязательно"),
+    yvalue: yup.string().required("Название обязательно"),
+    group_id: yup.string().required("Название обязательно"),
+    report_id: yup.string().required("Название обязательно"),
   });
 
   const methods = useForm({
     resolver: yupResolver(loginSchema),
-
+    shouldFocusError: false,
   })
   useEffect(() => {
     methods.reset({
@@ -41,8 +45,12 @@ export const CreateChartDrawer = ({open, onClose}) => {
       author_id: 1,
       graph_format_id: 1
     }
-    console.log(request)
+    // console.log(request)
     dispatch(createChart(request))
+    dispatch(setActiveGroup(data.group_id))
+    const index = groupsReports.findIndex(group => group.group_id === data.group_id)
+    dispatch(setScrollTabs(index))
+    onClose()
 
   }
   return (
@@ -116,7 +124,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
             </div>
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Z значение</h6>
-              <CustomInput name={'zvalue'} className={styles.input} required={false}/>
+              <CustomInput name={'zvalue'} className={styles.input} />
             </div>
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Использовать проценты</h6>

@@ -55,12 +55,13 @@ export const CustomSelectPicker = (
 
 
   return (
-    <div className={cl(styles.inputWrapper, className)} ref={inputRef}>
+    <div className={cl(styles.inputWrapper, className)} ref={inputRef} onFocus={() => {}}>
       <Controller
         name={name}
         control={control}
         render={({field}) => (
           <SelectPicker
+            // onFocus={() =>{}}
             defaultValue={defaultValue}
             {...field}
             data={data}

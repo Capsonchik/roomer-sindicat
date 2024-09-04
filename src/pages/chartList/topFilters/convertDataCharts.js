@@ -86,6 +86,8 @@ export const convertDataCharts = ({charts, activeGroup}) => {
     console.log(chart.formatting.colors)
     // Определяем направление баров в зависимости от isXAxis
     const barDirection = chart.formatting.isXAxis ? undefined : 'bar';
+    // barGapWidthPct: Math.min(100, Math.max(0, parseFloat(chart.formatting.column_width) * 1)),
+      // barOverlapPct: -parseFloat(chart.formatting.column_gap)// Преобразование значения barCategoryGap в barGapWidthP
     acc.push({
       seriesData: convertedSeriesData,
       xAxisData: chart.xAxisData,
@@ -101,8 +103,8 @@ export const convertDataCharts = ({charts, activeGroup}) => {
         barGrouping: chart.formatting.stack ? 'stacked' : 'standard',
         step,
         maxValue:calculatedMaxValue,
-        column_width: chart.formatting.column_width,
-        column_gap: chart.formatting.column_gap,
+        column_width: Math.min(100, Math.max(0, parseFloat(chart.formatting.column_width) * 1)),
+        column_gap: -parseFloat(chart.formatting.column_gap),
         colors: filteredColors,
 
         // valAxisMaxVal

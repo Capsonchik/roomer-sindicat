@@ -16,3 +16,4 @@ export const selectOriginalColors = (state) => state.charts.originalColors;
 export const selectActiveGroupId = (state) => state.charts.activeGroupId;
 export const selectTypeGroupDrawer = (state) => state.charts.typeGroupDrawer;
 export const selectErrorCharts = (state) => state.charts.errorCharts;
+export const selectScrollTabs = (state) => state.charts.scrollTabs;

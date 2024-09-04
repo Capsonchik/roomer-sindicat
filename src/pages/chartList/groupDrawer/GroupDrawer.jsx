@@ -19,7 +19,7 @@ import {PreventOverflowContainer} from "../chartFilters/main/MainForm";
 import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/SelectPicker";
 import cl from 'classnames'
 import {labelArray} from "../label.config";
-import {setActiveGroup} from "../../../store/chartSlice/chart.slice";
+import {setActiveGroup, setScrollTabs} from "../../../store/chartSlice/chart.slice";
 
 export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
   const reportsClients = useSelector(selectReportsClients)
@@ -67,7 +67,9 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
     // console.log(data)
     dispatch(postGroup(data)).then((res) => {
       // console.log(res)
+      // const index = groups.findIndex(group => group.group_id === res.payload.group_id)
       dispatch(setActiveGroup(res.payload.group_id))
+      dispatch(setScrollTabs(groups.length -1 ))
     }).catch((error) => {
       console.log(error)
     })

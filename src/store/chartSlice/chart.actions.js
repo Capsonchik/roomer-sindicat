@@ -199,3 +199,17 @@ export const createChart = createAsyncThunk(
     }
   }
 );
+export const deleteChartById = createAsyncThunk(
+  'chart/deleteChartById',
+  async (id) => {
+    try {
+      const response = await axiosGraphRequest.delete(`/api/v2/echart_graphs/delete_chart?chart_id=${id}`);
+      // console.log(response)
+      if (response.status === 200) {
+        return id;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);

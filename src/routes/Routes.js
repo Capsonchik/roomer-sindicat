@@ -13,6 +13,7 @@ import {EditorChart} from "../pages/editorChart/EditorChart";
 import {Charts} from "../pages/charts/Charts";
 import {ChartList} from "../pages/chartList/ChartList";
 import {PrivateRoute} from "./PrivateRoute";
+import {Map1} from '../pages/map/Map1'
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
       {index: true, element: <ChartList/>},
       {path: '/main/report', element: <TestPageReportComponent/>},
       {path: '/main/reportList', element: <TestPageReportList/>},
+      {path: '/main/map', element: <Map1/>},
       // {
       //   path: '/main' + ROUTES_PATH.editorChart,
       //   element: <Charts/>,

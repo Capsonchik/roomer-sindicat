@@ -1,0 +1,176 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Hexagon 1" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [0, 0],
+            [10, 0],
+            [15, 5],
+            [15, 15],
+            [10, 20],
+            [0, 20],
+            [-5, 15],
+            [-5, 5]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Hexagon 2" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [20, 0],
+            [30, 0],
+            [35, 5],
+            [35, 15],
+            [30, 20],
+            [20, 20],
+            [15, 15],
+            [15, 5]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Hexagon 3" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [40, 0],
+            [50, 0],
+            [55, 5],
+            [55, 15],
+            [50, 20],
+            [40, 20],
+            [35, 15],
+            [35, 5]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Hexagon 4" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [0, 25],
+            [10, 25],
+            [15, 30],
+            [15, 40],
+            [10, 45],
+            [0, 45],
+            [-5, 40],
+            [-5, 30]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Hexagon 5" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [20, 25],
+            [30, 25],
+            [35, 30],
+            [35, 40],
+            [30, 45],
+            [20, 45],
+            [15, 40],
+            [15, 30]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Hexagon 6" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [40, 25],
+            [50, 25],
+            [55, 30],
+            [55, 40],
+            [50, 45],
+            [40, 45],
+            [35, 40],
+            [35, 30]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Hexagon 7" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [0, 50],
+            [10, 50],
+            [15, 55],
+            [15, 65],
+            [10, 70],
+            [0, 70],
+            [-5, 65],
+            [-5, 55]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Hexagon 8" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [20, 50],
+            [30, 50],
+            [35, 55],
+            [35, 65],
+            [30, 70],
+            [20, 70],
+            [15, 65],
+            [15, 55]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Hexagon 9" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [40, 50],
+            [50, 50],
+            [55, 55],
+            [55, 65],
+            [50, 70],
+            [40, 70],
+            [35, 65],
+            [35, 55]
+          ]
+        ]
+      }
+    }
+  ]
+}

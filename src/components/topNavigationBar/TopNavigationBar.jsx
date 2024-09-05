@@ -25,6 +25,7 @@ export const TopNavigationBar = () => {
         <Nav.Item onClick={() => handleNavigate('/main')}>Главная</Nav.Item>
         <Nav.Item onClick={() => handleNavigate('/main/report')}>Отчет</Nav.Item>
         <Nav.Item onClick={() => handleNavigate('/main/reportList')}>Список отчетов</Nav.Item>
+        {/*<Nav.Item onClick={() => handleNavigate('/main/map')}>Карта</Nav.Item>*/}
         {/*<Nav.Item onClick={() => handleNavigate('/main' + ROUTES_PATH.editorChart)}>Чарты</Nav.Item>*/}
       </Nav>
       <Nav pullRight>

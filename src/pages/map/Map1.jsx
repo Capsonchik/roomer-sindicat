@@ -1,50 +1,87 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts';
-import hexagonsData from './maptest.json'; // Импорт данных из JSON
 
 export const Map1 = () => {
-  const chartRef = useRef(null);
+  const [option, setOption] = useState({});
 
   useEffect(() => {
-    if (chartRef.current) {
-      const chartInstance = echarts.init(chartRef.current);
+    // Загрузка GeoJSON-файла через fetch
+    fetch('/Russia_regions.geojson') // Убедитесь, что файл находится в папке public
+      .then((response) => response.json())
+      .then((geojsonData) => {
+        console.log(geojsonData);
+        const valuesData = geojsonData.features.map(item => {
+          return {
+            name: item.properties.region,
+            value: Math.round(Math.random() * 500)
+          }
+        })
+        // Регистрация карты в ECharts
+        echarts.registerMap('myMap', geojsonData);
 
-      // Регистрация карты с данными из JSON
-      echarts.registerMap('HexagonMap', hexagonsData);
 
-      const option = {
-        series: [
-          {
-            name: 'Hexagon Map',
-            type: 'map',
-            map: 'HexagonMap',
-            itemStyle: {
-              normal: {
-                areaColor: '#C0C0C0',
-                borderColor: '#000'
+        // Настройка опций для карты
+        setOption({
+          title: {
+            text: 'Моя карта'
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: function (params) {
+              return `${params.name}: ${params.value}`;
+            }
+          },
+          visualMap: {
+            min: 0,
+            max: 100,
+            text: ['High', 'Low'],
+            realtime: false,
+            calculable: true
+          },
+          series: [
+            {
+              name: 'Карта',
+              type: 'map',
+              map: 'myMap',
+              roam: true,
+              aspectScale: .5,
+              zoom:2.5,
+              left:'-45%',
+              // layoutCenter: ['100%', '30%'],
+              label: {
+                show: false // Не показывать метку по умолчанию
+              },
+              itemStyle: {
+                areaColor: '#f3f3f3',
+                borderColor: '#000',
+                borderWidth: 0.5
               },
               emphasis: {
-                areaColor: '#F4A460'
-              }
+                label: {
+                  show: true, // Показать метку при наведении
+                  color: '#000', // Цвет текста метки
+                },
+                itemStyle: {
+                  areaColor: '#ffa', // Цвет подсветки при наведении
+                  borderColor: '#f00',
+                  borderWidth: 1
+                }
+              },
+              nameProperty: 'region', // Свойство для отображения названия региона
+              data: valuesData // Использование преобразованных данных
             }
-          }
-        ]
-      };
-
-      // Устанавливаем опции для карты
-      chartInstance.setOption(option);
-
-      // Очищаем карту при размонтировании компонента
-      return () => {
-        chartInstance.dispose();
-      };
-    }
+          ]
+        });
+      })
+      .catch((error) => {
+        console.error('Error loading GeoJSON:', error);
+      });
   }, []);
 
   return (
-    <div
-      ref={chartRef}
-      style={{ width: '100%', height: '400px' }} // Задаем размеры контейнера для карты
-    />
+    <div style={{ width: '100%', height: '600px' }}>
+      <ReactECharts option={option} style={{height:600}}/>
+    </div>
   );
 };

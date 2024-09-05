@@ -5,8 +5,11 @@
   flex-direction: column;
   gap: 16px;
   height: 100%;
+  padding-bottom: 30px;
+    //margin-bottom: 30px;
   .patch_btn{
     margin-top: auto;
+    flex-shrink: 0;
     background: #FF8200;
     color: #fff;
     transition: filter 0.3s ease; /* Плавный переход */

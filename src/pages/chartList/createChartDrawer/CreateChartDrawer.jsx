@@ -157,6 +157,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
               e.stopPropagation()
               methods.handleSubmit(handleCreateChart)()
             }}>Создать</Button>
+            <br/>
           </FormProvider>
         </div>
       </Drawer.Body>

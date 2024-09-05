@@ -46,7 +46,7 @@ export const Map1 = () => {
               map: 'myMap',
               roam: true,
               aspectScale: .5,
-              zoom:2.5,
+              zoom:2,
               left:'-45%',
               // layoutCenter: ['100%', '30%'],
               label: {

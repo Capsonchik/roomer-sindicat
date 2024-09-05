@@ -158,7 +158,7 @@ export const ChartList = (props) => {
           ))}
         </div>}
 
-        {activeReport && !isChartLoading && errorCharts && !data.length &&  (
+        {activeReport && !isChartLoading && !data.length &&  (
           <div className={styles.placeholder}>
             <Divider>Нет графиков</Divider>
 

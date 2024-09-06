@@ -24,41 +24,43 @@ export const CustomCheckPicker = (
   const {control} = useFormContext();
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      render={({field}) => (
-        <CheckPicker
-          {...field}
-          className={className}
-          data={data}
-          value={value}
-          disabled={disabled}
-          onChange={(selectedValues) => {
-            // Update the form field value
-            field.onChange(selectedValues);
-            // Call external onChange handler, if provided
-            onChangeOutside && onChangeOutside(selectedValues);
+    <div className={styles.wrapper}>
+      <Controller
+        name={name}
+        control={control}
+        render={({field}) => (
+          <CheckPicker
+            {...field}
+            className={className}
+            data={data}
+            value={value}
+            disabled={disabled}
+            onChange={(selectedValues) => {
+              // Update the form field value
+              field.onChange(selectedValues);
+              // Call external onChange handler, if provided
+              onChangeOutside && onChangeOutside(selectedValues);
 
-            // Update visible series
-            // const newVisibleSeries = Object.fromEntries(
-            //   Object.keys(data).map((name) => [name, selectedValues.includes(name)])
-            // );
-            // setVisibleSeries(newVisibleSeries);
-          }}
-          searchable={searchable}
-          appearance={appearance}
-          placeholder={placeholder}
-          // className={styles.select}
-          renderMenuItem={renderMenuItem}
-          // block={true}
-          // sticky={false}
-          placement="topStart" // Начальное направление открытия меню
-          container={container}
-          preventOverflow // Включение автоматического определения переполнения
-        />
-      )}
-    />
+              // Update visible series
+              // const newVisibleSeries = Object.fromEntries(
+              //   Object.keys(data).map((name) => [name, selectedValues.includes(name)])
+              // );
+              // setVisibleSeries(newVisibleSeries);
+            }}
+            searchable={searchable}
+            appearance={appearance}
+            placeholder={placeholder}
+            // className={styles.select}
+            renderMenuItem={renderMenuItem}
+            // block={true}
+            // sticky={false}
+            placement="topEnd" // Начальное направление открытия меню
+            container={container}
+            preventOverflow // Включение автоматического определения переполнения
+          />
+        )}
+      />
+    </div>
   );
 };
 

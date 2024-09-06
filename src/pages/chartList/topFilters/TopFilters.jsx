@@ -24,6 +24,7 @@ import {PresentationDrawer} from "../presentationDrawer/PresentationDrawer";
 import {GroupDrawer} from "../groupDrawer/GroupDrawer";
 import {CreateChartDrawer} from "../createChartDrawer/CreateChartDrawer";
 import EditIcon from "@rsuite/icons/Edit";
+import {FilterDrawer} from "../filterDrawer/FilterDrawer";
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ export const TopFilters = () => {
   const uploader = React.useRef();
   const [openPresentationDrawer, setOpenPresentationDrawer] = useState(false)
   const [openGroupDrawer, setOpenGroupDrawer] = useState(false)
+  const [openFilterDrawer, setOpenFilterDrawer] = useState(false)
 
   useEffect(() => {
 
@@ -203,6 +205,13 @@ export const TopFilters = () => {
           >
             Создать график
           </Button>}
+          {activeReport && <Button
+            disabled={isChartLoading}
+            onClick={() => setOpenFilterDrawer(true)} // Передаем весь массив charts
+            className={styles.create_chart}
+          >
+            Фильтры листа
+          </Button>}
 
 
         </div>
@@ -225,6 +234,10 @@ export const TopFilters = () => {
       <CreateChartDrawer
         open={openChartDrawer}
         onClose={() => setOpenChartDrawer(false)}
+      />
+      <FilterDrawer
+        open={openFilterDrawer}
+        onClose={() => setOpenFilterDrawer(false)}
       />
     </>
   )

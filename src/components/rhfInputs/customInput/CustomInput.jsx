@@ -23,6 +23,7 @@ export const CustomInput = (
     formState: {errors,isSubmitting,isSubmitted},
     clearErrors
   } = useFormContext();
+  console.log(errors)
   const inputRef = useRef(null);
 
   useEffect(() => {

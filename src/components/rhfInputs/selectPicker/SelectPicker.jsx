@@ -16,7 +16,8 @@ export const CustomSelectPicker = (
     appearance = "default",
     container,
     defaultValue = null,
-    preventOverflow
+    preventOverflow,
+    disabled = false
   }
 ) => {
   const {
@@ -61,6 +62,7 @@ export const CustomSelectPicker = (
         control={control}
         render={({field}) => (
           <SelectPicker
+            disabled={disabled}
             // onFocus={() =>{}}
             defaultValue={defaultValue}
             {...field}

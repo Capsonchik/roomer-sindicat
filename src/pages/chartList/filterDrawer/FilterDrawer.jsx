@@ -59,7 +59,7 @@ export const FilterDrawer = ({open, onClose}) => {
       group_id: activeGroupId,
       address_db: [{db_name: ''}] // Ensure address_db has a default entry
     })
-  }, []);
+  }, [open]);
   const {errors} = methods.formState;
 
   const handleDBNames = (data) => {
@@ -140,16 +140,20 @@ export const FilterDrawer = ({open, onClose}) => {
                       <div className={cl(styles.input_wrapper, {
                         [styles.db_input]: !!index || fields.length > 1
                       })} key={field.id}>
-                        <CustomInput  className={styles.input_db_wrapper} name={`address_db.${index}.db_name`}
+                        <CustomInput className={styles.input_db_wrapper} name={`address_db.${index}.db_name`}
                                      placeholder={'Введите адрес бд'}/>
                         {/* Отображение ошибки для этого поля */}
                         {/*{console.log(get(errors, `address_db.${index}.db_name`))}*/}
-                        {get(errors, `address_db.${index}.db_name`) && (
-                          <p className={styles.error}>
-                            хоп
-                            {/*{get(errors, `address_db.${index}.db_name`).message}*/}
-                          </p>
-                        )}
+
+                        <div className={cl(styles.error, {
+                          [styles.hasError]: !!get(errors, `address_db.${index}.db_name`)
+                        })}>{get(errors, `address_db.${index}.db_name`)?.message}</div>
+                        {/*{get(errors, `address_db.${index}.db_name`) && (*/}
+                        {/*  <p className={styles.error}>*/}
+                        {/*    хоп*/}
+                        {/*    /!*{get(errors, `address_db.${index}.db_name`).message}*!/*/}
+                        {/*  </p>*/}
+                        {/*)}*/}
                         <MinusIcon style={{
                           cursor: 'pointer',
                           fontSize: 20,
@@ -162,7 +166,7 @@ export const FilterDrawer = ({open, onClose}) => {
                   </div>
 
                   <div className={styles.input_db_control}>
-                    <Button onClick={(e) => {
+                  <Button onClick={(e) => {
                       e.stopPropagation()
                       // methods.trigger()
                       // methods.trigger('address_db');

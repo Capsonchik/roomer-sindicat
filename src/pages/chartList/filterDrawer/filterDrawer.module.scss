@@ -23,7 +23,41 @@
   }
 
   .input_wrapper {
+    position: relative;
     width: 100%;
+
+    .error {
+      z-index: 1000;
+      position: absolute;
+      bottom: -34px; // Расположите ошибку ниже инпута
+      left: 0;
+      background-color: #fff; // Цвет фона ошибки
+      color: red; // Цвет текста ошибки
+      border-radius: 4px; // Скругление углов
+      padding: 8px 14px;
+      font-size: 12px;
+      filter: drop-shadow(0 0 6px rgba(0, 0, 0, .2));
+      opacity: 0; // Начальная непрозрачность (скрыто)
+      transform: translateY(10px); // Начальная позиция (чуть ниже)
+      transition: opacity 0.3s ease, transform 0.3s ease; // Плавное появление
+
+      &.hasError{
+        opacity: 1;
+        transform: translateY(0); // Плавное движение вверх
+      }
+      // Треугольник
+      &::before {
+
+        content: "";
+        position: absolute;
+        top: -16px; // Расположение треугольника над ошибкой
+        left: 30px; // Центрирование относительно ошибки
+        border-width: 10px;
+        border-style: solid;
+        border-color: transparent transparent #fff transparent; // Цвет треугольника
+        transform: translateX(-50%); // Центрирование треугольника относительно ошибки
+      }
+    }
 
     .input_db_control{
       margin-top: 16px;

@@ -1,5 +1,4 @@
-import styles from './chartList.module.scss';
-import {Chart} from "./chart/Chart";
+import styles from './chartList.module.scss';import {Chart} from "./chart/Chart";
 import {Button, Divider, Loader, useMediaQuery} from "rsuite";
 import React, {useEffect, useState} from "react";
 import {downloadPpt} from "./downloadPptx";

@@ -1,4 +1,4 @@
-import {Button, Drawer} from "rsuite";
+import {Button, Drawer, Message} from "rsuite";
 import styles from "./filterDrawer.module.scss";
 import {FormProvider, get, useFieldArray, useForm} from "react-hook-form";
 import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput";
@@ -18,12 +18,13 @@ import MinusIcon from '@rsuite/icons/Minus';
 import {CustomCheckPicker} from "../../../components/rhfInputs/checkPicker/CheckPicker";
 import {fetchColumnDB} from "../../../store/chartSlice/filter.actions";
 import * as yup from "yup";
+import {CustomTagPicker} from "../../../components/rhfInputs/customTagPicker/CustomTagPicker";
 
 export const FilterDrawer = ({open, onClose}) => {
   const loginSchema = yup.object().shape({
     address_db: yup.array().of(
       yup.object().shape({
-        db_name: yup.string().required("Название обязательно"), // Валидация для каждого объекта в массиве
+        db_name: yup.string().required("ОПА"), // Валидация для каждого объекта в массиве
       })
     ),
   });
@@ -52,6 +53,7 @@ export const FilterDrawer = ({open, onClose}) => {
   const activeReport = useSelector(selectActiveReport)
   const [isOpenDBInputs, setIsOpenDBInputs] = useState(false)
   const [availableFields, setAvailableFields] = useState([])
+  const [errorDBRequest, setErrorDBRequest] = useState('')
 
   useEffect(() => {
     methods.reset({
@@ -63,9 +65,34 @@ export const FilterDrawer = ({open, onClose}) => {
   const {errors} = methods.formState;
 
   const handleDBNames = (data) => {
-    console.log(data,methods.formState)
-    // dispatch(fetchColumnDB)
+    const db_names = data.address_db.map((d) => d.db_name)
+    // console.log((data.address_db))
+    dispatch(fetchColumnDB({db_adress: db_names}))
+      .then((res) => {
+
+        if (res?.error) {
+          // Регулярное выражение для поиска фразы с "Таблица ... не найдена в базе ..."
+          const regex = /Таблица\s[\w]+\sне\sнайдена\sв\sбазе\s'[\w]+'/;
+
+          const match = res.error.message.match(regex);
+          console.log(match)
+          // const message = JSON.parse(res.error.message);
+          setErrorDBRequest(match?.[0] || '')
+        } else {
+          // console.log(res)
+          setAvailableFields(res.payload)
+        }
+
+        // console.log(res)
+      })
+
   }
+
+  const message = (
+    <Message style={{marginTop: 16}} showIcon type={'error'} closable onClose={() => setErrorDBRequest('')}>
+      <strong>{errorDBRequest}</strong>
+    </Message>
+  );
   // console.log(get(errors, `address_db.${index}.db_name`))
   // fetchColumnDB
   return (
@@ -134,6 +161,11 @@ export const FilterDrawer = ({open, onClose}) => {
             {isOpenDBInputs && (
               <>
                 <div className={styles.input_wrapper}>
+                  <h6 className={styles.label}>Название фильтра</h6>
+                  <CustomInput className={styles.input_db_wrapper} name={`filter_name`}
+                               placeholder={'Введите название фильтра'}/>
+                </div>
+                <div className={styles.input_wrapper}>
                   <h6 className={styles.label}>Адрес таблицы БД</h6>
                   <div className={styles.fields}>
                     {fields.map((field, index) => (
@@ -165,8 +197,10 @@ export const FilterDrawer = ({open, onClose}) => {
                     ))}
                   </div>
 
+                  {errorDBRequest && message}
+
                   <div className={styles.input_db_control}>
-                  <Button onClick={(e) => {
+                    <Button onClick={(e) => {
                       e.stopPropagation()
                       // methods.trigger()
                       // methods.trigger('address_db');
@@ -186,30 +220,31 @@ export const FilterDrawer = ({open, onClose}) => {
                 </div>
 
 
-                {!availableFields.length && (
+                {!!availableFields.length && (
                   <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>
                     <h6 className={styles.label}>Доступные поля</h6>
-                    <PreventOverflowContainer
 
-                    >
-                      {getContainer => (
-                        <CustomCheckPicker
-                          className={styles.visible_list}
-                          // placement={'bottomStart'}
-                          name={"seriesData"}
+
+                    {/*<PreventOverflowContainer>*/}
+
+                    {/*  {getContainer => (*/}
+                        <CustomTagPicker
+                          CustomTagPicker={styles.visible_list}
+                          name={'available_fields'}
                           data={availableFields.map((item, index) => {
-                            return {value: item, label: item, index}; // Передаем индекс в объекте
+
+                            return {value: item.column_name, label: item.column_name, index}; // Передаем индекс в объекте*/}
                           })}
                           // onChangeOutside={handleSeriesChange}
                           // value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
 
-                          style={{width: 224}}
-                          container={getContainer}
+                          // style={{width: 224}}
+                          // container={getContainer}
                           preventOverflow
                         />
-                      )}
+                    {/*  )}*/}
 
-                    </PreventOverflowContainer>
+                    {/*</PreventOverflowContainer>*/}
                   </div>
                 )}
 

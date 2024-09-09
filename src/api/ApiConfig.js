@@ -79,8 +79,33 @@ const createAxiosGraphnstance = () => {
     },
   });
 
+  // Добавляем интерсепторы для обработки ошибок
+  instance.interceptors.response.use(
+    (response) => {
+      // Возвращаем ответ, если всё прошло успешно
+      return response;
+    },
+    (error) => {
+      // Здесь мы можем поймать ошибку и пробросить её наверх
+      if (error.response) {
+        // Сервер ответил с ошибкой (4xx, 5xx)
+        console.error('Ошибка на стороне сервера:', error.response);
+        throw new Error(JSON.stringify(error.response) || 'Ошибка на сервере');
+      } else if (error.request) {
+        // Запрос был отправлен, но ответа нет
+        console.error('Нет ответа от сервера:', error.request);
+        throw new Error('Нет ответа от сервера');
+      } else {
+        // Ошибка произошла до отправки запроса
+        console.error('Ошибка при настройке запроса:', error.message);
+        throw new Error('Ошибка при настройке запроса');
+      }
+    }
+  );
+
   return instance;
 };
+
 
 export const axiosGraphRequest = createAxiosGraphnstance();
 

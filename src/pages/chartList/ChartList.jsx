@@ -1,4 +1,5 @@
-import styles from './chartList.module.scss';import {Chart} from "./chart/Chart";
+import styles from './chartList.module.scss';
+import {Chart} from "./chart/Chart";
 import {Button, Divider, Loader, useMediaQuery} from "rsuite";
 import React, {useEffect, useState} from "react";
 import {downloadPpt} from "./downloadPptx";
@@ -9,7 +10,7 @@ import {fetchAllClients} from "../../store/chartSlice/chart.actions";
 import {
   selectActiveClient, selectActiveGroupId, selectActiveReport,
   selectCharts,
-  selectClients, selectErrorCharts, selectGroupsReports,
+  selectClients, selectErrorCharts, selectFilters, selectGroupsReports,
   selectIsChartLoading, selectIsOpenDrawer,
   selectReportsClients
 } from "../../store/chartSlice/chart.selectors";
@@ -20,6 +21,10 @@ import {GroupDrawer} from "./groupDrawer/GroupDrawer";
 import EditIcon from "@rsuite/icons/Edit";
 import cl from "classnames";
 import {GroupControlButtons} from "./groupControlButtons/GroupControlButtons";
+import {getFilters} from "../../store/chartSlice/filter.actions";
+import {CustomSelectPicker} from "../../components/rhfInputs/selectPicker/SelectPicker";
+import {FormProvider, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -31,6 +36,7 @@ export const ChartList = (props) => {
   const isOpenDrawer = useSelector(selectIsOpenDrawer)
   const activeGroupId = useSelector(selectActiveGroupId)
   const errorCharts = useSelector(selectErrorCharts)
+  const filters = useSelector(selectFilters)
   const groups = useSelector(selectGroupsReports);
   const [activeGroup, setActiveGroup] = useState()
   const [data, setData] = useState(charts)
@@ -39,6 +45,16 @@ export const ChartList = (props) => {
   const [resize, setResize] = useState(false)
 
   const [isTablet] = useMediaQuery('(max-width: 1200px)');
+
+  const methods = useForm({
+    // resolver: yupResolver(loginSchema),
+    shouldFocusError: false,
+    // defaultValues: {
+    //   title: '',
+    //   description: '',
+    //   report_id: null
+    // }
+  })
 
   useEffect(() => {
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
@@ -62,6 +78,11 @@ export const ChartList = (props) => {
 
 
   }, [activeClient, activeReport]);
+
+  useEffect(() => {
+    if (!activeGroupId) return
+    dispatch(getFilters(activeGroupId))
+  }, [activeGroupId]);
 
   useEffect(() => {
     console.log('create')
@@ -110,10 +131,44 @@ export const ChartList = (props) => {
   // }, [charts.length]);// Зависимость от charts, чтобы следить за изменениями данных
 
   // console.log(placeholderText)
+  console.log(filters)
   return (
 
     <>
       <TopFilters/>
+      {!!filters.length && !isChartLoading && (
+        <FormProvider {...methods}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            marginTop: 16,
+            paddingInline:15
+          }}>
+            {filters.map((filter, i) => {
+
+              return (
+                // <p>dddd</p>
+                <CustomSelectPicker key={i}
+                  // disabled={true}
+                                    name={'report_id'}
+                  // defaultValue={activeReport}
+                                    data={[]}
+                  // data={filter.map((report) => ({
+                  //   label: report.report_name,
+                  //   value: report.report_id
+                  // }))}
+                                    searchable={false}
+                                    placeholder={filter.filter_name}
+                                    className={styles.select}
+                  // container={getContainer}
+                                    preventOverflow
+                />
+              )
+            })}
+          </div>
+        </FormProvider>
+      )}
       {/*{activeReport && <GroupControlButtons/>}*/}
       <div
         className={styles.list}>
@@ -136,7 +191,7 @@ export const ChartList = (props) => {
 
         {/*  </div>*/}
         {/*)}*/}
-        {activeReport && !isChartLoading && !resize &&(
+        {activeReport && !isChartLoading && !resize && (
           <div className={styles.info}>
             <h4 className={styles.group_name}>{activeGroup?.group_name}</h4>
             <h6 className={styles.title_group}>{activeGroup?.description}</h6>
@@ -157,7 +212,7 @@ export const ChartList = (props) => {
           ))}
         </div>}
 
-        {activeReport && !isChartLoading && !data.length &&  (
+        {activeReport && !isChartLoading && !data.length && (
           <div className={styles.placeholder}>
             <Divider>Нет графиков</Divider>
 

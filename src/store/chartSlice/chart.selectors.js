@@ -17,3 +17,4 @@ export const selectActiveGroupId = (state) => state.charts.activeGroupId;
 export const selectTypeGroupDrawer = (state) => state.charts.typeGroupDrawer;
 export const selectErrorCharts = (state) => state.charts.errorCharts;
 export const selectScrollTabs = (state) => state.charts.scrollTabs;
+export const selectFilters = (state) => state.charts.filters;

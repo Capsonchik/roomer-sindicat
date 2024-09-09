@@ -82,7 +82,10 @@
       .visible_list{
         width: 100%;
         //margin-bottom: 16px;
+
+
       }
+
     }
 
     &.db_input{
@@ -128,6 +131,12 @@
       color: white;
     }
   }
+  .available_field{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
 
 
 }

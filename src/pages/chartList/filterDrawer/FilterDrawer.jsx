@@ -9,14 +9,14 @@ import React, {useEffect, useState} from "react";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useDispatch, useSelector} from "react-redux";
 import {
-  selectActiveGroupId, selectActiveReport,
+  selectActiveGroupId, selectActiveReport, selectFilters,
   selectGroupsReports,
   selectReportsClients
 } from "../../../store/chartSlice/chart.selectors";
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
 import MinusIcon from '@rsuite/icons/Minus';
 import {CustomCheckPicker} from "../../../components/rhfInputs/checkPicker/CheckPicker";
-import {fetchColumnDB} from "../../../store/chartSlice/filter.actions";
+import {createFilter, fetchColumnDB} from "../../../store/chartSlice/filter.actions";
 import * as yup from "yup";
 import {CustomTagPicker} from "../../../components/rhfInputs/customTagPicker/CustomTagPicker";
 
@@ -52,6 +52,7 @@ export const FilterDrawer = ({open, onClose}) => {
   const reportsClients = useSelector(selectReportsClients)
   const groupsReports = useSelector(selectGroupsReports)
   const activeReport = useSelector(selectActiveReport)
+  const filters = useSelector(selectFilters)
   const [isOpenDBInputs, setIsOpenDBInputs] = useState(false)
   const [availableFields, setAvailableFields] = useState([])
   const [errorDBRequest, setErrorDBRequest] = useState('')
@@ -90,13 +91,13 @@ export const FilterDrawer = ({open, onClose}) => {
   }
 
   const handleCreateFilter = (data) => {
-    console.log(data)
     const request = {
       filter_group_id: data.group_id,
       filter_name: data.filter_name,
       filter_columns: data.filter_columns,
     }
-    // dispatch(createFilter())
+    // console.log(request)
+    dispatch(createFilter(request))
   }
 
   const message = (
@@ -109,6 +110,7 @@ export const FilterDrawer = ({open, onClose}) => {
   return (
     <Drawer open={open} onClose={() => {
       onClose()
+      setAvailableFields([])
       // setIsDelete(false)
       // methods.reset({})
       // {maxWidth: 700, width: '100%'}
@@ -152,7 +154,13 @@ export const FilterDrawer = ({open, onClose}) => {
             </div>
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Фильтры</h6>
-              <p>Добавьте фильтры</p>
+              {!!filters.length
+                ? (
+                  filters.map((filter) => (
+                    <p key={filter.filter_name}>{filter.filter_name}</p>
+                  ))
+                ) : <p>Добавьте фильтры</p>}
+
             </div>
             {!isOpenDBInputs && (
               <div className={styles.open_db_inputs} onClick={() => {
@@ -235,25 +243,48 @@ export const FilterDrawer = ({open, onClose}) => {
                     {/*<PreventOverflowContainer>*/}
 
                     {/*  {getContainer => (*/}
-                        <CustomTagPicker
-                          CustomTagPicker={styles.visible_list}
-                          name={'available_fields'}
-                          data={availableFields.map((item, index) => {
+                    <CustomTagPicker
+                      CustomTagPicker={styles.visible_list}
+                      name={'filter_columns'}
+                      data={availableFields.map((item, index) => {
 
-                            return {value: item.column_name, label: item.column_name, index}; // Передаем индекс в объекте*/}
-                          })}
-                          // onChangeOutside={handleSeriesChange}
-                          // value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
+                        return {value: item.column_name, label: item.column_name, index, db: item.db_adress}; // Передаем индекс в объекте*/}
+                      })}
+                      renderMenuItem={(label, item) => {
+                        const colors = ['red', 'green', 'blue'];
+                        return (
+                          <div
+                            // className={styles.available_field}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 8
+                            }}
 
-                          // style={{width: 224}}
-                          // container={getContainer}
-                          preventOverflow
-                        />
+                          >
+                            <label>
+                              {label}
+                            </label>
+                            <label>
+                              ({item.db})
+                            </label>
+                          </div>
+
+
+                        )
+                      }}
+                      // onChangeOutside={handleSeriesChange}
+                      // value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
+
+                      // style={{width: 224}}
+                      // container={getContainer}
+                      preventOverflow
+                    />
                     {/*  )}*/}
 
                     {/*</PreventOverflowContainer>*/}
                     <Button
-                      className={cl(styles.patch_btn,{},[styles.create_filter_btn])}
+                      className={cl(styles.patch_btn, {}, [styles.create_filter_btn])}
                       onClick={(e) => {
                         e.stopPropagation()
                         methods.handleSubmit(handleCreateFilter)()

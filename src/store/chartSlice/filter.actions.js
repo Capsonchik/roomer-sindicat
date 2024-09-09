@@ -39,3 +39,22 @@ export const createFilter = createAsyncThunk(
     }
   }
 );
+export const getFilters = createAsyncThunk(
+  'filter/getFilters',
+  async (group_id) => {
+    try {
+      const response = await axiosGraphRequest.get(`/api/v3/filter/get_filters?group_id=${group_id}`);
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+
+
+
+    } catch (error) {
+
+      // console.log(error)
+      throw new Error(error);
+    }
+  }
+);

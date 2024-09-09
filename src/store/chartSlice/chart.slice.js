@@ -10,6 +10,7 @@ import {
   patchChartById, patchGroupById, postGroup
 } from "./chart.actions";
 import {fa} from "@faker-js/faker";
+import {createFilter, getFilters} from "./filter.actions";
 
 const initialState = {
   clients: [],
@@ -31,7 +32,8 @@ const initialState = {
 
   typeGroupDrawer: 'edit',
   errorCharts: false,
-  scrollTabs: 1
+  scrollTabs: 1,
+  filters: []
 }
 
 export const chartSlice = createSlice({
@@ -134,6 +136,9 @@ export const chartSlice = createSlice({
       })
       .addCase(deleteChartById.fulfilled, (state, action) => {
         state.charts = state.charts.filter(chart => chart.id !== action.payload)
+      })
+      .addCase(getFilters.fulfilled, (state, action) => {
+        state.filters = action.payload
       })
 
 

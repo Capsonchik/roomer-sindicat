@@ -27,6 +27,7 @@ export const FilterDrawer = ({open, onClose}) => {
         db_name: yup.string().required("ОПА"), // Валидация для каждого объекта в массиве
       })
     ),
+    filter_name: yup.string().required("Название обязательно"),
   });
   const methods = useForm({
     resolver: yupResolver(loginSchema),
@@ -88,6 +89,16 @@ export const FilterDrawer = ({open, onClose}) => {
 
   }
 
+  const handleCreateFilter = (data) => {
+    console.log(data)
+    const request = {
+      filter_group_id: data.group_id,
+      filter_name: data.filter_name,
+      filter_columns: data.filter_columns,
+    }
+    // dispatch(createFilter())
+  }
+
   const message = (
     <Message style={{marginTop: 16}} showIcon type={'error'} closable onClose={() => setErrorDBRequest('')}>
       <strong>{errorDBRequest}</strong>
@@ -100,7 +111,8 @@ export const FilterDrawer = ({open, onClose}) => {
       onClose()
       // setIsDelete(false)
       // methods.reset({})
-    }} style={{maxWidth: 700, width: '100%'}}>
+      // {maxWidth: 700, width: '100%'}
+    }} style={{}}>
       <Drawer.Body style={{maxHeight: '100% !important'}}>
         <div className={styles.wrapper}>
 
@@ -180,12 +192,7 @@ export const FilterDrawer = ({open, onClose}) => {
                         <div className={cl(styles.error, {
                           [styles.hasError]: !!get(errors, `address_db.${index}.db_name`)
                         })}>{get(errors, `address_db.${index}.db_name`)?.message}</div>
-                        {/*{get(errors, `address_db.${index}.db_name`) && (*/}
-                        {/*  <p className={styles.error}>*/}
-                        {/*    хоп*/}
-                        {/*    /!*{get(errors, `address_db.${index}.db_name`).message}*!/*/}
-                        {/*  </p>*/}
-                        {/*)}*/}
+
                         <MinusIcon style={{
                           cursor: 'pointer',
                           fontSize: 20,
@@ -245,6 +252,13 @@ export const FilterDrawer = ({open, onClose}) => {
                     {/*  )}*/}
 
                     {/*</PreventOverflowContainer>*/}
+                    <Button
+                      className={cl(styles.patch_btn,{},[styles.create_filter_btn])}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        methods.handleSubmit(handleCreateFilter)()
+                      }}
+                    >Создать фильтр</Button>
                   </div>
                 )}
 

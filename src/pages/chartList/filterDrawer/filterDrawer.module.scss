@@ -81,6 +81,7 @@
 
       .visible_list{
         width: 100%;
+        //margin-bottom: 16px;
       }
     }
 
@@ -114,6 +115,11 @@
     &:hover {
       filter: brightness(0.90); /* Уменьшаем яркость на 15% */
     }
+    &.create_filter_btn{
+      margin-top: 16px;
+      margin-bottom: 30px;
+    }
+
   }
   .delete_btn {
     //margin-top: 30px;
@@ -122,5 +128,6 @@
       color: white;
     }
   }
+
 
 }

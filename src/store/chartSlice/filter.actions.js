@@ -20,3 +20,22 @@ export const fetchColumnDB = createAsyncThunk(
     }
   }
 );
+export const createFilter = createAsyncThunk(
+  'filter/createFilter',
+  async (filter_columns) => {
+    try {
+      const response = await axiosGraphRequest.post(`/api/v3/filter/create_filter`, filter_columns);
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+
+
+
+    } catch (error) {
+
+      // console.log(error)
+      throw new Error(error);
+    }
+  }
+);

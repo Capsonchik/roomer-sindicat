@@ -114,7 +114,7 @@ export const ChartList = (props) => {
 
     <>
       <TopFilters/>
-      {activeReport && <GroupControlButtons/>}
+      {/*{activeReport && <GroupControlButtons/>}*/}
       <div
         className={styles.list}>
         {(isChartLoading || resize) && (

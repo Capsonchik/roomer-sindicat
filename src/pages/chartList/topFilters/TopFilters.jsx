@@ -16,7 +16,7 @@ import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/Sel
 import {FormProvider, useForm} from "react-hook-form";
 import {GroupTabs} from "../groupTabs/GroupTabs";
 import {setActiveClient, setActiveReport, setTypeGroupDrawer} from "../../../store/chartSlice/chart.slice";
-import {Button, Uploader} from "rsuite";
+import {Button, Dropdown, Uploader} from "rsuite";
 import {downloadPpt} from "../downloadPptx";
 import {convertDataCharts} from "./convertDataCharts";
 import {axiosGraphRequest} from "../../../api/ApiConfig";
@@ -25,6 +25,7 @@ import {GroupDrawer} from "../groupDrawer/GroupDrawer";
 import {CreateChartDrawer} from "../createChartDrawer/CreateChartDrawer";
 import EditIcon from "@rsuite/icons/Edit";
 import {FilterDrawer} from "../filterDrawer/FilterDrawer";
+import {GroupControlButtons} from "../groupControlButtons/GroupControlButtons";
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -173,45 +174,81 @@ export const TopFilters = () => {
               }}
             />
           </div>
-          {activeReport && (
-            <div className={styles.group_wrapper}>
-              <Button onClick={() => {
+          {activeReport && <GroupControlButtons/>}
+          <Dropdown
+            placement={'bottomEnd'}
+            title="Настройки">
+            <Dropdown.Item
+              onClick={() => {
                 dispatch(setTypeGroupDrawer('edit'))
                 setOpenGroupDrawer(true)
-                // dispatch(setActiveChart(chart))
-                // dispatch(setOpenDrawer(true))
-              }}>
-                Редактировать лист
-              </Button>
-              {/*<h6 className={styles.title_group}>{activeGroup?.description}</h6>*/}
-
-            </div>
-          )}
-
-          {activeReport && <Button
-            className={styles.create_pptx}
+              }}
+            >
+              Редактировать лист
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                dispatch(setTypeGroupDrawer('add'))
+                setOpenGroupDrawer(true)
+              }}
+            >
+              Создать лист
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                setOpenChartDrawer(true) // Передаем весь массив charts
+              }}
+            >
+              Создать график
+            </Dropdown.Item>
+            <Dropdown.Item
             onClick={() => {
-              // setActiveGroup(null)
-              dispatch(setTypeGroupDrawer('add'))
-              setOpenGroupDrawer(true)
+              setOpenFilterDrawer(true)
             }}
-          >
-            Создать лист
-          </Button>}
-          {activeReport && <Button
-            disabled={isChartLoading}
-            onClick={() => setOpenChartDrawer(true)} // Передаем весь массив charts
-            className={styles.create_chart}
-          >
-            Создать график
-          </Button>}
-          {activeReport && <Button
-            disabled={isChartLoading}
-            onClick={() => setOpenFilterDrawer(true)} // Передаем весь массив charts
-            className={styles.create_chart}
-          >
-            Фильтры листа
-          </Button>}
+            >
+              Фильтры листа
+            </Dropdown.Item>
+
+          </Dropdown>
+          {/*{activeReport && (*/}
+          {/*  <div className={styles.group_wrapper}>*/}
+          {/*    <Button onClick={() => {*/}
+          {/*      dispatch(setTypeGroupDrawer('edit'))*/}
+          {/*      setOpenGroupDrawer(true)*/}
+          {/*      // dispatch(setActiveChart(chart))*/}
+          {/*      // dispatch(setOpenDrawer(true))*/}
+          {/*    }}>*/}
+          {/*      Редактировать лист*/}
+          {/*    </Button>*/}
+          {/*    /!*<h6 className={styles.title_group}>{activeGroup?.description}</h6>*!/*/}
+
+          {/*  </div>*/}
+          {/*)}*/}
+
+          {/*{activeReport && <Button*/}
+          {/*  className={styles.create_pptx}*/}
+          {/*  onClick={() => {*/}
+          {/*    // setActiveGroup(null)*/}
+          {/*    dispatch(setTypeGroupDrawer('add'))*/}
+          {/*    setOpenGroupDrawer(true)*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  Создать лист*/}
+          {/*</Button>}*/}
+          {/*{activeReport && <Button*/}
+          {/*  disabled={isChartLoading}*/}
+          {/*  onClick={() => setOpenChartDrawer(true)} // Передаем весь массив charts*/}
+          {/*  className={styles.create_chart}*/}
+          {/*>*/}
+          {/*  Создать график*/}
+          {/*</Button>}*/}
+          {/*{activeReport && <Button*/}
+          {/*  disabled={isChartLoading}*/}
+          {/*  onClick={() => setOpenFilterDrawer(true)} // Передаем весь массив charts*/}
+          {/*  className={styles.create_chart}*/}
+          {/*>*/}
+          {/*  Фильтры листа*/}
+          {/*</Button>}*/}
 
 
         </div>

@@ -30,15 +30,16 @@ export const FilterDrawer = ({open, onClose}) => {
     //   })
     // ),
     filter_name: yup.string().required("Название обязательно"),
+    filter_data: yup.array().min(1, "Название обязательно"),
   });
   const methods = useForm({
     resolver: yupResolver(loginSchema),
     shouldFocusError: false,
-    // defaultValues: {
-    //   title: '',
-    //   description: '',
-    //   report_id: null
-    // }
+    defaultValues: {
+      title: '',
+      description: '',
+      report_id: null
+    }
   })
 
   const {fields, append, remove} = useFieldArray({
@@ -58,6 +59,8 @@ export const FilterDrawer = ({open, onClose}) => {
   const [isOpenDBInputs, setIsOpenDBInputs] = useState(false)
   const [availableFields, setAvailableFields] = useState([])
   const [errorDBRequest, setErrorDBRequest] = useState('')
+  const [selectedFields, setSelectedFields] = useState([])
+
 
   useEffect(() => {
     if (!activeGroupId) return
@@ -98,22 +101,40 @@ export const FilterDrawer = ({open, onClose}) => {
   // }
 
   const handleCreateFilter = (data) => {
-    console.log(data)
-    // const request = {
-    //   filter_group_id: data.group_id,
-    //   filter_name: data.filter_name,
-    //   filter_columns: data.filter_columns,
-    // }
-    // // console.log(request)
-    // dispatch(createFilter(request))
+
+    const request = {
+      filter_group_id: data.group_id,
+      filter_name: data.filter_name,
+      multi: Boolean(data.multi),
+      isactive: Boolean(data.isactive),
+      filter_data: data.filter_data?.map((item) => {
+        const [db_name, column_name] = item.split(' ')
+        return {
+          db_name,
+          column_name
+        }
+      }),
+    }
+    console.log(request)
+    // console.log(request)
+    dispatch(createFilter(request))
   }
-  console.log(availableFields)
+  // console.log(availableFields)
   const message = (
     <Message style={{marginTop: 16}} showIcon type={'error'} closable onClose={() => setErrorDBRequest('')}>
       <strong>{errorDBRequest}</strong>
     </Message>
   );
-  // console.log(get(errors, `address_db.${index}.db_name`))
+
+
+  const handleSeriesChange = (data) => {
+    console.log(data)
+    // const selectedFields = data.map(item => {
+    //   return JSON.parse(item)
+    // })
+    setSelectedFields(data)
+  }
+  // console.log(selectedFields)
   // fetchColumnDB
   return (
     <Drawer open={open} onClose={() => {
@@ -202,7 +223,7 @@ export const FilterDrawer = ({open, onClose}) => {
                     <div className={styles.input_wrapper}>
                       <h6 className={styles.label}>Мультивыбор</h6>
                       <CustomToggle
-
+                        // checked={}
                         className={cl(styles.input_wrapper, {}, [styles.input_toggle])}
                         name={'multi'}
                         checkedChildren={'Multi'}
@@ -229,12 +250,18 @@ export const FilterDrawer = ({open, onClose}) => {
                         name={'filter_data'}
                         data={availableFields.map((item, index) => {
 
-                          return {value: item.column_name, label: item.column_name, index, db: item.db_adress}; // Передаем индекс в объекте*/}
+                          return {
+                            value: `${item.db_adress} ${item.column_name}`,
+                            label: item.column_name,
+                            index,
+                            db: item.db_adress
+                          }; // Передаем индекс в объекте*/}
                         })}
                         renderMenuItem={(label, item) => {
                           const colors = ['red', 'green', 'blue'];
                           return (
                             <div
+                              key={`${label}.${item.db}${item.index}`}
                               // className={styles.available_field}
                               style={{
                                 display: 'flex',
@@ -247,15 +274,18 @@ export const FilterDrawer = ({open, onClose}) => {
                                 {label}
                               </label>
                               <label>
-                                ({item.db})
+                                {item.db}
                               </label>
                             </div>
 
 
                           )
                         }}
-                        // onChangeOutside={handleSeriesChange}
-                        // value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
+                        onChangeOutside={handleSeriesChange}
+                        value={selectedFields.map((item, index) => {
+                          console.log(item)
+                          return item
+                        })}
 
                         // style={{width: 224}}
                         // container={getContainer}
@@ -269,7 +299,7 @@ export const FilterDrawer = ({open, onClose}) => {
                   <Button
                     className={cl(styles.patch_btn, {}, [styles.create_filter_btn])}
                     onClick={(e) => {
-                      // e.stopPropagation()
+                      e.stopPropagation()
                       methods.handleSubmit(handleCreateFilter)()
                     }}
                   >Создать фильтр

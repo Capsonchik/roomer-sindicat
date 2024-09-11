@@ -153,7 +153,12 @@ export const ChartList = (props) => {
                   // disabled={true}
                                     name={'report_id'}
                   // defaultValue={activeReport}
-                                    data={[]}
+                                    data={filter.original_values.map(item => {
+                                      return {
+                                          label: item,
+                                          value: item
+                                      }
+                                    })}
                   // data={filter.map((report) => ({
                   //   label: report.report_name,
                   //   value: report.report_id

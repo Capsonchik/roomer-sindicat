@@ -136,7 +136,7 @@ export const ChartList = (props) => {
 
     <>
       <TopFilters/>
-      {!!filters.length && !isChartLoading && (
+      {!!filters?.length && !isChartLoading && (
         <FormProvider {...methods}>
           <div style={{
             display: 'flex',

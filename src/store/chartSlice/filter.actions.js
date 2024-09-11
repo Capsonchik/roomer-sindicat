@@ -22,9 +22,9 @@ export const fetchColumnDB = createAsyncThunk(
 );
 export const createFilter = createAsyncThunk(
   'filter/createFilter',
-  async (filter_columns) => {
+  async (filter_data) => {
     try {
-      const response = await axiosGraphRequest.post(`/api/v3/filter/create_filter`, filter_columns);
+      const response = await axiosGraphRequest.post(`/api/v3/filter/create_filter`, filter_data);
       // console.log(response)
       if (response.status === 200) {
         return response.data;
@@ -50,6 +50,24 @@ export const getFilters = createAsyncThunk(
       }
 
 
+
+    } catch (error) {
+
+      // console.log(error)
+      throw new Error(error);
+    }
+  }
+);
+
+export const fetchColumnDBFromGroup = createAsyncThunk(
+  'filter/fetchColumnDBFromGroup',
+  async (group_id) => {
+    try {
+      const response = await axiosGraphRequest.post(`api/v3/filter/get_columns_from_group?group_id=${group_id}`);
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
 
     } catch (error) {
 

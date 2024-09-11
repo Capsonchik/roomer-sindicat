@@ -16,17 +16,19 @@ import {
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
 import MinusIcon from '@rsuite/icons/Minus';
 import {CustomCheckPicker} from "../../../components/rhfInputs/checkPicker/CheckPicker";
-import {createFilter, fetchColumnDB} from "../../../store/chartSlice/filter.actions";
+import {createFilter, fetchColumnDB, fetchColumnDBFromGroup} from "../../../store/chartSlice/filter.actions";
 import * as yup from "yup";
 import {CustomTagPicker} from "../../../components/rhfInputs/customTagPicker/CustomTagPicker";
+import CustomToggle from "../../../components/rhfInputs/customToggle/CustomToggle";
+import {labelArray} from "../label.config";
 
 export const FilterDrawer = ({open, onClose}) => {
   const loginSchema = yup.object().shape({
-    address_db: yup.array().of(
-      yup.object().shape({
-        db_name: yup.string().required("ОПА"), // Валидация для каждого объекта в массиве
-      })
-    ),
+    // address_db: yup.array().of(
+    //   yup.object().shape({
+    //     db_name: yup.string().required("ОПА"), // Валидация для каждого объекта в массиве
+    //   })
+    // ),
     filter_name: yup.string().required("Название обязательно"),
   });
   const methods = useForm({
@@ -43,7 +45,7 @@ export const FilterDrawer = ({open, onClose}) => {
     control: methods.control, // control props comes from useForm (optional: if you are using FormContext)
     name: "address_db", // unique name for your Field Array
     defaultValues: {
-      address_db: [{db_name: ''}]
+      // address_db: [{db_name: ''}]
     }
   });
 
@@ -58,48 +60,54 @@ export const FilterDrawer = ({open, onClose}) => {
   const [errorDBRequest, setErrorDBRequest] = useState('')
 
   useEffect(() => {
+    if (!activeGroupId) return
     methods.reset({
       report_id: activeReport,
       group_id: activeGroupId,
-      address_db: [{db_name: ''}] // Ensure address_db has a default entry
+      // address_db: [{db_name: ''}] // Ensure address_db has a default entry
     })
-  }, [open]);
+
+    dispatch(fetchColumnDBFromGroup(activeGroupId)).then((res) => {
+      setAvailableFields(res.payload)
+    })
+  }, [open, activeGroupId]);
   const {errors} = methods.formState;
 
-  const handleDBNames = (data) => {
-    const db_names = data.address_db.map((d) => d.db_name)
-    // console.log((data.address_db))
-    dispatch(fetchColumnDB({db_adress: db_names}))
-      .then((res) => {
-
-        if (res?.error) {
-          // Регулярное выражение для поиска фразы с "Таблица ... не найдена в базе ..."
-          const regex = /Таблица\s[\w]+\sне\sнайдена\sв\sбазе\s'[\w]+'/;
-
-          const match = res.error.message.match(regex);
-          console.log(match)
-          // const message = JSON.parse(res.error.message);
-          setErrorDBRequest(match?.[0] || '')
-        } else {
-          // console.log(res)
-          setAvailableFields(res.payload)
-        }
-
-        // console.log(res)
-      })
-
-  }
+  // const handleDBNames = (data) => {
+  //   const db_names = data.address_db.map((d) => d.db_name)
+  //   // console.log((data.address_db))
+  //   dispatch(fetchColumnDB({db_adress: db_names}))
+  //     .then((res) => {
+  //
+  //       if (res?.error) {
+  //         // Регулярное выражение для поиска фразы с "Таблица ... не найдена в базе ..."
+  //         const regex = /Таблица\s[\w]+\sне\sнайдена\sв\sбазе\s'[\w]+'/;
+  //
+  //         const match = res.error.message.match(regex);
+  //         console.log(match)
+  //         // const message = JSON.parse(res.error.message);
+  //         setErrorDBRequest(match?.[0] || '')
+  //       } else {
+  //         // console.log(res)
+  //         setAvailableFields(res.payload)
+  //       }
+  //
+  //       // console.log(res)
+  //     })
+  //
+  // }
 
   const handleCreateFilter = (data) => {
-    const request = {
-      filter_group_id: data.group_id,
-      filter_name: data.filter_name,
-      filter_columns: data.filter_columns,
-    }
-    // console.log(request)
-    dispatch(createFilter(request))
+    console.log(data)
+    // const request = {
+    //   filter_group_id: data.group_id,
+    //   filter_name: data.filter_name,
+    //   filter_columns: data.filter_columns,
+    // }
+    // // console.log(request)
+    // dispatch(createFilter(request))
   }
-
+  console.log(availableFields)
   const message = (
     <Message style={{marginTop: 16}} showIcon type={'error'} closable onClose={() => setErrorDBRequest('')}>
       <strong>{errorDBRequest}</strong>
@@ -154,7 +162,7 @@ export const FilterDrawer = ({open, onClose}) => {
             </div>
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Фильтры</h6>
-              {!!filters.length
+              {!!filters?.length
                 ? (
                   filters.map((filter) => (
                     <p key={filter.filter_name}>{filter.filter_name}</p>
@@ -171,129 +179,102 @@ export const FilterDrawer = ({open, onClose}) => {
               </div>
             )}
             {isOpenDBInputs && (
-              <div className={styles.open_db_inputs} onClick={() => {
-                setIsOpenDBInputs(false)
-              }}>
-                <MinusIcon style={{fontSize: 20}}/>
-                <p>Скрыть</p>
-              </div>
-            )}
-            {isOpenDBInputs && (
               <>
-                <div className={styles.input_wrapper}>
-                  <h6 className={styles.label}>Название фильтра</h6>
-                  <CustomInput className={styles.input_db_wrapper} name={`filter_name`}
-                               placeholder={'Введите название фильтра'}/>
+                <div className={styles.open_db_inputs} onClick={() => {
+                  setIsOpenDBInputs(false)
+                }}>
+                  <MinusIcon style={{fontSize: 20}}/>
+                  <p>Скрыть</p>
                 </div>
-                <div className={styles.input_wrapper}>
-                  <h6 className={styles.label}>Адрес таблицы БД</h6>
-                  <div className={styles.fields}>
-                    {fields.map((field, index) => (
-                      <div className={cl(styles.input_wrapper, {
-                        [styles.db_input]: !!index || fields.length > 1
-                      })} key={field.id}>
-                        <CustomInput className={styles.input_db_wrapper} name={`address_db.${index}.db_name`}
-                                     placeholder={'Введите адрес бд'}/>
-                        {/* Отображение ошибки для этого поля */}
-                        {/*{console.log(get(errors, `address_db.${index}.db_name`))}*/}
+                <h5 className={styles.create_filter_title}>Создание фильтра</h5>
 
-                        <div className={cl(styles.error, {
-                          [styles.hasError]: !!get(errors, `address_db.${index}.db_name`)
-                        })}>{get(errors, `address_db.${index}.db_name`)?.message}</div>
+                <div className={styles.create_form}>
 
-                        <MinusIcon style={{
-                          cursor: 'pointer',
-                          fontSize: 20,
-                          display: !!index || fields.length > 1 ? 'block' : 'none'
-                        }} onClick={() => {
-                          remove(index)
-                        }}/>
-                      </div>
-                    ))}
+
+                  <div className={styles.input_wrapper}>
+                    <h6 className={styles.label}>Название фильтра</h6>
+                    <CustomInput className={styles.input_db_wrapper} name={`filter_name`}
+                                 placeholder={'Введите название фильтра'}/>
                   </div>
 
-                  {errorDBRequest && message}
 
-                  <div className={styles.input_db_control}>
-                    <Button onClick={(e) => {
-                      e.stopPropagation()
-                      // methods.trigger()
-                      // methods.trigger('address_db');
-                      get(errors, `address_db`)
-                      methods.handleSubmit(handleDBNames)()
-                    }} className={styles.patch_btn}>Применить</Button>
+                  <div className={styles.row}>
+                    <div className={styles.input_wrapper}>
+                      <h6 className={styles.label}>Мультивыбор</h6>
+                      <CustomToggle
 
-                    <div className={styles.open_db_inputs} onClick={() => {
-                      append({db_name: ''})
-                    }}>
-                      <ExpandOutlineIcon style={{fontSize: 20}}/>
-                      <p>Добавить таблицу</p>
+                        className={cl(styles.input_wrapper, {}, [styles.input_toggle])}
+                        name={'multi'}
+                        checkedChildren={'Multi'}
+                        unCheckedChildren={'Unmulti'}
+                      />
+                    </div>
+                    <div className={styles.input_wrapper}>
+                      <h6 className={styles.label}>Вкл/Выкл</h6>
+                      <CustomToggle
+                        className={cl(styles.input_wrapper, {}, [styles.input_toggle])}
+                        name={'isactive'}
+                        checkedChildren={'Вкл'}
+                        unCheckedChildren={'Выкл'}
+                      />
                     </div>
                   </div>
 
 
+                  {!!availableFields.length && (
+                    <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>
+                      <h6 className={styles.label}>Доступные поля</h6>
+                      <CustomTagPicker
+                        CustomTagPicker={styles.visible_list}
+                        name={'filter_data'}
+                        data={availableFields.map((item, index) => {
+
+                          return {value: item.column_name, label: item.column_name, index, db: item.db_adress}; // Передаем индекс в объекте*/}
+                        })}
+                        renderMenuItem={(label, item) => {
+                          const colors = ['red', 'green', 'blue'];
+                          return (
+                            <div
+                              // className={styles.available_field}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 8
+                              }}
+
+                            >
+                              <label>
+                                {label}
+                              </label>
+                              <label>
+                                ({item.db})
+                              </label>
+                            </div>
+
+
+                          )
+                        }}
+                        // onChangeOutside={handleSeriesChange}
+                        // value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
+
+                        // style={{width: 224}}
+                        // container={getContainer}
+                        preventOverflow
+                      />
+
+
+                    </div>
+                  )}
+
+                  <Button
+                    className={cl(styles.patch_btn, {}, [styles.create_filter_btn])}
+                    onClick={(e) => {
+                      // e.stopPropagation()
+                      methods.handleSubmit(handleCreateFilter)()
+                    }}
+                  >Создать фильтр
+                  </Button>
                 </div>
-
-
-                {!!availableFields.length && (
-                  <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>
-                    <h6 className={styles.label}>Доступные поля</h6>
-
-
-                    {/*<PreventOverflowContainer>*/}
-
-                    {/*  {getContainer => (*/}
-                    <CustomTagPicker
-                      CustomTagPicker={styles.visible_list}
-                      name={'filter_columns'}
-                      data={availableFields.map((item, index) => {
-
-                        return {value: item.column_name, label: item.column_name, index, db: item.db_adress}; // Передаем индекс в объекте*/}
-                      })}
-                      renderMenuItem={(label, item) => {
-                        const colors = ['red', 'green', 'blue'];
-                        return (
-                          <div
-                            // className={styles.available_field}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 8
-                            }}
-
-                          >
-                            <label>
-                              {label}
-                            </label>
-                            <label>
-                              ({item.db})
-                            </label>
-                          </div>
-
-
-                        )
-                      }}
-                      // onChangeOutside={handleSeriesChange}
-                      // value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
-
-                      // style={{width: 224}}
-                      // container={getContainer}
-                      preventOverflow
-                    />
-                    {/*  )}*/}
-
-                    {/*</PreventOverflowContainer>*/}
-                    <Button
-                      className={cl(styles.patch_btn, {}, [styles.create_filter_btn])}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        methods.handleSubmit(handleCreateFilter)()
-                      }}
-                    >Создать фильтр</Button>
-                  </div>
-                )}
-
-
               </>
             )}
 
@@ -304,3 +285,4 @@ export const FilterDrawer = ({open, onClose}) => {
     </Drawer>
   )
 }
+

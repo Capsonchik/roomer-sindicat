@@ -17,7 +17,8 @@ export const CustomTagPicker = (
     renderMenuItem,
     container,
     preventOverflow,
-    renderValue
+    renderValue,
+    disabledItemValues
   }
 ) => {
   const {control} = useFormContext();
@@ -32,6 +33,7 @@ export const CustomTagPicker = (
             {...field}
             className={className}
             renderValue={renderValue}
+            disabledItemValues={disabledItemValues}
             data={data}
             value={value}
             disabled={disabled}

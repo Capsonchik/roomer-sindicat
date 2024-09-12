@@ -87,7 +87,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
         // onClose()
       })
   }
-  // console.log(availableFields)
+  // console.log(fieldsState)
   if (isEditFilter) {
     // console.log(filter)
     return (
@@ -147,6 +147,20 @@ export const EditFilterForm = ({filter, availableFields}) => {
                   db: item.db_adress
                 }; // Передаем индекс в объекте*/}
               })}
+              disabledItemValues={availableFields
+                .filter(availableField => {
+                  // console.log(availableFields,selectedField.split(' ')[0])
+                  return fieldsState.some(field => {
+                    console.log(fieldsState,field,fieldsState.includes(field))
+                    return availableField.db_adress === field.split(' ')[0] && availableField.column_name !== field.split(' ')[1];
+                  })
+
+                })
+                .map(item => {
+                  return `${item.db_adress} ${item.column_name}`;
+                })
+
+            }
               renderMenuItem={(label, item) => {
                 const colors = ['red', 'green', 'blue'];
                 return (

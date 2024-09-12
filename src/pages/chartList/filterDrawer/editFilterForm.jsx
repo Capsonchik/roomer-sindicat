@@ -7,15 +7,35 @@ import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput
 import CustomToggle from "../../../components/rhfInputs/customToggle/CustomToggle";
 import cl from "classnames";
 import {CustomTagPicker} from "../../../components/rhfInputs/customTagPicker/CustomTagPicker";
+import {FormProvider, useForm} from "react-hook-form";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 
 
 export const EditFilterForm = ({filter}) => {
   const [isEditFilter, setIsEditFilter] = useState(false)
+  const loginSchema = yup.object().shape({
+    // address_db: yup.array().of(
+    //   yup.object().shape({
+    //     db_name: yup.string().required("ОПА"), // Валидация для каждого объекта в массиве
+    //   })
+    // ),
+    filter_name: yup.string().required("Название обязательно"),
+    filter_data: yup.array().min(1, "Название обязательно"),
+  });
+  const methods = useForm({
+    resolver: yupResolver(loginSchema),
+    shouldFocusError: false,
+    defaultValues: {
+      filter_name: filter.filter_name,
 
+    }
+  })
+  // console.log(filter)
   if (isEditFilter) {
   // console.log(filter)
     return (
-      <>
+      <FormProvider {...methods}>
         <div className={styles.edit_top_btn} onClick={() => {
           setIsEditFilter(false)
         }}>
@@ -132,7 +152,7 @@ export const EditFilterForm = ({filter}) => {
 
 
         </div>
-      </>
+      </FormProvider>
 
     )
   }

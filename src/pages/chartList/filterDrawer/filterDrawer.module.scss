@@ -136,6 +136,12 @@
   }
 
   .delete_btn {
+    &.isDelete {
+      background: indianred;
+    }
+  }
+
+  .delete_btn {
     //margin-top: 30px;
     &.isDelete {
       background: indianred;
@@ -175,7 +181,7 @@
     gap: 16px;
   }
 
-  .filters{
+  .filters {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -198,7 +204,7 @@
 
 }
 
-.edit_top_btn{
+.edit_top_btn {
   display: flex;
   align-items: center;
   gap: 8px;

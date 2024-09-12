@@ -11,7 +11,7 @@ import {FormProvider, useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {colors} from "../chart/config";
-import {createFilter, getFilters, updateFilter} from "../../../store/chartSlice/filter.actions";
+import {createFilter, deleteFilter, getFilters, updateFilter} from "../../../store/chartSlice/filter.actions";
 import {useDispatch, useSelector} from "react-redux";
 import {selectActiveGroupId} from "../../../store/chartSlice/chart.selectors";
 
@@ -20,6 +20,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
   const dispatch = useDispatch()
   const activeGroupId = useSelector(selectActiveGroupId)
   const [isEditFilter, setIsEditFilter] = useState(false)
+  const [isDeleteFilter, setIsDeleteFilter] = useState(false)
   const db_colors = availableFields.reduce((acc, item, index) => {
     const name = item.db_adress
     if (!acc[name]) {
@@ -85,6 +86,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
       .then(() => {
         dispatch(getFilters(activeGroupId))
         // onClose()
+        setIsEditFilter(false)
       })
   }
   // console.log(fieldsState)
@@ -151,7 +153,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
                 .filter(availableField => {
                   // console.log(availableFields,selectedField.split(' ')[0])
                   return fieldsState.some(field => {
-                    console.log(fieldsState,field,fieldsState.includes(field))
+                    // console.log(fieldsState,field,fieldsState.includes(field))
                     return availableField.db_adress === field.split(' ')[0] && availableField.column_name !== field.split(' ')[1];
                   })
 
@@ -160,7 +162,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
                   return `${item.db_adress} ${item.column_name}`;
                 })
 
-            }
+              }
               renderMenuItem={(label, item) => {
                 const colors = ['red', 'green', 'blue'];
                 return (
@@ -236,18 +238,30 @@ export const EditFilterForm = ({filter, availableFields}) => {
 
           <div className={styles.buttons}>
             <Button
-              className={cl(styles.patch_btn, {}, [styles.create_filter_btn])}
+              className={cl(styles.delete_btn, {
+                [styles.isDelete]: isDeleteFilter
+              }, [])}
               onClick={(e) => {
-                e.stopPropagation()
-                // methods.handleSubmit(handleCreateFilter)()
+                if (isDeleteFilter) {
+                  e.stopPropagation()
+                  dispatch(deleteFilter(filter.filter_id)).then(() => {
+                    setIsEditFilter(false)
+                    dispatch(getFilters(activeGroupId))
+                  })
+                } else {
+                  setIsDeleteFilter(true)
+                }
               }}
-            >Удалить
+            >
+              {isDeleteFilter ? 'Да, удалить' : 'Удалить'}
             </Button>
             <Button
-              className={cl(styles.patch_btn, {}, [styles.create_filter_btn])}
+              className={cl(styles.patch_btn, { }, [])}
               onClick={(e) => {
-                e.stopPropagation()
-                methods.handleSubmit(handleUpdateFilter)()
+
+                  e.stopPropagation()
+                  methods.handleSubmit(handleUpdateFilter)()
+
               }}
             >Сохранить
 

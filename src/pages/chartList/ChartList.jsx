@@ -150,7 +150,7 @@ export const ChartList = (props) => {
               return (
                 // <p>dddd</p>
                 <div key={i}>
-                  <h6 style={{marginBottom: 8}}>{filter.filter_name}</h6>
+                  <p style={{marginBottom: 8,fontWeight:500}}>{filter.filter_name}</p>
                 <CustomSelectPicker
                   // disabled={true}
                                     name={'report_id'}

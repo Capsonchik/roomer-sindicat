@@ -39,6 +39,44 @@ export const createFilter = createAsyncThunk(
     }
   }
 );
+export const updateFilter = createAsyncThunk(
+  'filter/updateFilter',
+  async ({filter_data, filter_id}) => {
+    try {
+      const response = await axiosGraphRequest.patch(`/api/v3/filter/update_filter?filter_id=${filter_id}`, filter_data);
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+
+
+
+    } catch (error) {
+
+      // console.log(error)
+      throw new Error(error);
+    }
+  }
+);
+// export const deleteFilter = createAsyncThunk(
+//   'filter/deleteFilter',
+//   async ({filter_data, filter_id}) => {
+//     try {
+//       const response = await axiosGraphRequest.patch(`/api/v3/filter/update_filter?filter_id=${filter_id}`, filter_data);
+//       // console.log(response)
+//       if (response.status === 200) {
+//         return response.data;
+//       }
+//
+//
+//
+//     } catch (error) {
+//
+//       // console.log(error)
+//       throw new Error(error);
+//     }
+//   }
+// );
 export const getFilters = createAsyncThunk(
   'filter/getFilters',
   async (group_id) => {

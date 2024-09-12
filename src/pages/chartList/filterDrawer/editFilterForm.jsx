@@ -1,5 +1,5 @@
 import styles from "./filterDrawer.module.scss";
-import {Button} from "rsuite";
+import {Button, Tag} from "rsuite";
 import EditIcon from "@rsuite/icons/Edit";
 import React, {useState} from "react";
 import MinusIcon from "@rsuite/icons/Minus";
@@ -10,10 +10,30 @@ import {CustomTagPicker} from "../../../components/rhfInputs/customTagPicker/Cus
 import {FormProvider, useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
+import {colors} from "../chart/config";
+import {createFilter, getFilters, updateFilter} from "../../../store/chartSlice/filter.actions";
+import {useDispatch, useSelector} from "react-redux";
+import {selectActiveGroupId} from "../../../store/chartSlice/chart.selectors";
 
 
-export const EditFilterForm = ({filter,availableFields}) => {
+export const EditFilterForm = ({filter, availableFields}) => {
+  const dispatch = useDispatch()
+  const activeGroupId = useSelector(selectActiveGroupId)
   const [isEditFilter, setIsEditFilter] = useState(false)
+  const db_colors = availableFields.reduce((acc, item, index) => {
+    const name = item.db_adress
+    if (!acc[name]) {
+      acc[name] = colors[index]
+    }
+
+    return acc
+
+  }, {})
+  // console.log(db_colors)
+  const [fieldsState, setFieldsState] = useState(filter.filter_data.map(field => {
+
+    return `${field.db_name} ${field.column_name}`
+  }))
   const loginSchema = yup.object().shape({
     // address_db: yup.array().of(
     //   yup.object().shape({
@@ -33,6 +53,40 @@ export const EditFilterForm = ({filter,availableFields}) => {
       filter_data: filter.filter_data
     }
   })
+  const handleFields = (data) => {
+    const newFields = data.map(field => {
+      const [db_name, column_name] = field.split(' ')
+      return `${db_name} ${column_name}`
+    })
+    setFieldsState(newFields)
+  }
+
+  const handleUpdateFilter = (data) => {
+    // console.log(data)
+
+    const request = {
+      // filter_group_id: data.group_id,
+      filter_name: data.filter_name,
+      multi: Boolean(data.multi),
+      isactive: Boolean(data.isactive),
+      filter_data: fieldsState.map(field => {
+        const [db_name, column_name] = field.split(' ')
+        return {
+          db_name,
+          column_name
+        }
+      })
+    }
+
+    console.log(request, filter.filter_id)
+    const filter_id = filter.filter_id
+    console.log(request)
+    dispatch(updateFilter({filter_data: request, filter_id}))
+      .then(() => {
+        dispatch(getFilters(activeGroupId))
+        // onClose()
+      })
+  }
   // console.log(availableFields)
   if (isEditFilter) {
     // console.log(filter)
@@ -109,7 +163,9 @@ export const EditFilterForm = ({filter,availableFields}) => {
                     <label>
                       {label}
                     </label>
-                    <label>
+                    <label style={{
+                      color: db_colors[item.db]
+                    }}>
                       {item.db}
                     </label>
                   </div>
@@ -117,9 +173,42 @@ export const EditFilterForm = ({filter,availableFields}) => {
 
                 )
               }}
-              // onChangeOutside={handleSeriesChange}
-              value={filter.filter_data.map((item, index) => {
-                return `${item.db_name} ${item.column_name}`
+              // tagProps={(tagValue) => ({
+              //   style: { backgroundColor: 'red' } // Динамическая функция для фона
+              // })}
+              renderValue={(values) => {
+                return fieldsState.map((value, index) => {
+                  // console.log(value)
+                  return (
+                    <Tag
+                      key={index}
+                      closable // Добавляем крестик для закрытия
+                      onClose={(e) => {
+                        e.stopPropagation()
+                        setFieldsState(prev => {
+                          console.log(prev, value)
+                          return prev.filter(item => item !== value)
+                        })
+                        // console.log(value)
+                      }} // Обработчик удаления
+                      style={{
+
+                        backgroundColor: db_colors[value.split(' ')[0]] || 'gray', // Фон тега
+                        color: 'white', // Цвет текста
+                        borderRadius: '4px', // Скругление углов
+                        padding: '4px 8px', // Внутренние отступы
+                        paddingRight: '30px',
+                        marginRight: '4px' // Отступы между тегами
+                      }}
+                    >
+                      {value.split(' ')[1]} {/* Показываем только вторую часть значения */}
+                    </Tag>
+                  );
+                });
+              }}
+              onChangeOutside={handleFields}
+              value={fieldsState.map((item, index) => {
+                return item
               })}
 
               // style={{width: 224}}
@@ -138,15 +227,17 @@ export const EditFilterForm = ({filter,availableFields}) => {
                 e.stopPropagation()
                 // methods.handleSubmit(handleCreateFilter)()
               }}
-            >Сохранить
+            >Удалить
             </Button>
             <Button
               className={cl(styles.patch_btn, {}, [styles.create_filter_btn])}
               onClick={(e) => {
                 e.stopPropagation()
-                // methods.handleSubmit(handleCreateFilter)()
+                methods.handleSubmit(handleUpdateFilter)()
               }}
-            >Удалить
+            >Сохранить
+
+
             </Button>
           </div>
 

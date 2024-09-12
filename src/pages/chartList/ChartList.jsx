@@ -149,7 +149,9 @@ export const ChartList = (props) => {
 
               return (
                 // <p>dddd</p>
-                <CustomSelectPicker key={i}
+                <div key={i}>
+                  <h6 style={{marginBottom: 8}}>{filter.filter_name}</h6>
+                <CustomSelectPicker
                   // disabled={true}
                                     name={'report_id'}
                   // defaultValue={activeReport}
@@ -170,6 +172,7 @@ export const ChartList = (props) => {
                   // container={getContainer}
                                     preventOverflow
                 />
+                </div>
               )
             })}
           </div>

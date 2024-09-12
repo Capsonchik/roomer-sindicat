@@ -143,7 +143,7 @@ export const FilterDrawer = ({open, onClose}) => {
     // const selectedFields = data.map(item => {
     //   return JSON.parse(item)
     // })
-    setSelectedFields(data)
+    // setSelectedFields(data)
   }
   // console.log(selectedFields)
   // fetchColumnDB
@@ -198,7 +198,7 @@ export const FilterDrawer = ({open, onClose}) => {
                 {!!filters?.length
                   ? (
                     filters.map((filter) => (
-                      <EditFilterForm key={filter.filter_name} filter={filter} />
+                      <EditFilterForm key={filter.filter_name} filter={filter} availableFields={availableFields}/>
                       // <div key={filter.filter_name} className={styles.filter_wrapper}>
                       //   <p>{filter.filter_name}</p>
                       //   <div className={styles.line}></div>
@@ -306,10 +306,10 @@ export const FilterDrawer = ({open, onClose}) => {
                           )
                         }}
                         onChangeOutside={handleSeriesChange}
-                        value={selectedFields.map((item, index) => {
-                          // console.log(item)
-                          return item
-                        })}
+                        // value={selectedFields.map((item, index) => {
+                        //   // console.log(item)
+                        //   return item
+                        // })}
 
                         // style={{width: 224}}
                         // container={getContainer}

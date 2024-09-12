@@ -7,13 +7,14 @@
   height: 100%;
   //width: 100%;
 
-  .buttons{
+  .buttons {
     margin-top: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
   }
-  .open_db_inputs{
+
+  .open_db_inputs {
     padding-top: 8px;
     border-top: 1px dashed #ccc;
     cursor: pointer;
@@ -27,7 +28,6 @@
   .input_wrapper {
     position: relative;
     width: 100%;
-
 
 
     .error {
@@ -45,10 +45,11 @@
       transform: translateY(10px); // Начальная позиция (чуть ниже)
       transition: opacity 0.3s ease, transform 0.3s ease; // Плавное появление
 
-      &.hasError{
+      &.hasError {
         opacity: 1;
         transform: translateY(0); // Плавное движение вверх
       }
+
       // Треугольник
       &::before {
 
@@ -63,7 +64,7 @@
       }
     }
 
-    .input_db_control{
+    .input_db_control {
       margin-top: 16px;
       display: flex;
       align-items: center;
@@ -71,21 +72,23 @@
 
 
     }
-    .input_db_wrapper{
+
+    .input_db_wrapper {
       flex-grow: 1;
     }
 
-    .fields{
+    .fields {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
-    &.available_fields{
+
+    &.available_fields {
       //display: flex;
       //flex-direction: column;
       //gap: 16px;
 
-      .visible_list{
+      .visible_list {
         width: 100%;
         //margin-bottom: 16px;
 
@@ -94,14 +97,14 @@
 
     }
 
-    &.db_input{
+    &.db_input {
       display: flex;
       align-items: center;
       gap: 8px;
       //width: 100%;
     }
 
-    .select{
+    .select {
       width: 100%;
       //height: 34px;
     }
@@ -124,48 +127,72 @@
     &:hover {
       filter: brightness(0.90); /* Уменьшаем яркость на 15% */
     }
-    &.create_filter_btn{
+
+    &.create_filter_btn {
       margin-top: 16px;
       margin-bottom: 30px;
     }
 
   }
+
   .delete_btn {
     //margin-top: 30px;
-    &.isDelete{
+    &.isDelete {
       background: indianred;
       color: white;
     }
   }
-  .available_field{
+
+  .available_field {
     display: flex;
     align-items: center;
     gap: 16px;
   }
 
-  .row{
+  .row {
     display: flex;
     align-items: center;
     gap: 16px;
-    .input_wrapper{
+
+    .input_wrapper {
       width: fit-content;
     }
 
-    &.input_toggle{
+    &.input_toggle {
       width: fit-content;
     }
   }
 
-  .create_filter_title{
+  .create_filter_title {
     margin-top: 8px;
     margin-top: 0;
     //margin-bottom: 24px;
   }
 
-  .create_form{
+  .create_form {
     display: flex;
     flex-direction: column;
     gap: 16px;
+  }
+
+  .filters{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .filter_wrapper {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+
+    .line {
+      border-bottom: 1px dashed #ccc;
+      flex-grow: 1;
+      //align-self: flex-end;
+    }
   }
 
 

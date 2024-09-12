@@ -131,7 +131,7 @@ export const ChartList = (props) => {
   // }, [charts.length]);// Зависимость от charts, чтобы следить за изменениями данных
 
   // console.log(placeholderText)
-  console.log(filters)
+  // console.log(filters)
   return (
 
     <>
@@ -159,6 +159,7 @@ export const ChartList = (props) => {
                                           value: item
                                       }
                                     })}
+
                   // data={filter.map((report) => ({
                   //   label: report.report_name,
                   //   value: report.report_id

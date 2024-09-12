@@ -16,11 +16,19 @@ import {
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
 import MinusIcon from '@rsuite/icons/Minus';
 import {CustomCheckPicker} from "../../../components/rhfInputs/checkPicker/CheckPicker";
-import {createFilter, fetchColumnDB, fetchColumnDBFromGroup} from "../../../store/chartSlice/filter.actions";
+import {
+  createFilter,
+  fetchColumnDB,
+  fetchColumnDBFromGroup,
+  getFilters
+} from "../../../store/chartSlice/filter.actions";
 import * as yup from "yup";
 import {CustomTagPicker} from "../../../components/rhfInputs/customTagPicker/CustomTagPicker";
 import CustomToggle from "../../../components/rhfInputs/customToggle/CustomToggle";
 import {labelArray} from "../label.config";
+import {setActiveChart, setOpenDrawer} from "../../../store/chartSlice/chart.slice";
+import EditIcon from "@rsuite/icons/Edit";
+import {EditFilterForm} from "./editFilterForm";
 
 export const FilterDrawer = ({open, onClose}) => {
   const loginSchema = yup.object().shape({
@@ -117,7 +125,10 @@ export const FilterDrawer = ({open, onClose}) => {
     }
     console.log(request)
     // console.log(request)
-    dispatch(createFilter(request))
+    dispatch(createFilter(request)).then(() => {
+      dispatch(getFilters(activeGroupId))
+      onClose()
+    })
   }
   // console.log(availableFields)
   const message = (
@@ -183,12 +194,25 @@ export const FilterDrawer = ({open, onClose}) => {
             </div>
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Фильтры</h6>
-              {!!filters?.length
-                ? (
-                  filters.map((filter) => (
-                    <p key={filter.filter_name}>{filter.filter_name}</p>
-                  ))
-                ) : <p>Добавьте фильтры</p>}
+              <div className={styles.filters}>
+                {!!filters?.length
+                  ? (
+                    filters.map((filter) => (
+                      <EditFilterForm key={filter.filter_name} filter={filter} />
+                      // <div key={filter.filter_name} className={styles.filter_wrapper}>
+                      //   <p>{filter.filter_name}</p>
+                      //   <div className={styles.line}></div>
+                      //   <Button onClick={() => {
+                      //
+                      //     // dispatch(setActiveChart(chart))
+                      //     // dispatch(setOpenDrawer(true))
+                      //   }}>
+                      //     <EditIcon/>
+                      //   </Button>
+                      // </div>
+                    ))
+                  ) : <p>Добавьте фильтры</p>}
+              </div>
 
             </div>
             {!isOpenDBInputs && (

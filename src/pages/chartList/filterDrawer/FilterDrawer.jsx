@@ -307,7 +307,7 @@ export const FilterDrawer = ({open, onClose}) => {
                         }}
                         onChangeOutside={handleSeriesChange}
                         value={selectedFields.map((item, index) => {
-                          console.log(item)
+                          // console.log(item)
                           return item
                         })}
 

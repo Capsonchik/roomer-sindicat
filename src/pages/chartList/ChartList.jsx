@@ -23,8 +23,9 @@ import cl from "classnames";
 import {GroupControlButtons} from "./groupControlButtons/GroupControlButtons";
 import {getFilters} from "../../store/chartSlice/filter.actions";
 import {CustomSelectPicker} from "../../components/rhfInputs/selectPicker/SelectPicker";
-import {FormProvider, useForm} from "react-hook-form";
+import {FormProvider, useFieldArray, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
+import {CustomCheckPicker} from "../../components/rhfInputs/checkPicker/CheckPicker";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -47,14 +48,31 @@ export const ChartList = (props) => {
   const [isTablet] = useMediaQuery('(max-width: 1200px)');
 
   const methods = useForm({
-    // resolver: yupResolver(loginSchema),
-    shouldFocusError: false,
-    // defaultValues: {
-    //   title: '',
-    //   description: '',
-    //   report_id: null
-    // }
-  })
+    defaultValues: {
+      filters: []
+    }
+  });
+
+  const { fields, append, remove, replace } = useFieldArray({
+    control: methods.control,
+    name: "filters"
+  });
+  // Сброс формы и обновление filters через reset, когда filters не пустой
+  useEffect(() => {
+    if (filters.length > 0) {
+      const filterValues = filters.map(filter => ({
+        filter_name: filter.filter_name,
+        filter_id: filter.filter_id,
+        original_values: filter.original_values
+      }));
+      methods.reset({ filters: filterValues });
+      replace(filterValues); // Обновляем данные в useFieldArray
+    }
+  }, [filters, methods, replace]);
+
+  // const {} = useFieldArray({
+  //   control:methods.
+  // })
 
   useEffect(() => {
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
@@ -132,6 +150,10 @@ export const ChartList = (props) => {
 
   // console.log(placeholderText)
   // console.log(filters)
+
+  const handleChangeFilter = (data) => {
+    console.log(data)
+  }
   return (
 
     <>
@@ -143,38 +165,28 @@ export const ChartList = (props) => {
             alignItems: 'center',
             gap: 8,
             marginTop: 16,
-            paddingInline:15
+            paddingInline: 15
           }}>
-            {filters.map((filter, i) => {
+            {fields.map((filter, i) => (
+              <div key={filter.id}>
+                <p style={{ marginBottom: 8, fontWeight: 500 }}>{filter.filter_name}</p>
+                <CustomCheckPicker
 
-              return (
-                // <p>dddd</p>
-                <div key={i}>
-                  <p style={{marginBottom: 8,fontWeight:500}}>{filter.filter_name}</p>
-                <CustomSelectPicker
-                  // disabled={true}
-                                    name={'report_id'}
-                  // defaultValue={activeReport}
-                                    data={filter.original_values.map(item => {
-                                      return {
-                                          label: item,
-                                          value: item
-                                      }
-                                    })}
-
-                  // data={filter.map((report) => ({
-                  //   label: report.report_name,
-                  //   value: report.report_id
-                  // }))}
-                                    searchable={false}
-                                    placeholder={filter.filter_name}
-                                    className={styles.select}
-                  // container={getContainer}
-                                    preventOverflow
+                  onChangeOutside={methods.handleSubmit(handleChangeFilter)}
+                  name={`filters.${i}.value`}
+                  data={filter.original_values.map(item => ({
+                    label: item,
+                    value: item
+                  }))}
+                  searchable={false}
+                  // placeholder={filter.filter_name}
+                  className={styles.select}
+                  // placement={'bottomStart'}
+                  preventOverflow={true}
+                  container={''}
                 />
-                </div>
-              )
-            })}
+              </div>
+            ))}
           </div>
         </FormProvider>
       )}

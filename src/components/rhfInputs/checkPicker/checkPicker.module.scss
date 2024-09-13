@@ -3,8 +3,9 @@
 .wrapper{
   font-size: 16px;
   width: 100%;
+  position: relative;
 }
 
 div:has(.wrapper) + div {
-  top: 40px !important;
+  //top: 40px !important;
 }

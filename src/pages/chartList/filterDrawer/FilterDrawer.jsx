@@ -1,4 +1,4 @@
-import {Button, Drawer, Message} from "rsuite";
+import {Button, Drawer, Message, Tag} from "rsuite";
 import styles from "./filterDrawer.module.scss";
 import {FormProvider, get, useFieldArray, useForm} from "react-hook-form";
 import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput";
@@ -29,6 +29,7 @@ import {labelArray} from "../label.config";
 import {setActiveChart, setOpenDrawer} from "../../../store/chartSlice/chart.slice";
 import EditIcon from "@rsuite/icons/Edit";
 import {EditFilterForm} from "./editFilterForm";
+import {colors} from "../chart/config";
 
 export const FilterDrawer = ({open, onClose}) => {
   const loginSchema = yup.object().shape({
@@ -69,6 +70,16 @@ export const FilterDrawer = ({open, onClose}) => {
   const [errorDBRequest, setErrorDBRequest] = useState('')
   const [selectedFields, setSelectedFields] = useState([])
 
+  const db_colors = availableFields.reduce((acc, item, index) => {
+    const name = item.db_adress
+    if (!acc[name]) {
+      acc[name] = colors[index]
+    }
+
+    return acc
+
+  }, {})
+
 
   useEffect(() => {
     if (!activeGroupId) return
@@ -84,32 +95,9 @@ export const FilterDrawer = ({open, onClose}) => {
   }, [open, activeGroupId]);
   const {errors} = methods.formState;
 
-  // const handleDBNames = (data) => {
-  //   const db_names = data.address_db.map((d) => d.db_name)
-  //   // console.log((data.address_db))
-  //   dispatch(fetchColumnDB({db_adress: db_names}))
-  //     .then((res) => {
-  //
-  //       if (res?.error) {
-  //         // Регулярное выражение для поиска фразы с "Таблица ... не найдена в базе ..."
-  //         const regex = /Таблица\s[\w]+\sне\sнайдена\sв\sбазе\s'[\w]+'/;
-  //
-  //         const match = res.error.message.match(regex);
-  //         console.log(match)
-  //         // const message = JSON.parse(res.error.message);
-  //         setErrorDBRequest(match?.[0] || '')
-  //       } else {
-  //         // console.log(res)
-  //         setAvailableFields(res.payload)
-  //       }
-  //
-  //       // console.log(res)
-  //     })
-  //
-  // }
-
   const handleCreateFilter = (data) => {
 
+    if (!data.filter_data?.length) return
     const request = {
       filter_group_id: data.group_id,
       filter_name: data.filter_name,
@@ -138,12 +126,12 @@ export const FilterDrawer = ({open, onClose}) => {
   );
 
 
-  const handleSeriesChange = (data) => {
-    console.log(data)
-    // const selectedFields = data.map(item => {
-    //   return JSON.parse(item)
-    // })
-    // setSelectedFields(data)
+  const handleFields = (data) => {
+    const newFields = data.map(field => {
+      const [db_name, column_name] = field.split(' ')
+      return `${db_name} ${column_name}`
+    })
+    setSelectedFields(newFields)
   }
   // console.log(selectedFields)
   // fetchColumnDB
@@ -269,54 +257,104 @@ export const FilterDrawer = ({open, onClose}) => {
                   {!!availableFields.length && (
                     <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>
                       <h6 className={styles.label}>Доступные поля</h6>
-                      <CustomTagPicker
-                        CustomTagPicker={styles.visible_list}
-                        name={'filter_data'}
-                        data={availableFields.map((item, index) => {
+                      <PreventOverflowContainer>
+                        {getContainer => (
+                          <CustomTagPicker
+                            CustomTagPicker={styles.visible_list}
+                            name={'filter_data'}
+                            data={availableFields.map((item, index) => {
 
-                          return {
-                            value: `${item.db_adress} ${item.column_name}`,
-                            label: item.column_name,
-                            index,
-                            db: item.db_adress
-                          }; // Передаем индекс в объекте*/}
-                        })}
-                        renderMenuItem={(label, item) => {
-                          const colors = ['red', 'green', 'blue'];
-                          return (
-                            <div
-                              key={`${label}.${item.db}${item.index}`}
-                              // className={styles.available_field}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 8
-                              }}
+                              return {
+                                value: `${item.db_adress} ${item.column_name}`,
+                                label: item.column_name,
+                                index,
+                                db: item.db_adress
+                              }; // Передаем индекс в объекте*/}
+                            })}
+                            disabledItemValues={availableFields
+                              .filter(availableField => {
+                                // console.log(availableFields,selectedField.split(' ')[0])
+                                return selectedFields?.some(field => {
+                                  // console.log(fieldsState,field,fieldsState.includes(field))
+                                  return availableField.db_adress === field.split(' ')[0] && availableField.column_name !== field.split(' ')[1];
+                                })
 
-                            >
-                              <label>
-                                {label}
-                              </label>
-                              <label>
-                                {item.db}
-                              </label>
-                            </div>
+                              })
+                              .map(item => {
+                                return `${item.db_adress} ${item.column_name}`;
+                              })
+
+                            }
+                            renderValue={(values) => {
+                              return values.map((value, index) => {
+                                // console.log(value)
+                                return (
+                                  <Tag
+                                    key={index}
+                                    closable // Добавляем крестик для закрытия
+                                    onClose={(e) => {
+                                      e.stopPropagation()
+                                      setSelectedFields(prev => {
+                                        console.log(prev, value)
+                                        return prev.filter(item => item !== value)
+                                      })
+                                      // console.log(value)
+                                    }} // Обработчик удаления
+                                    style={{
+
+                                      backgroundColor: db_colors[value.split(' ')[0]] || 'gray', // Фон тега
+                                      color: 'white', // Цвет текста
+                                      borderRadius: '4px', // Скругление углов
+                                      padding: '4px 8px', // Внутренние отступы
+                                      paddingRight: '30px',
+                                      marginRight: '4px' // Отступы между тегами
+                                    }}
+                                  >
+                                    {value.split(' ')[1]} {/* Показываем только вторую часть значения */}
+                                  </Tag>
+                                );
+                              });
+                            }}
+                            renderMenuItem={(label, item) => {
+                              const colors = ['red', 'green', 'blue'];
+                              return (
+                                <div
+                                  key={`${label}.${item.db}${item.index}`}
+                                  // className={styles.available_field}
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 8
+                                  }}
+
+                                >
+                                  <label>
+                                    {label}
+                                  </label>
+                                  <label style={{
+                                    color: db_colors[item.db]
+                                  }}>
+                                    {item.db}
+                                  </label>
+                                </div>
 
 
-                          )
-                        }}
-                        onChangeOutside={handleSeriesChange}
-                        // value={selectedFields.map((item, index) => {
-                        //   // console.log(item)
-                        //   return item
-                        // })}
+                              )
+                            }}
+                            onChangeOutside={handleFields}
+                            value={selectedFields.map((item, index) => {
+                              // console.log(item)
+                              return item
+                            })}
 
-                        // style={{width: 224}}
-                        // container={getContainer}
-                        preventOverflow
-                      />
+                            // style={{width: 224}}
+                            container={getContainer}
+                            preventOverflow
+                          />
 
+                        )}
 
+                      </PreventOverflowContainer>
                     </div>
                   )}
 

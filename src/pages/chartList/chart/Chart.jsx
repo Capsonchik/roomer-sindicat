@@ -127,7 +127,7 @@ export const Chart = ({chart}) => {
   }, [originalColors]);
 
   const fetchCharts = (id) => {
-    dispatch(fetchAllChartsByGroupId(id)).then(() => {
+    dispatch(fetchAllChartsByGroupId({groupId: id})).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(id));
     });
   }
@@ -299,7 +299,7 @@ export const Chart = ({chart}) => {
     const request = {...rest, formatting: {...restFormatting, colors: originalColors}}
     dispatch(patchChartFormatting(request)).then(() => {
       const id = activeGroupId || groupsReports[0].group_id
-      dispatch(fetchAllChartsByGroupId(id)).then(() => {
+      dispatch(fetchAllChartsByGroupId({groupId: id})).then(() => {
         dispatch(fetchAllChartsFormatByGroupId(id))
       })
     })

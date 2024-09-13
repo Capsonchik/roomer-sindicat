@@ -37,7 +37,7 @@ export const GroupTabs = ({groupsReports}) => {
 
 
   const fetchCharts = (id) => {
-    dispatch(fetchAllChartsByGroupId(id)).then(() => {
+    dispatch(fetchAllChartsByGroupId({groupId: id})).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(id));
     });
   }

@@ -100,9 +100,9 @@ export const fetchAllGroups = createAsyncThunk(
 );
 export const fetchAllChartsByGroupId = createAsyncThunk(
   'chart/fetchAllChartsByGroupId',
-  async (groupId) => {
+  async ({groupId, filter_data = {filter_data: []}}) => {
     try {
-      const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_echart_graphs_from_group?group_id=${groupId}`);
+      const response = await axiosGraphRequest.post(`/api/v3/filter/get_filtered_graphs_from_group?group_id=${groupId}`,filter_data);
       // console.log(response)
       if (response.status === 200) {
         return response.data;
@@ -112,6 +112,20 @@ export const fetchAllChartsByGroupId = createAsyncThunk(
     }
   }
 );
+// export const fetchAllChartsByGroupId = createAsyncThunk(
+//   'chart/fetchAllChartsByGroupId',
+//   async (groupId) => {
+//     try {
+//       const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_echart_graphs_from_group?group_id=${groupId}`);
+//       // console.log(response)
+//       if (response.status === 200) {
+//         return response.data;
+//       }
+//     } catch (error) {
+//       throw new Error('fetchAllClients error');
+//     }
+//   }
+// );
 export const fetchAllChartsFormatByGroupId = createAsyncThunk(
   'chart/fetchAllChartsFormatByGroupId',
   async (groupId) => {

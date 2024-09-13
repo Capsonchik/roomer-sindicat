@@ -6,7 +6,11 @@ import {downloadPpt} from "./downloadPptx";
 // import {charts} from "./chartMocks";
 import {TopFilters} from "./topFilters/TopFilters";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchAllClients} from "../../store/chartSlice/chart.actions";
+import {
+  fetchAllChartsByGroupId,
+  fetchAllChartsFormatByGroupId,
+  fetchAllClients
+} from "../../store/chartSlice/chart.actions";
 import {
   selectActiveClient, selectActiveGroupId, selectActiveReport,
   selectCharts,
@@ -53,7 +57,7 @@ export const ChartList = (props) => {
     }
   });
 
-  const { fields, append, remove, replace } = useFieldArray({
+  const {fields, append, remove, replace} = useFieldArray({
     control: methods.control,
     name: "filters"
   });
@@ -65,7 +69,7 @@ export const ChartList = (props) => {
         filter_id: filter.filter_id,
         original_values: filter.original_values
       }));
-      methods.reset({ filters: filterValues });
+      methods.reset({filters: filterValues});
       replace(filterValues); // Обновляем данные в useFieldArray
     }
   }, [filters, methods, replace]);
@@ -152,13 +156,25 @@ export const ChartList = (props) => {
   // console.log(filters)
 
   const handleChangeFilter = (data) => {
-    console.log(data)
+    const request = data.filters
+      .map(filter => {
+        return {
+          filter_id: filter.filter_id,
+          filter_values: filter.value
+        }
+      })
+      .filter(filter => Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
+    // console.log(request)
+
+    dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request}})).then(() => {
+      dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
+    });
   }
   return (
 
     <>
       <TopFilters/>
-      {!!filters?.length && !isChartLoading && (
+      {!!filters?.length &&  (
         <FormProvider {...methods}>
           <div style={{
             display: 'flex',
@@ -169,7 +185,7 @@ export const ChartList = (props) => {
           }}>
             {fields.map((filter, i) => (
               <div key={filter.id}>
-                <p style={{ marginBottom: 8, fontWeight: 500 }}>{filter.filter_name}</p>
+                <p style={{marginBottom: 8, fontWeight: 500}}>{filter.filter_name}</p>
                 <CustomCheckPicker
 
                   onChangeOutside={methods.handleSubmit(handleChangeFilter)}

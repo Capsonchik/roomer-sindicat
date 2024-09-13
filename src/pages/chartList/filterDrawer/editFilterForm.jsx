@@ -290,6 +290,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
       <div className={styles.line}></div>
       <Button onClick={() => {
         setIsEditFilter(true)
+
         // dispatch(setActiveChart(chart))
         // dispatch(setOpenDrawer(true))
       }}>

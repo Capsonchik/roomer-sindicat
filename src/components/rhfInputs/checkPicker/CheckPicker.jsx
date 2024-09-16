@@ -19,7 +19,8 @@ export const CustomCheckPicker = (
     renderMenuItem,
     container,
     preventOverflow = true,
-    placement = 'topEnd'
+    placement = 'topEnd',
+    disabledItemValues = []
   }
 ) => {
   const {control} = useFormContext();
@@ -53,6 +54,7 @@ export const CustomCheckPicker = (
             placeholder={placeholder}
             // className={styles.select}
             renderMenuItem={renderMenuItem}
+            disabledItemValues={disabledItemValues}
             // block={true}
             // sticky={false}
             // placement={placement} // Начальное направление открытия меню

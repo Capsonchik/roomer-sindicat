@@ -62,24 +62,20 @@ export const downloadPpt = (charts, activeGroup) => {
     const {title, description, xAxisData, seriesData, formatting, ispercent} = chart;
     // Добавляем заголовок графика
 
-
-    const filteredSeriesData = !!formatting.visible.length
-      ? Object.fromEntries(Object.entries(seriesData).filter(([name, data]) => {
-        return formatting.visible.includes(name)
-      }))
-      : seriesData
-
-    const convertedSeriesData = convertValuesByPercent({
-      visibleListString: Object.keys(filteredSeriesData),
-      chart,
-      filteredSeriesData: filteredSeriesData,
-      format_value: chart.formatting.format_value
-    })
+    let format_value = formatting.format_value ?? 1
+    let filteredSeries = seriesData
+    // for (const formatValueElement of filteredSeries) {
+    //   console.log(formatValueElement)
+    // }
+    filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).map(([key, value]) => {
+      console.log(value,format_value)
+      return [key, value.map(item => (+item).toFixed(format_value))];
+    }))
     // console.log(filteredSeriesData)
     // Подготовка данных для графика
     const dataForChart = prepareDataForPptx({
       xAxisData,
-      seriesData: !!formatting.visible.length ? convertedSeriesData : seriesData
+      seriesData: filteredSeries
     });
 
     // Определяем направление баров в зависимости от isXAxis
@@ -94,7 +90,7 @@ export const downloadPpt = (charts, activeGroup) => {
     //определяем максимальное значение
     const maxValue = getSumValues({
       stack: formatting.stack,
-      seriesData: filteredSeriesData,
+      seriesData: filteredSeries,
       // seriesIndex: index,
       ispercent
     })
@@ -104,7 +100,7 @@ export const downloadPpt = (charts, activeGroup) => {
     // const valAxisMaxVal = chart.ispercent ? 100 : maxValue.toFixed(chart.formatting.format_value || 1) * 1.1
     const valAxisMajorUnit = chart.ispercent ? 20 : Math.ceil((maxValue.toFixed(chart.formatting.format_value)) / 6)
     console.log(maxValue)
-    const valAxisLabelFormatCode = chart.ispercent || +maxValue > 10 ? '#,##0' : `#,##0.${'0'.repeat(chart.formatting.format_value - 1 || 1)}`
+    const valAxisLabelFormatCode = chart.ispercent || +maxValue > 10 ? '#,##0' : `#,##0.${'0'.repeat(chart.formatting.format_value - 1 ?? 1)}`
 
     // Увеличиваем отступ для графика
     // yOffset += 0.5; // Увеличиваем отступ перед графиком

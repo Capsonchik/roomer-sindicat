@@ -62,34 +62,31 @@ export const convertDataCharts = ({charts, activeGroup}) => {
       ispercent: chart.ispercent
     })
 
-    const filteredSeriesData = !!chart.formatting.visible.length
-      ? Object.fromEntries(Object.entries(chart.seriesData).filter(([name, data]) => {
-        return chart.formatting.visible.includes(name)
-      }))
-      : chart.seriesData
-
-    const convertedSeriesData = convertValuesByPercent({
-      visibleListString: Object.keys(filteredSeriesData),
-      chart,
-      filteredSeriesData: filteredSeriesData,
-      format_value: chart.formatting.format_value
-    })
+    let format_value = chart.formatting.format_value ?? 1
+    let filteredSeries = chart.seriesData
+    // for (const formatValueElement of filteredSeries) {
+    //   console.log(formatValueElement)
+    // }
+    filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).map(([key, value]) => {
+      console.log(value,format_value)
+      return [key, value.map(item => (+item).toFixed(format_value))];
+    }))
 
     const filteredColors = chart.formatting.colors
       ? chart.formatting.colors.filter(([color, bool]) => bool).map(([color, bool]) => color).slice(0, Object.values(
-        convertedSeriesData).length)
-      : colors.slice(0, Object.values(convertedSeriesData).length)
+        filteredSeries).length)
+      : colors.slice(0, Object.values(filteredSeries).length)
 
 
     const calculatedMaxValue = calculateMaxValue(0, maxValue ,6)
     const step = calculateStepSize(0,calculatedMaxValue, 6)
-    console.log(chart.formatting.colors)
+    // console.log(chart.formatting.colors)
     // Определяем направление баров в зависимости от isXAxis
     const barDirection = chart.formatting.isXAxis ? undefined : 'bar';
     // barGapWidthPct: Math.min(100, Math.max(0, parseFloat(chart.formatting.column_width) * 1)),
       // barOverlapPct: -parseFloat(chart.formatting.column_gap)// Преобразование значения barCategoryGap в barGapWidthP
     acc.push({
-      seriesData: convertedSeriesData,
+      seriesData: filteredSeries,
       xAxisData: chart.xAxisData,
       title: chart.title,
       formatting: {

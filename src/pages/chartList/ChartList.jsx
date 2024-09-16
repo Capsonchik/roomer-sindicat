@@ -67,7 +67,9 @@ export const ChartList = (props) => {
       const filterValues = filters.map(filter => ({
         filter_name: filter.filter_name,
         filter_id: filter.filter_id,
-        original_values: filter.original_values
+        original_values: filter.original_values,
+        multi: filter.multi,
+        isactive: filter.isactive,
       }));
       methods.reset({filters: filterValues});
       replace(filterValues); // Обновляем данные в useFieldArray
@@ -107,7 +109,7 @@ export const ChartList = (props) => {
   }, [activeGroupId]);
 
   useEffect(() => {
-    console.log('create')
+    // console.log('create')
     setData(charts)
   }, [charts])
   // console.log(data)
@@ -160,12 +162,14 @@ export const ChartList = (props) => {
       .map(filter => {
         return {
           filter_id: filter.filter_id,
-          filter_values: filter.value
+          filter_values: filter.value,
+          isactive: filter.isactive,
         }
       })
-      .filter(filter => Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
+      .filter(filter => filter.isactive && Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
     // console.log(request)
 
+    // console.log(data,request)
     dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request}})).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
     });
@@ -174,7 +178,7 @@ export const ChartList = (props) => {
 
     <>
       <TopFilters/>
-      {!!filters?.length &&  (
+      {!!filters?.length && (
         <FormProvider {...methods}>
           <div style={{
             display: 'flex',
@@ -187,15 +191,26 @@ export const ChartList = (props) => {
               <div key={filter.id}>
                 <p style={{marginBottom: 8, fontWeight: 500}}>{filter.filter_name}</p>
                 <CustomCheckPicker
-
-                  onChangeOutside={methods.handleSubmit(handleChangeFilter)}
+                  disabled={!methods.getValues(`filters.${i}.isactive`)}
+                  onChangeOutside={() => {
+                    if (!methods.getValues(`filters.${i}.isactive`)) {
+                      return
+                      // console.log(methods.getValues(`filters.${i}.isactive`))
+                    }
+                    methods.handleSubmit(handleChangeFilter)()
+                  }}
                   name={`filters.${i}.value`}
                   data={filter.original_values.map(item => ({
                     label: item,
                     value: item
                   }))}
+                  // disabledItemValues={['Центральный']}
+                  disabledItemValues={!methods.getValues(`filters.${i}.multi`) && methods.getValues(`filters.${i}.value`)?.length
+                    ? filter.original_values.filter(value => value !== methods.getValues(`filters.${i}.value`)[0])
+                    : []
+                  }
                   searchable={false}
-                  // placeholder={filter.filter_name}
+                  placeholder={!methods.getValues(`filters.${i}.isactive`) ? 'Фильтр не активен' : filter.filter_name}
                   className={styles.select}
                   // placement={'bottomStart'}
                   preventOverflow={true}

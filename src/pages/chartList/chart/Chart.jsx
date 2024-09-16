@@ -37,23 +37,10 @@ export const Chart = ({chart}) => {
   const [isDelete, setIsDelete] = useState(false)
   // console.log(chart)
   const inputs = methods.watch()
-  console.log(chart)
+  // console.log(chart)
 
   useEffect(() => {
-    let series
-    if (!chart.formatting.visible.length) {
-      series =
-        Object.fromEntries(
-          Object.keys(chart.seriesData).map((name) => [name, true])
-        )
 
-    } else {
-      series =
-        Object.fromEntries(
-          Object.keys(chart.seriesData).map((name) => [name, chart.formatting.visible.includes(name)])
-        )
-
-    }
     methods.reset({
       isXAxis: chart.formatting.isXAxis,
       stack: chart.formatting.stack,
@@ -62,8 +49,8 @@ export const Chart = ({chart}) => {
       title: chart.title,
       label_position: chart.formatting.label_position,
       label_size: chart.formatting.label_size || 16,
-      format_value: chart.formatting.format_value || 1,
-      seriesData: Object.keys(series).filter((name) => series[name]),
+      format_value: chart.formatting.format_value ?? 1,
+      seriesData: Object.keys(chart.seriesData),
     })
   }, []);
   // console.log()
@@ -85,26 +72,20 @@ export const Chart = ({chart}) => {
   }, []);
 
   useEffect(() => {
-    let format_value = chartState.formatting.format_value || 1
-    const filteredSeries = !!chart.formatting.visible.length
-      ? Object.fromEntries(Object.entries(chart.seriesData).filter(([series, value]) => {
-        return chartState.formatting.visible.includes(series);
-      }))
-      : chart.seriesData
-
-
-    const convertedSeriesData = convertValuesByPercent({
-      visibleListString: Object.keys(filteredSeries),
-      chart,
-      filteredSeriesData: chartState.seriesData,
-      format_value
-    })
-
+    let format_value = chartState.formatting.format_value ?? 1
+    let filteredSeries = chartState.seriesData
+    // for (const formatValueElement of filteredSeries) {
+    //   console.log(formatValueElement)
+    // }
+    filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).map(([key, value]) => {
+      console.log(value,format_value)
+      return [key, value.map(item => (+item).toFixed(format_value))];
+    }))
 
     setChartState(prev => {
       return {
         ...prev,
-        seriesData: convertedSeriesData,
+        seriesData: filteredSeries,
 
       }
     })
@@ -149,27 +130,8 @@ export const Chart = ({chart}) => {
       let column_gap = chartState.formatting.column_gap
       let label_position = chartState.formatting.label_position
       let label_size = chartState.formatting.label_size || 16
-      let format_value = data.format_value ? data.format_value : chartState.formatting.format_value || 1
+      let format_value = chartState.formatting.format_value ?? 1
 
-      console.log(data)
-
-      if (data.seriesData) {
-        filteredSeries = convertValuesByPercent({
-          visibleListString: data.seriesData,
-          chart,
-          filteredSeriesData: chartState.seriesData,
-          format_value
-        })
-      }
-
-      // if(data.format_value) {
-      //   filteredSeries = convertValuesByPercent({
-      //     visibleListString: methods.getValues('seriesData'),
-      //     chart,
-      //     filteredSeriesData: chartState.seriesData,
-      //     format_value
-      //   })
-      // }
 
       if (typeof data.isXAxis !== 'undefined') {
         isXAxis = data.isXAxis
@@ -189,9 +151,15 @@ export const Chart = ({chart}) => {
       if (typeof data.label_size !== 'undefined') {
         label_size = data.label_size
       }
-      // if (typeof data.format_value !== 'undefined') {
-      //   format_value = data.format_value
-      // }
+
+      if (typeof data.format_value !== 'undefined') {
+        format_value = data.format_value
+
+        filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).map(([key, value]) => {
+        console.log(value,format_value)
+          return [key, value.map(item => (+item).toFixed(format_value))];
+        }))
+      }
       // console.log(data)
       setChartState(prev => {
         return {
@@ -200,10 +168,10 @@ export const Chart = ({chart}) => {
           title: data.title || chartState.title,
           formatting: {
             ...prev.formatting,
-            visible: Object.keys(filteredSeries),
+            // visible: Object.keys(filteredSeries),
             isXAxis: isXAxis,
             stack,
-            isVisibleSeriesChange: !!data.seriesData && data.seriesData?.length !== Object.keys(chartState?.seriesData)?.length,
+            // isVisibleSeriesChange: !!data.seriesData && data.seriesData?.length !== Object.keys(chartState?.seriesData)?.length,
             column_width,
             column_gap,
             label_position,
@@ -285,8 +253,8 @@ export const Chart = ({chart}) => {
     };
 
     chartInstance.setOption(option, {
-      notMerge: chartState.formatting.isVisibleSeriesChange ? false : true,
-      replaceMerge: ['legend', 'series'],
+      notMerge:  false,
+      // replaceMerge: ['legend', 'series'],
       lazyUpdate: false,
 
     });

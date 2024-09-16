@@ -44,22 +44,15 @@ export const ChartListItem = ({chart}) => {
 
 
   useLayoutEffect(() => {
-    let format_value = chart?.formatting?.format_value || 1
-    const filteredSeries = !!chart.formatting?.visible?.length
-      ? Object.fromEntries(Object.entries(chart.seriesData).filter(([series, value]) => {
-        return chart.formatting.visible.includes(series);
-      }))
-      : chart.seriesData
-
-    // console.log(chart)
-
-
-    const convertedSeriesData = convertValuesByPercent({
-      visibleListString: Object.keys(filteredSeries),
-      chart,
-      filteredSeriesData: filteredSeries,
-      format_value
-    })
+    let format_value = chartState?.formatting?.format_value ?? 1
+    let filteredSeries = chartState.seriesData
+    // for (const formatValueElement of filteredSeries) {
+    //   console.log(formatValueElement)
+    // }
+    filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).map(([key, value]) => {
+      // console.log(value,format_value)
+      return [key, value.map(item => (+item).toFixed(format_value))];
+    }))
     // console.log()
 
     const filteredColors = !!chart?.formatting?.colors
@@ -81,7 +74,7 @@ export const ChartListItem = ({chart}) => {
     setChartState(prev => {
       return {
         ...prev,
-        seriesData: convertedSeriesData,
+        seriesData: filteredSeries,
         formatting: {
           ...prev.formatting,
           colors: filteredColors,

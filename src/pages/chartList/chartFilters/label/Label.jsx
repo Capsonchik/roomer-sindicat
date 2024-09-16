@@ -34,7 +34,7 @@ export const Label = () => {
         </div>
         <div className={cl(styles.input_wrapper, {}, [styles.data_wrapper])}>
           <label className={styles.label_input}>Количество чисел после запятой</label>
-          <CustomInputNumber name={'format_value'} min={1}/>
+          <CustomInputNumber name={'format_value'} min={0}/>
           {/*<CustomSlider*/}
           {/*  className={cl(styles.input, {}, [])}*/}
           {/*  name={'label_size'}*/}

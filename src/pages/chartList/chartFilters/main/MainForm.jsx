@@ -64,19 +64,20 @@ export const MainForm = ({chart}) => {
   // Изначально все серии видимы
   // console.log(originalColors)
   useEffect(() => {
-    if (!chart.formatting.visible.length) {
-      setVisibleSeries(
-        Object.fromEntries(
-          Object.keys(chart.seriesData).map((name) => [name, true])
-        )
-      );
-    } else {
-      setVisibleSeries(
-        Object.fromEntries(
-          Object.keys(chart.seriesData).map((name) => [name, chart.formatting.visible.includes(name)])
-        )
-      );
-    }
+    // setVisibleSeries(chart.seriesData)
+    // if (!chart.formatting.visible.length) {
+    //   setVisibleSeries(
+    //     Object.fromEntries(
+    //       Object.keys(chart.seriesData).map((name) => [name, true])
+    //     )
+    //   );
+    // } else {
+    //   setVisibleSeries(
+    //     Object.fromEntries(
+    //       Object.keys(chart.seriesData).map((name) => [name, chart.formatting.visible.includes(name)])
+    //     )
+    //   );
+    // }
   }, []);
 
   useEffect(() => {
@@ -84,20 +85,20 @@ export const MainForm = ({chart}) => {
   }, [chart]);
 
   const handleSeriesChange = (value) => {
-    const newVisibleSeries = Object.fromEntries(
-      Object.keys(series).map((name) => [name, value.includes(name)])
-    );
-
-    // console.log(newVisibleSeries)
-    const temp = originalColors.slice()
-    Object.values(newVisibleSeries).forEach((bool, index) => {
-      // console.log([temp[index][0],value.includes(name)])
-      temp[index] = [temp[index][0], bool]
-    })
-    dispatch(setOriginalColors(temp))
-    // console.log(temp)
-
-    setVisibleSeries(newVisibleSeries);
+    // const newVisibleSeries = Object.fromEntries(
+    //   Object.keys(series).map((name) => [name, value.includes(name)])
+    // );
+    //
+    // // console.log(newVisibleSeries)
+    // const temp = originalColors.slice()
+    // Object.values(newVisibleSeries).forEach((bool, index) => {
+    //   // console.log([temp[index][0],value.includes(name)])
+    //   temp[index] = [temp[index][0], bool]
+    // })
+    // dispatch(setOriginalColors(temp))
+    // // console.log(temp)
+    //
+    // setVisibleSeries(newVisibleSeries);
   };
 
   const handleColorChange = (index, newColor) => {
@@ -132,8 +133,9 @@ export const MainForm = ({chart}) => {
                 data={Object.keys(series).map((item, index) => {
                   return {value: item, label: item, index}; // Передаем индекс в объекте
                 })}
+                // disabled={true}
                 onChangeOutside={handleSeriesChange}
-                value={Object.keys(visibleSeries).filter((name) => visibleSeries[name])}
+                value={[]}
                 renderMenuItem={(label, item) => (
                   <div style={{display: "flex", alignItems: "center"}}>
                     <input

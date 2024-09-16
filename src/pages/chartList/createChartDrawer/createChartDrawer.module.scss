@@ -36,4 +36,13 @@
       resize: none;
     }
   }
+
+  .available_wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .available_btn{
+    flex-shrink: 0;
+  }
 }

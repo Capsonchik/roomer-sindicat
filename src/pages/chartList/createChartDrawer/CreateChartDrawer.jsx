@@ -1,14 +1,18 @@
 import styles from './createChartDrawer.module.scss'
-import {Button, Drawer} from "rsuite";
+import {Button, Drawer, Message} from "rsuite";
 import {FormProvider, useForm} from "react-hook-form";
 import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useDispatch, useSelector} from "react-redux";
-import {selectGroupsReports, selectReportsClients} from "../../../store/chartSlice/chart.selectors";
+import {
+  selectActiveGroupId, selectActiveReport,
+  selectGroupsReports,
+  selectReportsClients
+} from "../../../store/chartSlice/chart.selectors";
 import {PreventOverflowContainer} from "../chartFilters/main/MainForm";
 import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/SelectPicker";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import CustomToggle from "../../../components/rhfInputs/customToggle/CustomToggle";
 import {
   createChart,
@@ -16,10 +20,15 @@ import {
   fetchAllChartsFormatByGroupId
 } from "../../../store/chartSlice/chart.actions";
 import {setActiveGroup, setScrollTabs} from "../../../store/chartSlice/chart.slice";
+import {fetchColumnDB} from "../../../store/chartSlice/filter.actions";
 
 export const CreateChartDrawer = ({open, onClose}) => {
   const reportsClients = useSelector(selectReportsClients)
   const groupsReports = useSelector(selectGroupsReports)
+  const activeGroupId = useSelector(selectActiveGroupId)
+  const activeReport = useSelector(selectActiveReport)
+  const [errorDB, setErrorDB] = useState('')
+  const [availableFields, setAvailableFields] = useState([])
   const dispatch = useDispatch();
 
   const loginSchema = yup.object().shape({
@@ -38,12 +47,14 @@ export const CreateChartDrawer = ({open, onClose}) => {
   })
   useEffect(() => {
     methods.reset({
-      ispercent: false
+      ispercent: false,
+      group_id: activeGroupId,
+      report_id: activeReport,
     })
-  }, []);
+  }, [activeGroupId]);
 
   const fetchCharts = (id) => {
-    dispatch(fetchAllChartsByGroupId(id)).then(() => {
+    dispatch(fetchAllChartsByGroupId({groupId: id})).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(id));
     });
   }
@@ -66,10 +77,31 @@ export const CreateChartDrawer = ({open, onClose}) => {
     onClose()
 
   }
+
+  const handleGetColumnDB = () => {
+    dispatch(fetchColumnDB({db_adress: [methods.getValues('db_adress')]})).then((res) => {
+      if (res.error) {
+        const extractedMessage = res.error.message.match(/Таблица.*'syndicate'/)[0];
+        setErrorDB(extractedMessage)
+      } else {
+        setErrorDB('')
+        const columns = res.payload.map(column => column.column_name)
+        setAvailableFields(Object.values(columns))
+        console.log(Object.values(columns))
+      }
+      // console.log(extractedMessage)
+    })
+  }
+
+  const message = (
+    <Message style={{marginTop: 16}} showIcon type={'error'} closable onClose={() => setErrorDB('')}>
+      <strong>{errorDB}</strong>
+    </Message>
+  );
   return (
     <Drawer open={open} onClose={() => {
       onClose()
-
+      setAvailableFields([])
     }} style={{maxWidth: 700, width: '100%'}}>
       <Drawer.Body style={{maxHeight: '100% !important'}}>
         <div className={styles.wrapper}>
@@ -82,7 +114,9 @@ export const CreateChartDrawer = ({open, onClose}) => {
                 // height={34}
               >
                 {getContainer => (
+
                   <CustomSelectPicker
+                    disabled={true}
                     name={'report_id'}
                     // defaultValue={activeReport}
                     data={reportsClients.map((report) => ({label: report.report_name, value: report.report_id}))}
@@ -100,10 +134,11 @@ export const CreateChartDrawer = ({open, onClose}) => {
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Группа</h6>
               <PreventOverflowContainer
-                // height={34}
+
               >
                 {getContainer => (
                   <CustomSelectPicker
+                    disabled={true}
                     name={'group_id'}
                     // defaultValue={activeReport}
                     data={groupsReports.map((group) => ({label: group.group_name, value: group.group_id}))}
@@ -130,33 +165,83 @@ export const CreateChartDrawer = ({open, onClose}) => {
               <h6 className={styles.label}>Адрес таблицы БД</h6>
               <CustomInput name={'db_adress'} className={styles.input}/>
             </div>
-            <div className={styles.input_wrapper}>
-              <h6 className={styles.label}>X значение</h6>
-              <CustomInput name={'xvalue'} className={styles.input}/>
-            </div>
-            <div className={styles.input_wrapper}>
-              <h6 className={styles.label}>Y значение</h6>
-              <CustomInput name={'yvalue'} className={styles.input}/>
-            </div>
-            <div className={styles.input_wrapper}>
-              <h6 className={styles.label}>Z значение</h6>
-              <CustomInput name={'zvalue'} className={styles.input} />
-            </div>
-            <div className={styles.input_wrapper}>
-              <h6 className={styles.label}>Использовать проценты</h6>
-              <CustomToggle
-                defaultValue={false}
-                checkedChildren={'Проценты'}
-                unCheckedChildren={'Без процентов'}
-                name={'ispercent'}/>
-              {/*<CustomInput name={'zvalue'} className={styles.input} required={false}/>*/}
-            </div>
+            <Button onClick={handleGetColumnDB} className={styles.available_btn}
+              // disabled={!methods.getValues('db_adress')?.length}
+            >Запросить доступные
+              поля</Button>
+            {!!errorDB && message}
+
+            {!!availableFields.length && (
+              <div className={styles.available_wrapper}>
+                <div className={styles.input_wrapper}>
+                  <h6 className={styles.label}>X значение</h6>
+                  <PreventOverflowContainer
+
+                  >
+                    {getContainer => (
+                      <CustomSelectPicker
+                        name={'xvalue'}
+                        placeholder={'Выберите x значение'}
+                        className={styles.select}
+                        data={availableFields.map((x) => ({label: x, value: x}))}
+                        container={getContainer}
+                      />
+                    )}
+
+                  </PreventOverflowContainer>
+                </div>
+                <div className={styles.input_wrapper}>
+                  <h6 className={styles.label}>Y значение</h6>
+                  <PreventOverflowContainer
+
+                  >
+                    {getContainer => (
+                      <CustomSelectPicker
+                        name={'yvalue'}
+                        placeholder={'Выберите y значение'}
+                        className={styles.select}
+                        data={availableFields.map((x) => ({label: x, value: x}))}
+                        container={getContainer}
+                      />
+                    )}
+
+                  </PreventOverflowContainer>
+                </div>
+                <div className={styles.input_wrapper}>
+                  <h6 className={styles.label}>Z значение</h6>
+                  <PreventOverflowContainer
+
+                  >
+                    {getContainer => (
+                      <CustomSelectPicker
+                        name={'zvalue'}
+                        placeholder={'Выберите z значение'}
+                        className={styles.select}
+                        data={availableFields.map((x) => ({label: x, value: x}))}
+                        container={getContainer}
+                      />
+                    )}
+
+                  </PreventOverflowContainer>
+                </div>
+                <div className={styles.input_wrapper}>
+                  <h6 className={styles.label}>Использовать проценты</h6>
+                  <CustomToggle
+                    defaultValue={false}
+                    checkedChildren={'Проценты'}
+                    unCheckedChildren={'Без процентов'}
+                    name={'ispercent'}/>
+                  {/*<CustomInput name={'zvalue'} className={styles.input} required={false}/>*/}
+                </div>
 
 
-            <Button className={styles.patch_btn} onClick={(e) => {
-              e.stopPropagation()
-              methods.handleSubmit(handleCreateChart)()
-            }}>Создать</Button>
+                <Button className={styles.patch_btn} onClick={(e) => {
+                  e.stopPropagation()
+                  methods.handleSubmit(handleCreateChart)()
+                }}>Создать</Button>
+              </div>
+            )}
+
             <br/>
           </FormProvider>
         </div>

@@ -127,6 +127,7 @@ export const ChartListItem = ({chart}) => {
         fontSize: chartState.formatting.label_size
       },
 
+
       series: seriesOptions,
       barCategoryGap: `${50 - chartState.formatting.column_width} %`,
       barGap: `${chartState.formatting.column_gap} %`,

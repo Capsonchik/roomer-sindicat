@@ -1,7 +1,7 @@
 import styles from './styles.module.scss';
 import {Button, ButtonToolbar, Form, Message, useToaster} from "rsuite";
 import {useDispatch, useSelector} from "react-redux";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {selectUserLoader} from "../../store/userSlice/user.selectors";
 import Cookies from "js-cookie";
@@ -39,29 +39,62 @@ export const LoginForm = () => {
       <strong>Неверный логин или пароль</strong>
     </Message>
   );
-  const handleFormSubmit = (data) => {
+
+  // В компоненте
+  useEffect(() => {
+    if (methods.formState.isSubmitSuccessful) {
+      navigate('/main');
+    }
+  }, [methods.formState.isSubmitSuccessful]);
+
+
+  const handleFormSubmit = async (data) => {
     setLoader(true);
-    axiosLoginRequest.post('', {
+    const response = await axiosLoginRequest.post('', {
       username: data.username,
       password: data.password,
-    })
-    setTimeout(() => {
-      if (data.username === 'user' && data.password === 'user') {
-        Cookies.set('syndicateAuthToken', data.username, {expires: 3});
-        dispatch(setRole('user'))
-        setLoader(false);
-        navigate('/main');
-      } else if (data.username === 'admin' && data.password === 'admin') {
-        Cookies.set('syndicateAuthToken', data.username, {expires: 3});
-        dispatch(setRole('admin'))
-        setLoader(false);
-        navigate('/main');
-      } else {
-        toaster.push(message, {placement, duration: 3000});
-        setLoader(false);
-      }
-    }, 2000)
+    });
+
+    if (response.status === 204) {
+      setLoader(false);
+      // Используем useEffect для навигации
+      return true; // Возвращаем индикатор для навигации
+    }
+
+    setLoader(false);
+    return false;
   };
+  // const handleFormSubmit = async (data) => {
+  //   setLoader(true);
+  //   const response = await axiosLoginRequest.post('', {
+  //     username: data.username,
+  //     password: data.password,
+  //   })
+  //   if (response.status === 204) {
+  //     console.log(2)
+  //     navigate('/main');
+  //   }
+  //   setLoader(false);
+
+      // console.log(res)
+
+    // setTimeout(() => {
+    //   if (data.username === 'user' && data.password === 'user') {
+    //     Cookies.set('syndicateAuthToken', data.username, {expires: 3});
+    //     dispatch(setRole('user'))
+    //     setLoader(false);
+    //     navigate('/main');
+    //   } else if (data.username === 'admin' && data.password === 'admin') {
+    //     Cookies.set('syndicateAuthToken', data.username, {expires: 3});
+    //     dispatch(setRole('admin'))
+    //     setLoader(false);
+    //     navigate('/main');
+    //   } else {
+    //     toaster.push(message, {placement, duration: 3000});
+    //     setLoader(false);
+    //   }
+    // }, 2000)
+  // };
 
   // const handleInputChange = (value, name) => {
   //   setFormData({

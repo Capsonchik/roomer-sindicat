@@ -8,17 +8,17 @@ export const PrivateRoute = ({children}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  if (token === 'user') {
-    dispatch(setRole('user'));
-  } else if (token === 'admin') {
-    dispatch(setRole('admin'));
-  } else {
-    navigate('/')
-  }
-
-  if (!token) {
-    return <Navigate to="/"/>;
-  }
+  // if (token === 'user') {
+  //   dispatch(setRole('user'));
+  // } else if (token === 'admin') {
+  //   dispatch(setRole('admin'));
+  // } else {
+  //   navigate('/')
+  // }
+  //
+  // if (!token) {
+  //   return <Navigate to="/"/>;
+  // }
 
   return children;
 };

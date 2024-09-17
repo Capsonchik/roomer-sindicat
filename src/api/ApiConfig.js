@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const LOGIN_API = 'https://3d2d-212-45-6-6.ngrok-free.app/auth/jwt/login'
+export const LOGIN_API = 'https://82b0-212-45-6-6.ngrok-free.app/auth/jwt/login'
 
 const createAxiosLoginInstance = () => {
   const instance = axios.create({
@@ -77,27 +77,28 @@ const createAxiosGraphnstance = () => {
       'Accept-Language': 'ru',
       "ngrok-skip-browser-warning": 'true',
     },
-    withCredentials: true
+    withCredentials: true  // Это гарантирует отправку куков
   });
 
   // Добавляем интерсепторы для обработки ошибок
+  instance.interceptors.request.use((config) => {
+    console.log('Куки отправляются с запросом:', document.cookie);  // Проверяем, что куки присутствуют
+    return config;
+  });
+
   instance.interceptors.response.use(
     (response) => {
       // Возвращаем ответ, если всё прошло успешно
       return response;
     },
     (error) => {
-      // Здесь мы можем поймать ошибку и пробросить её наверх
       if (error.response) {
-        // Сервер ответил с ошибкой (4xx, 5xx)
         console.error('Ошибка на стороне сервера:', error.response);
         throw new Error(JSON.stringify(error.response) || 'Ошибка на сервере');
       } else if (error.request) {
-        // Запрос был отправлен, но ответа нет
         console.error('Нет ответа от сервера:', error.request);
         throw new Error('Нет ответа от сервера');
       } else {
-        // Ошибка произошла до отправки запроса
         console.error('Ошибка при настройке запроса:', error.message);
         throw new Error('Ошибка при настройке запроса');
       }
@@ -106,6 +107,7 @@ const createAxiosGraphnstance = () => {
 
   return instance;
 };
+
 
 
 export const axiosGraphRequest = createAxiosGraphnstance();

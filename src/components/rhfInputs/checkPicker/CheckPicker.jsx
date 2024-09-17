@@ -20,7 +20,8 @@ export const CustomCheckPicker = (
     container,
     preventOverflow = true,
     placement = 'topEnd',
-    disabledItemValues = []
+    disabledItemValues = [],
+    defaultValue
   }
 ) => {
   const {control} = useFormContext();
@@ -32,6 +33,7 @@ export const CustomCheckPicker = (
         control={control}
         render={({field}) => (
           <CheckPicker
+            defaultValue={defaultValue}
             {...field}
             className={className}
             data={data}

@@ -30,7 +30,7 @@ export const GroupTabs = ({groupsReports}) => {
 
   useEffect(() => {
     if (activeGroupId) {
-      fetchCharts(activeGroupId)
+      // fetchCharts(activeGroupId)
     }
 
   }, [activeGroupId])

@@ -70,11 +70,35 @@ export const ChartList = (props) => {
         original_values: filter.original_values,
         multi: filter.multi,
         isactive: filter.isactive,
+        value: filter.value?.length ? filter.value : [filter.original_values[0]]
       }));
+
+
       methods.reset({filters: filterValues});
       replace(filterValues); // Обновляем данные в useFieldArray
     }
   }, [filters, methods, replace]);
+
+  useEffect(() => {
+    if(!activeGroupId && !filters) return
+
+    const request = methods.getValues('filters')
+      .map(filter => {
+        return {
+          filter_id: filter.filter_id,
+          filter_values: [filter.original_values[0]],
+          isactive: filter.isactive,
+        }
+      })
+      .filter(filter => filter.isactive && Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
+
+    console.log(filters,activeGroupId,methods.getValues('filters'))
+    // Отправляем запрос на получение графиков с фильтрами
+    dispatch(fetchAllChartsByGroupId({ groupId: activeGroupId, filter_data: { filter_data: request } }))
+      .then(() => {
+        dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
+      });
+  }, [methods.getValues('filters')]);
 
   // const {} = useFieldArray({
   //   control:methods.
@@ -169,7 +193,6 @@ export const ChartList = (props) => {
       .filter(filter => filter.isactive && Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
     // console.log(request)
 
-    // console.log(data,request)
     dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request}})).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
     });
@@ -191,8 +214,11 @@ export const ChartList = (props) => {
               <div key={filter.id}>
                 <p style={{marginBottom: 8, fontWeight: 500}}>{filter.filter_name}</p>
                 <CustomCheckPicker
+                  value={filter.isactive ? methods.getValues(`filters.${i}.value`): null} // Добавляем value
+                  // defaultValue={filter.original_values[0]}
                   disabled={!methods.getValues(`filters.${i}.isactive`)}
-                  onChangeOutside={() => {
+                  onChangeOutside={(value) => {
+                    // console.log(filter.original_values)
                     if (!methods.getValues(`filters.${i}.isactive`)) {
                       return
                       // console.log(methods.getValues(`filters.${i}.isactive`))

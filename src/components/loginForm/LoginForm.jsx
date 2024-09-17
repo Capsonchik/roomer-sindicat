@@ -10,6 +10,7 @@ import * as yup from "yup";
 import {FormProvider, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {CustomInput} from "../rhfInputs/customInput/CustomInput";
+import {axiosLoginRequest} from "../../api/ApiConfig";
 
 export const LoginForm = () => {
   const userLoader = useSelector(selectUserLoader);
@@ -40,6 +41,10 @@ export const LoginForm = () => {
   );
   const handleFormSubmit = (data) => {
     setLoader(true);
+    axiosLoginRequest.post('', {
+      username: data.username,
+      password: data.password,
+    })
     setTimeout(() => {
       if (data.username === 'user' && data.password === 'user') {
         Cookies.set('syndicateAuthToken', data.username, {expires: 3});

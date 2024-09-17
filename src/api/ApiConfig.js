@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const LOGIN_API = 'http://192.168.9.239:8807/'
+export const LOGIN_API = 'https://3d2d-212-45-6-6.ngrok-free.app/auth/jwt/login'
 
 const createAxiosLoginInstance = () => {
   const instance = axios.create({
@@ -22,7 +22,7 @@ export const axiosLoginRequest = createAxiosLoginInstance();
 
 
 // export const CLIENT_API = 'http://192.168.9.239:8808/'
-export const CLIENT_API = 'https://a889-212-45-6-6.ngrok-free.app';
+export const CLIENT_API = 'https://4ffd-212-45-6-6.ngrok-free.app';
 
 const createAxiosClientInstance = () => {
   const instance = axios.create({
@@ -33,7 +33,7 @@ const createAxiosClientInstance = () => {
       'Accept-Language': 'ru',
       "ngrok-skip-browser-warning": 'true',
     },
-    // withCredentials: true
+    withCredentials: true
   });
 
   // Перехватчик для обработки ошибок
@@ -65,7 +65,7 @@ const createAxiosClientInstance = () => {
 export const axiosClientRequest = createAxiosClientInstance();
 
 
-const GRAPH_API = 'https://a889-212-45-6-6.ngrok-free.app'
+const GRAPH_API = 'https://4ffd-212-45-6-6.ngrok-free.app'
 
 
 const createAxiosGraphnstance = () => {
@@ -77,6 +77,7 @@ const createAxiosGraphnstance = () => {
       'Accept-Language': 'ru',
       "ngrok-skip-browser-warning": 'true',
     },
+    withCredentials: true
   });
 
   // Добавляем интерсепторы для обработки ошибок

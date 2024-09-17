@@ -98,7 +98,7 @@ export const ChartList = (props) => {
       .then(() => {
         dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
       });
-  }, [methods.getValues('filters'),activeGroupId]);
+  }, [methods.getValues('filters')]);
 
   // const {} = useFieldArray({
   //   control:methods.

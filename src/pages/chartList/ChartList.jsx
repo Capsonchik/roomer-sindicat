@@ -80,7 +80,7 @@ export const ChartList = (props) => {
   }, [filters, methods, replace]);
 
   useEffect(() => {
-    if(!activeGroupId && !filters) return
+    if(!activeGroupId) return
 
     const request = methods.getValues('filters')
       .map(filter => {
@@ -98,7 +98,7 @@ export const ChartList = (props) => {
       .then(() => {
         dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
       });
-  }, [methods.getValues('filters')]);
+  }, [methods.getValues('filters'),activeGroupId]);
 
   // const {} = useFieldArray({
   //   control:methods.

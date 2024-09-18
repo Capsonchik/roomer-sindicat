@@ -93,17 +93,21 @@ const createAxiosGraphnstance = () => {
 
   // Добавляем интерсепторы для обработки ошибок
   instance.interceptors.request.use((config) => {
-    console.log('Куки отправляются с запросом:', document.cookie);  // Проверяем, что куки присутствуют
+    console.log('Куки отправляются с запросом:', document.cookie);
+    console.log(1111,config)
+    // Проверяем, что куки присутствуют
     return config;
   });
 
   instance.interceptors.response.use(
     (response) => {
       // Возвращаем ответ, если всё прошло успешно
+
       return response;
     },
     (error) => {
       if (error.response) {
+
         console.error('Ошибка на стороне сервера:', error.response);
         throw new Error(JSON.stringify(error.response) || 'Ошибка на сервере');
       } else if (error.request) {

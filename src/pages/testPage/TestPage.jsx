@@ -16,15 +16,28 @@ export const TestPage = () => {
   const toaster = useToaster();
   const placement = 'topEnd'
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const res = await axiosLoginRequest.get(`/api/v1/users/me`)
-      if(!res) {
-        navigate('/')
-      }
-    }
-    checkAuth()
-  }, []);
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     const token = localStorage.getItem('authToken')
+  //     const response = await fetch(
+  //       'https://aca1-212-45-6-6.ngrok-free.app/api/v1/users/me', {
+  //         headers: {
+  //           "Authorization": `Bearer ${token}`,
+  //           Accept: 'application/json',
+  //           'Content-Type': 'application/x-www-form-urlencoded',
+  //           'Accept-Language': 'ru',
+  //           "ngrok-skip-browser-warning": 'true',
+  //         }
+  //
+  //       }).catch(() => {
+  //       navigate('/')
+  //     });
+  //     // if (!response) {
+  //     //   navigate('/')
+  //     // }
+  //   }
+  //   checkAuth()
+  // }, []);
 
   useEffect(() => {
     if (location.pathname === "/main/report") {

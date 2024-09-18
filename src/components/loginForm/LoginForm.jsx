@@ -72,11 +72,12 @@ export const LoginForm = () => {
     if (response.status === 200) {
       console.log(response)
       // Получаем токен из localStorage
-      localStorage.setItem('authToken', response.data.access_token);
+      await localStorage.setItem('authToken', response.data.access_token);
 
-      dispatch(fetchGetUser())
+      // dispatch(fetchGetUser())
       // toaster.push(message, {placement, duration: 3000});
       setLoader(false);
+      navigate('/main');
       // Используем useEffect для навигации
       return true; // Возвращаем индикатор для навигации
     }

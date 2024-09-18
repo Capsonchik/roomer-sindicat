@@ -19,10 +19,22 @@ export const fetchLogIn = createAsyncThunk(
 export const fetchGetUser = createAsyncThunk(
   'user',
   async (userData) => {
+    const token = localStorage.getItem('authToken')
     try {
-      const response = await axiosLoginRequest.get(`/api/v1/users/me`);
+      const response = await fetch(
+        'https://aca1-212-45-6-6.ngrok-free.app/api/v1/users/me', {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept-Language': 'ru',
+            "ngrok-skip-browser-warning": 'true',
+          }
+        });
       if (response.status === 200) {
-        return response.data;
+        const data = await response.json();
+        console.log(data)
+        return data;
       }
     } catch (error) {
       throw new Error('fetchGetUser error');

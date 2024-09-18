@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const LOGIN_API = 'https://82b0-212-45-6-6.ngrok-free.app/auth/jwt/login'
+export const LOGIN_API = 'https://82b0-212-45-6-6.ngrok-free.app'
 
 const createAxiosLoginInstance = () => {
   const instance = axios.create({

@@ -1,12 +1,16 @@
 import {Navigate, useNavigate} from "react-router-dom";
 import Cookies from "js-cookie";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setRole} from "../store/userSlice/userSlice";
+import {selectCurrentUser, selectUserLoader} from "../store/userSlice/user.selectors";
+import {useEffect} from "react";
 
 export const PrivateRoute = ({children}) => {
-  const token = Cookies.get('syndicateAuthToken');
+  // const token = Cookies.get('syndicateAuthToken');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector(selectCurrentUser)
+  const userLoader = useSelector(selectUserLoader)
 
   // if (token === 'user') {
   //   dispatch(setRole('user'));
@@ -16,6 +20,12 @@ export const PrivateRoute = ({children}) => {
   //   navigate('/')
   // }
   //
+  useEffect(() => {
+    if (userLoader === 'idle' && !user) {
+      return <Navigate to="/"/>;
+    }
+
+  }, [user, userLoader])
   // if (!token) {
   //   return <Navigate to="/"/>;
   // }

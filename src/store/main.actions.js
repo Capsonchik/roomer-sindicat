@@ -20,7 +20,7 @@ export const fetchGetUser = createAsyncThunk(
   'user',
   async (userData) => {
     try {
-      const response = await axiosLoginRequest.get(`users/me`);
+      const response = await axiosLoginRequest.get(`/users/me`);
       if (response.status === 200) {
         return response.data;
       }

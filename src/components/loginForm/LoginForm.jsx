@@ -11,6 +11,7 @@ import {FormProvider, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {CustomInput} from "../rhfInputs/customInput/CustomInput";
 import {axiosLoginRequest} from "../../api/ApiConfig";
+import {fetchGetUser} from "../../store/main.actions";
 
 export const LoginForm = () => {
   const userLoader = useSelector(selectUserLoader);
@@ -50,12 +51,23 @@ export const LoginForm = () => {
 
   const handleFormSubmit = async (data) => {
     setLoader(true);
-    const response = await axiosLoginRequest.post('', {
+    const response = await axiosLoginRequest.post('/auth/jwt/login', {
       username: data.username,
       password: data.password,
+    }).catch(err => {
+      console.log(1111111111111111)
+      // console.log(err)
+      toaster.push(message, {placement, duration: 3000});
+      setLoader(false);
+      return false
     });
 
+
+    // if(response.status)
+
     if (response.status === 204) {
+      // dispatch(fetchGetUser())
+      // toaster.push(message, {placement, duration: 3000});
       setLoader(false);
       // Используем useEffect для навигации
       return true; // Возвращаем индикатор для навигации
@@ -76,24 +88,24 @@ export const LoginForm = () => {
   //   }
   //   setLoader(false);
 
-      // console.log(res)
+  // console.log(res)
 
-    // setTimeout(() => {
-    //   if (data.username === 'user' && data.password === 'user') {
-    //     Cookies.set('syndicateAuthToken', data.username, {expires: 3});
-    //     dispatch(setRole('user'))
-    //     setLoader(false);
-    //     navigate('/main');
-    //   } else if (data.username === 'admin' && data.password === 'admin') {
-    //     Cookies.set('syndicateAuthToken', data.username, {expires: 3});
-    //     dispatch(setRole('admin'))
-    //     setLoader(false);
-    //     navigate('/main');
-    //   } else {
-    //     toaster.push(message, {placement, duration: 3000});
-    //     setLoader(false);
-    //   }
-    // }, 2000)
+  // setTimeout(() => {
+  //   if (data.username === 'user' && data.password === 'user') {
+  //     Cookies.set('syndicateAuthToken', data.username, {expires: 3});
+  //     dispatch(setRole('user'))
+  //     setLoader(false);
+  //     navigate('/main');
+  //   } else if (data.username === 'admin' && data.password === 'admin') {
+  //     Cookies.set('syndicateAuthToken', data.username, {expires: 3});
+  //     dispatch(setRole('admin'))
+  //     setLoader(false);
+  //     navigate('/main');
+  //   } else {
+  //     toaster.push(message, {placement, duration: 3000});
+  //     setLoader(false);
+  //   }
+  // }, 2000)
   // };
 
   // const handleInputChange = (value, name) => {

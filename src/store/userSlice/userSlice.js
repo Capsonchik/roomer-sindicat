@@ -1,13 +1,14 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchLogIn} from "../main.actions";
+import {fetchGetUser, fetchLogIn} from "../main.actions";
 
 const initialState = {
   isAuth: false,
-  user: '',
+  user: null,
   userName: '',
+  email: '',
   currentUser: '',
   role: '',
-  userLoader: false
+  userLoader: 'none'
 }
 
 export const userSlice = createSlice({
@@ -32,6 +33,13 @@ export const userSlice = createSlice({
       })
       .addCase(fetchLogIn.pending, (state, action) => {
         state.userLoader = true
+      })
+      .addCase(fetchGetUser.fulfilled, (state, action) => {
+        state.user = action.payload
+        state.userLoader = 'idle'
+      })
+      .addCase(fetchGetUser.pending, (state, action) => {
+        state.userLoader = 'load'
       })
   }
 })

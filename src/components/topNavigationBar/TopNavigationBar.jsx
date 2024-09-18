@@ -19,8 +19,9 @@ export const TopNavigationBar = () => {
 
   const handleLogOut = () => {
     // fetchPostLogOut
-    dispatch(fetchPostLogOut())
-    handleNavigate('/')
+    localStorage.removeItem('authToken');
+    // dispatch(fetchPostLogOut())
+    navigate('/')
   }
 
   return (

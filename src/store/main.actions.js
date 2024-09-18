@@ -31,12 +31,17 @@ export const fetchGetUser = createAsyncThunk(
             "ngrok-skip-browser-warning": 'true',
           }
         });
+      console.log(response)
+      if (response.status === 401) {
+        localStorage.removeItem('authToken');
+      }
       if (response.status === 200) {
         const data = await response.json();
         console.log(data)
         return data;
       }
     } catch (error) {
+      // localStorage.removeItem('authToken');
       throw new Error('fetchGetUser error');
     }
   }

@@ -65,7 +65,7 @@ const createAxiosClientInstance = () => {
 export const axiosClientRequest = createAxiosClientInstance();
 
 
-const GRAPH_API = 'https://4ffd-212-45-6-6.ngrok-free.app'
+const GRAPH_API = `${LOGIN_API}/api/routes`
 
 
 const createAxiosGraphnstance = () => {

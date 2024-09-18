@@ -20,16 +20,20 @@ export const PrivateRoute = ({children}) => {
   //   navigate('/')
   // }
   //
-  useEffect(() => {
-    if (userLoader === 'idle' && !user) {
-      console.log(4444)
-      navigate('/');
-    }
-
-  }, [user, userLoader])
-  // if (!token) {
-  //   return <Navigate to="/"/>;
-  // }
+    const token = localStorage.getItem('authToken')
+  // useEffect(() => {
+  //   if (token) {
+  //     navigate('/');
+  //   }
+  //   // if (userLoader === 'idle' && !user) {
+  //   //   console.log(4444)
+  //   //   navigate('/');
+  //   // }
+  //
+  // }, [user, userLoader])
+  if (!token) {
+    return <Navigate to="/"/>;
+  }
 
   return children;
 };

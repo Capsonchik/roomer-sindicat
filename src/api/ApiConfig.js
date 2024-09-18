@@ -7,7 +7,7 @@ const createAxiosLoginInstance = () => {
   const instance = axios.create({
     baseURL: LOGIN_API,
     headers: {
-      "Authorization": `Bearer ${token}`,
+      // "Authorization": `Bearer ${token}`,
       Accept: 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept-Language': 'ru',

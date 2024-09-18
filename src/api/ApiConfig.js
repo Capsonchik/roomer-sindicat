@@ -1,11 +1,13 @@
 import axios from "axios";
 
-export const LOGIN_API = 'https://82b0-212-45-6-6.ngrok-free.app'
+export const LOGIN_API = 'https://aca1-212-45-6-6.ngrok-free.app'
 
+const token = localStorage.getItem('authToken')
 const createAxiosLoginInstance = () => {
   const instance = axios.create({
     baseURL: LOGIN_API,
     headers: {
+      "Authorization": `Bearer ${token}`,
       Accept: 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept-Language': 'ru',
@@ -18,7 +20,6 @@ const createAxiosLoginInstance = () => {
 };
 
 export const axiosLoginRequest = createAxiosLoginInstance();
-
 
 
 // export const CLIENT_API = 'http://192.168.9.239:8808/'
@@ -40,7 +41,7 @@ const createAxiosClientInstance = () => {
   instance.interceptors.response.use(
     response => response, // Просто возвращаем ответ, если все хорошо
     async error => {
-      const { config, response } = error;
+      const {config, response} = error;
       const originalRequest = config;
 
       // Если статус 500, пробуем повторить запрос
@@ -67,11 +68,12 @@ export const axiosClientRequest = createAxiosClientInstance();
 
 const GRAPH_API = `${LOGIN_API}/api/routers`
 
-
+// console.log(window.localStorage)
 const createAxiosGraphnstance = () => {
   const instance = axios.create({
     baseURL: GRAPH_API,
     headers: {
+      "Authorization": `Bearer ${token}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language': 'ru',
@@ -79,6 +81,14 @@ const createAxiosGraphnstance = () => {
     },
     withCredentials: true  // Это гарантирует отправку куков
   });
+
+  // // Проверка, что код выполняется на клиенте
+  // if (typeof window !== 'undefined') {
+  //   const token = window.localStorage.getItem('authToken');
+  //   if (token) {
+  //     instance.defaults.headers['Authorization'] = `Bearer ${token}`;
+  //   }
+  // }
 
   // Добавляем интерсепторы для обработки ошибок
   instance.interceptors.request.use((config) => {
@@ -107,7 +117,6 @@ const createAxiosGraphnstance = () => {
 
   return instance;
 };
-
 
 
 export const axiosGraphRequest = createAxiosGraphnstance();

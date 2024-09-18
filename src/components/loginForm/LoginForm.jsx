@@ -50,8 +50,12 @@ export const LoginForm = () => {
 
 
   const handleFormSubmit = async (data) => {
+    // if (!navigator.cookieEnabled) {
+    //   return alert('включи куки!')
+    //   // The browser does not support or is blocking cookies from being set.
+    // }
     setLoader(true);
-    const response = await axiosLoginRequest.post('/auth/jwt/login', {
+    const response = await axiosLoginRequest.post('/login', {
       username: data.username,
       password: data.password,
     }).catch(err => {
@@ -65,7 +69,11 @@ export const LoginForm = () => {
 
     // if(response.status)
 
-    if (response.status === 204) {
+    if (response.status === 200) {
+      console.log(response)
+      // Получаем токен из localStorage
+      localStorage.setItem('authToken', response.data.access_token);
+
       dispatch(fetchGetUser())
       // toaster.push(message, {placement, duration: 3000});
       setLoader(false);

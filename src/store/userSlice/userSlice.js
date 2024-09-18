@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchGetUser, fetchLogIn} from "../main.actions";
+import {fetchGetUser, fetchLogIn, fetchPostLogOut} from "../main.actions";
 
 const initialState = {
   isAuth: false,
@@ -40,6 +40,13 @@ export const userSlice = createSlice({
       })
       .addCase(fetchGetUser.pending, (state, action) => {
         state.userLoader = 'load'
+      })
+      .addCase(fetchGetUser.rejected, (state, action) => {
+        state.userLoader = 'idle'
+      })
+      .addCase(fetchPostLogOut.fulfilled, (state, action) => {
+        state.userLoader = 'none'
+        state.user = null
       })
   }
 })

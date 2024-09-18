@@ -29,12 +29,12 @@ export const TestPage = () => {
     dispatch(fetchGetUser())
   }, []);
 
-  useEffect(() => {
-    if (!user) return
-
-    toaster.push(message, {placement, duration: 3000})
-
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user) return
+  //
+  //   toaster.push(message, {placement, duration: 3000})
+  //
+  // }, [user]);
 
   return (
     <Container>

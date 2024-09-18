@@ -22,7 +22,8 @@ export const PrivateRoute = ({children}) => {
   //
   useEffect(() => {
     if (userLoader === 'idle' && !user) {
-      return <Navigate to="/"/>;
+      console.log(4444)
+      navigate('/');
     }
 
   }, [user, userLoader])

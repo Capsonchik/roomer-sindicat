@@ -66,7 +66,7 @@ export const LoginForm = () => {
     // if(response.status)
 
     if (response.status === 204) {
-      // dispatch(fetchGetUser())
+      dispatch(fetchGetUser())
       // toaster.push(message, {placement, duration: 3000});
       setLoader(false);
       // Используем useEffect для навигации

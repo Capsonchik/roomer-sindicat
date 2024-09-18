@@ -65,7 +65,7 @@ const createAxiosClientInstance = () => {
 export const axiosClientRequest = createAxiosClientInstance();
 
 
-const GRAPH_API = `${LOGIN_API}/api/routes`
+const GRAPH_API = `${LOGIN_API}/api/routers`
 
 
 const createAxiosGraphnstance = () => {

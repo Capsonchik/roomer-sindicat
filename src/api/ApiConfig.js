@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const LOGIN_API = 'https://82b0-212-45-6-6.ngrok-free.app'
+export const LOGIN_API = 'https://3e55-212-45-6-6.ngrok-free.app/auth'
 
 const createAxiosLoginInstance = () => {
   const instance = axios.create({
@@ -71,7 +71,7 @@ const createAxiosClientInstance = () => {
 export const axiosClientRequest = createAxiosClientInstance();
 
 
-const GRAPH_API = `${LOGIN_API}/api/routers`
+const GRAPH_API = `https://3e55-212-45-6-6.ngrok-free.app`
 
 
 const createAxiosGraphnstance = () => {

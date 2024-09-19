@@ -14,12 +14,12 @@ import {
 import {
   selectActiveClient, selectActiveGroupId, selectActiveReport,
   selectCharts,
-  selectClients, selectErrorCharts, selectFilters, selectGroupsReports,
+  selectClients, selectErrorCharts, selectFilterLoading, selectFilters, selectGroupsReports,
   selectIsChartLoading, selectIsOpenDrawer,
   selectReportsClients
 } from "../../store/chartSlice/chart.selectors";
 import {ChartDrawer} from "./chartDrawer/ChartDrawer";
-import {setActiveChart, setOpenDrawer, setTypeGroupDrawer} from "../../store/chartSlice/chart.slice";
+import {setActiveChart, setFilterLoading, setOpenDrawer, setTypeGroupDrawer} from "../../store/chartSlice/chart.slice";
 import {ChartListItem} from "./chartListItem/ChartListItem";
 import {GroupDrawer} from "./groupDrawer/GroupDrawer";
 import EditIcon from "@rsuite/icons/Edit";
@@ -43,6 +43,9 @@ export const ChartList = (props) => {
   const errorCharts = useSelector(selectErrorCharts)
   const filters = useSelector(selectFilters)
   const groups = useSelector(selectGroupsReports);
+  const filterLoading = useSelector(selectFilterLoading);
+
+
   const [activeGroup, setActiveGroup] = useState()
   const [data, setData] = useState(charts)
   const [placeholderText, setPlaceholderText] = useState('')
@@ -86,19 +89,31 @@ export const ChartList = (props) => {
       .map(filter => {
         return {
           filter_id: filter.filter_id,
-          filter_values: [filter.original_values[0]],
+          filter_values: [filter.original_values?.[0]],
           isactive: filter.isactive,
         }
       })
       .filter(filter => filter.isactive && Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
 
-    console.log(filters,activeGroupId,methods.getValues('filters'))
+    // console.log(filters,activeGroupId,methods.getValues('filters'))
     // Отправляем запрос на получение графиков с фильтрами
     dispatch(fetchAllChartsByGroupId({ groupId: activeGroupId, filter_data: { filter_data: request } }))
       .then(() => {
         dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
       });
   }, [methods.getValues('filters')]);
+
+  console.log(filterLoading,filters)
+  useEffect(() => {
+    if(activeGroupId  && filterLoading === 'idle' && !filters?.length) {
+      // console.log(filterLoading,filters)
+      dispatch(fetchAllChartsByGroupId({ groupId: activeGroupId, filter_data:  { filter_data: [] }}))
+        .then(() => {
+          dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
+        });
+    }
+
+  }, [activeGroupId,filters,filterLoading]);
 
   // const {} = useFieldArray({
   //   control:methods.
@@ -129,7 +144,10 @@ export const ChartList = (props) => {
 
   useEffect(() => {
     if (!activeGroupId) return
-    dispatch(getFilters(activeGroupId))
+    dispatch(getFilters(activeGroupId)).then(() => {
+      dispatch(setFilterLoading('none'))
+    })
+
   }, [activeGroupId]);
 
   useEffect(() => {
@@ -269,7 +287,7 @@ export const ChartList = (props) => {
 
         {/*  </div>*/}
         {/*)}*/}
-        {activeReport && !isChartLoading && !resize && (
+        {activeReport && !isChartLoading && !resize &&  (
           <div className={styles.info}>
             <h4 className={styles.group_name}>{activeGroup?.group_name}</h4>
             <h6 className={styles.title_group}>{activeGroup?.description}</h6>

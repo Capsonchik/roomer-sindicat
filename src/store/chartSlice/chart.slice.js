@@ -33,7 +33,8 @@ const initialState = {
   typeGroupDrawer: 'edit',
   errorCharts: false,
   scrollTabs: 1,
-  filters: []
+  filters: [],
+  filterLoading:'none'
 }
 
 export const chartSlice = createSlice({
@@ -67,6 +68,9 @@ export const chartSlice = createSlice({
     },
     setScrollTabs: (state, action) => {
       state.scrollTabs = action.payload;
+    },
+    setFilterLoading: (state, action) => {
+      state.filterLoading = action.payload;
     },
 
   },
@@ -139,12 +143,16 @@ export const chartSlice = createSlice({
       })
       .addCase(getFilters.fulfilled, (state, action) => {
         state.filters = action.payload
+        state.filterLoading = 'idle'
+      })
+      .addCase(getFilters.pending, (state, action) => {
+        state.filterLoading = 'load'
       })
 
 
   }
 })
 
-export const {setScrollTabs,setTypeGroupDrawer,setActiveGroup,setOriginalColors,setOpenDrawer,setActiveChart,setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
+export const {setFilterLoading,setScrollTabs,setTypeGroupDrawer,setActiveGroup,setOriginalColors,setOpenDrawer,setActiveChart,setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
 
 export default chartSlice.reducer;

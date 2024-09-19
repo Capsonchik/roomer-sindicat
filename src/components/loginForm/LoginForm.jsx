@@ -50,16 +50,11 @@ export const LoginForm = () => {
 
 
   const handleFormSubmit = async (data) => {
-    // if (!navigator.cookieEnabled) {
-    //   return alert('включи куки!')
-    //   // The browser does not support or is blocking cookies from being set.
-    // }
     setLoader(true);
-    const response = await axiosLoginRequest.post('/login', {
+    const response = await axiosLoginRequest.post('/auth/jwt/login', {
       username: data.username,
       password: data.password,
     }).catch(err => {
-      console.log(1111111111111111)
       // console.log(err)
       toaster.push(message, {placement, duration: 3000});
       setLoader(false);
@@ -85,44 +80,7 @@ export const LoginForm = () => {
     setLoader(false);
     return false;
   };
-  // const handleFormSubmit = async (data) => {
-  //   setLoader(true);
-  //   const response = await axiosLoginRequest.post('', {
-  //     username: data.username,
-  //     password: data.password,
-  //   })
-  //   if (response.status === 204) {
-  //     console.log(2)
-  //     navigate('/main');
-  //   }
-  //   setLoader(false);
 
-  // console.log(res)
-
-  // setTimeout(() => {
-  //   if (data.username === 'user' && data.password === 'user') {
-  //     Cookies.set('syndicateAuthToken', data.username, {expires: 3});
-  //     dispatch(setRole('user'))
-  //     setLoader(false);
-  //     navigate('/main');
-  //   } else if (data.username === 'admin' && data.password === 'admin') {
-  //     Cookies.set('syndicateAuthToken', data.username, {expires: 3});
-  //     dispatch(setRole('admin'))
-  //     setLoader(false);
-  //     navigate('/main');
-  //   } else {
-  //     toaster.push(message, {placement, duration: 3000});
-  //     setLoader(false);
-  //   }
-  // }, 2000)
-  // };
-
-  // const handleInputChange = (value, name) => {
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value
-  //   });
-  // };
 
   return (
     <FormProvider {...methods}>

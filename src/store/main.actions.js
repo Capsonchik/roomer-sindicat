@@ -19,10 +19,11 @@ export const fetchLogIn = createAsyncThunk(
 export const fetchGetUser = createAsyncThunk(
   'user',
   async (userData) => {
-    const token = localStorage.getItem('authToken')
+    const token =  localStorage.getItem('authToken')
+    console.log('token',token)
     try {
       const response = await fetch(
-        'https://aca1-212-45-6-6.ngrok-free.app/api/v1/users/me', {
+        'https://3e55-212-45-6-6.ngrok-free.app/auth/users/me', {
           headers: {
             "Authorization": `Bearer ${token}`,
             Accept: 'application/json',

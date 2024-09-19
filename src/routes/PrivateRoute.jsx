@@ -20,7 +20,7 @@ export const PrivateRoute = ({children}) => {
   //   navigate('/')
   // }
   //
-    const token = localStorage.getItem('authToken')
+  const token = localStorage.getItem('authToken')
   // useEffect(() => {
   //   if (token) {
   //     navigate('/');

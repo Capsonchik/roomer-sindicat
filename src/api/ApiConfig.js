@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const LOGIN_API = 'https://aca1-212-45-6-6.ngrok-free.app'
+export const LOGIN_API = 'https://3e55-212-45-6-6.ngrok-free.app/auth'
 
 const token = localStorage.getItem('authToken')
 const createAxiosLoginInstance = () => {
@@ -22,6 +22,7 @@ const createAxiosLoginInstance = () => {
 export const axiosLoginRequest = createAxiosLoginInstance();
 
 
+
 // export const CLIENT_API = 'http://192.168.9.239:8808/'
 export const CLIENT_API = 'https://4ffd-212-45-6-6.ngrok-free.app';
 
@@ -41,7 +42,7 @@ const createAxiosClientInstance = () => {
   instance.interceptors.response.use(
     response => response, // Просто возвращаем ответ, если все хорошо
     async error => {
-      const {config, response} = error;
+      const { config, response } = error;
       const originalRequest = config;
 
       // Если статус 500, пробуем повторить запрос
@@ -66,10 +67,9 @@ const createAxiosClientInstance = () => {
 export const axiosClientRequest = createAxiosClientInstance();
 
 
+const GRAPH_API = `https://3e55-212-45-6-6.ngrok-free.app`
 
-const GRAPH_API = `https://82b0-212-45-6-6.ngrok-free.app/api/routers`
 
-// console.log(window.localStorage)
 const createAxiosGraphnstance = () => {
   const instance = axios.create({
     baseURL: GRAPH_API,
@@ -83,31 +83,19 @@ const createAxiosGraphnstance = () => {
     withCredentials: true  // Это гарантирует отправку куков
   });
 
-  // // Проверка, что код выполняется на клиенте
-  // if (typeof window !== 'undefined') {
-  //   const token = window.localStorage.getItem('authToken');
-  //   if (token) {
-  //     instance.defaults.headers['Authorization'] = `Bearer ${token}`;
-  //   }
-  // }
-
   // Добавляем интерсепторы для обработки ошибок
   instance.interceptors.request.use((config) => {
-    console.log('Куки отправляются с запросом:', document.cookie);
-    console.log(1111,config)
-    // Проверяем, что куки присутствуют
+    console.log('Куки отправляются с запросом:', document.cookie);  // Проверяем, что куки присутствуют
     return config;
   });
 
   instance.interceptors.response.use(
     (response) => {
       // Возвращаем ответ, если всё прошло успешно
-
       return response;
     },
     (error) => {
       if (error.response) {
-
         console.error('Ошибка на стороне сервера:', error.response);
         throw new Error(JSON.stringify(error.response) || 'Ошибка на сервере');
       } else if (error.request) {
@@ -122,6 +110,7 @@ const createAxiosGraphnstance = () => {
 
   return instance;
 };
+
 
 
 export const axiosGraphRequest = createAxiosGraphnstance();

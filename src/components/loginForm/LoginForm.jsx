@@ -50,12 +50,37 @@ export const LoginForm = () => {
 
 
   const handleFormSubmit = async (data) => {
+    // if(!navigator.cookieEnabled) {
+    //   console.log(11333333333333333)
+    //   return alert('Включите куки для работы сайта')
+    // }
+    function areCookiesEnabled() {
+      // Устанавливаем тестовую куку
+      console.log('ffffffffffffffffff')
+      document.cookie = "testcookie=1; SameSite=Lax";
+
+      // Проверяем, была ли она успешно сохранена
+      const cookiesEnabled = document.cookie.indexOf("testcookie=") !== -1;
+
+      // Удаляем тестовую куку
+      document.cookie = "testcookie=1; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+      return cookiesEnabled;
+    }
+
+    if (areCookiesEnabled()) {
+      // alert("Куки включены.");
+    } else {
+      alert("Куки заблокированы или отключены.");
+    }
+
+
     setLoader(true);
     const response = await axiosLoginRequest.post('/auth/jwt/login', {
       username: data.username,
       password: data.password,
     }).catch(err => {
-      console.log(1111111111111111)
+      // console.log(1111111111111111)
       // console.log(err)
       toaster.push(message, {placement, duration: 3000});
       setLoader(false);

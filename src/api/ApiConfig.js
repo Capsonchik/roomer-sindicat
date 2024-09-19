@@ -36,6 +36,12 @@ const createAxiosClientInstance = () => {
     withCredentials: true
   });
 
+  // Добавляем интерсепторы для обработки ошибок
+  instance.interceptors.request.use((config) => {
+    console.log('Куки отправляются с запросом:', document.cookie);  // Проверяем, что куки присутствуют
+    return config;
+  });
+
   // Перехватчик для обработки ошибок
   instance.interceptors.response.use(
     response => response, // Просто возвращаем ответ, если все хорошо
@@ -81,10 +87,10 @@ const createAxiosGraphnstance = () => {
   });
 
   // Добавляем интерсепторы для обработки ошибок
-  instance.interceptors.request.use((config) => {
-    console.log('Куки отправляются с запросом:', document.cookie);  // Проверяем, что куки присутствуют
-    return config;
-  });
+  // instance.interceptors.request.use((config) => {
+  //   console.log('Куки отправляются с запросом:', document.cookie);  // Проверяем, что куки присутствуют
+  //   return config;
+  // });
 
   instance.interceptors.response.use(
     (response) => {

@@ -182,8 +182,8 @@ export const TopFilters = () => {
               }}
             />
           </div>
-          {activeReport && <GroupControlButtons/>}
-          {activeReport &&<Dropdown
+          {user && user.role !== 'viewer' && activeReport && <GroupControlButtons/>}
+          {user && user.role !== 'viewer' && activeReport &&<Dropdown
             placement={'bottomEnd'}
             title="Настройки">
             <Dropdown.Item

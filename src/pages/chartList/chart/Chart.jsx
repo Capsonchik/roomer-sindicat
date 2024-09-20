@@ -23,6 +23,7 @@ import {getSumValues} from "../getSumValues";
 import {calculateMaxValue} from "../calculateMaxValue";
 import {calculateStepSize} from "../calculateStepSize";
 import cl from "classnames";
+import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
 
 
 export const Chart = ({chart}) => {
@@ -34,6 +35,7 @@ export const Chart = ({chart}) => {
   const originalColors = useSelector(selectOriginalColors)
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
+  const user = useSelector(selectCurrentUser)
   const [isDelete, setIsDelete] = useState(false)
   // console.log(chart)
   const inputs = methods.watch()
@@ -286,7 +288,7 @@ export const Chart = ({chart}) => {
       <FormProvider {...methods}>
         <ChartFilters chart={{...chartState, seriesData: chart.seriesData}}/>
       </FormProvider>
-      <div className={styles.buttons}>
+      {user && user.role !== 'viewer' && <div className={styles.buttons}>
         <Button
           className={cl(styles.delete_btn, {
             [styles.isDelete]: isDelete
@@ -299,7 +301,7 @@ export const Chart = ({chart}) => {
             handleDelete()
           }}>{!isDelete ? 'Удалить' : 'Да, удалить'}</Button>
         <Button className={styles.save_btn} onClick={handleSave}>Сохранить</Button>
-      </div>
+      </div>}
 
       {/*deleteChartById*/}
     </div>

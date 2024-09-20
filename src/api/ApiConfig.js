@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const LOGIN_API = 'https://3e55-212-45-6-6.ngrok-free.app/auth'
 
-const token = localStorage.getItem('authToken')
+
 const createAxiosLoginInstance = () => {
   const instance = axios.create({
     baseURL: LOGIN_API,
@@ -74,7 +74,7 @@ const createAxiosGraphnstance = () => {
   const instance = axios.create({
     baseURL: GRAPH_API,
     headers: {
-      "Authorization": `Bearer ${token}`,
+      // "Authorization": `Bearer ${token}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language': 'ru',
@@ -83,9 +83,11 @@ const createAxiosGraphnstance = () => {
     withCredentials: true  // Это гарантирует отправку куков
   });
 
+
   // Добавляем интерсепторы для обработки ошибок
   instance.interceptors.request.use((config) => {
-    console.log('Куки отправляются с запросом:', document.cookie);  // Проверяем, что куки присутствуют
+    const token = localStorage.getItem('authToken')
+    config.headers.Authorization = `Bearer ${token}`;
     return config;
   });
 

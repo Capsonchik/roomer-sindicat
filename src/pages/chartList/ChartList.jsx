@@ -30,6 +30,7 @@ import {CustomSelectPicker} from "../../components/rhfInputs/selectPicker/Select
 import {FormProvider, useFieldArray, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {CustomCheckPicker} from "../../components/rhfInputs/checkPicker/CheckPicker";
+import {selectCurrentUser} from "../../store/userSlice/user.selectors";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -41,6 +42,7 @@ export const ChartList = (props) => {
   const isOpenDrawer = useSelector(selectIsOpenDrawer)
   const activeGroupId = useSelector(selectActiveGroupId)
   const errorCharts = useSelector(selectErrorCharts)
+  const user = useSelector(selectCurrentUser)
   const filters = useSelector(selectFilters)
   const groups = useSelector(selectGroupsReports);
   const filterLoading = useSelector(selectFilterLoading);
@@ -120,6 +122,7 @@ export const ChartList = (props) => {
   // })
 
   useEffect(() => {
+    if(filterLoading !== 'idle') return
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
     if (foundGroup) {
       setActiveGroup(foundGroup)
@@ -128,7 +131,7 @@ export const ChartList = (props) => {
     }
     // setActiveGroup(foundGroup)
 
-  }, [activeGroupId, groups])
+  }, [activeGroupId, groups,filterLoading])
 
   useEffect(() => {
     if (!activeClient) {
@@ -219,7 +222,7 @@ export const ChartList = (props) => {
 
     <>
       <TopFilters/>
-      {!!filters?.length && (
+      {activeReport && !!filters?.length && (
         <FormProvider {...methods}>
           <div style={{
             display: 'flex',

@@ -26,6 +26,7 @@ import {CreateChartDrawer} from "../createChartDrawer/CreateChartDrawer";
 import EditIcon from "@rsuite/icons/Edit";
 import {FilterDrawer} from "../filterDrawer/FilterDrawer";
 import {GroupControlButtons} from "../groupControlButtons/GroupControlButtons";
+import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ export const TopFilters = () => {
   const activeGroupId = useSelector(selectActiveGroupId)
   const charts = useSelector(selectCharts)
   const isChartLoading = useSelector(selectIsChartLoading)
+  const user = useSelector(selectCurrentUser)
   const [openChartDrawer, setOpenChartDrawer] = useState(false)
   const [activeGroup, setActiveGroup] = useState()
   // const groups = useSelector(selectGroupsReports);
@@ -49,8 +51,12 @@ export const TopFilters = () => {
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false)
 
   useEffect(() => {
+    if(user && user.role !== 'admin') {
+      dispatch(fetchAllReports(user.client_id))
+      dispatch(setActiveClient(user.client_id))
+    }
 
-  }, []);
+  }, [user]);
 
   useEffect(() => {
 
@@ -67,6 +73,8 @@ export const TopFilters = () => {
   useEffect(() => {
     dispatch(fetchAllClients())
   }, []);
+
+
 
 
   // console.log(activeGroup,activeGroupId)
@@ -154,7 +162,7 @@ export const TopFilters = () => {
       <FormProvider {...methods}>
         <div className={styles.wrapper}>
           <div className={styles.filters}>
-            <CustomSelectPicker
+            {user?.role === 'admin' && <CustomSelectPicker
               className={styles.clients_select}
               name={'clients'}
               placeholder={'Выберите клиента'}
@@ -162,7 +170,7 @@ export const TopFilters = () => {
               onChangeOutside={value => {
                 handleClientChange(value)
               }}
-            />
+            />}
             <CustomSelectPicker
               className={styles.clients_select}
               name={'reports'}
@@ -175,7 +183,7 @@ export const TopFilters = () => {
             />
           </div>
           {activeReport && <GroupControlButtons/>}
-          <Dropdown
+          {activeReport &&<Dropdown
             placement={'bottomEnd'}
             title="Настройки">
             <Dropdown.Item
@@ -209,7 +217,7 @@ export const TopFilters = () => {
               Фильтры листа
             </Dropdown.Item>
 
-          </Dropdown>
+          </Dropdown>}
           {/*{activeReport && (*/}
           {/*  <div className={styles.group_wrapper}>*/}
           {/*    <Button onClick={() => {*/}

@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import {fetchPostLogOut} from "../../store/main.actions";
 import {useDispatch, useSelector} from "react-redux";
 import {selectCurrentUser} from "../../store/userSlice/user.selectors";
+import {setActiveClient, setActiveReport} from "../../store/chartSlice/chart.slice";
 
 export const TopNavigationBar = () => {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ export const TopNavigationBar = () => {
   const handleLogOut = () => {
     // fetchPostLogOut
     localStorage.removeItem('authToken');
+    dispatch(setActiveClient(null))
+    dispatch(setActiveReport(null))
     // dispatch(fetchPostLogOut())
     navigate('/')
   }

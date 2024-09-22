@@ -59,18 +59,6 @@ export const ChartListItem = ({chart}) => {
       ? chart.formatting.colors.filter(([series, value]) => value).map(([series, value]) => series)
       : colors
 
-
-    // const maxValue = getSumValues({
-    //   stack: chart.formatting.stack,
-    //   seriesData: convertedSeriesData,
-    //   // seriesIndex: 0,
-    //   ispercent: chart.ispercent
-    // })
-    //
-    // const calculatedMaxValue = calculateMaxValue(0, maxValue ,6)
-    // const step = calculateStepSize(0,calculatedMaxValue, 6)
-
-    // console.log(format_value)
     setChartState(prev => {
       return {
         ...prev,

@@ -31,6 +31,7 @@ import {FormProvider, useFieldArray, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {CustomCheckPicker} from "../../components/rhfInputs/checkPicker/CheckPicker";
 import {selectCurrentUser} from "../../store/userSlice/user.selectors";
+import {ChartTypeView} from "./chartTypeView/ChartTypeView";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -276,20 +277,7 @@ export const ChartList = (props) => {
             <Loader size={'lg'}/>
           </div>
         )}
-        {/*{activeReport && !isChartLoading && !resize && (*/}
-        {/*  <div className={styles.group_wrapper}>*/}
-        {/*    <Button onClick={() => {*/}
-        {/*      dispatch(setTypeGroupDrawer('edit'))*/}
-        {/*      setOpenGroupDrawer(true)*/}
-        {/*      // dispatch(setActiveChart(chart))*/}
-        {/*      // dispatch(setOpenDrawer(true))*/}
-        {/*    }}>*/}
-        {/*      <EditIcon/>*/}
-        {/*    </Button>*/}
-        {/*    <h6 className={styles.title_group}>{activeGroup?.description}</h6>*/}
 
-        {/*  </div>*/}
-        {/*)}*/}
         {activeReport && !isChartLoading && !resize &&  (
           <div className={styles.info}>
             <h4 className={styles.group_name}>{activeGroup?.group_name}</h4>
@@ -307,7 +295,7 @@ export const ChartList = (props) => {
 
           {!isChartLoading && !resize && data[0]?.title && data.map((chart, index) => (
 
-            <ChartListItem key={index} chart={chart}/>
+            <ChartTypeView key={index} chart={chart}/>
           ))}
         </div>}
 

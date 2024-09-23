@@ -79,7 +79,6 @@ export const ChartList = (props) => {
     // if (!activeGroupId) return
     if (filters.length > 0) {
       const filtersList = activeFilters?.[activeGroupId] ? activeFilters?.[activeGroupId] : filters
-    console.log(3333333,filtersList,activeFilters)
 
       // console.log(activeFilters?.[activeGroupId]?.filters,filters)
       const filterValues = filtersList.map(filter => ({
@@ -91,7 +90,7 @@ export const ChartList = (props) => {
         value: filter.multi ? activeFilters?.[activeGroupId] ? filter.value : filter.original_values : [filter.original_values?.[0]]
       }));
 
-
+      dispatch(setFilters({data: filterValues, activeGroupId}))
       methods.reset({filters: filterValues});
       replace(filterValues); // Обновляем данные в useFieldArray
     }
@@ -307,7 +306,7 @@ export const ChartList = (props) => {
           // className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}
           className={cl(styles.wrapper, {
             [styles.col_2]: data.length % 2 === 0,
-            [styles.col_3]: Boolean(data.length % 2),
+            [styles.col_3]: Boolean(data.length % 2) && data.length > 1,
             [styles.isTablet]: isTablet
           })}
         >

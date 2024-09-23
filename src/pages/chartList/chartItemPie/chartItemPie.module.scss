@@ -1,4 +1,13 @@
 .wrapper{
+  &.full_width_2 {
+    grid-column: span 2;
+  }
+  &.full_width_3 {
+    grid-column: span 3;
+  }
+  &.full_width_1 {
+    //grid-column: span 1;
+  }
   .title_wrapper{
     display: flex;
     gap: 8px;

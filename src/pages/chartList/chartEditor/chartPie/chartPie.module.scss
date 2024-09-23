@@ -1,0 +1,36 @@
+
+
+
+
+
+
+
+.buttons{
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  .save_btn{
+    width: 100%;
+    margin-top: 40px;
+    background: #FF8200;
+    color: #fff;
+    transition: filter 0.3s ease; /* Плавный переход */
+    &:hover {
+      color: #fff;
+      background: #FF8200;
+      filter: brightness(0.90); /* Уменьшаем яркость на 15% */
+    }
+
+  }
+  .delete_btn{
+    width: 100%;
+    margin-top: 40px;
+
+    &.isDelete {
+      background: indianred;
+      color: white;
+    }
+  }
+}

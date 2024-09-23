@@ -76,7 +76,7 @@ export const ChartList = (props) => {
         original_values: filter.original_values,
         multi: filter.multi,
         isactive: filter.isactive,
-        value: filter.value?.length ? filter.value : [filter.original_values[0]]
+        value: filter.multi ? filter.original_values : [filter.original_values?.[0]]
       }));
 
 
@@ -85,6 +85,8 @@ export const ChartList = (props) => {
     }
   }, [filters, methods, replace]);
 
+  // console.log('fields',fields)
+
   useEffect(() => {
     if(!activeGroupId) return
 
@@ -92,7 +94,7 @@ export const ChartList = (props) => {
       .map(filter => {
         return {
           filter_id: filter.filter_id,
-          filter_values: [filter.original_values?.[0]],
+          filter_values: filter.multi ? filter.original_values : [filter.original_values?.[0]],
           isactive: filter.isactive,
         }
       })

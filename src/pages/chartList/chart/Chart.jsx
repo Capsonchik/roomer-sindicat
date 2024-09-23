@@ -284,7 +284,7 @@ export const Chart = ({chart}) => {
     dispatch(patchChartFormatting(request)).then(() => {
       const id = activeGroupId || groupsReports[0].group_id
       const activeFiltersRequest = activeFilters[activeGroupId]
-      const request = activeFiltersRequest?.filters
+      const request = activeFiltersRequest
         .map(filter => {
           return {
             filter_id: filter.filter_id,

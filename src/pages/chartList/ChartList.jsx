@@ -77,9 +77,9 @@ export const ChartList = (props) => {
   // Сброс формы и обновление filters через reset, когда filters не пустой
   useEffect(() => {
     // if (!activeGroupId) return
-    console.log(11111)
     if (filters.length > 0) {
-      const filtersList = activeFilters?.[activeGroupId]?.filters ? activeFilters?.[activeGroupId]?.filters : filters
+      const filtersList = activeFilters?.[activeGroupId] ? activeFilters?.[activeGroupId] : filters
+    console.log(3333333,filtersList,activeFilters)
 
       // console.log(activeFilters?.[activeGroupId]?.filters,filters)
       const filterValues = filtersList.map(filter => ({
@@ -88,7 +88,7 @@ export const ChartList = (props) => {
         original_values: filter.original_values,
         multi: filter.multi,
         isactive: filter.isactive,
-        value: filter.multi ? activeFilters?.[activeGroupId]?.filters ? filter.value : filter.original_values : [filter.original_values?.[0]]
+        value: filter.multi ? activeFilters?.[activeGroupId] ? filter.value : filter.original_values : [filter.original_values?.[0]]
       }));
 
 
@@ -102,12 +102,12 @@ export const ChartList = (props) => {
   useEffect(() => {
     if (!activeGroupId) return
 
-    console.log(222, methods.getValues('filters'))
+    // console.log(222, methods.getValues('filters'))
     const request = methods.getValues('filters')
       .map(filter => {
         return {
           filter_id: filter.filter_id,
-          filter_values: filter.multi ? activeFilters?.[activeGroupId]?.filters ? filter.value : filter.original_values : [filter.original_values?.[0]],
+          filter_values: filter.multi ? activeFilters?.[activeGroupId] ? filter.value : filter.original_values : [filter.original_values?.[0]],
           isactive: filter.isactive,
         }
       })
@@ -119,6 +119,7 @@ export const ChartList = (props) => {
       .then(() => {
         dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
       });
+
   }, [methods.getValues('filters')]);
 
   // console.log(filterLoading,filters)
@@ -231,8 +232,8 @@ export const ChartList = (props) => {
       })
       .filter(filter => filter.isactive && Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
     // console.log(request)
-
-    dispatch(setFilters({data, activeGroupId}))
+    const req = data.filters.filter(filt => filt.filter_name)
+    dispatch(setFilters({data: req, activeGroupId}))
     dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request}})).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
     });

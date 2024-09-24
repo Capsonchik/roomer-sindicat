@@ -1,6 +1,6 @@
 import styles from './chartItemTable.module.scss'
 import {useDispatch} from "react-redux";
-import {Button, HStack, Table, TagPicker, Toggle, VStack} from 'rsuite';
+import {Button, Table, TagPicker, Toggle} from 'rsuite';
 import {setActiveChart, setOpenDrawer} from "../../../store/chartSlice/chart.slice";
 import EditIcon from "@rsuite/icons/Edit";
 import React, {useState} from "react";
@@ -39,8 +39,8 @@ export const ChartItemTable = ({chart}) => {
         </Button>
       </div>
       ChartItemTable
-      <VStack spacing={16}>
-        <HStack>
+      <div>
+        <div>
           <Toggle checked={compact} onChange={setCompact}>
             Compact
           </Toggle>
@@ -56,7 +56,7 @@ export const ChartItemTable = ({chart}) => {
           <Toggle checked={hover} onChange={setHover}>
             Hover
           </Toggle>
-        </HStack>
+        </div>
         <TagPicker
           data={DEFAULT_COLUMNS}
           labelKey="label"
@@ -65,7 +65,7 @@ export const ChartItemTable = ({chart}) => {
           onChange={setColumnKeys}
           cleanable={false}
         />
-      </VStack>
+      </div>
       <hr/>
 
       <Table

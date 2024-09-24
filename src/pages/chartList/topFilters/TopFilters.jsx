@@ -235,7 +235,7 @@ export const TopFilters = () => {
             <Dropdown.Item
               className={styles.dropdown_item}
               onClick={() => {
-                setOpenFilterDrawer(true)
+                setOpenPresentationDrawer(true)
               }}
             >
               <img src={createPresentationIcon}/>

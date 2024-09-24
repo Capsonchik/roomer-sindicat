@@ -135,6 +135,15 @@ export const chartSlice = createSlice({
       .addCase(postGroup.fulfilled, (state, action) => {
         state.groupsChart.push(action.payload)
       })
+      .addCase(patchGroupById.fulfilled, (state, action) => {
+        state.groupsChart.map(group => {
+          if(action.payload.group_id === group.group_id) {
+            return action.payload
+          }
+
+          return group
+        })
+      })
       .addCase(deleteGroupById.fulfilled, (state, action) => {
         state.groupsChart = state.groupsChart.filter(chart => chart.group_id !== action.payload)
       })

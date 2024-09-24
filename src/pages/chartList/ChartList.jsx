@@ -32,6 +32,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import {CustomCheckPicker} from "../../components/rhfInputs/checkPicker/CheckPicker";
 import {selectCurrentUser} from "../../store/userSlice/user.selectors";
 import {ChartTypeView} from "./chartTypeView/ChartTypeView";
+import {selectActiveFilters, setFilters} from "../../store/chartSlice/filter.slice";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -47,6 +48,8 @@ export const ChartList = (props) => {
   const filters = useSelector(selectFilters)
   const groups = useSelector(selectGroupsReports);
   const filterLoading = useSelector(selectFilterLoading);
+  const activeFilters = useSelector(selectActiveFilters)
+  const [filtersState, setFiltersState] = useState([filters])
 
 
   const [activeGroup, setActiveGroup] = useState()
@@ -63,23 +66,31 @@ export const ChartList = (props) => {
     }
   });
 
+  useEffect(() => {
+
+  }, [activeFilters]);
+
   const {fields, append, remove, replace} = useFieldArray({
     control: methods.control,
     name: "filters"
   });
   // Сброс формы и обновление filters через reset, когда filters не пустой
   useEffect(() => {
+    // if (!activeGroupId) return
     if (filters.length > 0) {
-      const filterValues = filters.map(filter => ({
+      const filtersList = activeFilters?.[activeGroupId] ? activeFilters?.[activeGroupId] : filters
+
+      // console.log(activeFilters?.[activeGroupId]?.filters,filters)
+      const filterValues = filtersList.map(filter => ({
         filter_name: filter.filter_name,
         filter_id: filter.filter_id,
         original_values: filter.original_values,
         multi: filter.multi,
         isactive: filter.isactive,
-        value: filter.multi ? filter.original_values : [filter.original_values?.[0]]
+        value: filter.multi ? activeFilters?.[activeGroupId] ? filter.value : filter.original_values : [filter.original_values?.[0]]
       }));
 
-
+      dispatch(setFilters({data: filterValues, activeGroupId}))
       methods.reset({filters: filterValues});
       replace(filterValues); // Обновляем данные в useFieldArray
     }
@@ -88,13 +99,14 @@ export const ChartList = (props) => {
   // console.log('fields',fields)
 
   useEffect(() => {
-    if(!activeGroupId) return
+    if (!activeGroupId) return
 
+    // console.log(222, methods.getValues('filters'))
     const request = methods.getValues('filters')
       .map(filter => {
         return {
           filter_id: filter.filter_id,
-          filter_values: filter.multi ? filter.original_values : [filter.original_values?.[0]],
+          filter_values: filter.multi ? activeFilters?.[activeGroupId] ? filter.value : filter.original_values : [filter.original_values?.[0]],
           isactive: filter.isactive,
         }
       })
@@ -102,30 +114,31 @@ export const ChartList = (props) => {
 
     // console.log(filters,activeGroupId,methods.getValues('filters'))
     // Отправляем запрос на получение графиков с фильтрами
-    dispatch(fetchAllChartsByGroupId({ groupId: activeGroupId, filter_data: { filter_data: request } }))
+    dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request}}))
       .then(() => {
         dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
       });
+
   }, [methods.getValues('filters')]);
 
-  console.log(filterLoading,filters)
+  // console.log(filterLoading,filters)
   useEffect(() => {
-    if(activeGroupId  && filterLoading === 'idle' && !filters?.length) {
+    if (activeGroupId && filterLoading === 'idle' && !filters?.length) {
       // console.log(filterLoading,filters)
-      dispatch(fetchAllChartsByGroupId({ groupId: activeGroupId, filter_data:  { filter_data: [] }}))
+      dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: []}}))
         .then(() => {
           dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
         });
     }
 
-  }, [activeGroupId,filters,filterLoading]);
+  }, [activeGroupId, filters, filterLoading]);
 
   // const {} = useFieldArray({
   //   control:methods.
   // })
 
   useEffect(() => {
-    if(filterLoading !== 'idle') return
+    if (filterLoading !== 'idle') return
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
     if (foundGroup) {
       setActiveGroup(foundGroup)
@@ -134,7 +147,7 @@ export const ChartList = (props) => {
     }
     // setActiveGroup(foundGroup)
 
-  }, [activeGroupId, groups,filterLoading])
+  }, [activeGroupId, groups, filterLoading])
 
   useEffect(() => {
     if (!activeClient) {
@@ -206,6 +219,8 @@ export const ChartList = (props) => {
   // console.log(filters)
 
   const handleChangeFilter = (data) => {
+
+
     const request = data.filters
       .map(filter => {
         return {
@@ -216,7 +231,8 @@ export const ChartList = (props) => {
       })
       .filter(filter => filter.isactive && Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
     // console.log(request)
-
+    const req = data.filters.filter(filt => filt.filter_name)
+    dispatch(setFilters({data: req, activeGroupId}))
     dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request}})).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
     });
@@ -238,7 +254,7 @@ export const ChartList = (props) => {
               <div key={filter.id}>
                 <p style={{marginBottom: 8, fontWeight: 500}}>{filter.filter_name}</p>
                 <CustomCheckPicker
-                  value={filter.isactive ? methods.getValues(`filters.${i}.value`): null} // Добавляем value
+                  value={filter.isactive ? methods.getValues(`filters.${i}.value`) : null} // Добавляем value
                   // defaultValue={filter.original_values[0]}
                   disabled={!methods.getValues(`filters.${i}.isactive`)}
                   onChangeOutside={(value) => {
@@ -280,7 +296,7 @@ export const ChartList = (props) => {
           </div>
         )}
 
-        {activeReport && !isChartLoading && !resize &&  (
+        {activeReport && !isChartLoading && !resize && (
           <div className={styles.info}>
             <h4 className={styles.group_name}>{activeGroup?.group_name}</h4>
             <h6 className={styles.title_group}>{activeGroup?.description}</h6>
@@ -290,7 +306,7 @@ export const ChartList = (props) => {
           // className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}
           className={cl(styles.wrapper, {
             [styles.col_2]: data.length % 2 === 0,
-            [styles.col_3]: Boolean(data.length % 2),
+            [styles.col_3]: Boolean(data.length % 2) && data.length > 1,
             [styles.isTablet]: isTablet
           })}
         >

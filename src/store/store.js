@@ -3,6 +3,7 @@ import mainReducer from './main.slice'
 import usersReducer from './userSlice/userSlice'
 import reportReducer from './reportSlice/reportSlice'
 import chartReducer from './chartSlice/chart.slice'
+import filterReducer from './chartSlice/filter.slice'
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     user: usersReducer,
     reports: reportReducer,
     charts: chartReducer,
+    filters: filterReducer,
   },
 })

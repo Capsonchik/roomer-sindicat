@@ -72,7 +72,11 @@ export const CreateChartDrawer = ({open, onClose}) => {
       return +group.group_id === +data.group_id
     })
     dispatch(setScrollTabs(index))
-    fetchCharts(+data.group_id)
+
+    // задержка чтобы успело создаться в базе
+    setTimeout(() => {
+      fetchCharts(+data.group_id)
+    }, 500)
     methods.reset({})
     onClose()
 

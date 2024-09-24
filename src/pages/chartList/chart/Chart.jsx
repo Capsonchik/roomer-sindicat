@@ -5,7 +5,12 @@ import {colors, legendConfig, tooltipConfig} from "./config";
 import {Button} from "rsuite";
 import {FormProvider, useForm} from "react-hook-form";
 import {ChartFilters} from "../chartFilters/ChartFIlters";
-import {setActiveChart, setOpenDrawer, setOriginalColors} from "../../../store/chartSlice/chart.slice";
+import {
+  setActiveChart,
+  setFilterLoading,
+  setOpenDrawer,
+  setOriginalColors
+} from "../../../store/chartSlice/chart.slice";
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectActiveGroupId,
@@ -24,6 +29,8 @@ import {calculateMaxValue} from "../calculateMaxValue";
 import {calculateStepSize} from "../calculateStepSize";
 import cl from "classnames";
 import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
+import {getFilters} from "../../../store/chartSlice/filter.actions";
+import {selectActiveFilters} from "../../../store/chartSlice/filter.slice";
 
 
 export const Chart = ({chart}) => {
@@ -35,6 +42,7 @@ export const Chart = ({chart}) => {
   const originalColors = useSelector(selectOriginalColors)
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
+  const activeFilters = useSelector(selectActiveFilters)
   const user = useSelector(selectCurrentUser)
   const [isDelete, setIsDelete] = useState(false)
   // console.log(chart)
@@ -80,7 +88,7 @@ export const Chart = ({chart}) => {
     //   console.log(formatValueElement)
     // }
     filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).map(([key, value]) => {
-      console.log(value,format_value)
+      // console.log(value,format_value)
       return [key, value.map(item => (+item).toFixed(format_value))];
     }))
 
@@ -110,7 +118,7 @@ export const Chart = ({chart}) => {
   }, [originalColors]);
 
   const fetchCharts = (id) => {
-    dispatch(fetchAllChartsByGroupId({groupId: id})).then(() => {
+    dispatch(fetchAllChartsByGroupId({groupId: id, filter_data: activeFilters})).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(id));
     });
   }
@@ -118,6 +126,10 @@ export const Chart = ({chart}) => {
   const handleDelete = () => {
     dispatch(deleteChartById(chart.id)).then(() => {
       fetchCharts(activeGroupId)
+
+      dispatch(getFilters(activeGroupId)).then(() => {
+        dispatch(setFilterLoading('none'))
+      })
     })
     dispatch(setOpenDrawer(false))
   }
@@ -158,7 +170,7 @@ export const Chart = ({chart}) => {
         format_value = data.format_value
 
         filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).map(([key, value]) => {
-        console.log(value,format_value)
+          // console.log(value,format_value)
           return [key, value.map(item => (+item).toFixed(format_value))];
         }))
       }
@@ -221,8 +233,8 @@ export const Chart = ({chart}) => {
       ispercent: chartState.ispercent
     })
 
-    const calculatedMaxValue = calculateMaxValue(0, maxValue ,6)
-    const step = calculateStepSize(0,calculatedMaxValue, 6)
+    const calculatedMaxValue = calculateMaxValue(0, maxValue, 6)
+    const step = calculateStepSize(0, calculatedMaxValue, 6)
 
     const option = {
       ...tooltipConfig,
@@ -255,7 +267,7 @@ export const Chart = ({chart}) => {
     };
 
     chartInstance.setOption(option, {
-      notMerge:  false,
+      notMerge: false,
       // replaceMerge: ['legend', 'series'],
       lazyUpdate: false,
 
@@ -263,15 +275,31 @@ export const Chart = ({chart}) => {
   }, [chartInstance, chartState]);
 
   const handleSave = () => {
+    // console.log(methods.getValues())
+    // return
     // console.log(originalColors)
     const {graph_id, xAxisData, seriesData, ...rest} = chartState
     const {isVisibleSeriesChange, ...restFormatting} = rest.formatting
     const request = {...rest, formatting: {...restFormatting, colors: originalColors}}
     dispatch(patchChartFormatting(request)).then(() => {
       const id = activeGroupId || groupsReports[0].group_id
-      dispatch(fetchAllChartsByGroupId({groupId: id})).then(() => {
+      const activeFiltersRequest = activeFilters[activeGroupId]
+      console.log('activeFilters[activeGroupId]',activeFilters[activeGroupId])
+      const request = activeFiltersRequest
+        .map(filter => {
+          return {
+            filter_id: filter.filter_id,
+            filter_values: filter.value,
+            isactive: filter.isactive,
+          }
+        })
+        .filter(filter => filter.isactive && Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
+      dispatch(fetchAllChartsByGroupId({groupId: id, filter_data: {filter_data: request}})).then(() => {
         dispatch(fetchAllChartsFormatByGroupId(id))
       })
+      // dispatch(getFilters(activeGroupId)).then(() => {
+      //   dispatch(setFilterLoading('none'))
+      // })
     })
 
     dispatch(setOpenDrawer(false))

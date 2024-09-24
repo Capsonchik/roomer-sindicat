@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {DEFAULT_COLUMNS} from "../../consts/tableMocks";
 
 const initialState = {
   compact: true,
@@ -6,6 +7,7 @@ const initialState = {
   showHeader: true,
   hover: true,
   autoHeight: true,
+  columnKeys: DEFAULT_COLUMNS.map(column => column.key),
 }
 
 export const tableSlice = createSlice({
@@ -26,7 +28,10 @@ export const tableSlice = createSlice({
     },
     setTableAutoHeight: (state, action) => {
       state.autoHeight = action.payload;
-    }
+    },
+    setColumnKeys(state, action) {
+      state.columnKeys = action.payload;
+    },
   }
 })
 
@@ -36,6 +41,7 @@ export const {
   setTableShowHeader,
   setTableCompact,
   setTableBordered,
+  setColumnKeys
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

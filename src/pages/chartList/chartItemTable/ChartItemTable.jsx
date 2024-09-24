@@ -1,33 +1,16 @@
 import styles from './chartItemTable.module.scss'
 import {useDispatch} from "react-redux";
-import {Button, Table} from 'rsuite';
+import {Button} from 'rsuite';
 import {setActiveChart, setOpenDrawer} from "../../../store/chartSlice/chart.slice";
-import React, {useState} from "react";
+import React from "react";
 import {data} from "../../../consts/tableData";
 import EditIcon from "@rsuite/icons/Edit";
 import {ExelIcon} from "./icons/ExelIcon";
 import * as XLSX from 'xlsx';
 import {ChartTable} from "./chartTable/ChartTable";
 
-
-const {Column, HeaderCell, Cell} = Table;
-const CompactCell = props => <Cell {...props} style={{padding: 4}}/>;
-const CompactHeaderCell = props => <HeaderCell {...props} style={{padding: 4}}/>;
-
-
 export const ChartItemTable = ({chart}) => {
   const dispatch = useDispatch();
-
-  const [compact, setCompact] = useState(true);
-  const [bordered, setBordered] = useState(true);
-  const [showHeader, setShowHeader] = useState(true);
-  const [hover, setHover] = useState(true);
-  const [autoHeight, setAutoHeight] = useState(true)
-  // const [columnKeys, setColumnKeys] = useState(DEFAULT_COLUMNS.map(column => column.key));
-
-  // const columns = DEFAULT_COLUMNS.filter(column => columnKeys.some(key => key === column.key));
-  // const CustomCell = compact ? CompactCell : Cell;
-  // const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
 
   const exportToExel = () => {
     const ws = XLSX.utils.json_to_sheet(data); // Преобразуем данные в лист Excel

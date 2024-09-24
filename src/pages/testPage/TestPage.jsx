@@ -7,6 +7,7 @@ import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {selectCurrentUser} from "../../store/userSlice/user.selectors";
 import {fetchGetUser} from "../../store/main.actions";
 import {axiosLoginRequest} from "../../api/ApiConfig";
+import styles from './styles.module.scss'
 
 export const TestPage = () => {
   const dispatch = useDispatch();
@@ -62,7 +63,7 @@ export const TestPage = () => {
   // }, [user]);
 
   return (
-    <Container>
+    <Container className={styles.wrapper}>
       <TopNavigationBar/>
       <Outlet/>
     </Container>

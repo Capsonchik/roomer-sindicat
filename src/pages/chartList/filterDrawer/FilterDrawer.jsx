@@ -70,7 +70,7 @@ export const FilterDrawer = ({open, onClose}) => {
   const [errorDBRequest, setErrorDBRequest] = useState('')
   const [selectedFields, setSelectedFields] = useState([])
 
-  const db_colors = availableFields.reduce((acc, item, index) => {
+  const db_colors = availableFields?.reduce((acc, item, index) => {
     const name = item.db_adress
     if (!acc[name]) {
       acc[name] = colors[index]
@@ -111,7 +111,7 @@ export const FilterDrawer = ({open, onClose}) => {
         }
       }),
     }
-    console.log(request)
+    // console.log(request)
     // console.log(request)
     dispatch(createFilter(request)).then(() => {
       dispatch(getFilters(activeGroupId))

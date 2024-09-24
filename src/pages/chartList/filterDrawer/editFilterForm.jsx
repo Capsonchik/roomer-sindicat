@@ -15,6 +15,8 @@ import {createFilter, deleteFilter, getFilters, updateFilter} from "../../../sto
 import {useDispatch, useSelector} from "react-redux";
 import {selectActiveGroupId} from "../../../store/chartSlice/chart.selectors";
 import {PreventOverflowContainer} from "../chartFilters/main/MainForm";
+import {removeFilter, setFilters} from "../../../store/chartSlice/filter.slice";
+import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
 
 
 export const EditFilterForm = ({filter, availableFields}) => {
@@ -80,12 +82,23 @@ export const EditFilterForm = ({filter, availableFields}) => {
       })
     }
 
-    console.log(request, filter.filter_id)
+    // console.log(request, filter.filter_id)
     const filter_id = filter.filter_id
-    console.log(request)
+    // console.log(request)
     dispatch(updateFilter({filter_data: request, filter_id}))
       .then(() => {
-        dispatch(getFilters(activeGroupId))
+        dispatch(removeFilter({activeGroupId}))
+        setTimeout(() => {
+          dispatch(getFilters(activeGroupId)).then((res) => {
+            // console.log(res.payload)
+            // dispatch(setFilters({data: res.payload, activeGroupId}))
+
+            // dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request}})).then(() => {
+            //   dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
+            // });
+          })
+        }, 500)
+
         // onClose()
         setIsEditFilter(false)
       })

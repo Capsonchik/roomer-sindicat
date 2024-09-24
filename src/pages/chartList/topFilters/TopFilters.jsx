@@ -57,7 +57,7 @@ export const TopFilters = () => {
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false)
 
   useEffect(() => {
-    if(user && user.role !== 'admin') {
+    if (user && user.role !== 'admin') {
       dispatch(fetchAllReports(user.client_id))
       dispatch(setActiveClient(user.client_id))
     }
@@ -79,8 +79,6 @@ export const TopFilters = () => {
   useEffect(() => {
     dispatch(fetchAllClients())
   }, []);
-
-
 
 
   // console.log(activeGroup,activeGroupId)
@@ -188,62 +186,85 @@ export const TopFilters = () => {
               }}
             />
           </div>
-          {user && user.role !== 'viewer' && activeReport && <GroupControlButtons/>}
-          {user && user.role !== 'viewer' && activeReport &&<Dropdown
-            icon={<SettingHorizontalIcon style={{width:16,height:16}}/>}
+          {/*user && user.role !== 'viewer' &&*/}
+          {activeReport && <GroupControlButtons/>}
+          {activeReport && <Dropdown
+            icon={<SettingHorizontalIcon style={{width: 16, height: 16}}/>}
             placement={'bottomEnd'}
             title="Настройки">
-            <Dropdown.Item
-              className={styles.dropdown_item}
-              onClick={() => {
-                dispatch(setTypeGroupDrawer('edit'))
-                setOpenGroupDrawer(true)
-              }}
-            >
-              <img src={editListIcon}/>
-              Редактировать лист
-            </Dropdown.Item>
-            <Dropdown.Item
-              className={styles.dropdown_item}
-              onClick={() => {
-                dispatch(setTypeGroupDrawer('add'))
-                setOpenGroupDrawer(true)
-              }}
-            >
-              <img src={createListIcon}/>
-              Создать лист
-            </Dropdown.Item>
-            <Dropdown.Item
-              className={styles.dropdown_item}
-              onClick={() => {
-                setOpenChartDrawer(true) // Передаем весь массив charts
-              }}
-            >
-              <img src={createChartIcon}/>
-              Создать график
-            </Dropdown.Item>
-            <Dropdown.Item
-              className={styles.dropdown_item}
-              onClick={() => {
-                setOpenFilterDrawer(true)
-              }}
-            >
-              <img src={filtersIcon}/>
-              Фильтры листа
-            </Dropdown.Item>
-            <Dropdown.Separator />
-            <Dropdown.Item
-              className={styles.dropdown_item}
-              onClick={() => {
-                setOpenPresentationDrawer(true)
-              }}
-            >
-              <img src={createPresentationIcon}/>
-              Создать презентацию
-            </Dropdown.Item>
+
+            {user && user.role !== 'viewer'
+              ? (
+                <>
+                  <Dropdown.Item
+                    className={styles.dropdown_item}
+                    onClick={() => {
+                      setOpenChartDrawer(true) // Передаем весь массив charts
+                    }}
+                  >
+                    <img src={createChartIcon}/>
+                    Создать график
+                  </Dropdown.Item>
+
+                  <Dropdown.Item
+                    className={styles.dropdown_item}
+                    onClick={() => {
+                      setOpenFilterDrawer(true)
+                    }}
+                  >
+                    <img src={filtersIcon}/>
+                    Фильтры листа
+                  </Dropdown.Item>
+
+                  <Dropdown.Separator/>
+                  <Dropdown.Item
+                    className={styles.dropdown_item}
+                    onClick={() => {
+                      dispatch(setTypeGroupDrawer('add'))
+                      setOpenGroupDrawer(true)
+                    }}
+                  >
+                    <img src={createListIcon}/>
+                    Создать лист
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className={styles.dropdown_item}
+                    onClick={() => {
+                      dispatch(setTypeGroupDrawer('edit'))
+                      setOpenGroupDrawer(true)
+                    }}
+                  >
+                    <img src={editListIcon}/>
+                    Редактировать лист
+                  </Dropdown.Item>
+
+
+                  <Dropdown.Separator/>
+                  <Dropdown.Item
+                    className={styles.dropdown_item}
+                    onClick={() => {
+                      setOpenPresentationDrawer(true)
+                    }}
+                  >
+                    <img src={createPresentationIcon}/>
+                    Создать презентацию
+                  </Dropdown.Item></>
+              )
+              : (
+                <Dropdown.Item
+                  className={styles.dropdown_item}
+                  onClick={() => {
+                    setOpenPresentationDrawer(true)
+                  }}
+                >
+                  <img src={createPresentationIcon}/>
+                  Создать презентацию
+                </Dropdown.Item>
+              )
+            }
+
 
           </Dropdown>}
-
 
 
         </div>

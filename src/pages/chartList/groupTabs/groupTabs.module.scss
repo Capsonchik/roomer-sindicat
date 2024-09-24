@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  margin-top: 24px;
+  margin-top: 8px;
   padding-inline: 15px;
   position: relative;
   //.img {
@@ -80,7 +80,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 60px;
+  height: 50px;
   padding: 10px 20px;
   cursor: pointer;
   //border-bottom: 1px solid #007bff;
@@ -101,13 +101,13 @@
   }
 
 
-
   &.active {
     //z-index: 100000000;
     //display: block;
     //position: relative;
-    color: #007bff;
-    border-bottom: 1px solid #007bff;
+    color: #f07e08;
+    font-weight: 500;
+    border-bottom: 1px solid #f07e08;
 
     //&:after {
     //  position: absolute;

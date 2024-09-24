@@ -1,12 +1,7 @@
 // Чистая функция для скачивания презентации
 import PptxGenJS from "pptxgenjs";
-import {prepareDataForPptx} from "./prepareDataForPptx";
-import {colors} from "./chart/config";
-import {getSumValues} from "./getSumValues";
-import {convertValuesByPercent} from "./chart/convertValuesByPercent";
-import {dataLabelPosMap} from "./label.config";
-import {calculateMaxValue} from "./calculateMaxValue";
-import {calculateStepSize} from "./calculateStepSize";
+
+import {addBarChartSlide} from "./addBarChartSlide";
 
 export const downloadPpt = (charts, activeGroup) => {
   const pptx = new PptxGenJS();
@@ -58,107 +53,12 @@ export const downloadPpt = (charts, activeGroup) => {
   }
 
   charts.forEach((chart, index) => {
-    // console.log(chart)
-    const {title, description, xAxisData, seriesData, formatting, ispercent} = chart;
-    // Добавляем заголовок графика
 
-    let format_value = formatting.format_value ?? 1
-    let filteredSeries = seriesData
-    // for (const formatValueElement of filteredSeries) {
-    //   console.log(formatValueElement)
-    // }
-    filteredSeries = Object.fromEntries(Object.entries(chart.seriesData).map(([key, value]) => {
-      console.log(value,format_value)
-      return [key, value.map(item => (+item).toFixed(format_value))];
-    }))
-    // console.log(filteredSeriesData)
-    // Подготовка данных для графика
-    const dataForChart = prepareDataForPptx({
-      xAxisData,
-      seriesData: filteredSeries
-    });
+    const {dataForBarChart, optionsForBar} = addBarChartSlide({chart, xOffset, yOffset, chartWidth, chartHeight})
+    if (chart.formatting.type_chart === 'bar') {
+      slide.addChart('bar', dataForBarChart, optionsForBar)
+    }
 
-    // Определяем направление баров в зависимости от isXAxis
-    const barDirection = formatting.isXAxis ? undefined : 'bar';
-
-    // фильтруем цвета
-    const filteredColors = formatting.colors
-      ? formatting.colors.filter(([color, bool]) => bool).map(([color, bool]) => color).slice(0, dataForChart.length)
-      : colors.slice(0, dataForChart.length)
-
-    // console.log(filteredColors)
-    //определяем максимальное значение
-    const maxValue = getSumValues({
-      stack: formatting.stack,
-      seriesData: filteredSeries,
-      // seriesIndex: index,
-      ispercent
-    })
-
-    const valAxisMaxVal = calculateMaxValue(0,maxValue,6)
-    const step = calculateStepSize(0,valAxisMaxVal, 6)
-    // const valAxisMaxVal = chart.ispercent ? 100 : maxValue.toFixed(chart.formatting.format_value || 1) * 1.1
-    const valAxisMajorUnit = chart.ispercent ? 20 : Math.ceil((maxValue.toFixed(chart.formatting.format_value)) / 6)
-    console.log(maxValue)
-    const valAxisLabelFormatCode = chart.ispercent || +maxValue > 10 ? '#,##0' : `#,##0.${'0'.repeat(chart.formatting.format_value - 1 ?? 1)}`
-
-    // Увеличиваем отступ для графика
-    // yOffset += 0.5; // Увеличиваем отступ перед графиком
-    slide.addChart('bar', dataForChart, {
-      chartColors: filteredColors,
-      title: chart.title,
-      showTitle: true,
-      titlePos: {
-        y: 0
-      },
-      titleFontSize: 10,
-      titleColor: '646262',
-      showLegend: true,
-      legendColor: '646262',
-      legendPos: 'b',
-      x: xOffset,
-      y: yOffset,
-      w: chartWidth,
-      h: chartHeight,
-
-      // showValue: true,
-      valAxisMaxVal,
-      valAxisLabelFormatCode,
-      valAxisMajorUnit: step,
-      // valAxisLabelFormat: `#,##0.${'0'.repeat(chart.formatting.format_value -1 || 1)}`,
-      // valAxisMaxVal: Math.ceil(maxValue * 1.1),
-      valAxisMinVal: 0,
-
-
-      showValue: true,
-      dataLabelFontSize: 8,
-      dataLabelFormatCode: `#,##0.${'0'.repeat(chart.formatting.format_value || 1)}`,
-      dataLabelPosition: dataLabelPosMap[chart.formatting.label_position] || 'bestFit',
-
-
-      valAxisLineShow: false,
-      valGridLine: {
-        size: 0.5,
-        color: 'dfdada'
-      },
-
-
-      catAxisLineSize: 1,
-      catAxisLineColor: 'b5b1b1',
-      catAxisLabelFontSize: 8,
-      catAxisLabelFontFace: 'Arial',
-      catAxisLabelColor: '9d9898',
-
-      valAxisLabelFontSize: 8,
-      valAxisLabelColor: '9d9898',
-
-
-      // Используем условное значение для направления баров
-      barDir: barDirection,
-      barGrouping: formatting.stack ? 'stacked' : 'standard',
-      barGapWidthPct: Math.min(100, Math.max(0, parseFloat(chart.formatting.column_width) * 1)),
-      barOverlapPct: -parseFloat(chart.formatting.column_gap)// Преобразование значения barCategoryGap в barGapWidthPct
-    });
 
     if (index === 1 && charts.length === 4) {
       yOffsetDefault = 3

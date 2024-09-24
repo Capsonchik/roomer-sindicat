@@ -67,7 +67,21 @@ export const ChartList = (props) => {
   });
 
   useEffect(() => {
-
+    // if(!activeFilters?.[activeGroupId]) return
+    // const filtersList =  filters
+    //
+    // const filterValues = filtersList.map(filter => ({
+    //   filter_name: filter.filter_name,
+    //   filter_id: filter.filter_id,
+    //   original_values: filter.original_values,
+    //   multi: filter.multi,
+    //   isactive: filter.isactive,
+    //   value: filter.multi ? activeFilters?.[activeGroupId] ? filter.value : filter.original_values : [filter.original_values?.[0]]
+    // }));
+    //
+    // // dispatch(setFilters({data: filterValues, activeGroupId}))
+    // methods.reset({filters: filterValues});
+    // replace(filterValues); // Обновляем данные в useFieldArray
   }, [activeFilters]);
 
   const {fields, append, remove, replace} = useFieldArray({
@@ -78,9 +92,10 @@ export const ChartList = (props) => {
   useEffect(() => {
     // if (!activeGroupId) return
     if (filters.length > 0) {
+      console.log(1)
       const filtersList = activeFilters?.[activeGroupId] ? activeFilters?.[activeGroupId] : filters
 
-      // console.log(activeFilters?.[activeGroupId]?.filters,filters)
+      console.log(activeFilters?.[activeGroupId],filters)
       const filterValues = filtersList.map(filter => ({
         filter_name: filter.filter_name,
         filter_id: filter.filter_id,
@@ -243,7 +258,9 @@ export const ChartList = (props) => {
       <TopFilters/>
       {activeReport && !!filters?.length && (
         <FormProvider {...methods}>
-          <div style={{
+          <div
+            className={styles.filters}
+            style={{
             display: 'flex',
             alignItems: 'center',
             gap: 8,
@@ -296,12 +313,12 @@ export const ChartList = (props) => {
           </div>
         )}
 
-        {activeReport && !isChartLoading && !resize && (
-          <div className={styles.info}>
-            <h4 className={styles.group_name}>{activeGroup?.group_name}</h4>
-            <h6 className={styles.title_group}>{activeGroup?.description}</h6>
-          </div>
-        )}
+        {/*{activeReport && !isChartLoading && !resize && (*/}
+        {/*  <div className={styles.info}>*/}
+        {/*    <h4 className={styles.group_name}>{activeGroup?.group_name}</h4>*/}
+        {/*    <h6 className={styles.title_group}>{activeGroup?.description}</h6>*/}
+        {/*  </div>*/}
+        {/*)}*/}
         {activeReport && <div
           // className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}
           className={cl(styles.wrapper, {

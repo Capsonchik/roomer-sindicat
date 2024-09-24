@@ -150,7 +150,9 @@ export const ChartListItem = ({chart}) => {
     <div className={styles.wrapper}>
       <div className={styles.title_wrapper}>
         <h5>{chart.title}</h5>
-        <Button onClick={() => {
+        <Button
+          className={styles.btn}
+          onClick={() => {
 
           dispatch(setActiveChart(chart))
           dispatch(setOpenDrawer(true))
@@ -159,7 +161,7 @@ export const ChartListItem = ({chart}) => {
         </Button>
       </div>
       {/*<p>{chart.description}</p>*/}
-      <div ref={chartRef} style={{width: '100%', minHeight: '400px'}}></div>
+      <div className={styles.chart} ref={chartRef} style={{width: '100%', minHeight: '500px',paddingBottom:30}}></div>
 
     </div>
   );

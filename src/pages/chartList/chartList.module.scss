@@ -1,7 +1,19 @@
+.filters{
+  background: linear-gradient(45deg,var(--rs-gray-100), var(--rs-gray-200));
+  border-radius:8px;
+  margin-inline: 15px;
+  box-shadow: 5px 4px 18px -2px rgba(34, 60, 80, 0.1);
+  padding-block: 10px;
+  margin-right: 20px;
+}
+
+
 .list {
   height: 100%;
-  margin-top: 30px;
+  padding-top: 15px;
   //margin-bottom: 100px;
+  //scrollbar-width: thin;
+  //scrollbar-color: red;
 
   height: calc(100vh - 220px);
   overflow: auto;
@@ -12,6 +24,20 @@
   }
   @media (max-width: 1000px) {
     height: calc(100vh - 270px);
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px; /* Ширина всего элемента навигации */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #fff; /* Цвет дорожки */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #050c26; /* Цвет бегунка */
+    border-radius: 20px; /* Округление бегунка */
+    border: 3px solid #fa8900; /* Оформление границ бегунка */
   }
 }
 
@@ -36,7 +62,8 @@
   //margin-top: 50px;
   padding-inline: 15px;
   display: grid;
-  row-gap: 80px;
+  row-gap: 15px;
+  column-gap: 15px;
   grid-template-columns: 1fr;
   text-align: center;
 

@@ -24,12 +24,17 @@ export const filterSlice = createSlice({
     setFilters: (state, action) => {
       const {data, activeGroupId} = action.payload
       // if (!state.activeFilters[activeGroupId]) {
-        state.activeFilters[activeGroupId] = data;
+      state.activeFilters[activeGroupId] = data;
       // }
       // else {
       //   state.activeFilters[activeGroupId] = data;
       // }
     },
+    removeFilter: (state, action) => {
+      const {activeGroupId} = action.payload
+      // if (!state.activeFilters[activeGroupId]) {
+      delete state.activeFilters[activeGroupId];
+    }
 
 
   },
@@ -43,7 +48,7 @@ export const filterSlice = createSlice({
   }
 })
 
-export const {setFilters} = filterSlice.actions;
+export const {removeFilter,setFilters} = filterSlice.actions;
 
 export default filterSlice.reducer;
 

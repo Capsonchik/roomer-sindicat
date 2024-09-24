@@ -1,5 +1,5 @@
 import styles from './groupControlButtons.module.scss'
-import {Button} from "rsuite";
+import {Button, Tooltip, Whisper} from "rsuite";
 import {downloadPpt} from "../downloadPptx";
 import React, {useEffect, useState} from "react";
 import {axiosGraphRequest} from "../../../api/ApiConfig";
@@ -13,6 +13,7 @@ import {
   selectIsChartLoading
 } from "../../../store/chartSlice/chart.selectors";
 import {CreateChartDrawer} from "../createChartDrawer/CreateChartDrawer";
+import {PowerPointIcon} from "./powerPointIcon";
 
 export const GroupControlButtons = () => {
   const [fileList, setFileList] = React.useState([]);
@@ -43,23 +44,28 @@ export const GroupControlButtons = () => {
   return (
     <>
       <div className={styles.wrapper}>
-        <Button
-          disabled={isChartLoading}
-          className={styles.create_pptx}
-          onClick={() => setOpenPresentationDrawer(true)}
-        >
-          Создать презентацию
-        </Button>
+        {/*<Button*/}
+        {/*  disabled={isChartLoading}*/}
+        {/*  className={styles.create_pptx}*/}
+        {/*  onClick={() => setOpenPresentationDrawer(true)}*/}
+        {/*>*/}
+        {/*  Создать презентацию*/}
+        {/*</Button>*/}
 
 
+        <Whisper
+          placement={'bottom'}
+          speaker={<Tooltip> Скачать слайд pptx</Tooltip>}>
+          <Button
+            disabled={isChartLoading}
+            onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
+            // className={styles.save_pptx}
+          >
+            <PowerPointIcon/>
 
-        <Button
-          disabled={isChartLoading}
-          onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
-          className={styles.save_pptx}
-        >
-          Скачать слайд pptx
-        </Button>
+          </Button>
+        </Whisper>
+
 
       </div>
       <PresentationDrawer

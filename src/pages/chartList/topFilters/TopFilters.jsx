@@ -27,6 +27,11 @@ import EditIcon from "@rsuite/icons/Edit";
 import {FilterDrawer} from "../filterDrawer/FilterDrawer";
 import {GroupControlButtons} from "../groupControlButtons/GroupControlButtons";
 import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
+import editListIcon from './assets/edit-list.svg'
+import createListIcon from './assets/create-list.svg'
+import createChartIcon from './assets/create-chart.svg'
+import filtersIcon from './assets/filters.svg'
+import createPresentationIcon from './assets/create-presentation.svg'
 
 export const TopFilters = () => {
   const dispatch = useDispatch();
@@ -187,76 +192,56 @@ export const TopFilters = () => {
             placement={'bottomEnd'}
             title="Настройки">
             <Dropdown.Item
+              className={styles.dropdown_item}
               onClick={() => {
                 dispatch(setTypeGroupDrawer('edit'))
                 setOpenGroupDrawer(true)
               }}
             >
+              <img src={editListIcon}/>
               Редактировать лист
             </Dropdown.Item>
             <Dropdown.Item
+              className={styles.dropdown_item}
               onClick={() => {
                 dispatch(setTypeGroupDrawer('add'))
                 setOpenGroupDrawer(true)
               }}
             >
+              <img src={createListIcon}/>
               Создать лист
             </Dropdown.Item>
             <Dropdown.Item
+              className={styles.dropdown_item}
               onClick={() => {
                 setOpenChartDrawer(true) // Передаем весь массив charts
               }}
             >
+              <img src={createChartIcon}/>
               Создать график
             </Dropdown.Item>
             <Dropdown.Item
-            onClick={() => {
-              setOpenFilterDrawer(true)
-            }}
+              className={styles.dropdown_item}
+              onClick={() => {
+                setOpenFilterDrawer(true)
+              }}
             >
+              <img src={filtersIcon}/>
               Фильтры листа
+            </Dropdown.Item>
+            <Dropdown.Separator />
+            <Dropdown.Item
+              className={styles.dropdown_item}
+              onClick={() => {
+                setOpenFilterDrawer(true)
+              }}
+            >
+              <img src={createPresentationIcon}/>
+              Создать презентацию
             </Dropdown.Item>
 
           </Dropdown>}
-          {/*{activeReport && (*/}
-          {/*  <div className={styles.group_wrapper}>*/}
-          {/*    <Button onClick={() => {*/}
-          {/*      dispatch(setTypeGroupDrawer('edit'))*/}
-          {/*      setOpenGroupDrawer(true)*/}
-          {/*      // dispatch(setActiveChart(chart))*/}
-          {/*      // dispatch(setOpenDrawer(true))*/}
-          {/*    }}>*/}
-          {/*      Редактировать лист*/}
-          {/*    </Button>*/}
-          {/*    /!*<h6 className={styles.title_group}>{activeGroup?.description}</h6>*!/*/}
 
-          {/*  </div>*/}
-          {/*)}*/}
-
-          {/*{activeReport && <Button*/}
-          {/*  className={styles.create_pptx}*/}
-          {/*  onClick={() => {*/}
-          {/*    // setActiveGroup(null)*/}
-          {/*    dispatch(setTypeGroupDrawer('add'))*/}
-          {/*    setOpenGroupDrawer(true)*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  Создать лист*/}
-          {/*</Button>}*/}
-          {/*{activeReport && <Button*/}
-          {/*  disabled={isChartLoading}*/}
-          {/*  onClick={() => setOpenChartDrawer(true)} // Передаем весь массив charts*/}
-          {/*  className={styles.create_chart}*/}
-          {/*>*/}
-          {/*  Создать график*/}
-          {/*</Button>}*/}
-          {/*{activeReport && <Button*/}
-          {/*  disabled={isChartLoading}*/}
-          {/*  onClick={() => setOpenFilterDrawer(true)} // Передаем весь массив charts*/}
-          {/*  className={styles.create_chart}*/}
-          {/*>*/}
-          {/*  Фильтры листа*/}
-          {/*</Button>}*/}
 
 
         </div>

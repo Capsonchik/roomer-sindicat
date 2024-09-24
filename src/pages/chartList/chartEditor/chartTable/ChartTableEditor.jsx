@@ -1,7 +1,6 @@
-
-
 import styles from './chartTable.module.scss'
-export const ChartTable = ({chart}) => {
+
+export const ChartTableEditor = ({chart}) => {
 
   return (
     <div className={styles.wrapper}>

@@ -1,13 +1,13 @@
 import styles from './chartItemTable.module.scss'
 import {useDispatch} from "react-redux";
-import {Button, Table, TagPicker} from 'rsuite';
+import {Button, Table} from 'rsuite';
 import {setActiveChart, setOpenDrawer} from "../../../store/chartSlice/chart.slice";
 import React, {useState} from "react";
-import {DEFAULT_COLUMNS} from "../../../consts/tableMocks";
 import {data} from "../../../consts/tableData";
 import EditIcon from "@rsuite/icons/Edit";
 import {ExelIcon} from "./icons/ExelIcon";
 import * as XLSX from 'xlsx';
+import {ChartTable} from "./chartTable/ChartTable";
 
 
 const {Column, HeaderCell, Cell} = Table;
@@ -23,11 +23,11 @@ export const ChartItemTable = ({chart}) => {
   const [showHeader, setShowHeader] = useState(true);
   const [hover, setHover] = useState(true);
   const [autoHeight, setAutoHeight] = useState(true)
-  const [columnKeys, setColumnKeys] = useState(DEFAULT_COLUMNS.map(column => column.key));
+  // const [columnKeys, setColumnKeys] = useState(DEFAULT_COLUMNS.map(column => column.key));
 
-  const columns = DEFAULT_COLUMNS.filter(column => columnKeys.some(key => key === column.key));
-  const CustomCell = compact ? CompactCell : Cell;
-  const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
+  // const columns = DEFAULT_COLUMNS.filter(column => columnKeys.some(key => key === column.key));
+  // const CustomCell = compact ? CompactCell : Cell;
+  // const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
 
   const exportToExel = () => {
     const ws = XLSX.utils.json_to_sheet(data); // Преобразуем данные в лист Excel
@@ -54,39 +54,41 @@ export const ChartItemTable = ({chart}) => {
         </div>
       </div>
 
-      <div>
-        <TagPicker
-          data={DEFAULT_COLUMNS}
-          labelKey="label"
-          valueKey="key"
-          value={columnKeys}
-          onChange={setColumnKeys}
-          cleanable={false}
-        />
-      </div>
+      {/*<div>*/}
+      {/*  <TagPicker*/}
+      {/*    data={DEFAULT_COLUMNS}*/}
+      {/*    labelKey="label"*/}
+      {/*    valueKey="key"*/}
+      {/*    value={columnKeys}*/}
+      {/*    onChange={setColumnKeys}*/}
+      {/*    cleanable={false}*/}
+      {/*  />*/}
+      {/*</div>*/}
       <hr/>
 
-      <Table
-        height={300}
-        hover={hover}
-        showHeader={showHeader}
-        autoHeight={autoHeight}
-        data={data}
-        bordered={bordered}
-        cellBordered={bordered}
-        headerHeight={compact ? 30 : 40}
-        rowHeight={compact ? 30 : 46}
-      >
-        {columns.map(column => {
-          const {key, label, ...rest} = column;
-          return (
-            <Column {...rest} key={key} resizable>
-              <CustomHeaderCell>{label}</CustomHeaderCell>
-              <CustomCell dataKey={key}/>
-            </Column>
-          );
-        })}
-      </Table>
+      {/*<Table*/}
+      {/*  height={300}*/}
+      {/*  hover={hover}*/}
+      {/*  showHeader={showHeader}*/}
+      {/*  autoHeight={autoHeight}*/}
+      {/*  data={data}*/}
+      {/*  bordered={bordered}*/}
+      {/*  cellBordered={bordered}*/}
+      {/*  headerHeight={compact ? 30 : 40}*/}
+      {/*  rowHeight={compact ? 30 : 46}*/}
+      {/*>*/}
+      {/*  {columns.map(column => {*/}
+      {/*    const {key, label, ...rest} = column;*/}
+      {/*    return (*/}
+      {/*      <Column {...rest} key={key} resizable>*/}
+      {/*        <CustomHeaderCell>{label}</CustomHeaderCell>*/}
+      {/*        <CustomCell dataKey={key}/>*/}
+      {/*      </Column>*/}
+      {/*    );*/}
+      {/*  })}*/}
+      {/*</Table>*/}
+
+      <ChartTable/>
 
     </div>
   )

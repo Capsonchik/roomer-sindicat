@@ -1,8 +1,15 @@
-.wrapper{
-  .title_wrapper{
+.wrapper {
+  .title_wrapper {
+    margin-bottom: 1rem;
     display: flex;
     gap: 8px;
     align-items: center;
     justify-content: center;
   }
+}
+
+.exelIcon {
+  display: flex;
+  cursor: pointer;
+  margin-left: 10px;
 }

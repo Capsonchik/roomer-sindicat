@@ -1,11 +1,12 @@
 import styles from './chartItemTable.module.scss'
 import {useDispatch} from "react-redux";
-import {Button, Table, TagPicker, Toggle} from 'rsuite';
+import {Button, Table, TagPicker} from 'rsuite';
 import {setActiveChart, setOpenDrawer} from "../../../store/chartSlice/chart.slice";
-import EditIcon from "@rsuite/icons/Edit";
 import React, {useState} from "react";
 import {DEFAULT_COLUMNS} from "../../../consts/tableMocks";
 import {data} from "../../../consts/tableData";
+import EditIcon from "@rsuite/icons/Edit";
+import {ExelIcon} from "./icons/ExelIcon";
 
 
 const {Column, HeaderCell, Cell} = Table;
@@ -20,6 +21,7 @@ export const ChartItemTable = ({chart}) => {
   const [bordered, setBordered] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
   const [hover, setHover] = useState(true);
+  const [autoHeight, setAutoHeight] = useState(true)
   const [columnKeys, setColumnKeys] = useState(DEFAULT_COLUMNS.map(column => column.key));
 
   const columns = DEFAULT_COLUMNS.filter(column => columnKeys.some(key => key === column.key));
@@ -31,32 +33,20 @@ export const ChartItemTable = ({chart}) => {
       <div className={styles.title_wrapper}>
         <h5>{chart.title}</h5>
         <Button onClick={() => {
-
           dispatch(setActiveChart(chart))
           dispatch(setOpenDrawer(true))
         }}>
           <EditIcon/>
         </Button>
-      </div>
-      ChartItemTable
-      <div>
-        <div>
-          <Toggle checked={compact} onChange={setCompact}>
-            Compact
-          </Toggle>
-
-          <Toggle checked={bordered} onChange={setBordered}>
-            Bordered
-          </Toggle>
-
-          <Toggle checked={showHeader} onChange={setShowHeader}>
-            Show Header
-          </Toggle>
-
-          <Toggle checked={hover} onChange={setHover}>
-            Hover
-          </Toggle>
+        <div
+          className={styles.exelIcon}
+          onClick={() => alert('Скачали Exel файл')}
+        >
+          <ExelIcon/>
         </div>
+      </div>
+
+      <div>
         <TagPicker
           data={DEFAULT_COLUMNS}
           labelKey="label"
@@ -72,6 +62,7 @@ export const ChartItemTable = ({chart}) => {
         height={300}
         hover={hover}
         showHeader={showHeader}
+        autoHeight={autoHeight}
         data={data}
         bordered={bordered}
         cellBordered={bordered}
@@ -81,7 +72,7 @@ export const ChartItemTable = ({chart}) => {
         {columns.map(column => {
           const {key, label, ...rest} = column;
           return (
-            <Column {...rest} key={key}>
+            <Column {...rest} key={key} resizable>
               <CustomHeaderCell>{label}</CustomHeaderCell>
               <CustomCell dataKey={key}/>
             </Column>

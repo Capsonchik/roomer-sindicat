@@ -8,6 +8,8 @@ import {fetchPostLogOut} from "../../store/main.actions";
 import {useDispatch, useSelector} from "react-redux";
 import {selectCurrentUser} from "../../store/userSlice/user.selectors";
 import {setActiveClient, setActiveReport} from "../../store/chartSlice/chart.slice";
+import ExitIcon from '@rsuite/icons/Exit';
+
 
 export const TopNavigationBar = () => {
   const navigate = useNavigate();
@@ -42,7 +44,7 @@ export const TopNavigationBar = () => {
       <Nav pullRight>
 
         {user && <Nav.Item icon={<UserBadgeIcon/>}>{user.username}</Nav.Item>}
-        <Nav.Item onClick={handleLogOut} icon={<CogIcon/>}>Выйти из системы</Nav.Item>
+        <Nav.Item onClick={handleLogOut} icon={<ExitIcon/>}>Выйти из системы</Nav.Item>
       </Nav>
     </Navbar>
   );

@@ -7,6 +7,7 @@ import {DEFAULT_COLUMNS} from "../../../consts/tableMocks";
 import {data} from "../../../consts/tableData";
 import EditIcon from "@rsuite/icons/Edit";
 import {ExelIcon} from "./icons/ExelIcon";
+import * as XLSX from 'xlsx';
 
 
 const {Column, HeaderCell, Cell} = Table;
@@ -28,6 +29,13 @@ export const ChartItemTable = ({chart}) => {
   const CustomCell = compact ? CompactCell : Cell;
   const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
 
+  const exportToExel = () => {
+    const ws = XLSX.utils.json_to_sheet(data); // Преобразуем данные в лист Excel
+    const wb = XLSX.utils.book_new(); // Создаем новую книгу
+    XLSX.utils.book_append_sheet(wb, ws, "Data"); // Добавляем лист в книгу
+    XLSX.writeFile(wb, "data.xlsx"); // Сохраняем книгу как файл
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.title_wrapper}>
@@ -40,7 +48,7 @@ export const ChartItemTable = ({chart}) => {
         </Button>
         <div
           className={styles.exelIcon}
-          onClick={() => alert('Скачали Exel файл')}
+          onClick={exportToExel}
         >
           <ExelIcon/>
         </div>

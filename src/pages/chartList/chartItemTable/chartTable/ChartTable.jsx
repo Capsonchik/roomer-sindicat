@@ -125,6 +125,7 @@ export const ChartTable = () => {
             sortable={sort}
             onDragOver={(e) => handleDragOver(e, index)}
             onDrop={handleDrop}
+            flexGrow={1}
           >
             <HeaderCell
               draggable={draggble}

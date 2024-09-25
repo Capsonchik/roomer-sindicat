@@ -72,6 +72,16 @@ export const chartSlice = createSlice({
     setFilterLoading: (state, action) => {
       state.filterLoading = action.payload;
     },
+    setFilters: (state, action) => {
+      state.filters = action.payload;
+    },
+    setGroups: (state, action) => {
+      state.groupsChart = action.payload;
+    },
+    setCharts: (state, action) => {
+      state.charts = action.payload;
+    },
+
 
   },
   extraReducers: builder => {
@@ -162,6 +172,6 @@ export const chartSlice = createSlice({
   }
 })
 
-export const {setFilterLoading,setScrollTabs,setTypeGroupDrawer,setActiveGroup,setOriginalColors,setOpenDrawer,setActiveChart,setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
+export const {setCharts,setGroups,setFilters,setFilterLoading,setScrollTabs,setTypeGroupDrawer,setActiveGroup,setOriginalColors,setOpenDrawer,setActiveChart,setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
 
 export default chartSlice.reducer;

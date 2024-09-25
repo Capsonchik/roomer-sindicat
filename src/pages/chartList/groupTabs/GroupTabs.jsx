@@ -26,7 +26,7 @@ export const GroupTabs = ({groupsReports}) => {
     // else {
     //   handleSelect(activeGroupId);
     // }
-  }, []);
+  }, [groupsReports]);
 
   useEffect(() => {
     if (activeGroupId) {

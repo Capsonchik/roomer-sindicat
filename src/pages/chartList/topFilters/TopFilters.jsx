@@ -15,7 +15,13 @@ import {
 import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/SelectPicker";
 import {FormProvider, useForm} from "react-hook-form";
 import {GroupTabs} from "../groupTabs/GroupTabs";
-import {setActiveClient, setActiveReport, setTypeGroupDrawer} from "../../../store/chartSlice/chart.slice";
+import {
+  setActiveClient,
+  setActiveReport, setCharts,
+  setFilters,
+  setGroups,
+  setTypeGroupDrawer
+} from "../../../store/chartSlice/chart.slice";
 import {Button, Dropdown, Uploader} from "rsuite";
 import {downloadPpt} from "../downloadPptx";
 import {convertDataCharts} from "./convertDataCharts";
@@ -84,7 +90,18 @@ export const TopFilters = () => {
   // console.log(activeGroup,activeGroupId)
   const handleClientChange = (clientId) => {
     if (clientId) {
-      dispatch(fetchAllReports(clientId))
+      if (clientId !== activeClient) {
+        dispatch(fetchAllReports(clientId))
+        dispatch(setActiveReport(null))
+        dispatch(setFilters([]))
+        dispatch(setGroups([]))
+        dispatch(setCharts([]))
+
+      } else {
+        // dispatch(setActiveClient(null))
+        // dispatch(setActiveClient(clientId))
+        // dispatch(setActiveReport(null))
+      }
     }
 
     if (clientId) {

@@ -22,19 +22,20 @@ export const ChartItemTable = ({chart}) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.title_wrapper}>
-        <h5>{chart.title}</h5>
+        <h5 className={styles.title}>{chart.title}</h5>
+        <Button
+          className={styles.exelIcon}
+          onClick={exportToExel}
+        >
+          <ExelIcon/>
+        </Button>
         <Button onClick={() => {
           dispatch(setActiveChart(chart))
           dispatch(setOpenDrawer(true))
         }}>
           <EditIcon/>
         </Button>
-        <div
-          className={styles.exelIcon}
-          onClick={exportToExel}
-        >
-          <ExelIcon/>
-        </div>
+
       </div>
 
       {/*<div>*/}
@@ -47,7 +48,7 @@ export const ChartItemTable = ({chart}) => {
       {/*    cleanable={false}*/}
       {/*  />*/}
       {/*</div>*/}
-      <hr/>
+      {/*<hr/>*/}
 
       {/*<Table*/}
       {/*  height={300}*/}

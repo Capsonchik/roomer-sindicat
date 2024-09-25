@@ -1,12 +1,13 @@
 import {data} from "../../../../consts/tableData";
 import {Table} from "rsuite";
-import React from "react";
+import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectTableAutoHeight,
   selectTableBordered,
   selectTableColumnKeys,
   selectTableCompact,
+  selectTableDraggable,
   selectTableHover,
   selectTableLoading,
   selectTableResize,
@@ -26,10 +27,6 @@ export const ChartTable = () => {
 
   const dispatch = useDispatch();
 
-  // const [sortColumn, setSortColumn] = useState();
-  // const [sortType, setSortType] = useState();
-  // const [loading, setLoading] = useState(false);
-
   const sortColumn = useSelector(selectTableSortColumn);
   const sortType = useSelector(selectTableSortType);
   const loading = useSelector(selectTableLoading);
@@ -41,11 +38,41 @@ export const ChartTable = () => {
   const columnKey = useSelector(selectTableColumnKeys);
   const resize = useSelector(selectTableResize);
   const sort = useSelector(selectTableSort);
+  const draggble = useSelector(selectTableDraggable);
 
+  // Начальное состояние для столбцов
+  const [columns, setColumns] = useState(
+    DEFAULT_COLUMNS.filter((column) => columnKey.some((key) => key === column.key))
+  );
 
-  const column = DEFAULT_COLUMNS.filter(column => columnKey.some(key => key === column.key));
   const CustomCell = compact ? CompactCell : Cell;
   const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
+
+  // Хранит индекс перетаскиваемого столбца
+  const [draggingColumn, setDraggingColumn] = useState(null);
+
+  // Обработка начала перетаскивания
+  const handleDragStart = (index) => {
+    setDraggingColumn(index);
+  };
+
+  // Обработка перетаскивания над другим столбцом
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    if (draggingColumn !== null && draggingColumn !== index) {
+      const newColumns = [...columns];
+      const draggedColumn = newColumns[draggingColumn];
+      newColumns.splice(draggingColumn, 1); // Удаляем перетаскиваемый столбец
+      newColumns.splice(index, 0, draggedColumn); // Вставляем его на новое место
+      setColumns(newColumns);
+      setDraggingColumn(index); // Обновляем индекс
+    }
+  };
+
+  // Обработка завершения перетаскивания
+  const handleDrop = () => {
+    setDraggingColumn(null);
+  };
 
   const getData = () => {
     if (sortColumn && sortType) {
@@ -58,11 +85,7 @@ export const ChartTable = () => {
         if (typeof y === 'string') {
           y = y.charCodeAt();
         }
-        if (sortType === 'asc') {
-          return x - y;
-        } else {
-          return y - x;
-        }
+        return sortType === 'asc' ? x - y : y - x;
       });
     }
     return data;
@@ -82,7 +105,6 @@ export const ChartTable = () => {
       hover={hover}
       showHeader={showHeader}
       autoHeight={autoHeight}
-      // data={data}
       data={getData()}
       sortColumn={sortColumn}
       sortType={sortType}
@@ -92,13 +114,24 @@ export const ChartTable = () => {
       cellBordered={bordered}
       headerHeight={compact ? 30 : 40}
       rowHeight={compact ? 30 : 46}
-
     >
-      {column.map(column => {
+      {columns.map((column, index) => {
         const {key, label, ...rest} = column;
         return (
-          <Column {...rest} key={key} resizable={resize} sortable={sort}>
-            <CustomHeaderCell>{label}</CustomHeaderCell>
+          <Column
+            {...rest}
+            key={key}
+            resizable={resize}
+            sortable={sort}
+            onDragOver={(e) => handleDragOver(e, index)}
+            onDrop={handleDrop}
+          >
+            <HeaderCell
+              draggable={draggble}
+              onDragStart={() => handleDragStart(index)}
+            >
+              {label}
+            </HeaderCell>
             <CustomCell dataKey={key}/>
           </Column>
         );

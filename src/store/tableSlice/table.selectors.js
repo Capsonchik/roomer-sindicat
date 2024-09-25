@@ -9,4 +9,5 @@ export const selectTableResize = (state) => state.tableSittings.resize;
 export const selectTableSortColumn = (state) => state.tableSittings.sortColumn;
 export const selectTableSortType = (state) => state.tableSittings.sortType;
 export const selectTableLoading = (state) => state.tableSittings.loading;
+export const selectTableDraggable = (state) => state.tableSittings.draggable;
 

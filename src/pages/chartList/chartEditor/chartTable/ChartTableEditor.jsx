@@ -6,6 +6,7 @@ import {
   selectTableAutoHeight,
   selectTableBordered,
   selectTableCompact,
+  selectTableDraggable,
   selectTableHover,
   selectTableResize,
   selectTableShowHeader,
@@ -15,6 +16,7 @@ import {
   setTableAutoHeight,
   setTableBordered,
   setTableCompact,
+  setTableDraggable,
   setTableHover,
   setTableResize,
   setTableShowHeader,
@@ -34,6 +36,7 @@ export const ChartTableEditor = ({chart}) => {
   const bordered = useSelector(selectTableBordered);
   const resize = useSelector(selectTableResize);
   const sort = useSelector(selectTableSort);
+  const draggble = useSelector(selectTableDraggable);
 
   const [columnKeys, setColumnKeys] = useState(DEFAULT_COLUMNS.map(column => column.key));
   const columns = DEFAULT_COLUMNS.filter(column => columnKeys.some(key => key === column.key));
@@ -77,6 +80,10 @@ export const ChartTableEditor = ({chart}) => {
 
         <Toggle checked={sort} onChange={() => dispatch(setTableSort(!sort))}>
           Вкл/выкл сортировку
+        </Toggle>
+
+        <Toggle checked={draggble} onChange={() => dispatch(setTableDraggable(!draggble))}>
+          Вкл/выкл возможность перетаскивания столбцов
         </Toggle>
 
       </div>

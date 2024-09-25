@@ -26,6 +26,9 @@
 
     & > div {
       align-items: center;
+      //color: #f07e08;
+    }
+    & > div:not(:first-child) {
       color: #f07e08;
     }
 

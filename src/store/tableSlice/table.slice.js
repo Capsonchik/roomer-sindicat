@@ -7,6 +7,11 @@ const initialState = {
   showHeader: true,
   hover: true,
   autoHeight: true,
+  sort: false,
+  resize: true,
+  sortColumn: null,
+  sortType: null,
+  loading: false,
   columnKeys: DEFAULT_COLUMNS.map(column => column.key),
 }
 
@@ -32,6 +37,19 @@ export const tableSlice = createSlice({
     setColumnKeys(state, action) {
       state.columnKeys = action.payload;
     },
+    setTableSort: (state, action) => {
+      state.sort = action.payload;
+    },
+    setTableResize: (state, action) => {
+      state.resize = action.payload;
+    },
+    setTableSortColumn(state, action) {
+      state.sortColumn = action.payload.column;
+      state.sortType = action.payload.type;
+    },
+    setTableLoading(state, action) {
+      state.loading = action.payload;
+    },
   }
 })
 
@@ -41,7 +59,11 @@ export const {
   setTableShowHeader,
   setTableCompact,
   setTableBordered,
-  setColumnKeys
+  setColumnKeys,
+  setTableResize,
+  setTableSort,
+  setTableLoading,
+  setTableSortColumn,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

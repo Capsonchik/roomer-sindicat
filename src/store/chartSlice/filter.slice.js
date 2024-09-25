@@ -34,6 +34,9 @@ export const filterSlice = createSlice({
       const {activeGroupId} = action.payload
       // if (!state.activeFilters[activeGroupId]) {
       delete state.activeFilters[activeGroupId];
+    },
+    removeFilters: (state, action) => {
+      state.activeFilters = {}
     }
 
 
@@ -48,7 +51,7 @@ export const filterSlice = createSlice({
   }
 })
 
-export const {removeFilter,setFilters} = filterSlice.actions;
+export const {removeFilters,removeFilter,setFilters} = filterSlice.actions;
 
 export default filterSlice.reducer;
 

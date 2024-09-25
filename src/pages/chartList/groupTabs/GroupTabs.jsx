@@ -4,10 +4,11 @@ import 'swiper/css/navigation';
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useRef, useState} from "react";
 import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
-import {setActiveGroup} from "../../../store/chartSlice/chart.slice";
+import {setActiveGroup, setFilterLoading} from "../../../store/chartSlice/chart.slice";
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Navigation, Mousewheel, Keyboard, Scrollbar} from 'swiper/modules';
 import {selectActiveGroupId, selectCharts, selectScrollTabs} from "../../../store/chartSlice/chart.selectors";
+import {getFilters} from "../../../store/chartSlice/filter.actions";
 
 export const GroupTabs = ({groupsReports}) => {
   const dispatch = useDispatch();
@@ -29,11 +30,17 @@ export const GroupTabs = ({groupsReports}) => {
   }, [groupsReports]);
 
   useEffect(() => {
-    if (activeGroupId) {
-      // fetchCharts(activeGroupId)
-    }
+    // if(activeGroupId) {
+    //
+    //   dispatch(getFilters(activeGroupId)).then(() => {
+    //     dispatch(setFilterLoading('none'))
+    //   })
+    // }
+    //   fetchCharts(activeGroupId)
+    // // if (activeGroupId) {
+    // // }
 
-  }, [activeGroupId])
+  }, [])
 
 
   const fetchCharts = (id) => {

@@ -16,7 +16,7 @@ import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/Sel
 import {FormProvider, useForm} from "react-hook-form";
 import {GroupTabs} from "../groupTabs/GroupTabs";
 import {
-  setActiveClient,
+  setActiveClient, setActiveGroup,
   setActiveReport, setCharts,
   setFilters,
   setGroups,
@@ -53,7 +53,7 @@ export const TopFilters = () => {
   const isChartLoading = useSelector(selectIsChartLoading)
   const user = useSelector(selectCurrentUser)
   const [openChartDrawer, setOpenChartDrawer] = useState(false)
-  const [activeGroup, setActiveGroup] = useState()
+  const [activeGroupState, setActiveGroupState] = useState()
   // const groups = useSelector(selectGroupsReports);
 
   const [fileList, setFileList] = React.useState([]);
@@ -74,9 +74,9 @@ export const TopFilters = () => {
 
     const foundGroup = groupsReports.find((group) => group.group_id == activeGroupId)
     if (foundGroup) {
-      setActiveGroup(foundGroup)
+      setActiveGroupState(foundGroup)
     } else if (groupsReports.length) {
-      setActiveGroup(groupsReports[0])
+      setActiveGroupState(groupsReports[0])
     }
     setFileList([])
 
@@ -96,6 +96,8 @@ export const TopFilters = () => {
         dispatch(setFilters([]))
         dispatch(setGroups([]))
         dispatch(setCharts([]))
+        dispatch(setActiveGroup(null))
+
 
       } else {
         // dispatch(setActiveClient(null))
@@ -136,7 +138,7 @@ export const TopFilters = () => {
     if (fileList.length > 0) {
       const file = fileList[0];
 
-      const {title_data, description, charts: chartForRequest} = getDataCharts({charts, activeGroup});
+      const {title_data, description, charts: chartForRequest} = getDataCharts({charts, activeGroupState});
 
       const formData = new FormData();
       formData.append('file', file.blobFile); // Binary file
@@ -287,7 +289,7 @@ export const TopFilters = () => {
 
         </div>
         {!!groupsReports.length && activeReport && (
-          <GroupTabs groupsReports={groupsReports} activeGroup={activeGroup}/>
+          <GroupTabs groupsReports={groupsReports} activeGroup={activeGroupState}/>
         )}
 
 
@@ -298,7 +300,7 @@ export const TopFilters = () => {
       />
 
       <GroupDrawer
-        activeGroup={activeGroup}
+        activeGroup={activeGroupState}
         open={openGroupDrawer}
         onClose={() => setOpenGroupDrawer(false)}
       />

@@ -92,6 +92,10 @@ export const ChartList = (props) => {
       methods.reset({filters: filterValues});
       replace(filterValues); // Обновляем данные в useFieldArray
     }
+
+    return () =>{
+      methods.reset({})
+    }
   }, [filters, methods, replace]);
 
   // console.log('fields',fields)
@@ -101,7 +105,7 @@ export const ChartList = (props) => {
 
     // console.log(222, methods.getValues('filters'))
     const request = methods.getValues('filters')
-      .map(filter => {
+      ?.map(filter => {
         return {
           filter_id: filter.filter_id,
           filter_values: filter.multi ? activeFilters?.[activeGroupId] ? filter.value : filter.original_values : [filter.original_values?.[0]],
@@ -112,7 +116,7 @@ export const ChartList = (props) => {
 
     // console.log(filters,activeGroupId,methods.getValues('filters'))
     // Отправляем запрос на получение графиков с фильтрами
-    dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request}}))
+    dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request || []}}))
       .then(() => {
         dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
       });

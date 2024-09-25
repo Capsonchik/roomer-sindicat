@@ -12,6 +12,7 @@ const initialState = {
   sortColumn: null,
   sortType: null,
   loading: false,
+  draggable: false,
   columnKeys: DEFAULT_COLUMNS.map(column => column.key),
 }
 
@@ -50,6 +51,9 @@ export const tableSlice = createSlice({
     setTableLoading(state, action) {
       state.loading = action.payload;
     },
+    setTableDraggable(state, action) {
+      state.draggable = action.payload;
+    }
   }
 })
 
@@ -64,6 +68,7 @@ export const {
   setTableSort,
   setTableLoading,
   setTableSortColumn,
+  setTableDraggable
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

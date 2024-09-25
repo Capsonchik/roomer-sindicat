@@ -243,17 +243,20 @@ export const ChartList = (props) => {
         <FormProvider {...methods}>
           <div
             className={styles.filters}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              marginTop: 16,
-              paddingInline: 15
-            }}>
+            // style={{
+            //
+            // }}
+          >
             {fields.map((filter, i) => (
-              <div key={filter.id}>
+              <div style={{
+
+                // flexGrow: 1
+                // flexGrow: filters.length >= 5 ? 1 : 0
+              }}
+                key={filter.id}>
                 <p style={{marginBottom: 8, fontWeight: 500}}>{filter.filter_name}</p>
                 <CustomCheckPicker
+
                   value={filter.isactive ? methods.getValues(`filters.${i}.value`) : null} // Добавляем value
                   // defaultValue={filter.original_values[0]}
                   disabled={!methods.getValues(`filters.${i}.isactive`)}

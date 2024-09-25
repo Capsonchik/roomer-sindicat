@@ -57,6 +57,7 @@ export const GroupControlButtons = () => {
           placement={'bottom'}
           speaker={<Tooltip> Скачать слайд pptx</Tooltip>}>
           <Button
+          className={styles.btn}
             disabled={isChartLoading}
             onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
             // className={styles.save_pptx}

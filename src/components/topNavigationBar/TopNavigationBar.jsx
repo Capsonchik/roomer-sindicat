@@ -10,6 +10,7 @@ import {selectCurrentUser} from "../../store/userSlice/user.selectors";
 import {setActiveClient, setActiveReport} from "../../store/chartSlice/chart.slice";
 import ExitIcon from '@rsuite/icons/Exit';
 import logoWhite from './logo-white.png'
+import styles from './nav.module.scss'
 
 
 export const TopNavigationBar = () => {
@@ -38,16 +39,16 @@ export const TopNavigationBar = () => {
         <img style={{ height: 30,objectFit:'contain'}} src={logoWhite} alt="logo"/>
       </Navbar.Brand>
       <Nav>
-        <Nav.Item onClick={() => handleNavigate('/main')}>Главная</Nav.Item>
-        <Nav.Item onClick={() => handleNavigate('/main/report')}>Отчет</Nav.Item>
-        <Nav.Item onClick={() => handleNavigate('/main/reportList')}>Список отчетов</Nav.Item>
+        <Nav.Item className={styles.nav_item} onClick={() => handleNavigate('/main')}>Главная</Nav.Item>
+        <Nav.Item className={styles.nav_item} onClick={() => handleNavigate('/main/report')}>Отчет</Nav.Item>
+        <Nav.Item className={styles.nav_item} onClick={() => handleNavigate('/main/reportList')}>Список отчетов</Nav.Item>
         {/*<Nav.Item onClick={() => handleNavigate('/main/map')}>Карта</Nav.Item>*/}
         {/*<Nav.Item onClick={() => handleNavigate('/main' + ROUTES_PATH.editorChart)}>Чарты</Nav.Item>*/}
       </Nav>
       <Nav pullRight>
 
-        {user && <Nav.Item icon={<UserBadgeIcon/>}>{user.username}</Nav.Item>}
-        <Nav.Item onClick={handleLogOut} icon={<ExitIcon/>}>Выйти из системы</Nav.Item>
+        {user && <Nav.Item className={styles.nav_item}  icon={<UserBadgeIcon/>}>{user.username}</Nav.Item>}
+        <Nav.Item className={styles.nav_item} onClick={handleLogOut} icon={<ExitIcon/>}>Выйти из системы</Nav.Item>
       </Nav>
     </Navbar>
   );

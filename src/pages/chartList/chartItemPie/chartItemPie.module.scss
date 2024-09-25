@@ -1,4 +1,13 @@
 .wrapper{
+  background: linear-gradient(45deg,var(--rs-gray-100), var(--rs-gray-200));
+  box-shadow: 5px 4px 18px -2px rgba(34, 60, 80, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+
+  .chart{
+    background: linear-gradient(45deg,white, var(--rs-gray-100));
+    border-radius:8px;
+  }
   &.full_width_2 {
     grid-column: span 2;
   }
@@ -12,6 +21,12 @@
     display: flex;
     gap: 8px;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    .btn{
+      width: 40px;
+      height: 40px;
+    }
   }
 }

@@ -189,6 +189,7 @@ export const TopFilters = () => {
           {/*user && user.role !== 'viewer' &&*/}
           {activeReport && <GroupControlButtons/>}
           {activeReport && <Dropdown
+            className={styles.btn}
             icon={<SettingHorizontalIcon style={{width: 16, height: 16}}/>}
             placement={'bottomEnd'}
             title="Настройки">

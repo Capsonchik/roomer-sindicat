@@ -66,23 +66,6 @@ export const ChartList = (props) => {
     }
   });
 
-  useEffect(() => {
-    // if(!activeFilters?.[activeGroupId]) return
-    // const filtersList =  filters
-    //
-    // const filterValues = filtersList.map(filter => ({
-    //   filter_name: filter.filter_name,
-    //   filter_id: filter.filter_id,
-    //   original_values: filter.original_values,
-    //   multi: filter.multi,
-    //   isactive: filter.isactive,
-    //   value: filter.multi ? activeFilters?.[activeGroupId] ? filter.value : filter.original_values : [filter.original_values?.[0]]
-    // }));
-    //
-    // // dispatch(setFilters({data: filterValues, activeGroupId}))
-    // methods.reset({filters: filterValues});
-    // replace(filterValues); // Обновляем данные в useFieldArray
-  }, [activeFilters]);
 
   const {fields, append, remove, replace} = useFieldArray({
     control: methods.control,
@@ -95,7 +78,7 @@ export const ChartList = (props) => {
       console.log(1)
       const filtersList = activeFilters?.[activeGroupId] ? activeFilters?.[activeGroupId] : filters
 
-      console.log(activeFilters?.[activeGroupId],filters)
+      console.log(activeFilters?.[activeGroupId], filters)
       const filterValues = filtersList.map(filter => ({
         filter_name: filter.filter_name,
         filter_id: filter.filter_id,
@@ -261,12 +244,12 @@ export const ChartList = (props) => {
           <div
             className={styles.filters}
             style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            marginTop: 16,
-            paddingInline: 15
-          }}>
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              marginTop: 16,
+              paddingInline: 15
+            }}>
             {fields.map((filter, i) => (
               <div key={filter.id}>
                 <p style={{marginBottom: 8, fontWeight: 500}}>{filter.filter_name}</p>
@@ -336,7 +319,7 @@ export const ChartList = (props) => {
 
         {activeReport && !isChartLoading && !data.length && (
           <div className={styles.placeholder}>
-            <Divider>Нет графиков</Divider>
+            <Divider>{errorCharts ? 'По выбранным фильтрам нет данных' : 'Нет графиков'}</Divider>
 
           </div>
         )}

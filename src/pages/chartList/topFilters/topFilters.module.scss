@@ -5,8 +5,15 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+
+  .btn{
+    border: 1px solid rgba(0,0,0, .1);
+    border-radius: 6px;
+  }
   @media (max-width: 1000px) {
   flex-wrap: wrap;
+
+
     justify-content: flex-start;
     .filters{
       width: 100%;

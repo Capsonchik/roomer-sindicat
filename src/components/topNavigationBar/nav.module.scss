@@ -1,0 +1,13 @@
+
+.nav_item {
+  transition: all .3s;
+
+  &:hover {
+    background-color: #de7405 !important;
+    color: #fff !important;
+    //span {
+    //  background: #de7405;
+    //
+    //}
+  }
+}

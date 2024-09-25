@@ -9,6 +9,9 @@ const initialState = {
   autoHeight: true,
   sort: false,
   resize: true,
+  sortColumn: null,
+  sortType: null,
+  loading: false,
   columnKeys: DEFAULT_COLUMNS.map(column => column.key),
 }
 
@@ -39,7 +42,14 @@ export const tableSlice = createSlice({
     },
     setTableResize: (state, action) => {
       state.resize = action.payload;
-    }
+    },
+    setTableSortColumn(state, action) {
+      state.sortColumn = action.payload.column;
+      state.sortType = action.payload.type;
+    },
+    setTableLoading(state, action) {
+      state.loading = action.payload;
+    },
   }
 })
 
@@ -52,6 +62,8 @@ export const {
   setColumnKeys,
   setTableResize,
   setTableSort,
+  setTableLoading,
+  setTableSortColumn,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

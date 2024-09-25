@@ -1,18 +1,22 @@
 import {data} from "../../../../consts/tableData";
 import {Table} from "rsuite";
-import React, {useState} from "react";
-import {useSelector} from "react-redux";
+import React from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {
   selectTableAutoHeight,
   selectTableBordered,
   selectTableColumnKeys,
   selectTableCompact,
   selectTableHover,
+  selectTableLoading,
   selectTableResize,
   selectTableShowHeader,
-  selectTableSort
+  selectTableSort,
+  selectTableSortColumn,
+  selectTableSortType
 } from "../../../../store/tableSlice/table.selectors";
 import {DEFAULT_COLUMNS} from "../../../../consts/tableMocks";
+import {setTableLoading, setTableSortColumn} from "../../../../store/tableSlice/table.slice";
 
 const {Column, HeaderCell, Cell} = Table;
 const CompactCell = props => <Cell {...props} style={{padding: 4}}/>;
@@ -20,10 +24,15 @@ const CompactHeaderCell = props => <HeaderCell {...props} style={{padding: 4}}/>
 
 export const ChartTable = () => {
 
-  const [sortColumn, setSortColumn] = useState();
-  const [sortType, setSortType] = useState();
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
+  // const [sortColumn, setSortColumn] = useState();
+  // const [sortType, setSortType] = useState();
+  // const [loading, setLoading] = useState(false);
+
+  const sortColumn = useSelector(selectTableSortColumn);
+  const sortType = useSelector(selectTableSortType);
+  const loading = useSelector(selectTableLoading);
   const compact = useSelector(selectTableCompact);
   const hover = useSelector(selectTableHover);
   const showHeader = useSelector(selectTableShowHeader);
@@ -60,11 +69,10 @@ export const ChartTable = () => {
   };
 
   const handleSortColumn = (sortColumn, sortType) => {
-    setLoading(true);
+    dispatch(setTableLoading(true));
     setTimeout(() => {
-      setLoading(false);
-      setSortColumn(sortColumn);
-      setSortType(sortType);
+      dispatch(setTableLoading(false));
+      dispatch(setTableSortColumn({column: sortColumn, type: sortType}));
     }, 500);
   };
 

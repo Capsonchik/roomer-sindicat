@@ -6,15 +6,21 @@ import {
   selectTableAutoHeight,
   selectTableBordered,
   selectTableCompact,
+  selectTableDraggable,
   selectTableHover,
-  selectTableShowHeader
+  selectTableResize,
+  selectTableShowHeader,
+  selectTableSort
 } from "../../../../store/tableSlice/table.selectors";
 import {
   setTableAutoHeight,
   setTableBordered,
   setTableCompact,
+  setTableDraggable,
   setTableHover,
-  setTableShowHeader
+  setTableResize,
+  setTableShowHeader,
+  setTableSort
 } from "../../../../store/tableSlice/table.slice";
 import {DEFAULT_COLUMNS} from "../../../../consts/tableMocks";
 import {useState} from "react";
@@ -28,6 +34,9 @@ export const ChartTableEditor = ({chart}) => {
   const showHeader = useSelector(selectTableShowHeader);
   const autoHeight = useSelector(selectTableAutoHeight);
   const bordered = useSelector(selectTableBordered);
+  const resize = useSelector(selectTableResize);
+  const sort = useSelector(selectTableSort);
+  const draggble = useSelector(selectTableDraggable);
 
   const [columnKeys, setColumnKeys] = useState(DEFAULT_COLUMNS.map(column => column.key));
   const columns = DEFAULT_COLUMNS.filter(column => columnKeys.some(key => key === column.key));
@@ -59,6 +68,24 @@ export const ChartTableEditor = ({chart}) => {
         <Toggle checked={autoHeight} onChange={() => dispatch(setTableAutoHeight(!autoHeight))}>
           Автоматическая высота таблицы
         </Toggle>
+      </div>
+
+      <Heading level={6}>Настройки столбцов</Heading>
+
+      <div className={styles.toggles}>
+
+        <Toggle checked={resize} onChange={() => dispatch(setTableResize(!resize))}>
+          Возможность менять размер
+        </Toggle>
+
+        <Toggle checked={sort} onChange={() => dispatch(setTableSort(!sort))}>
+          Вкл/выкл сортировку
+        </Toggle>
+
+        <Toggle checked={draggble} onChange={() => dispatch(setTableDraggable(!draggble))}>
+          Вкл/выкл возможность перетаскивания столбцов
+        </Toggle>
+
       </div>
 
       <Heading level={6}>Отображение столбцов таблицы</Heading>

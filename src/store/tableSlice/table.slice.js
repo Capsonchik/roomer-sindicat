@@ -14,35 +14,15 @@ const initialState = {
   loading: false,
   draggable: false,
   columnKeys: DEFAULT_COLUMNS.map(column => column.key),
+  sittings: {}
 }
 
 export const tableSlice = createSlice({
   name: "tableSlice",
   initialState,
   reducers: {
-    setTableCompact: (state, action) => {
-      state.compact = action.payload;
-    },
-    setTableBordered: (state, action) => {
-      state.bordered = action.payload;
-    },
-    setTableShowHeader: (state, action) => {
-      state.showHeader = action.payload;
-    },
-    setTableHover: (state, action) => {
-      state.hover = action.payload;
-    },
-    setTableAutoHeight: (state, action) => {
-      state.autoHeight = action.payload;
-    },
     setColumnKeys(state, action) {
       state.columnKeys = action.payload;
-    },
-    setTableSort: (state, action) => {
-      state.sort = action.payload;
-    },
-    setTableResize: (state, action) => {
-      state.resize = action.payload;
     },
     setTableSortColumn(state, action) {
       state.sortColumn = action.payload.column;
@@ -51,24 +31,49 @@ export const tableSlice = createSlice({
     setTableLoading(state, action) {
       state.loading = action.payload;
     },
-    setTableDraggable(state, action) {
-      state.draggable = action.payload;
+    setTableSittings(state, action) {
+      state.sittings = action.payload;
+    },
+    setSittingsCompact(state, action) {
+      state.sittings.compact = action.payload;
+    },
+    setSittingsBordered(state, action) {
+      state.sittings.bordered = action.payload;
+    },
+    setSittingsShowHeader(state, action) {
+      state.sittings.showHeader = action.payload;
+    },
+    setSittingsHover(state, action) {
+      state.sittings.hover = action.payload;
+    },
+    setSittingsAutoHeight(state, action) {
+      state.sittings.autoHeight = action.payload;
+    },
+    setSittingsSort(state, action) {
+      state.sittings.sort = action.payload;
+    },
+    setSittingsResize(state, action) {
+      state.sittings.resize = action.payload;
+    },
+    setSittingsDraggable(state, action) {
+      state.sittings.draggable = action.payload;
     }
   }
 })
 
 export const {
-  setTableAutoHeight,
-  setTableHover,
-  setTableShowHeader,
-  setTableCompact,
-  setTableBordered,
   setColumnKeys,
-  setTableResize,
-  setTableSort,
   setTableLoading,
   setTableSortColumn,
-  setTableDraggable
+  setTableSittings,
+  setSittingsCompact,
+  setSittingsSort,
+  setSittingsAutoHeight,
+  setSittingsBordered,
+  setSittingsDraggable,
+  setSittingsHover,
+  setSittingsResize,
+  setSittingsShowHeader
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

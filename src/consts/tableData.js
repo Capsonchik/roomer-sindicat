@@ -90,3 +90,5 @@ export const data = [
     email: "rodriguez@example.com",
   }
 ];
+
+// правки по отправке

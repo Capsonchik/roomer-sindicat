@@ -1,18 +1,10 @@
 import {data} from "../../../../consts/tableData";
 import {Table} from "rsuite";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {
-  selectTableAutoHeight,
-  selectTableBordered,
   selectTableColumnKeys,
-  selectTableCompact,
-  selectTableDraggable,
-  selectTableHover,
   selectTableLoading,
-  selectTableResize,
-  selectTableShowHeader,
-  selectTableSort,
   selectTableSortColumn,
   selectTableSortType
 } from "../../../../store/tableSlice/table.selectors";
@@ -23,30 +15,27 @@ const {Column, HeaderCell, Cell} = Table;
 const CompactCell = props => <Cell {...props} style={{padding: 4}}/>;
 const CompactHeaderCell = props => <HeaderCell {...props} style={{padding: 4}}/>;
 
-export const ChartTable = () => {
+export const ChartTable = ({sittings}) => {
 
   const dispatch = useDispatch();
 
+  // Получаем сортировку и столбцы из Redux
   const sortColumn = useSelector(selectTableSortColumn);
   const sortType = useSelector(selectTableSortType);
   const loading = useSelector(selectTableLoading);
-  const compact = useSelector(selectTableCompact);
-  const hover = useSelector(selectTableHover);
-  const showHeader = useSelector(selectTableShowHeader);
-  const autoHeight = useSelector(selectTableAutoHeight);
-  const bordered = useSelector(selectTableBordered);
-  const columnKey = useSelector(selectTableColumnKeys);
-  const resize = useSelector(selectTableResize);
-  const sort = useSelector(selectTableSort);
-  const draggble = useSelector(selectTableDraggable);
+  const columnKeys = useSelector(selectTableColumnKeys);
 
-  // Начальное состояние для столбцов
-  const [columns, setColumns] = useState(
-    DEFAULT_COLUMNS.filter((column) => columnKey.some((key) => key === column.key))
-  );
+  // Локальное состояние для управления порядком колонок
+  const [columns, setColumns] = useState([]);
 
-  const CustomCell = compact ? CompactCell : Cell;
-  const CustomHeaderCell = compact ? CompactHeaderCell : HeaderCell;
+  // Инициализация колонок на основе Redux
+  useEffect(() => {
+    const visibleColumns = DEFAULT_COLUMNS.filter((column) => columnKeys.includes(column.key));
+    setColumns(visibleColumns);
+  }, [columnKeys]);
+
+  const CustomCell = sittings?.compact ? CompactCell : Cell;
+  const CustomHeaderCell = sittings?.compact ? CompactHeaderCell : HeaderCell;
 
   // Хранит индекс перетаскиваемого столбца
   const [draggingColumn, setDraggingColumn] = useState(null);
@@ -102,18 +91,18 @@ export const ChartTable = () => {
   return (
     <Table
       height={300}
-      hover={hover}
-      showHeader={showHeader}
-      autoHeight={autoHeight}
+      hover={sittings?.hover}
+      showHeader={sittings?.showHeader}
+      autoHeight={sittings?.autoHeight}
       data={getData()}
       sortColumn={sortColumn}
       sortType={sortType}
       onSortColumn={handleSortColumn}
       loading={loading}
-      bordered={bordered}
-      cellBordered={bordered}
-      headerHeight={compact ? 30 : 40}
-      rowHeight={compact ? 30 : 46}
+      bordered={sittings?.bordered}
+      cellBordered={sittings?.bordered}
+      headerHeight={sittings?.compact ? 30 : 40}
+      rowHeight={sittings?.compact ? 30 : 46}
     >
       {columns.map((column, index) => {
         const {key, label, ...rest} = column;
@@ -121,17 +110,18 @@ export const ChartTable = () => {
           <Column
             {...rest}
             key={key}
-            resizable={resize}
-            sortable={sort}
+            resizable={sittings?.resize}
+            sortable={sittings?.sort}
             onDragOver={(e) => handleDragOver(e, index)}
             onDrop={handleDrop}
+            flexGrow={1}
           >
-            <HeaderCell
-              draggable={draggble}
+            <CustomHeaderCell
+              draggable={sittings?.draggable}
               onDragStart={() => handleDragStart(index)}
             >
               {label}
-            </HeaderCell>
+            </CustomHeaderCell>
             <CustomCell dataKey={key}/>
           </Column>
         );

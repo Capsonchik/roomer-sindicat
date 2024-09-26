@@ -1,71 +1,90 @@
 import styles from './chartTable.module.scss'
-import {Heading, Toggle} from "rsuite";
+import {Button, Heading, Toggle} from "rsuite";
 import {ChartTable} from "../../chartItemTable/chartTable/ChartTable";
 import {useDispatch, useSelector} from "react-redux";
+import {selectTableSittings} from "../../../../store/tableSlice/table.selectors";
 import {
-  selectTableAutoHeight,
-  selectTableBordered,
-  selectTableCompact,
-  selectTableDraggable,
-  selectTableHover,
-  selectTableResize,
-  selectTableShowHeader,
-  selectTableSort
-} from "../../../../store/tableSlice/table.selectors";
-import {
-  setTableAutoHeight,
-  setTableBordered,
-  setTableCompact,
-  setTableDraggable,
-  setTableHover,
-  setTableResize,
-  setTableShowHeader,
-  setTableSort
+  setSittingsAutoHeight,
+  setSittingsBordered,
+  setSittingsCompact,
+  setSittingsDraggable,
+  setSittingsHover,
+  setSittingsResize,
+  setSittingsShowHeader,
+  setSittingsSort
 } from "../../../../store/tableSlice/table.slice";
 import {DEFAULT_COLUMNS} from "../../../../consts/tableMocks";
 import {useState} from "react";
 import {ColumnPicker} from "../../chartItemTable/columnPicker/ColumnPicker";
+import {
+  fetchAllChartsByGroupId,
+  fetchAllChartsFormatByGroupId,
+  patchChartFormatting
+} from "../../../../store/chartSlice/chart.actions";
+import {selectActiveGroupId, selectGroupsReports} from "../../../../store/chartSlice/chart.selectors";
+import {selectActiveFilters} from "../../../../store/chartSlice/filter.slice";
+import {setOpenDrawer} from "../../../../store/chartSlice/chart.slice";
 
 export const ChartTableEditor = ({chart}) => {
   const dispatch = useDispatch();
 
-  const compact = useSelector(selectTableCompact);
-  const hover = useSelector(selectTableHover);
-  const showHeader = useSelector(selectTableShowHeader);
-  const autoHeight = useSelector(selectTableAutoHeight);
-  const bordered = useSelector(selectTableBordered);
-  const resize = useSelector(selectTableResize);
-  const sort = useSelector(selectTableSort);
-  const draggble = useSelector(selectTableDraggable);
+  const sittings = useSelector(selectTableSittings);
+  const activeGroupId = useSelector(selectActiveGroupId)
+  const groupsReports = useSelector(selectGroupsReports)
+  const activeFilters = useSelector(selectActiveFilters)
 
   const [columnKeys, setColumnKeys] = useState(DEFAULT_COLUMNS.map(column => column.key));
   const columns = DEFAULT_COLUMNS.filter(column => columnKeys.some(key => key === column.key));
 
-  console.log('KK', columnKeys)
-  console.log('K', columns)
+  const handleSave = () => {
+    const {seriesData, xAxisData, ...rest} = chart
+
+    dispatch(patchChartFormatting({
+      ...rest,
+      formatting: sittings
+    })).then(() => {
+      const id = activeGroupId || groupsReports[0].group_id
+      const activeFiltersRequest = activeFilters[activeGroupId]
+      const request = activeFiltersRequest
+        ? activeFiltersRequest.map(filter => {
+          return {
+            filter_id: filter.filter_id,
+            filter_values: filter.value,
+            isactive: filter.isactive,
+          }
+        })
+          .filter(filter => filter.isactive && Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
+        : []
+      dispatch(fetchAllChartsByGroupId({groupId: id, filter_data: {filter_data: request}})).then(() => {
+        dispatch(fetchAllChartsFormatByGroupId(id))
+      })
+    })
+
+    dispatch(setOpenDrawer(false))
+  }
 
   return (
     <div className={styles.wrapper}>
       <Heading level={6}>Базовые настройки таблицы</Heading>
 
       <div className={styles.toggles}>
-        <Toggle checked={compact} onChange={() => dispatch(setTableCompact(!compact))}>
+        <Toggle checked={sittings.compact} onChange={() => dispatch(setSittingsCompact(!sittings.compact))}>
           Компактный размер
         </Toggle>
 
-        <Toggle checked={bordered} onChange={() => dispatch(setTableBordered(!bordered))}>
+        <Toggle checked={sittings.bordered} onChange={() => dispatch(setSittingsBordered(!sittings.bordered))}>
           Обводка таблицы
         </Toggle>
 
-        <Toggle checked={showHeader} onChange={() => dispatch(setTableShowHeader(!showHeader))}>
+        <Toggle checked={sittings.showHeader} onChange={() => dispatch(setSittingsShowHeader(!sittings.showHeader))}>
           Отображение заголовков столбцов
         </Toggle>
 
-        <Toggle checked={hover} onChange={() => dispatch(setTableHover(!hover))}>
+        <Toggle checked={sittings.hover} onChange={() => dispatch(setSittingsHover(!sittings.hover))}>
           Эффект при наведении
         </Toggle>
 
-        <Toggle checked={autoHeight} onChange={() => dispatch(setTableAutoHeight(!autoHeight))}>
+        <Toggle checked={sittings.autoHeight} onChange={() => dispatch(setSittingsAutoHeight(!sittings.autoHeight))}>
           Автоматическая высота таблицы
         </Toggle>
       </div>
@@ -74,15 +93,15 @@ export const ChartTableEditor = ({chart}) => {
 
       <div className={styles.toggles}>
 
-        <Toggle checked={resize} onChange={() => dispatch(setTableResize(!resize))}>
+        <Toggle checked={sittings.resize} onChange={() => dispatch(setSittingsResize(!sittings.resize))}>
           Возможность менять размер
         </Toggle>
 
-        <Toggle checked={sort} onChange={() => dispatch(setTableSort(!sort))}>
+        <Toggle checked={sittings.sort} onChange={() => dispatch(setSittingsSort(!sittings.sort))}>
           Вкл/выкл сортировку
         </Toggle>
 
-        <Toggle checked={draggble} onChange={() => dispatch(setTableDraggable(!draggble))}>
+        <Toggle checked={sittings.draggable} onChange={() => dispatch(setSittingsDraggable(!sittings.draggable))}>
           Вкл/выкл возможность перетаскивания столбцов
         </Toggle>
 
@@ -94,7 +113,12 @@ export const ChartTableEditor = ({chart}) => {
 
       <Heading level={6}>Визуализация измененной таблицы</Heading>
 
-      <ChartTable/>
+      <ChartTable format={chart.formatting} sittings={sittings}/>
+
+      <div className={styles.buttons}>
+        <Button className={styles.delete_btn}>Удалить</Button>
+        <Button className={styles.save_btn} onClick={handleSave}>Сохранить</Button>
+      </div>
     </div>
   )
 }

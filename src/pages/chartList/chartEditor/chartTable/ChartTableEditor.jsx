@@ -16,14 +16,52 @@ import {
 import {DEFAULT_COLUMNS} from "../../../../consts/tableMocks";
 import {useState} from "react";
 import {ColumnPicker} from "../../chartItemTable/columnPicker/ColumnPicker";
+import {
+  fetchAllChartsByGroupId,
+  fetchAllChartsFormatByGroupId,
+  patchChartFormatting
+} from "../../../../store/chartSlice/chart.actions";
+import {selectActiveGroupId, selectGroupsReports} from "../../../../store/chartSlice/chart.selectors";
+import {selectActiveFilters} from "../../../../store/chartSlice/filter.slice";
+import {setOpenDrawer} from "../../../../store/chartSlice/chart.slice";
 
 export const ChartTableEditor = ({chart}) => {
   const dispatch = useDispatch();
-  
+
   const sittings = useSelector(selectTableSittings);
+  const activeGroupId = useSelector(selectActiveGroupId)
+  const groupsReports = useSelector(selectGroupsReports)
+  const activeFilters = useSelector(selectActiveFilters)
 
   const [columnKeys, setColumnKeys] = useState(DEFAULT_COLUMNS.map(column => column.key));
   const columns = DEFAULT_COLUMNS.filter(column => columnKeys.some(key => key === column.key));
+
+  const handleSave = () => {
+    const {seriesData, xAxisData, ...rest} = chart
+
+    dispatch(patchChartFormatting({
+      ...rest,
+      formatting: sittings
+    })).then(() => {
+      const id = activeGroupId || groupsReports[0].group_id
+      const activeFiltersRequest = activeFilters[activeGroupId]
+      const request = activeFiltersRequest
+        ? activeFiltersRequest.map(filter => {
+          return {
+            filter_id: filter.filter_id,
+            filter_values: filter.value,
+            isactive: filter.isactive,
+          }
+        })
+          .filter(filter => filter.isactive && Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
+        : []
+      dispatch(fetchAllChartsByGroupId({groupId: id, filter_data: {filter_data: request}})).then(() => {
+        dispatch(fetchAllChartsFormatByGroupId(id))
+      })
+    })
+
+    dispatch(setOpenDrawer(false))
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -79,7 +117,7 @@ export const ChartTableEditor = ({chart}) => {
 
       <div className={styles.buttons}>
         <Button className={styles.delete_btn}>Удалить</Button>
-        <Button className={styles.save_btn}>Сохранить</Button>
+        <Button className={styles.save_btn} onClick={handleSave}>Сохранить</Button>
       </div>
     </div>
   )

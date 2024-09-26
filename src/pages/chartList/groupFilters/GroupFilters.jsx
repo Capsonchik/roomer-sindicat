@@ -25,7 +25,8 @@ export const GroupFilters = () => {
 
   const methods = useForm({
     defaultValues: {
-      filters: []
+      filters: [],
+
     }
   });
 
@@ -43,6 +44,7 @@ export const GroupFilters = () => {
 
   }, [activeGroupId]);
   // Сброс формы и обновление filters через reset, когда filters не пустой
+
   useEffect(() => {
     // if (!activeGroupId) return
     if (filters.length > 0) {
@@ -53,10 +55,13 @@ export const GroupFilters = () => {
         multi: filter.multi,
         isactive: filter.isactive,
         value: filter?.value ? filter?.value : [filter.original_values[0]]
-      }));
+      })).filter(filter => !!filter?.filter_id);
 
       // dispatch(setFilters({data: filterValues || [], activeGroupId}))
-      methods.reset({filters: filterValues});
+      methods.reset({
+        filters: filterValues,
+        // activeFilter: null
+      });
 
       const getCharts = () => {
 
@@ -87,8 +92,9 @@ export const GroupFilters = () => {
 
   const handleChangeFilter = (data) => {
 
+    console.log('recal',data.filters.slice(data.activeFilter + 1))
     const request = {
-      to_recalculate: data.filters.slice(data.activeFilter + 1).map(filter => filter.filter_id),
+      to_recalculate: data.filters.slice(data.activeFilter + 1).map(filter => filter.filter_id).filter(Boolean),
       filter_data: data.filters.slice(0, data.activeFilter + 1).map(filter => {
         return {
           filter_id: filter.filter_id,
@@ -106,7 +112,7 @@ export const GroupFilters = () => {
     })
     // return
     // }
-    console.log('1111', filters)
+    // console.log('1111', filters)
     if (request.to_recalculate.length) {
       dispatch(postDependentFilters({data: request, group_id: activeGroupId})).then(res => {
         console.log(res.payload)

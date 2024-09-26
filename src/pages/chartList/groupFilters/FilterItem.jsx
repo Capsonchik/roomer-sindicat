@@ -44,13 +44,13 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods}) => {
           methods.handleSubmit(handleChangeFilter)()
         }}
         name={`filters.${i}.value`}
-        data={filter.original_values.map(item => ({
+        data={filter.original_values?.map(item => ({
           label: item,
           value: item
         }))}
         // disabledItemValues={['Центральный']}
         disabledItemValues={!methods.getValues(`filters.${i}.multi`) && methods.getValues(`filters.${i}.value`)?.length
-          ? filter.original_values.filter(value => value !== methods.getValues(`filters.${i}.value`)[0])
+          ? filter.original_values?.filter(value => value !== methods.getValues(`filters.${i}.value`)[0])
           : []
         }
         searchable={false}

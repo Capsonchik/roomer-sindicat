@@ -114,3 +114,20 @@ export const fetchColumnDBFromGroup = createAsyncThunk(
     }
   }
 );
+export const postDependentFilters = createAsyncThunk(
+  'filter/postDependentFilters',
+  async ({data,group_id}) => {
+    try {
+      const response = await axiosGraphRequest.post(`/api/v3/filter/dependent_filters?group_id=${group_id}`,data);
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+
+    } catch (error) {
+
+      // console.log(error)
+      throw new Error(error);
+    }
+  }
+);

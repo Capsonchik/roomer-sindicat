@@ -21,7 +21,10 @@ export const CustomCheckPicker = (
     preventOverflow = true,
     placement = 'topEnd',
     disabledItemValues = [],
-    defaultValue
+    defaultValue,
+    open,
+    // selectRef
+    // onExit
   }
 ) => {
   const {control} = useFormContext();
@@ -33,6 +36,13 @@ export const CustomCheckPicker = (
         control={control}
         render={({field}) => (
           <CheckPicker
+            // ref={selectRef}
+            // onExiting={onExit}
+            open={open}
+            style={{width:200}}
+            // menuStyle={{
+            //   maxWidth:150
+            // }}
             defaultValue={defaultValue}
             {...field}
             className={className}
@@ -40,26 +50,15 @@ export const CustomCheckPicker = (
             value={value}
             disabled={disabled}
             onChange={(selectedValues) => {
-              // Update the form field value
               field.onChange(selectedValues);
-              // Call external onChange handler, if provided
               onChangeOutside && onChangeOutside(selectedValues);
 
-              // Update visible series
-              // const newVisibleSeries = Object.fromEntries(
-              //   Object.keys(data).map((name) => [name, selectedValues.includes(name)])
-              // );
-              // setVisibleSeries(newVisibleSeries);
             }}
             searchable={searchable}
             appearance={appearance}
             placeholder={placeholder}
-            // className={styles.select}
             renderMenuItem={renderMenuItem}
             disabledItemValues={disabledItemValues}
-            // block={true}
-            // sticky={false}
-            // placement={placement} // Начальное направление открытия меню
             container={container}
             preventOverflow // Включение автоматического определения переполнения
           />

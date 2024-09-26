@@ -34,7 +34,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
 
   }, {})
   // console.log(db_colors)
-  const [fieldsState, setFieldsState] = useState(filter.filter_data.map(field => {
+  const [fieldsState, setFieldsState] = useState(filter?.filter_data?.map(field => {
 
     return `${field.db_name} ${field.column_name}`
   }))
@@ -168,7 +168,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
                   disabledItemValues={availableFields
                     .filter(availableField => {
                       // console.log(availableFields,selectedField.split(' ')[0])
-                      return fieldsState.some(field => {
+                      return fieldsState?.some(field => {
                         // console.log(fieldsState,field,fieldsState.includes(field))
                         return availableField.db_adress === field.split(' ')[0] && availableField.column_name !== field.split(' ')[1];
                       })

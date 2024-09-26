@@ -34,7 +34,7 @@ const initialState = {
   errorCharts: false,
   scrollTabs: 1,
   filters: [],
-  filterLoading:'none'
+  filterLoading: 'none'
 }
 
 export const chartSlice = createSlice({
@@ -80,6 +80,18 @@ export const chartSlice = createSlice({
     },
     setCharts: (state, action) => {
       state.charts = action.payload;
+    },
+    setDependentFilters: (state, action) => {
+      const {originFilters, filters, activeFilterIndex} = action.payload
+      // state.filters = state.filters.map((filter,index) => {
+      //   if(activeFilterIndex >= index) {
+      //     return filter;
+      //   }
+      //   else {
+      //     return filters[index]
+      //   }
+      // })
+      state.filters = originFilters.slice(0, activeFilterIndex + 1).concat(filters)
     },
 
 
@@ -127,13 +139,13 @@ export const chartSlice = createSlice({
         state.charts = []
       })
       .addCase(fetchAllChartsFormatByGroupId.fulfilled, (state, action) => {
-        state.charts = state.charts.map((chart,i) => {
+        state.charts = state.charts.map((chart, i) => {
           // console.log(chart,action.payload)
           // const foundFormat = action.payload.find(f => f.id === chart.id)
           // if(foundFormat) {
-            return {
-              ...chart,
-              ...action.payload[i],
+          return {
+            ...chart,
+            ...action.payload[i],
             // }
           }
         })
@@ -147,7 +159,7 @@ export const chartSlice = createSlice({
       })
       .addCase(patchGroupById.fulfilled, (state, action) => {
         state.groupsChart.map(group => {
-          if(action.payload.group_id === group.group_id) {
+          if (action.payload.group_id === group.group_id) {
             return action.payload
           }
 
@@ -172,6 +184,21 @@ export const chartSlice = createSlice({
   }
 })
 
-export const {setCharts,setGroups,setFilters,setFilterLoading,setScrollTabs,setTypeGroupDrawer,setActiveGroup,setOriginalColors,setOpenDrawer,setActiveChart,setAxes,setActiveClient,setActiveReport} = chartSlice.actions;
+export const {
+  setDependentFilters,
+  setCharts,
+  setGroups,
+  setFilters,
+  setFilterLoading,
+  setScrollTabs,
+  setTypeGroupDrawer,
+  setActiveGroup,
+  setOriginalColors,
+  setOpenDrawer,
+  setActiveChart,
+  setAxes,
+  setActiveClient,
+  setActiveReport
+} = chartSlice.actions;
 
 export default chartSlice.reducer;

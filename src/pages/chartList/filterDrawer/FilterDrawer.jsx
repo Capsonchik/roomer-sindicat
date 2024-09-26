@@ -185,8 +185,8 @@ export const FilterDrawer = ({open, onClose}) => {
               <div className={styles.filters}>
                 {!!filters?.length
                   ? (
-                    filters.map((filter) => (
-                      <EditFilterForm key={filter.filter_name} filter={filter} availableFields={availableFields}/>
+                    filters?.map((filter) => (
+                      <EditFilterForm key={filter?.filter_name} filter={filter} availableFields={availableFields}/>
                       // <div key={filter.filter_name} className={styles.filter_wrapper}>
                       //   <p>{filter.filter_name}</p>
                       //   <div className={styles.line}></div>

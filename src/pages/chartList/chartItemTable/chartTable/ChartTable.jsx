@@ -1,6 +1,6 @@
 import {data} from "../../../../consts/tableData";
 import {Table} from "rsuite";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectTableColumnKeys,
@@ -19,18 +19,23 @@ export const ChartTable = ({sittings}) => {
 
   const dispatch = useDispatch();
 
+  // Получаем сортировку и столбцы из Redux
   const sortColumn = useSelector(selectTableSortColumn);
   const sortType = useSelector(selectTableSortType);
   const loading = useSelector(selectTableLoading);
-  const columnKey = useSelector(selectTableColumnKeys);
+  const columnKeys = useSelector(selectTableColumnKeys);
 
-  // Начальное состояние для столбцов
-  const [columns, setColumns] = useState(
-    DEFAULT_COLUMNS.filter((column) => columnKey.some((key) => key === column.key))
-  );
+  // Локальное состояние для управления порядком колонок
+  const [columns, setColumns] = useState([]);
 
-  const CustomCell = sittings && sittings.compact ? CompactCell : Cell;
-  // const CustomHeaderCell = sittings && sittings.compact ? CompactHeaderCell : HeaderCell;
+  // Инициализация колонок на основе Redux
+  useEffect(() => {
+    const visibleColumns = DEFAULT_COLUMNS.filter((column) => columnKeys.includes(column.key));
+    setColumns(visibleColumns);
+  }, [columnKeys]);
+
+  const CustomCell = sittings?.compact ? CompactCell : Cell;
+  const CustomHeaderCell = sittings?.compact ? CompactHeaderCell : HeaderCell;
 
   // Хранит индекс перетаскиваемого столбца
   const [draggingColumn, setDraggingColumn] = useState(null);
@@ -86,18 +91,18 @@ export const ChartTable = ({sittings}) => {
   return (
     <Table
       height={300}
-      hover={sittings && sittings.hover}
-      showHeader={sittings && sittings.showHeader}
-      autoHeight={sittings && sittings.autoHeight}
+      hover={sittings?.hover}
+      showHeader={sittings?.showHeader}
+      autoHeight={sittings?.autoHeight}
       data={getData()}
       sortColumn={sortColumn}
       sortType={sortType}
       onSortColumn={handleSortColumn}
       loading={loading}
-      bordered={sittings && sittings.bordered}
-      cellBordered={sittings && sittings.bordered}
-      headerHeight={sittings && sittings.compact ? 30 : 40}
-      rowHeight={sittings && sittings.compact ? 30 : 46}
+      bordered={sittings?.bordered}
+      cellBordered={sittings?.bordered}
+      headerHeight={sittings?.compact ? 30 : 40}
+      rowHeight={sittings?.compact ? 30 : 46}
     >
       {columns.map((column, index) => {
         const {key, label, ...rest} = column;
@@ -105,18 +110,18 @@ export const ChartTable = ({sittings}) => {
           <Column
             {...rest}
             key={key}
-            resizable={sittings && sittings.resize}
-            sortable={sittings && sittings.sort}
+            resizable={sittings?.resize}
+            sortable={sittings?.sort}
             onDragOver={(e) => handleDragOver(e, index)}
             onDrop={handleDrop}
             flexGrow={1}
           >
-            <HeaderCell
-              draggable={sittings && sittings.draggable}
+            <CustomHeaderCell
+              draggable={sittings?.draggable}
               onDragStart={() => handleDragStart(index)}
             >
               {label}
-            </HeaderCell>
+            </CustomHeaderCell>
             <CustomCell dataKey={key}/>
           </Column>
         );

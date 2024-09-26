@@ -1,16 +1,20 @@
 import styles from './chartItemTable.module.scss'
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Button} from 'rsuite';
 import {setActiveChart, setOpenDrawer} from "../../../store/chartSlice/chart.slice";
-import React from "react";
+import React, {useEffect} from "react";
 import {data} from "../../../consts/tableData";
 import EditIcon from "@rsuite/icons/Edit";
 import {ExelIcon} from "./icons/ExelIcon";
 import * as XLSX from 'xlsx';
 import {ChartTable} from "./chartTable/ChartTable";
+import {setTableSittings} from "../../../store/tableSlice/table.slice";
+import {selectTableSittings} from "../../../store/tableSlice/table.selectors";
 
 export const ChartItemTable = ({chart}) => {
   const dispatch = useDispatch();
+
+  const sittings = useSelector(selectTableSittings);
 
   const exportToExel = () => {
     const ws = XLSX.utils.json_to_sheet(data); // Преобразуем данные в лист Excel
@@ -18,6 +22,10 @@ export const ChartItemTable = ({chart}) => {
     XLSX.utils.book_append_sheet(wb, ws, "Data"); // Добавляем лист в книгу
     XLSX.writeFile(wb, "data.xlsx"); // Сохраняем книгу как файл
   }
+
+  useEffect(() => {
+    dispatch(setTableSittings(chart.formatting))
+  }, [chart, dispatch]);
 
   return (
     <div className={styles.wrapper}>
@@ -38,41 +46,7 @@ export const ChartItemTable = ({chart}) => {
 
       </div>
 
-      {/*<div>*/}
-      {/*  <TagPicker*/}
-      {/*    data={DEFAULT_COLUMNS}*/}
-      {/*    labelKey="label"*/}
-      {/*    valueKey="key"*/}
-      {/*    value={columnKeys}*/}
-      {/*    onChange={setColumnKeys}*/}
-      {/*    cleanable={false}*/}
-      {/*  />*/}
-      {/*</div>*/}
-      {/*<hr/>*/}
-
-      {/*<Table*/}
-      {/*  height={300}*/}
-      {/*  hover={hover}*/}
-      {/*  showHeader={showHeader}*/}
-      {/*  autoHeight={autoHeight}*/}
-      {/*  data={data}*/}
-      {/*  bordered={bordered}*/}
-      {/*  cellBordered={bordered}*/}
-      {/*  headerHeight={compact ? 30 : 40}*/}
-      {/*  rowHeight={compact ? 30 : 46}*/}
-      {/*>*/}
-      {/*  {columns.map(column => {*/}
-      {/*    const {key, label, ...rest} = column;*/}
-      {/*    return (*/}
-      {/*      <Column {...rest} key={key} resizable>*/}
-      {/*        <CustomHeaderCell>{label}</CustomHeaderCell>*/}
-      {/*        <CustomCell dataKey={key}/>*/}
-      {/*      </Column>*/}
-      {/*    );*/}
-      {/*  })}*/}
-      {/*</Table>*/}
-
-      <ChartTable/>
+      <ChartTable format={chart.formatting} sittings={sittings}/>
 
     </div>
   )

@@ -23,8 +23,6 @@ export const ChartItemTable = ({chart}) => {
     XLSX.writeFile(wb, "data.xlsx"); // Сохраняем книгу как файл
   }
 
-  console.log('chart', chart)
-
   useEffect(() => {
     dispatch(setTableSittings(chart.formatting))
   }, [chart, dispatch]);

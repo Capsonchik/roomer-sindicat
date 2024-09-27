@@ -87,10 +87,10 @@ export const CustomSelectPicker = (
           />
         )}
       />
-      {/* Отображаем ошибку, если она есть */}
-      <div className={cl(styles.inputError, {
-        [styles.hasError]: !!errorMessage
-      })}>{errorMessage}</div>
+      {/*/!* Отображаем ошибку, если она есть *!/*/}
+      {/*<div className={cl(styles.inputError, {*/}
+      {/*  [styles.hasError]: !!errorMessage*/}
+      {/*})}>{errorMessage}</div>*/}
     </div>
   );
 };

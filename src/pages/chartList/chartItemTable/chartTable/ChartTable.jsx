@@ -1,3 +1,4 @@
+import styles from './styles.module.scss';
 import {data} from "../../../../consts/tableData";
 import {Table} from "rsuite";
 import React, {useEffect, useState} from "react";
@@ -103,6 +104,7 @@ export const ChartTable = ({sittings}) => {
       cellBordered={sittings?.bordered}
       headerHeight={sittings?.compact ? 30 : 40}
       rowHeight={sittings?.compact ? 30 : 46}
+      onRowClick={(rowData) => console.log(rowData)}
     >
       {columns.map((column, index) => {
         const {key, label, ...rest} = column;
@@ -122,7 +124,10 @@ export const ChartTable = ({sittings}) => {
             >
               {label}
             </CustomHeaderCell>
-            <CustomCell dataKey={key}/>
+            <CustomCell dataKey={key}>
+              {(rowData) => <span
+                className={`${column.customColor && rowData[key] % 2 !== 0 ? styles.positiveColor : ''}`}>{rowData[key]}</span>}
+            </CustomCell>
           </Column>
         );
       })}

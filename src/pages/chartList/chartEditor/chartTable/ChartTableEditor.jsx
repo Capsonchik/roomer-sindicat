@@ -1,5 +1,5 @@
 import styles from './chartTable.module.scss'
-import {Button, Heading, Toggle} from "rsuite";
+import {Button, Heading, Input, Toggle} from "rsuite";
 import {ChartTable} from "../../chartItemTable/chartTable/ChartTable";
 import {useDispatch, useSelector} from "react-redux";
 import {selectTableSittings} from "../../../../store/tableSlice/table.selectors";
@@ -28,6 +28,8 @@ import {setOpenDrawer} from "../../../../store/chartSlice/chart.slice";
 export const ChartTableEditor = ({chart}) => {
   const dispatch = useDispatch();
 
+  const [tableNameInput, setTableNameInput] = useState(chart.title)
+
   const sittings = useSelector(selectTableSittings);
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
@@ -41,6 +43,7 @@ export const ChartTableEditor = ({chart}) => {
 
     dispatch(patchChartFormatting({
       ...rest,
+      title: tableNameInput,
       formatting: sittings
     })).then(() => {
       const id = activeGroupId || groupsReports[0].group_id
@@ -65,6 +68,13 @@ export const ChartTableEditor = ({chart}) => {
 
   return (
     <div className={styles.wrapper}>
+      <Heading level={6}>Название таблицы</Heading>
+
+      <Input
+        placeholder={tableNameInput}
+        onChange={(value) => setTableNameInput(value)}
+      />
+
       <Heading level={6}>Базовые настройки таблицы</Heading>
 
       <div className={styles.toggles}>

@@ -38,6 +38,7 @@ export const GroupFilters = () => {
 
   useEffect(() => {
     if (!activeGroupId) return
+    methods.reset({filters: []})
     dispatch(getFilters(activeGroupId)).then(() => {
       dispatch(setFilterLoading('none'))
     })
@@ -45,17 +46,36 @@ export const GroupFilters = () => {
   }, [activeGroupId]);
   // Сброс формы и обновление filters через reset, когда filters не пустой
 
+  const getValue = (filter) => {
+    if(filter.multi) {
+      if(filter?.value) {
+        return filter.value
+      }
+      else {
+        return [filter.original_values[0]]
+      }
+    }
+    else {
+      if(filter?.value) {
+        return filter?.value[0]
+      }
+      else {
+        return  filter.original_values[0]
+      }
+    }
+  }
+
   useEffect(() => {
-    // if (!activeGroupId) return
+    if (!activeGroupId) return
     if (filters.length > 0) {
-      const filterValues = filters.map(filter => ({
+      const filterValues = filters.filter(filter => !!filter?.filter_id).map(filter => ({
         filter_name: filter.filter_name,
         filter_id: filter.filter_id,
         original_values: filter.original_values,
         multi: filter.multi,
         isactive: filter.isactive,
-        value: filter?.value ? filter?.value : [filter.original_values[0]]
-      })).filter(filter => !!filter?.filter_id);
+        value: getValue(filter)
+      }));
 
       // dispatch(setFilters({data: filterValues || [], activeGroupId}))
       methods.reset({
@@ -69,7 +89,7 @@ export const GroupFilters = () => {
         const request = filters.map(filter => {
           return {
             filter_id: filter.filter_id,
-            filter_values: filter.value || [],
+            filter_values: filter.multi ? filter.value : [filter.value]  || [],
           }
         })
         // isFirstRender.current = false
@@ -83,6 +103,12 @@ export const GroupFilters = () => {
 
       getCharts()
     }
+    else {
+      dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data:  []}}))
+        .then(() => {
+          dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
+        });
+    }
 
     return () => {
       methods.reset({})
@@ -92,13 +118,13 @@ export const GroupFilters = () => {
 
   const handleChangeFilter = (data) => {
 
-    console.log('recal',data.filters.slice(data.activeFilter + 1))
+    // console.log('recal',data.filters.slice(data.activeFilter + 1))
     const request = {
       to_recalculate: data.filters.slice(data.activeFilter + 1).map(filter => filter.filter_id).filter(Boolean),
       filter_data: data.filters.slice(0, data.activeFilter + 1).map(filter => {
         return {
           filter_id: filter.filter_id,
-          filter_values: filter.value || [],
+          filter_values: filter.multi ?  filter.value : [filter.value] || [],
         }
       }),
     }
@@ -107,7 +133,7 @@ export const GroupFilters = () => {
       return {
         ...filter,
         filter_id: filter.filter_id,
-        value: filter.value || [],
+        value: filter.multi ?  filter.value : [filter.value] || [],
       }
     })
     // return
@@ -115,7 +141,7 @@ export const GroupFilters = () => {
     // console.log('1111', filters)
     if (request.to_recalculate.length) {
       dispatch(postDependentFilters({data: request, group_id: activeGroupId})).then(res => {
-        console.log(res.payload)
+        // console.log(res.payload)
         dispatch(setDependentFilters({
           originFilters: filters,
           filters: res.payload,
@@ -132,7 +158,7 @@ export const GroupFilters = () => {
     <div>
       {activeReport && !!filters?.length && (
         <FormProvider {...methods}>
-          <div
+          {filterLoading !== 'load' && <div
             className={styles.filters}
             // style={{
             //
@@ -142,7 +168,7 @@ export const GroupFilters = () => {
               <FilterItem key={filter.filter_id} filter={filter} i={i} handleChangeFilter={handleChangeFilter}
                           methods={methods}/>
             ))}
-          </div>
+          </div>}
         </FormProvider>
       )}
     </div>

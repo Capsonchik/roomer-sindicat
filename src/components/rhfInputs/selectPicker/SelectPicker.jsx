@@ -62,6 +62,9 @@ export const CustomSelectPicker = (
         control={control}
         render={({field}) => (
           <SelectPicker
+            // style={{
+            //   width:224
+            // }}
             disabled={disabled}
             // onFocus={() =>{}}
             defaultValue={defaultValue}

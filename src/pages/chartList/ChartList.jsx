@@ -15,7 +15,7 @@ import {
   selectActiveClient, selectActiveGroupId, selectActiveReport,
   selectCharts,
   selectClients, selectErrorCharts, selectFilterLoading, selectFilters, selectGroupsReports,
-  selectIsChartLoading, selectIsOpenDrawer,
+  selectIsChartLoading, selectIsLoadDependentFilters, selectIsOpenDrawer,
   selectReportsClients
 } from "../../store/chartSlice/chart.selectors";
 import {ChartDrawer} from "./chartDrawer/ChartDrawer";
@@ -55,6 +55,7 @@ export const ChartList = (props) => {
   const filters = useSelector(selectFilters)
   const groups = useSelector(selectGroupsReports);
   const filterLoading = useSelector(selectFilterLoading);
+  const filterDependentLoading = useSelector(selectIsLoadDependentFilters);
   const activeFilters = useSelector(selectActiveFilters)
   const [filtersState, setFiltersState] = useState([filters])
 
@@ -67,7 +68,6 @@ export const ChartList = (props) => {
 
   const [isTablet] = useMediaQuery('(max-width: 1200px)');
   const isFirstRender = useRef(true)
-
 
 
 
@@ -132,6 +132,14 @@ export const ChartList = (props) => {
     };
   }, [charts]);
 
+  // console.log(filterLoading)
+
+  // if(filterLoading === 'load') {
+  //   return (
+  //     <Loader/>
+  //   )
+  // }
+
 
   return (
 
@@ -140,7 +148,7 @@ export const ChartList = (props) => {
       <GroupFilters/>
       <div
         className={styles.list}>
-        {(isChartLoading || resize) && (
+        {(filterDependentLoading || filterLoading === 'load' || isChartLoading || resize) && (
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>
@@ -161,7 +169,7 @@ export const ChartList = (props) => {
           })}
         >
 
-          {!isChartLoading && !resize && data[0]?.title && data.map((chart, index) => (
+          {!filterDependentLoading && filterLoading !== 'load' && !isChartLoading && !resize && data[0]?.title && data.map((chart, index) => (
 
             <ChartTypeView key={index} chart={chart}/>
           ))}

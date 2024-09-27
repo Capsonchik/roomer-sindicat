@@ -81,7 +81,26 @@ export const getFilters = createAsyncThunk(
   'filter/getFilters',
   async (group_id) => {
     try {
-      const response = await axiosGraphRequest.get(`/api/v3/filter/get_filters?group_id=${group_id}`);
+      const response = await axiosGraphRequest.get(`/api/v3/filter/get_filters_async?group_id=${group_id}`);
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+
+
+
+    } catch (error) {
+
+      // console.log(error)
+      throw new Error(error);
+    }
+  }
+);
+export const getFilterOriginalValues = createAsyncThunk(
+  'filter/getFilterOriginalValues',
+  async (filter_id) => {
+    try {
+      const response = await axiosGraphRequest.get(`/api/v3/filter/get_original_values?filter_id=${filter_id}`);
       // console.log(response)
       if (response.status === 200) {
         return response.data;
@@ -118,7 +137,7 @@ export const postDependentFilters = createAsyncThunk(
   'filter/postDependentFilters',
   async ({data,group_id}) => {
     try {
-      const response = await axiosGraphRequest.post(`/api/v3/filter/dependent_filters?group_id=${group_id}`,data);
+      const response = await axiosGraphRequest.post(`/api/v3/filter/dependent_filters_async?group_id=${group_id}`,data);
       // console.log(response)
       if (response.status === 200) {
         return response.data;

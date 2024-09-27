@@ -1,6 +1,6 @@
 import React from "react";
 import {Controller, useFormContext} from "react-hook-form";
-import {CheckPicker} from "rsuite";
+import {Button, CheckPicker} from "rsuite";
 import styles from "./checkPicker.module.scss";
 
 export const CustomCheckPicker = (
@@ -23,6 +23,8 @@ export const CustomCheckPicker = (
     disabledItemValues = [],
     defaultValue,
     open,
+    conditionForButton = false,  // условие для отображения кнопки
+    buttonFunction = () => {}
     // selectRef
     // onExit
   }
@@ -61,6 +63,18 @@ export const CustomCheckPicker = (
             disabledItemValues={disabledItemValues}
             container={container}
             preventOverflow // Включение автоматического определения переполнения
+
+
+            // Добавляем кнопку внутри dropdown
+            renderExtraFooter={() =>
+              conditionForButton && (
+                <div className={styles.actionButtonWrapper}>
+                  <Button onClick={buttonFunction} appearance="primary" className={styles.actionButton}>
+                    Показать все
+                  </Button>
+                </div>
+              )
+            }
           />
         )}
       />

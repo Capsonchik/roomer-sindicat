@@ -10,7 +10,7 @@ import {
   patchChartById, patchGroupById, postGroup
 } from "./chart.actions";
 import {fa} from "@faker-js/faker";
-import {createFilter, getFilters} from "./filter.actions";
+import {createFilter, getFilters, postDependentFilters} from "./filter.actions";
 
 const initialState = {
   clients: [],
@@ -34,7 +34,8 @@ const initialState = {
   errorCharts: false,
   scrollTabs: 1,
   filters: [],
-  filterLoading: 'none'
+  filterLoading: 'none',
+  isLoadDependentFilters: false,
 }
 
 export const chartSlice = createSlice({
@@ -178,6 +179,12 @@ export const chartSlice = createSlice({
       })
       .addCase(getFilters.pending, (state, action) => {
         state.filterLoading = 'load'
+      })
+      .addCase(postDependentFilters.fulfilled, (state, action) => {
+        state.isLoadDependentFilters = false
+      })
+      .addCase(postDependentFilters.pending, (state, action) => {
+        state.isLoadDependentFilters = true
       })
 
 

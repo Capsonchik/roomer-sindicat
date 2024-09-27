@@ -1,9 +1,16 @@
 .inputWrapper {
   position: relative;
+  //overflow: hidden;
+  //width: 224px;
+  & > div {
+    width: 224px;
+  }
 
   .inputGroup {
     .input {
+
       height: 35px;
+      overflow: hidden;
     }
   }
 

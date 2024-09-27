@@ -187,6 +187,10 @@ export const chartSlice = createSlice({
         state.isLoadDependentFilters = true
       })
 
+      .addCase(postDependentFilters.rejected, (state, action) => {
+        state.isLoadDependentFilters = false
+      })
+
 
   }
 })

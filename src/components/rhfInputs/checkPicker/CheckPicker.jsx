@@ -30,7 +30,6 @@ export const CustomCheckPicker = (
   }
 ) => {
   const {control} = useFormContext();
-
   return (
     <div className={styles.wrapper}>
       <Controller

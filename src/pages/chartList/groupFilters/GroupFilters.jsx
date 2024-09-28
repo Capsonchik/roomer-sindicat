@@ -21,7 +21,6 @@ export const GroupFilters = () => {
   const dispatch = useDispatch();
   const filterLoading = useSelector(selectFilterLoading);
   const activeReport = useSelector(selectActiveReport)
-  const isFirstRender = useRef(false)
 
   const methods = useForm({
     defaultValues: {
@@ -31,7 +30,7 @@ export const GroupFilters = () => {
   });
 
 
-  const {fields, append, remove, replace} = useFieldArray({
+  const {fields} = useFieldArray({
     control: methods.control,
     name: "filters"
   });
@@ -47,20 +46,17 @@ export const GroupFilters = () => {
   // Сброс формы и обновление filters через reset, когда filters не пустой
 
   const getValue = (filter) => {
-    if(filter.multi) {
-      if(filter?.value) {
+    if (filter.multi) {
+      if (filter?.value) {
         return filter.value
-      }
-      else {
+      } else {
         return [filter.original_values[0]]
       }
-    }
-    else {
-      if(filter?.value) {
-        return filter?.value[0]
-      }
-      else {
-        return  filter.original_values[0]
+    } else {
+      if (filter?.value) {
+        return filter?.value[0] ? filter?.value[0] : []
+      } else {
+        return filter.original_values[0]
       }
     }
   }
@@ -68,14 +64,17 @@ export const GroupFilters = () => {
   useEffect(() => {
     if (!activeGroupId) return
     if (filters.length > 0) {
-      const filterValues = filters.filter(filter => !!filter?.filter_id).map(filter => ({
+      const filterValues = filters.map(filter => ({
         filter_name: filter.filter_name,
         filter_id: filter.filter_id,
         original_values: filter.original_values,
         multi: filter.multi,
         isactive: filter.isactive,
+        islimited: filter.islimited,
         value: getValue(filter)
       }));
+
+      console.log(filterValues)
 
       // dispatch(setFilters({data: filterValues || [], activeGroupId}))
       methods.reset({
@@ -89,7 +88,11 @@ export const GroupFilters = () => {
         const request = filters.map(filter => {
           return {
             filter_id: filter.filter_id,
-            filter_values: filter.multi ? filter.value : [filter.value]  || [],
+            filter_values: filter.multi
+              ? filter.value ? filter.value : []
+              : filter.value
+                ? Array.isArray(filter.value) ? filter.value : [filter.value]
+                : []
           }
         })
         // isFirstRender.current = false
@@ -102,9 +105,8 @@ export const GroupFilters = () => {
       }
 
       getCharts()
-    }
-    else {
-      dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data:  []}}))
+    } else {
+      dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: []}}))
         .then(() => {
           dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
         });
@@ -117,14 +119,15 @@ export const GroupFilters = () => {
 
 
   const handleChangeFilter = (data) => {
-
-    // console.log('recal',data.filters.slice(data.activeFilter + 1))
+    // console.log(data)
     const request = {
       to_recalculate: data.filters.slice(data.activeFilter + 1).map(filter => filter.filter_id).filter(Boolean),
       filter_data: data.filters.slice(0, data.activeFilter + 1).map(filter => {
         return {
           filter_id: filter.filter_id,
-          filter_values: filter.multi ?  filter.value : [filter.value] || [],
+          filter_values: filter.multi
+            ? filter.value ? filter.value : []
+            : filter.value ? [filter.value] : [],
         }
       }),
     }
@@ -133,24 +136,31 @@ export const GroupFilters = () => {
       return {
         ...filter,
         filter_id: filter.filter_id,
-        value: filter.multi ?  filter.value : [filter.value] || [],
+        value: filter.multi
+          ? filter.value ? filter.value : []
+          : filter.value ? [filter.value] : [],
       }
     })
     // return
     // }
-    // console.log('1111', filters)
+    console.log('1111', filters)
     if (request.to_recalculate.length) {
       dispatch(postDependentFilters({data: request, group_id: activeGroupId})).then(res => {
         // console.log(res.payload)
-        dispatch(setDependentFilters({
-          originFilters: filters,
-          filters: res.payload,
-          activeFilterIndex: data.activeFilter
-        }))
+        if (res.meta.requestStatus === 'fulfilled') {
+          dispatch(setDependentFilters({
+            originFilters: filters,
+            filters: res.payload,
+            activeFilterIndex: data.activeFilter
+          }))
+        }
+
       })
       return
+    } else {
+      dispatch(setFilters(filters))
+
     }
-    dispatch(setFilters(filters))
 
   }
 

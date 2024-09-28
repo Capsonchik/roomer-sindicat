@@ -103,6 +103,7 @@ export const FilterDrawer = ({open, onClose}) => {
       filter_name: data.filter_name,
       multi: Boolean(data.multi),
       isactive: Boolean(data.isactive),
+      islimited: Boolean(data.islimited),
       filter_data: data.filter_data?.map((item) => {
         const [db_name, column_name] = item.split(' ')
         return {
@@ -240,6 +241,16 @@ export const FilterDrawer = ({open, onClose}) => {
                         name={'multi'}
                         checkedChildren={'Multi'}
                         unCheckedChildren={'Unmulti'}
+                      />
+                    </div>
+
+                    <div className={styles.input_wrapper}>
+                      <h6 className={styles.label}>Лимит</h6>
+                      <CustomToggle
+                        className={cl(styles.input_wrapper, {}, [styles.input_toggle])}
+                        name={'islimited'}
+                        checkedChildren={'Вкл'}
+                        unCheckedChildren={'Выкл'}
                       />
                     </div>
                     <div className={styles.input_wrapper}>

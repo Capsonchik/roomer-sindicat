@@ -21,6 +21,7 @@ export const GroupFilters = () => {
   const dispatch = useDispatch();
   const filterLoading = useSelector(selectFilterLoading);
   const activeReport = useSelector(selectActiveReport)
+  const [activeFilter, setActiveFilter] = useState(null);
 
   const methods = useForm({
     defaultValues: {
@@ -74,11 +75,13 @@ export const GroupFilters = () => {
         value: getValue(filter)
       }));
 
-      console.log(filterValues)
+      // console.log(methods.getValues('activeFilter'))
 
       // dispatch(setFilters({data: filterValues || [], activeGroupId}))
+
       methods.reset({
         filters: filterValues,
+        // activeFilter: methods.getValues('activeFilter')
         // activeFilter: null
       });
 
@@ -143,7 +146,6 @@ export const GroupFilters = () => {
     })
     // return
     // }
-    console.log('1111', filters)
     if (request.to_recalculate.length) {
       dispatch(postDependentFilters({data: request, group_id: activeGroupId})).then(res => {
         // console.log(res.payload)
@@ -175,7 +177,10 @@ export const GroupFilters = () => {
             // }}
           >
             {fields.map((filter, i) => (
-              <FilterItem key={filter.filter_id} filter={filter} i={i} handleChangeFilter={handleChangeFilter}
+              <FilterItem
+                activeFilter={activeFilter}
+                setActiveFilter={setActiveFilter}
+                key={filter.filter_id} filter={filter} i={i} handleChangeFilter={handleChangeFilter}
                           methods={methods}/>
             ))}
           </div>}

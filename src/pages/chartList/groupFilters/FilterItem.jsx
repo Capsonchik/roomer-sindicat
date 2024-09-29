@@ -6,11 +6,12 @@ import styles from "./groupFIlters.module.scss";
 import {selectIsLoadDependentFilters} from "../../../store/chartSlice/chart.selectors";
 import {getFilterOriginalValues} from "../../../store/chartSlice/filter.actions";
 
-export const FilterItem = ({filter, i, handleChangeFilter, methods}) => {
+export const FilterItem = ({filter, i, handleChangeFilter, methods,setActiveFilter,activeFilter}) => {
   const [open, setOpen] = useState(false);
-  const  dispatch = useDispatch();
-  const [activeFilter, setActiveFilter] = useState(null); // Хранение индекса активного фильтра
+  const dispatch = useDispatch();
+  // const [activeFilter, setActiveFilter] = useState(null); // Хранение индекса активного фильтра
   const filterLoading = useSelector(selectIsLoadDependentFilters);
+
   const divRef = useRef(null); // Ссылка на div
   const [originValues, setOriginValues] = useState(filter.original_values
     ? filter.original_values.map((item) => ({
@@ -20,11 +21,13 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods}) => {
     : [])
 
   useEffect(() => {
+    console.log(activeFilter, i)
 
+    if (activeFilter === i) return
     setOriginValues(filter.original_values.map((item) => ({
-        label: item,
-        value: item,
-      })))
+      label: item,
+      value: item,
+    })))
 
   }, [filter.original_values]);
 
@@ -43,7 +46,8 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods}) => {
 
       {filter.multi ? (
         <CustomCheckPicker
-          conditionForButton={filter.islimited}
+          conditionForButton={true}
+          // conditionForButton={filter.islimited}
           buttonFunction={() => {
             dispatch(getFilterOriginalValues(filter.filter_id)).then((res) => {
               setOriginValues(res.payload.original_values.map(item => ({
@@ -51,7 +55,7 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods}) => {
                 value: item,
               })))
               // methods.setValue(`filters.${i}.value`,res.payload.original_values);
-              console.log('res',res.payload.original_values)
+              console.log('res', res.payload.original_values)
             })
           }}
           // open={open}
@@ -62,6 +66,7 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods}) => {
               return;
             }
             methods.setValue("activeFilter", i);
+            setActiveFilter(i)
             methods.handleSubmit(handleChangeFilter)();
           }}
           name={`filters.${i}.value`}
@@ -86,6 +91,7 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods}) => {
               return;
             }
             methods.setValue("activeFilter", i);
+            setActiveFilter(i)
             methods.handleSubmit(handleChangeFilter)();
           }}
         />

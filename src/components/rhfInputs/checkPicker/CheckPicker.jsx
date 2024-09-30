@@ -24,7 +24,8 @@ export const CustomCheckPicker = (
     defaultValue,
     open,
     conditionForButton = false,  // условие для отображения кнопки
-    buttonFunction = () => {}
+    buttonFunction = () => {},
+    loading
     // selectRef
     // onExit
   }
@@ -41,9 +42,9 @@ export const CustomCheckPicker = (
             // onExiting={onExit}
             open={open}
             style={{width:200}}
-            // menuStyle={{
-            //   maxWidth:150
-            // }}
+            menuStyle={{
+              maxWidth:250
+            }}
             defaultValue={defaultValue}
             {...field}
             className={className}
@@ -68,7 +69,7 @@ export const CustomCheckPicker = (
             renderExtraFooter={() =>
               conditionForButton && (
                 <div className={styles.actionButtonWrapper}>
-                  <Button onClick={buttonFunction} appearance="primary" className={styles.actionButton}>
+                  <Button loading={loading} onClick={buttonFunction} appearance="primary" className={styles.actionButton}>
                     Показать все
                   </Button>
                 </div>

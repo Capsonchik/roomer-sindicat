@@ -9,3 +9,10 @@
 div:has(.wrapper) + div {
   //top: 40px !important;
 }
+
+.actionButtonWrapper{
+  padding: 20px 10px 10px;
+  button{
+    width: 100%;
+  }
+}

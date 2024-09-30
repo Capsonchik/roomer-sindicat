@@ -5,12 +5,14 @@ import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/Sel
 import styles from "./groupFIlters.module.scss";
 import {selectIsLoadDependentFilters} from "../../../store/chartSlice/chart.selectors";
 import {getFilterOriginalValues} from "../../../store/chartSlice/filter.actions";
+import {selectOriginValuesLoading} from "../../../store/chartSlice/filter.selectors";
 
-export const FilterItem = ({filter, i, handleChangeFilter, methods,setActiveFilter,activeFilter}) => {
+export const FilterItem = ({filter, i, handleChangeFilter, methods, setActiveFilter, activeFilter, isSearch}) => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   // const [activeFilter, setActiveFilter] = useState(null); // Хранение индекса активного фильтра
   const filterLoading = useSelector(selectIsLoadDependentFilters);
+  const originValuesLoading = useSelector(selectOriginValuesLoading);
 
   const divRef = useRef(null); // Ссылка на div
   const [originValues, setOriginValues] = useState(filter.original_values
@@ -31,6 +33,8 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods,setActiveFilt
 
   }, [filter.original_values]);
 
+  // console.log(originValues,activeFilter,i)
+
   return (
     <div
       // ref={divRef} // Привязываем ссылку к div
@@ -46,16 +50,26 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods,setActiveFilt
 
       {filter.multi ? (
         <CustomCheckPicker
-          conditionForButton={true}
-          // conditionForButton={filter.islimited}
+          searchable={isSearch}
+          loading={originValuesLoading}
+          conditionForButton={filter.islimited && originValues.length === 100}
           buttonFunction={() => {
             dispatch(getFilterOriginalValues(filter.filter_id)).then((res) => {
+              // console.log(res.payload)
+              // if(res.payload.length > 1000) {
+              //   setOriginValues(res.payload.original_values.slice(0,1000).map(item => ({
+              //     label: item,
+              //     value: item,
+              //   })))
+              // }
+
               setOriginValues(res.payload.original_values.map(item => ({
                 label: item,
                 value: item,
               })))
+
+
               // methods.setValue(`filters.${i}.value`,res.payload.original_values);
-              console.log('res', res.payload.original_values)
             })
           }}
           // open={open}
@@ -72,7 +86,6 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods,setActiveFilt
           name={`filters.${i}.value`}
           data={originValues}
           disabledItemValues={filterLoading ? methods.getValues(`filters.${i}.original_values`) : []}
-          searchable={false}
           placeholder={!methods.getValues(`filters.${i}.isactive`) ? "Фильтр не активен" : filter.filter_name}
           className={styles.select}
           preventOverflow={true}
@@ -80,10 +93,19 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods,setActiveFilt
         />
       ) : (
         <CustomSelectPicker
-          data={filter.original_values?.map((item) => ({
-            label: item,
-            value: item,
-          }))}
+          loading={originValuesLoading}
+          searchable={isSearch}
+          conditionForButton={filter.islimited && originValues.length === 100}
+          buttonFunction={() => {
+            dispatch(getFilterOriginalValues(filter.filter_id)).then((res) => {
+              setOriginValues(res.payload.original_values.map(item => ({
+                label: item,
+                value: item,
+              })))
+              // methods.setValue(`filters.${i}.value`,res.payload.original_values);
+            })
+          }}
+          data={originValues}
           value={filter.isactive ? methods.getValues(`filters.${i}.value`) : null}
           name={`filters.${i}.value`}
           onChangeOutside={(value) => {

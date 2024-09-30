@@ -168,7 +168,6 @@ export const TopFilters = () => {
         a.click();
         a.remove();
 
-        window.URL.revokeObjectURL(url);
         // Очистка загрузчика после загрузки файла
         setFileList([]); // Очистка списка файлов
 

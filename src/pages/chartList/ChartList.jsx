@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {
   fetchAllChartsByGroupId,
   fetchAllChartsFormatByGroupId,
-  fetchAllClients
+  fetchAllClients, fetchChartById
 } from "../../store/chartSlice/chart.actions";
 import {
   selectActiveClient, selectActiveGroupId, selectActiveReport,
@@ -40,6 +40,8 @@ import {selectCurrentUser} from "../../store/userSlice/user.selectors";
 import {ChartTypeView} from "./chartTypeView/ChartTypeView";
 import {selectActiveFilters, setFilters} from "../../store/chartSlice/filter.slice";
 import {GroupFilters} from "./groupFilters/GroupFilters";
+import {fetchGetGraphs} from "../../store/reportSlice/reportSlice.actions";
+import {DataLensChartItem} from "./dataLensChartItem/DataLensChartItem";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -132,6 +134,18 @@ export const ChartList = (props) => {
     };
   }, [charts]);
 
+  const [dataLensCharts, setDataLensCharts] = useState([])
+
+  useEffect(() => {
+    if(activeGroupId) {
+      setDataLensCharts([])
+      dispatch(fetchGetGraphs(activeGroupId)).then((res) => {
+        setDataLensCharts(res.payload)
+      })
+
+    }
+  }, [activeGroupId]);
+  console.log(dataLensCharts)
   // console.log(filterLoading)
 
   // if(filterLoading === 'load') {
@@ -173,9 +187,17 @@ export const ChartList = (props) => {
 
             <ChartTypeView key={index} chart={chart}/>
           ))}
+
+
+          {/*{dataLensCharts?.map(dataLensChart => {*/}
+          {/*  return (*/}
+          {/*   <DataLensChartItem dataLensChart={dataLensChart}/>*/}
+
+          {/*  )*/}
+          {/*})}*/}
         </div>}
 
-        {activeReport && !isChartLoading && !data.length && (
+        {activeReport && filterLoading !== 'load' && !isChartLoading && !data.length && (
           <div className={styles.placeholder}>
             <Divider>{errorCharts ? 'По выбранным фильтрам нет данных' : 'Нет графиков'}</Divider>
 
@@ -184,7 +206,7 @@ export const ChartList = (props) => {
 
 
         {placeholderText && <div className={styles.placeholder}>
-          <Divider>{placeholderText}</Divider>
+        <Divider>{placeholderText}</Divider>
         </div>}
 
       </div>

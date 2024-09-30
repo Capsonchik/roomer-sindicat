@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from "react";
 import {Controller, useFormContext} from "react-hook-form";
-import {SelectPicker} from "rsuite";
+import {Button, SelectPicker} from "rsuite";
 import styles from "./selectPicker.module.scss";
 import cl from "classnames";
 
@@ -17,7 +17,10 @@ export const CustomSelectPicker = (
     container,
     defaultValue = null,
     preventOverflow,
-    disabled = false
+    disabled = false,
+    conditionForButton = false,  // условие для отображения кнопки
+    buttonFunction = () => {},
+    loading
   }
 ) => {
   const {
@@ -65,6 +68,9 @@ export const CustomSelectPicker = (
             // style={{
             //   width:224
             // }}
+            menuStyle={{
+              maxWidth:200
+            }}
             disabled={disabled}
             // onFocus={() =>{}}
             defaultValue={defaultValue}
@@ -84,6 +90,18 @@ export const CustomSelectPicker = (
             className={className || styles.type}
             container={container}
             preventOverflow
+
+            // Добавляем кнопку внутри dropdown
+            loading={loading}
+            renderExtraFooter={() =>
+              conditionForButton && (
+                <div className={styles.actionButtonWrapper}>
+                  <Button onClick={buttonFunction} appearance="primary" className={styles.actionButton}>
+                    Загрузить еще
+                  </Button>
+                </div>
+              )
+            }
           />
         )}
       />

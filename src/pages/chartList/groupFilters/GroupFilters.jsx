@@ -178,10 +178,14 @@ export const GroupFilters = () => {
           >
             {fields.map((filter, i) => (
               <FilterItem
+                isSearch
                 activeFilter={activeFilter}
                 setActiveFilter={setActiveFilter}
-                key={filter.filter_id} filter={filter} i={i} handleChangeFilter={handleChangeFilter}
-                          methods={methods}/>
+                key={filter.filter_id}
+                filter={filter} i={i}
+                handleChangeFilter={handleChangeFilter}
+                methods={methods}
+              />
             ))}
           </div>}
         </FormProvider>

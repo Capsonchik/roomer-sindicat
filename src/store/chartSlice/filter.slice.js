@@ -10,11 +10,11 @@ import {
   patchChartById, patchGroupById, postGroup
 } from "./chart.actions";
 import {fa} from "@faker-js/faker";
-import {createFilter, getFilters} from "./filter.actions";
+import {createFilter, getFilterOriginalValues, getFilters} from "./filter.actions";
 
 const initialState = {
   activeFilters: {},
-
+  originValuesLoading: false
 }
 
 export const filterSlice = createSlice({
@@ -42,11 +42,13 @@ export const filterSlice = createSlice({
 
   },
   extraReducers: builder => {
-    // builder
-    //   // .addCase(fetchAllCharts.fulfilled, (state, action) => {
-    //   //   state.graphs = action.payload;
-    //   //   state.currentChartLoading = false
-    //   // })
+    builder
+      .addCase(getFilterOriginalValues.pending, (state, action) => {
+        state.originValuesLoading = true;
+      })
+      .addCase(getFilterOriginalValues.fulfilled, (state, action) => {
+        state.originValuesLoading = false;
+      })
 
   }
 })

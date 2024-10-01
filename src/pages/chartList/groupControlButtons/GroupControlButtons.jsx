@@ -60,12 +60,16 @@ export const GroupControlButtons = () => {
           placement={'bottom'}
           speaker={<Tooltip> {isEditableMode ? "Сохранить" : "Включить редактирование"}</Tooltip>}>
           <Button
+            style={{
+              background: isEditableMode ? '#ff8200' : '#f7f7fa',
+              color: isEditableMode ? '#fff' : '#575757'
+            }}
             className={styles.btn}
             disabled={isChartLoading}
             onClick={() => dispatch(setEditableMode(!isEditableMode))} // Передаем весь массив charts
             // className={styles.save_pptx}
           >
-            <GridIcon/>
+            <GridIcon />
 
           </Button>
         </Whisper>

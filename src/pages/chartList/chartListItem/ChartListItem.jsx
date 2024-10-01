@@ -42,6 +42,24 @@ export const ChartListItem = ({chart}) => {
     };
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (chartInstance) {
+        chartInstance.resize();
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    if (chartRef.current) {
+      resizeObserver.observe(chartRef.current);
+    }
+
+    // Cleanup observer on unmount
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [chartInstance, chartRef]);
+
 
   useLayoutEffect(() => {
     let format_value = chartState?.formatting?.format_value ?? 1
@@ -154,14 +172,14 @@ export const ChartListItem = ({chart}) => {
           className={styles.btn}
           onClick={() => {
 
-          dispatch(setActiveChart(chart))
-          dispatch(setOpenDrawer(true))
-        }}>
+            dispatch(setActiveChart(chart))
+            dispatch(setOpenDrawer(true))
+          }}>
           <EditIcon/>
         </Button>
       </div>
       {/*<p>{chart.description}</p>*/}
-      <div className={styles.chart} ref={chartRef} style={{width: '100%', minHeight: '500px',paddingBottom:30}}></div>
+      <div className={styles.chart} ref={chartRef} style={{width: '100%', minHeight: '100px', paddingBottom: 30}}></div>
 
     </div>
   );

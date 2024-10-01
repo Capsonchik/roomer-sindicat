@@ -36,12 +36,16 @@ const initialState = {
   filters: [],
   filterLoading: 'none',
   isLoadDependentFilters: false,
+  isEditableMode: false
 }
 
 export const chartSlice = createSlice({
   name: 'chartSlice',
   initialState,
   reducers: {
+    setEditableMode: (state, action) => {
+      state.isEditableMode = action.payload;
+    },
     setAxes: (state, action) => {
       state.axes = action.payload;
     },
@@ -196,6 +200,7 @@ export const chartSlice = createSlice({
 })
 
 export const {
+  setEditableMode,
   setDependentFilters,
   setCharts,
   setGroups,

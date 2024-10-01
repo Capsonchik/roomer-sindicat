@@ -10,6 +10,8 @@ import {PreviewDrawer} from "./components/drawers/PreviewDrower/PreviewDrawer";
 import {useEffect} from "react";
 import Cookies from "js-cookie";
 import {useNavigate} from "react-router-dom";
+import 'react-grid-layout/css/styles.css'
+import 'react-resizable/css/styles.css'
 
 function App() {
   const startPage = useSelector(selectStartPage);

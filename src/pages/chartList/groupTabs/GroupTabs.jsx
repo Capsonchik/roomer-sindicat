@@ -4,7 +4,7 @@ import 'swiper/css/navigation';
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useRef, useState} from "react";
 import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
-import {setActiveGroup, setFilterLoading} from "../../../store/chartSlice/chart.slice";
+import {setActiveGroup, setCharts, setFilterLoading} from "../../../store/chartSlice/chart.slice";
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Navigation, Mousewheel, Keyboard, Scrollbar} from 'swiper/modules';
 import {selectActiveGroupId, selectCharts, selectScrollTabs} from "../../../store/chartSlice/chart.selectors";
@@ -61,6 +61,7 @@ export const GroupTabs = ({groupsReports}) => {
 
   const handleItemClick = (id) => {
     // setSelectedIndex(index);
+    dispatch(setCharts([]))
     handleSelect(id);
   };
 

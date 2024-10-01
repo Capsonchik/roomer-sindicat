@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts';
+import {TableTest} from "../chartList/tableTest/TableTest";
 
 export const Map1 = () => {
   const [option, setOption] = useState({});
@@ -80,8 +81,9 @@ export const Map1 = () => {
   }, []);
 
   return (
-    <div style={{ width: '100%', height: '600px' }}>
-      <ReactECharts option={option} style={{height:600}}/>
-    </div>
+    // <div style={{ width: '100%', height: '600px' }}>
+    //   <ReactECharts option={option} style={{height:600}}/>
+    // </div>
+    <TableTest/>
   );
 };

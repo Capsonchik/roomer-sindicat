@@ -42,6 +42,8 @@ import {selectActiveFilters, setFilters} from "../../store/chartSlice/filter.sli
 import {GroupFilters} from "./groupFilters/GroupFilters";
 import {fetchGetGraphs} from "../../store/reportSlice/reportSlice.actions";
 import {DataLensChartItem} from "./dataLensChartItem/DataLensChartItem";
+import ShowcaseLayout from "./gridLayoutItem/GridLayoutItem";
+import {TableTest} from "./tableTest/TableTest";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -70,7 +72,6 @@ export const ChartList = (props) => {
 
   const [isTablet] = useMediaQuery('(max-width: 1200px)');
   const isFirstRender = useRef(true)
-
 
 
   useEffect(() => {
@@ -137,7 +138,7 @@ export const ChartList = (props) => {
   const [dataLensCharts, setDataLensCharts] = useState([])
 
   useEffect(() => {
-    if(activeGroupId) {
+    if (activeGroupId) {
       setDataLensCharts([])
       dispatch(fetchGetGraphs(activeGroupId)).then((res) => {
         setDataLensCharts(res.payload)
@@ -153,6 +154,57 @@ export const ChartList = (props) => {
   //     <Loader/>
   //   )
   // }
+  const [layouts, setLayouts] = useState({lg: []});
+  const [isEditMode, setIsEditMode] = useState(false); // состояние для редактирования
+
+
+  const generateLayout = (data) => {
+    const layout = data.map((item, index) => ({
+      i: String(index), // уникальный идентификатор, оставляем индекс без изменений
+      x: (index % 2) * 6, // два элемента в строке, по 6 единиц ширины каждый
+      y: Math.floor(index / 2) * 2, // каждые два элемента на новой строке
+      w: 6, // ширина элемента (половина ширины контейнера)
+      h: 2, // высота элемента
+      minW: 3, // минимальная ширина
+      minH: 2, // минимальная высота
+      maxW: 12, // максимальная ширина
+      static: false, // чтобы элемент можно было перемещать
+    }));
+
+    // Специально обновляем первый элемент, делаем его таким же по ширине, как и остальные
+    if (layout.length > 0) {
+      layout[0] = {
+        i: "0", // первый элемент должен сохранять свой индекс
+        x: 0,
+        y: 0,
+        w: 6, // ширина элемента
+        h: 2, // высота элемента
+        minW: 3,
+        minH: 2,
+        maxW: 12,
+        static: false, // элемент также должен перемещаться
+      };
+    }
+
+    return {lg: layout};
+  };
+  // useEffect(() => {
+  //   if (data.length) {
+  //     setLayouts({ lg: generateLayout(data, isEditMode) }); // обновляем лейаут с учётом режима редактирования
+  //   }
+  // }, [data, isEditMode]);
+
+
+  useEffect(() => {
+    // Генерация лейаута при изменении массива data
+    if (data.length) {
+      setLayouts(generateLayout(data));
+    }
+  }, [data]);
+
+  const onLayoutChange = (layout, allLayouts) => {
+    setLayouts(allLayouts);
+  };
 
 
   return (
@@ -162,7 +214,7 @@ export const ChartList = (props) => {
       <GroupFilters/>
       <div
         className={styles.list}>
-        {(filterDependentLoading || filterLoading === 'load' || isChartLoading || resize) && (
+        { (filterLoading === 'load' || isChartLoading)  && (
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>
@@ -177,16 +229,47 @@ export const ChartList = (props) => {
         {activeReport && <div
           // className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}
           className={cl(styles.wrapper, {
-            [styles.col_2]: data.length % 2 === 0,
-            [styles.col_3]: Boolean(data.length % 2) && data.length > 1,
-            [styles.isTablet]: isTablet
+            // [styles.col_2]: data.length % 2 === 0,
+            // [styles.col_3]: Boolean(data.length % 2) && data.length > 1,
+            // [styles.isTablet]: isTablet
           })}
         >
 
-          {!filterDependentLoading && filterLoading !== 'load' && !isChartLoading && !resize && data[0]?.title && data.map((chart, index) => (
+          {(filterLoading !== 'load' || !isChartLoading) && data[0]?.title && (
+            <>
 
-            <ChartTypeView key={index} chart={chart}/>
-          ))}
+              <div style={{
+                width: '100%',
+                // height: 'calc(100vh - 80px)',
+                // padding: '20px',
+                overflowY: 'auto',
+                overflowX: 'hidden'
+              }}>
+                <ShowcaseLayout
+                  onLayoutChange={onLayoutChange}
+                  initialLayout={layouts.lg}
+                  charts={data}>
+                </ShowcaseLayout>
+              </div>
+            </>
+          )}
+
+
+          {/*{!filterDependentLoading && filterLoading !== 'load' && !isChartLoading && !resize && data[0]?.title && data.map((chart, index) => (*/}
+
+          {/*  <div style={{*/}
+          {/*    width: '100%',*/}
+          {/*    height: 'calc(100vh - 80px)',*/}
+          {/*    padding: '20px',*/}
+          {/*    overflowY: 'auto',*/}
+          {/*    overflowX: 'hidden'*/}
+          {/*  }}>*/}
+          {/*    <ShowcaseLayout onLayoutChange={onLayoutChange} initialLayout={layouts.lg}*/}
+          {/*                    chart={<ChartTypeView key={index} chart={chart}/>}>*/}
+          {/*      /!*<ChartTypeView key={index} chart={chart}/>*!/*/}
+          {/*    </ShowcaseLayout>*/}
+          {/*  </div>*/}
+          {/*))}*/}
 
 
           {/*{dataLensCharts?.map(dataLensChart => {*/}
@@ -206,7 +289,7 @@ export const ChartList = (props) => {
 
 
         {placeholderText && <div className={styles.placeholder}>
-        <Divider>{placeholderText}</Divider>
+          <Divider>{placeholderText}</Divider>
         </div>}
 
       </div>

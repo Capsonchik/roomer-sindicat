@@ -89,9 +89,9 @@ export const FilterDrawer = ({open, onClose}) => {
       // address_db: [{db_name: ''}] // Ensure address_db has a default entry
     })
 
-    // dispatch(fetchColumnDBFromGroup(activeGroupId)).then((res) => {
-    //   setAvailableFields(res.payload)
-    // })
+    dispatch(fetchColumnDBFromGroup(activeGroupId)).then((res) => {
+      setAvailableFields(res.payload)
+    })
   }, [open, activeGroupId]);
   const {errors} = methods.formState;
 

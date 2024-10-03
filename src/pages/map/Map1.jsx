@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts';
-import {TableTest} from "../chartList/tableTest/TableTest";
+import {PivotTableComponent} from "../chartList/tableTest/TableTest";
+import {PivotTableAgGrid} from "../chartList/tableTest/AgGrid";
 
 export const Map1 = () => {
   const [option, setOption] = useState({});
@@ -47,8 +48,8 @@ export const Map1 = () => {
               map: 'myMap',
               roam: true,
               aspectScale: .5,
-              zoom:2,
-              left:'-45%',
+              zoom: 2,
+              left: '-45%',
               // layoutCenter: ['100%', '30%'],
               label: {
                 show: false // Не показывать метку по умолчанию
@@ -84,6 +85,9 @@ export const Map1 = () => {
     // <div style={{ width: '100%', height: '600px' }}>
     //   <ReactECharts option={option} style={{height:600}}/>
     // </div>
-    <TableTest/>
+    <>
+      <PivotTableComponent/>
+      {/*<PivotTableAgGrid/>*/}
+    </>
   );
 };

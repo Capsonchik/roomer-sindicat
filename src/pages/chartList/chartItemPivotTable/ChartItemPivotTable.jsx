@@ -2,19 +2,19 @@ import React, { useState, useEffect, useRef } from 'react';
 import PivotTableUI from 'react-pivottable/PivotTableUI';
 import 'react-pivottable/pivottable.css';
 import { aggregators } from 'react-pivottable/Utilities';
-import './styles.scss';
-import {Button} from "rsuite"; // Подключаем стили для скрытия элементов
+import './pivotTable.scss';
+import {Button} from "rsuite";
+import {salesData} from "./pivot.mocks";
+import cl from "classnames";
+import styles from "../chartItemPie/chartItemPie.module.scss";
+import {pieMocks} from "../chartEditor/chartPie/pie-mocks";
+import {setActiveChart, setOpenDrawer} from "../../../store/chartSlice/chart.slice";
+import EditIcon from "@rsuite/icons/Edit";
+import {useDispatch} from "react-redux"; // Подключаем стили для скрытия элементов
 
-export const PivotTableComponent = () => {
-  const salesData = [
-    { region: 'North', product: 'Laptop', sales: 1500, quantity: 5, date: '2024-01-10' },
-    { region: 'North', product: 'Phone', sales: 800, quantity: 2, date: '2024-01-15' },
-    { region: 'South', product: 'Laptop', sales: 2000, quantity: 6, date: '2024-02-10' },
-    { region: 'South', product: 'Phone', sales: 1000, quantity: 3, date: '2024-02-12' },
-    { region: 'East', product: 'Laptop', sales: 1800, quantity: 4, date: '2024-03-05' },
-    { region: 'East', product: 'Phone', sales: 950, quantity: 2, date: '2024-03-07' },
-  ];
 
+export const ChartItemPivotTable = ({chart}) => {
+  const dispatch = useDispatch();
   const russianAggregators = {
     "Сумма": aggregators["Sum"],
     "Максимум": aggregators["Maximum"],
@@ -47,9 +47,18 @@ export const PivotTableComponent = () => {
 
   return (
     <div>
-      <Button onClick={() => setIsEditable(!isEditable)}>Жмякни</Button>
-      <h3>Сводная таблица продаж</h3>
-      <div className={`${isEditable ? 'editable' : ''} customTable`}>
+      <div className={'wrapper editable'}>
+        {/*<div className={`${isEditable ? 'editable' : ''} customTable`}>*/}
+
+        <div className={'title_wrapper'}>
+          <h5>{chart.title}</h5>
+          <Button className={'btn'} onClick={() => {
+            dispatch(setActiveChart(chart))
+            dispatch(setOpenDrawer(true))
+          }}>
+            <EditIcon/>
+          </Button>
+        </div>
         <PivotTableUI
           onChange={s => handleStateChange(s)}
           {...state}
@@ -57,4 +66,4 @@ export const PivotTableComponent = () => {
       </div>
     </div>
   );
-};
+}

@@ -65,15 +65,6 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
 
   return (
     <div>
-      {/*<div>*/}
-      {/*  Current Breakpoint: {currentBreakpoint} ({layouts[currentBreakpoint]?.length || 0} columns)*/}
-      {/*</div>*/}
-      {/*<div>*/}
-      {/*  Compaction type: {compactType || "No Compaction"}*/}
-      {/*</div>*/}
-      {/*<button onClick={onCompactTypeChange}>*/}
-      {/*  Change Compaction Type*/}
-      {/*</button>*/}
       <ResponsiveReactGridLayout
         style={{
           border: isEditableMode ? "1px solid lightgray" : '',

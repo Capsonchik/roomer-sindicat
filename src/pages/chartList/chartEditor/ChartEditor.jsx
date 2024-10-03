@@ -3,6 +3,7 @@ import React from "react";
 import styles from './chartEditor.module.scss'
 import {ChartTableEditor} from "./chartTable/ChartTableEditor";
 import {ChartPie} from "./chartPie/ChartPie";
+import {ChartPivot} from "./chartPivot/ChartPivot";
 
 export const ChartEditor = ({chart}) => {
   let returnType = 'неизвестный тип графика'
@@ -15,6 +16,9 @@ export const ChartEditor = ({chart}) => {
       break
     case 'pie':
       returnType = <ChartPie chart={chart}/>
+      break
+    case 'pivot':
+      returnType = <ChartPivot chart={chart}/>
       break
   }
   return (

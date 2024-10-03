@@ -188,11 +188,7 @@ export const ChartList = (props) => {
 
     return {lg: layout};
   };
-  // useEffect(() => {
-  //   if (data.length) {
-  //     setLayouts({ lg: generateLayout(data, isEditMode) }); // обновляем лейаут с учётом режима редактирования
-  //   }
-  // }, [data, isEditMode]);
+
 
 
   useEffect(() => {

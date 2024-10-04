@@ -1,93 +1,86 @@
 import React, {useEffect, useState} from 'react';
 import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts';
-import {PivotTableComponent} from "../chartList/tableTest/TableTest";
-import {PivotTableAgGrid} from "../chartList/tableTest/AgGrid";
+import {feature} from 'topojson-client';
+import topojsonData from './map_topo.json'; // TopoJSON файл
+import newMap from './newMap2.json'; // GeoJSON файл
+import {SelectPicker} from 'rsuite';
 
 export const Map1 = () => {
   const [option, setOption] = useState({});
+  const data = Object.keys(topojsonData.objects); // Получение всех регионов из TopoJSON
+  const [currentRegion, setCurrentRegion] = useState(data[1]); // Дефолтное значение пустое
 
   useEffect(() => {
-    // Загрузка GeoJSON-файла через fetch
-    fetch('/Russia_regions.geojson') // Убедитесь, что файл находится в папке public
-      .then((response) => response.json())
-      .then((geojsonData) => {
-        console.log(geojsonData);
-        const valuesData = geojsonData.features.map(item => {
-          return {
-            name: item.properties.region,
-            value: Math.round(Math.random() * 500)
-          }
-        })
-        // Регистрация карты в ECharts
-        echarts.registerMap('myMap', geojsonData);
+    // Отменяем регистрацию предыдущей карты, если она была зарегистрирована
+
+    // const geojsonData = feature(topojsonData, topojsonData.objects?.[currentRegion]);
+    // echarts.registerMap('myMap', geojsonData);
 
 
-        // Настройка опций для карты
-        setOption({
-          title: {
-            text: 'Моя карта'
+    //регионы
+    //   const geojsonData = feature(topojsonData, currentRegion);
+    //   echarts.registerMap('myMap', geojsonData);
+
+
+    //   console.log('newMap', newMap)
+    //Россия
+      echarts.registerMap('myMap', newMap);
+
+
+
+    // if (typeof currentRegion === 'string') {
+    //   console.log(111)
+    //   // Преобразование TopoJSON в GeoJSON для выбранного региона
+    //   const geojsonData = feature(topojsonData, topojsonData.objects?.[currentRegion]);
+    //   echarts.registerMap('myMap', geojsonData);
+    // } else {
+    //   // Регистрация карты для всего GeoJSON файла
+    //   console.log('newMap', newMap)
+    //   echarts.registerMap('myMap', currentRegion);
+    // }
+
+    // Обновление опций для карты после регистрации
+    setOption({
+      title: {
+        text: 'Моя карта'
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b}: {c}'
+      },
+      visualMap: {
+        min: 0,
+        max: 100,
+        text: ['High', 'Low'],
+        realtime: false,
+        calculable: true
+      },
+      series: [
+        {
+          name: 'Карта',
+          type: 'map',
+          map: 'myMap', // Используем зарегистированную карту 'myMap'
+          roam: true,
+          label: {
+            show: true
           },
-          tooltip: {
-            trigger: 'item',
-            formatter: function (params) {
-              return `${params.name}: ${params.value}`;
-            }
-          },
-          visualMap: {
-            min: 0,
-            max: 100,
-            text: ['High', 'Low'],
-            realtime: false,
-            calculable: true
-          },
-          series: [
-            {
-              name: 'Карта',
-              type: 'map',
-              map: 'myMap',
-              roam: true,
-              aspectScale: .5,
-              zoom: 2,
-              left: '-45%',
-              // layoutCenter: ['100%', '30%'],
-              label: {
-                show: false // Не показывать метку по умолчанию
-              },
-              itemStyle: {
-                areaColor: '#f3f3f3',
-                borderColor: '#000',
-                borderWidth: 0.5
-              },
-              emphasis: {
-                label: {
-                  show: true, // Показать метку при наведении
-                  color: '#000', // Цвет текста метки
-                },
-                itemStyle: {
-                  areaColor: '#ffa', // Цвет подсветки при наведении
-                  borderColor: '#f00',
-                  borderWidth: 1
-                }
-              },
-              nameProperty: 'region', // Свойство для отображения названия региона
-              data: valuesData // Использование преобразованных данных
-            }
-          ]
-        });
-      })
-      .catch((error) => {
-        console.error('Error loading GeoJSON:', error);
-      });
-  }, []);
+        }
+      ]
+    });
+  }, [currentRegion]);
 
   return (
-    // <div style={{ width: '100%', height: '600px' }}>
-    //   <ReactECharts option={option} style={{height:600}}/>
-    // </div>
-    <>
-      <PivotTableComponent/>
-      {/*<PivotTableAgGrid/>*/}
-    </>
+    <div style={{width: '100%', height: '800px'}}>
+      <SelectPicker
+        searchable
+        data={data.map(item => ({value: item, label: item}))} // Мапим регионы для селектора
+        onChange={region => {
+          setCurrentRegion(region)
+        }} // Установка выбранного региона
+        placeholder="Выберите регион"
+      />
+      <ReactECharts option={option} style={{height: '600px'}}/>
+    </div>
   );
 };

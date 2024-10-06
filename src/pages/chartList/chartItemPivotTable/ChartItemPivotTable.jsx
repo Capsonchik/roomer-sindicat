@@ -29,7 +29,7 @@ export const ChartItemPivotTable = ({chart}) => {
 
   const [state, setState] = useState({
     data: salesData,
-    rows: ['region','product'],
+    rows: ['genderName','gender'],
     cols: ['sales','quantity','date'],
     aggregatorName: 'Сумма',
     vals: ['sales'],

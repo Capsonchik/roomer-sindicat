@@ -40,7 +40,7 @@ import filtersIcon from './assets/filters.svg'
 import createPresentationIcon from './assets/create-presentation.svg'
 import SettingHorizontalIcon from '@rsuite/icons/SettingHorizontal';
 
-export const TopFilters = () => {
+export const TopFilters = ({layouts}) => {
   const dispatch = useDispatch();
   const methods = useForm()
   const clients = useSelector(selectClients)
@@ -205,7 +205,7 @@ export const TopFilters = () => {
             />
           </div>
           {/*user && user.role !== 'viewer' &&*/}
-          {activeReport && <GroupControlButtons/>}
+          {activeReport && <GroupControlButtons layouts={layouts}/>}
           {activeReport && <Dropdown
             className={styles.btn}
             icon={<SettingHorizontalIcon style={{width: 16, height: 16}}/>}

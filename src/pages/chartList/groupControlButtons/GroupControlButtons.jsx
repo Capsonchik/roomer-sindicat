@@ -17,7 +17,7 @@ import {PowerPointIcon} from "./powerPointIcon";
 import {setEditableMode} from "../../../store/chartSlice/chart.slice";
 import GridIcon from '@rsuite/icons/Grid';
 
-export const GroupControlButtons = () => {
+export const GroupControlButtons = ({layouts}) => {
   const [fileList, setFileList] = React.useState([]);
   const dispatch = useDispatch();
   const [activeGroup, setActiveGroup] = useState()
@@ -81,7 +81,7 @@ export const GroupControlButtons = () => {
           <Button
             className={styles.btn}
             disabled={isChartLoading}
-            onClick={() => downloadPpt(charts, activeGroup)} // Передаем весь массив charts
+            onClick={() => downloadPpt(charts, activeGroup,layouts)} // Передаем весь массив charts
             // className={styles.save_pptx}
           >
             <PowerPointIcon/>

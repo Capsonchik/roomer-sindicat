@@ -189,7 +189,7 @@ export const ChartList = (props) => {
     return {lg: layout};
   };
 
-
+  console.log(layouts)
 
   useEffect(() => {
     // Генерация лейаута при изменении массива data
@@ -206,7 +206,7 @@ export const ChartList = (props) => {
   return (
 
     <>
-      <TopFilters/>
+      <TopFilters layouts={layouts}/>
       <GroupFilters/>
       <div
         className={styles.list}>

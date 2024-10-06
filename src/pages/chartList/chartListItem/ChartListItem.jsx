@@ -83,7 +83,7 @@ export const ChartListItem = ({chart}) => {
         seriesData: filteredSeries,
         formatting: {
           ...prev.formatting,
-          colors: filteredColors,
+          colors: colors,
           // stepValue: step,
           // maxValue: maxValue,
           // format_value,

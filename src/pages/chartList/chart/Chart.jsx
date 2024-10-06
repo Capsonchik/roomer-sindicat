@@ -13,7 +13,7 @@ import {
 } from "../../../store/chartSlice/chart.slice";
 import {useDispatch, useSelector} from "react-redux";
 import {
-  selectActiveGroupId,
+  selectActiveGroupId, selectFilters,
   selectGroupsReports,
   selectOriginalColors
 } from "../../../store/chartSlice/chart.selectors";
@@ -43,6 +43,7 @@ export const Chart = ({chart}) => {
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
   const activeFilters = useSelector(selectActiveFilters)
+  const filters = useSelector(selectFilters)
   const user = useSelector(selectCurrentUser)
   const [isDelete, setIsDelete] = useState(false)
   // console.log(chart)
@@ -280,10 +281,10 @@ export const Chart = ({chart}) => {
     // console.log(originalColors)
     const {graph_id, xAxisData, seriesData, ...rest} = chartState
     const {isVisibleSeriesChange, ...restFormatting} = rest.formatting
-    const request = {...rest, formatting: {...restFormatting, colors: originalColors}}
+    const request = {...rest, formatting: {...restFormatting}}
     dispatch(patchChartFormatting(request)).then(() => {
       const id = activeGroupId || groupsReports[0].group_id
-      const activeFiltersRequest = activeFilters[activeGroupId]
+      const activeFiltersRequest = filters
       // console.log('activeFilters[activeGroupId]',activeFilters[activeGroupId])
       const request = activeFiltersRequest
         .map(filter => {

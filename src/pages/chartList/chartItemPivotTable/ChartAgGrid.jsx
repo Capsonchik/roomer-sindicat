@@ -38,7 +38,7 @@ export const ChartAgGrid = () => {
   }, []);
 
   return (
-    <div className="ag-theme-alpine" style={{ height: 400, width: "100%" }}>
+    <div className="ag-theme-alpine" style={{ height: 600, width: "100%" }}>
       <AgGridReact
         rowData={agGridData} // Данные для строк
         columnDefs={columnDefs} // Определение колонок

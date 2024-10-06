@@ -210,7 +210,7 @@ export const ChartList = (props) => {
       <GroupFilters/>
       <div
         className={styles.list}>
-        { (filterLoading === 'load' || isChartLoading)  && (
+        { (filterLoading === 'load')  && (
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>

@@ -18,10 +18,10 @@ export const ChartTypeView = ({chart}) => {
       returnType = <ChartItemPie chart={chart} />
       break
     case 'pivot':
-      returnType = <div>
-        {/*<ChartPivotRsuiteTable chart={chart}/>*/}
-        <ChartAgGrid/>
-      </div>
+      returnType =  <ChartAgGrid/>
+
+
+
       break
   }
   return returnType

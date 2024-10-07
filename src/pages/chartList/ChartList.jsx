@@ -234,7 +234,9 @@ export const ChartList = (props) => {
           {(filterLoading !== 'load' || !isChartLoading) && data[0]?.title && (
             <>
 
-              <div style={{
+              <div
+                className={styles.grid_wrapper}
+                style={{
                 width: '100%',
                 // height: 'calc(100vh - 80px)',
                 // padding: '20px',

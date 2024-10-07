@@ -61,6 +61,23 @@
   grid-template-columns: 1fr;
   text-align: center;
 
+
+  .grid_wrapper{
+    &::-webkit-scrollbar {
+      width: 5px; /* Ширина всего элемента навигации */
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #fff; /* Цвет дорожки */
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #050c26; /* Цвет бегунка */
+      border-radius: 20px; /* Округление бегунка */
+      border: 3px solid #fa8900; /* Оформление границ бегунка */
+    }
+  }
+
   &.col_2 {
     grid-template-columns: 1fr 1fr;
   }

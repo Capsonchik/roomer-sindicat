@@ -1,32 +1,49 @@
-export const agGridData = [
-  {
-    category: "Пол",
-    subcategory: "Мужской",
-    products: {product1: {q1: '23%', q2: '34%', q3: '67%'}, product2: {q1: '45%', q2: '78%', q3: '34%'}}
-  },
-  {
-    category: "Пол",
-    subcategory: "Женский",
-    products: {product1: {q1: '51%', q2: '23%', q3: '56%'}, product2: {q1: '65%', q2: '43%', q3: '23%'}}
-  },
-  {
-    category: "Возраст",
-    subcategory: "24",
-    products: {product1: {q1: '78%', q2: '34%', q3: '45%'}, product2: {q1: '23%', q2: '56%', q3: '12%'}}
-  },
-  {
-    category: "Возраст",
-    subcategory: "35",
-    products: {product1: {q1: '67%', q2: '34%', q3: '78%'}, product2: {q1: '89%', q2: '67%', q3: '34%'}}
-  },
-  {
-    category: "Наличие детей",
-    subcategory: "Нет",
-    products: {product1: {q1: '34%', q2: '11%', q3: '34%'}, product2: {q1: '45%', q2: '34%', q3: '11%'}}
-  },
-  {
-    category: "Наличие детей",
-    subcategory: "2 детей",
-    products: {product1: {q1: '34%', q2: '11%', q3: '26%'}, product2: {q1: '67%', q2: '45%', q3: '23%'}}
-  },
+export const agGridData  = [
+  { category: "Пол", subcategory: "Мужской", productName: "product1", period: 'q1', value: 23 },
+  { category: "Пол", subcategory: "Мужской", productName: "product1", period: 'q2', value: 34 },
+  { category: "Пол", subcategory: "Мужской", productName: "product1", period: 'q3', value: 67 },
+
+  { category: "Пол", subcategory: "Мужской", productName: "product2", period: 'q1', value: 45 },
+  { category: "Пол", subcategory: "Мужской", productName: "product2", period: 'q2', value: 78 },
+  { category: "Пол", subcategory: "Мужской", productName: "product2", period: 'q3', value: 34 },
+
+  { category: "Пол", subcategory: "Женский", productName: "product1", period: 'q1', value: 51 },
+  { category: "Пол", subcategory: "Женский", productName: "product1", period: 'q2', value: 23 },
+  { category: "Пол", subcategory: "Женский", productName: "product1", period: 'q3', value: 56 },
+
+  { category: "Пол", subcategory: "Женский", productName: "product2", period: 'q1', value: 65 },
+  { category: "Пол", subcategory: "Женский", productName: "product2", period: 'q2', value: 43 },
+  { category: "Пол", subcategory: "Женский", productName: "product2", period: 'q3', value: 23 },
+
+  { category: "Возраст", subcategory: "24", productName: "product1", period: 'q1', value: 78 },
+  { category: "Возраст", subcategory: "24", productName: "product1", period: 'q2', value: 34 },
+  { category: "Возраст", subcategory: "24", productName: "product1", period: 'q3', value: 45 },
+
+  { category: "Возраст", subcategory: "24", productName: "product2", period: 'q1', value: 23 },
+  { category: "Возраст", subcategory: "24", productName: "product2", period: 'q2', value: 56 },
+  { category: "Возраст", subcategory: "24", productName: "product2", period: 'q3', value: 12 },
+
+  { category: "Возраст", subcategory: "35", productName: "product1", period: 'q1', value: 67 },
+  { category: "Возраст", subcategory: "35", productName: "product1", period: 'q2', value: 34 },
+  { category: "Возраст", subcategory: "35", productName: "product1", period: 'q3', value: 78 },
+
+  { category: "Возраст", subcategory: "35", productName: "product2", period: 'q1', value: 89 },
+  { category: "Возраст", subcategory: "35", productName: "product2", period: 'q2', value: 67 },
+  { category: "Возраст", subcategory: "35", productName: "product2", period: 'q3', value: 34 },
+
+  { category: "Наличие детей", subcategory: "Нет", productName: "product1", period: 'q1', value: 34 },
+  { category: "Наличие детей", subcategory: "Нет", productName: "product1", period: 'q2', value: 11 },
+  { category: "Наличие детей", subcategory: "Нет", productName: "product1", period: 'q3', value: 34 },
+
+  { category: "Наличие детей", subcategory: "Нет", productName: "product2", period: 'q1', value: 45 },
+  { category: "Наличие детей", subcategory: "Нет", productName: "product2", period: 'q2', value: 34 },
+  { category: "Наличие детей", subcategory: "Нет", productName: "product2", period: 'q3', value: 11 },
+
+  { category: "Наличие детей", subcategory: "2 детей", productName: "product1", period: 'q1', value: 34 },
+  { category: "Наличие детей", subcategory: "2 детей", productName: "product1", period: 'q2', value: 11 },
+  { category: "Наличие детей", subcategory: "2 детей", productName: "product1", period: 'q3', value: 26 },
+
+  { category: "Наличие детей", subcategory: "2 детей", productName: "product2", period: 'q1', value: 67 },
+  { category: "Наличие детей", subcategory: "2 детей", productName: "product2", period: 'q2', value: 45 },
+  { category: "Наличие детей", subcategory: "2 детей", productName: "product2", period: 'q3', value: 23 }
 ];

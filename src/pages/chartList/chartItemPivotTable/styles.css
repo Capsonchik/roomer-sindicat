@@ -35,7 +35,7 @@
     padding-left: 40px;
 }
 
-.e-pivotview .e-rowcell .e-cellvalue{
+.e-pivotview .e-rowcell .e-cellvalue {
     /*padding-left: 20px;*/
 }
 
@@ -44,10 +44,34 @@
     width: 5px;
     height: 10px;
 }
+
 .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-track {
     background: #fff;
 }
+
 .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-thumb {
     background-color: #fa8900; /* Цвет бегунка */
     border-radius: 20px; /* Округление бегунка */
+}
+
+.ag-body-vertical-scroll-viewport::-webkit-scrollbar {
+    width: 5px;
+    height: 10px;
+}
+
+.ag-body-vertical-scroll-viewport::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+.ag-body-vertical-scroll-viewport::-webkit-scrollbar-thumb {
+    background-color: #fa8900; /* Цвет бегунка */
+    border-radius: 20px; /* Округление бегунка */
+}
+
+.cell-span {
+    background: #fff;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgba(0, 0, 0, .1) !important;
 }

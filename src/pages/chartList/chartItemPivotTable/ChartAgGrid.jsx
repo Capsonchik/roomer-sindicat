@@ -1,59 +1,110 @@
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { ColDef, GridReadyEvent, ModuleRegistry } from '@ag-grid-community/core';
-import { AgGridReact, CustomCellRendererProps } from '@ag-grid-community/react';
+import { ModuleRegistry } from '@ag-grid-community/core';
+import { AgGridReact } from '@ag-grid-community/react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
-import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
 import React, { useCallback, useMemo, useState } from 'react';
 import { localeText } from "./agGridLocale";
+import { ColumnsToolPanelModule } from "@ag-grid-enterprise/column-tool-panel";
+import { MenuModule } from "@ag-grid-enterprise/menu";
+import { RowGroupingModule } from "@ag-grid-enterprise/row-grouping";
+import { FiltersToolPanelModule } from "@ag-grid-enterprise/filter-tool-panel";
 import { agGridData } from "./agGridData";
 
-ModuleRegistry.registerModules([ClientSideRowModelModule, RowGroupingModule]);
+// Регистрация модулей
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  ColumnsToolPanelModule,
+  MenuModule,
+  RowGroupingModule,
+  FiltersToolPanelModule,
+]);
 
-// Функция для динамической генерации колонок продуктов
-const generateProductColumns = (products) => {
-  return Object.keys(products).map(productKey => ({
-    headerName: `Продукт ${productKey}`,
-    children: Object.keys(products[productKey]).map(quarter => ({
-      headerName: quarter.toUpperCase(),
-      field: `products.${productKey}.${quarter}`, // доступ к значениям через вложенные поля
-    })),
-  }));
+// Функция для динамической генерации columnDefs
+const generateColumnDefs = (rowData) => {
+  const columns = [];
+
+  if (rowData.length === 0) return columns; // Если данные пустые, возвращаем пустой массив
+
+  const allKeys = Array.from(new Set(rowData.flatMap(Object.keys)));
+
+  const group1 = [];
+  const group2 = [];
+
+  allKeys.forEach(key => {
+    const column = {
+      field: key,
+      headerName: key,
+      enableRowGroup: true, // Включаем возможность группировки
+      filter: true, // Фильтрация
+      resizable: true, // Изменение размера
+      sortable: true, // Сортировка
+      enableValue: true, // Включаем возможность использовать поле как value
+      aggFunc: 'sum', // Пример агрегации
+      valueGetter: (params) => params.data?.[key], // Получаем значение
+    };
+
+    // Разделяем колонки на две группы для примера
+    if (key.startsWith('category')) {
+      group1.push(column);
+    } else {
+      group2.push(column);
+    }
+  });
+
+  // Создаем два уровня заголовков
+  columns.push({
+    headerName: 'Category Group',
+    children: group1, // Первый подуровень заголовка
+  });
+
+  columns.push({
+    headerName: 'Other Group',
+    children: group2, // Второй подуровень заголовка
+  });
+
+  return columns;
 };
 
-// Генерация колонок
-const columnDefs = [
-  { field: "category", rowGroup: true, hide: true }, // поле для группировки (скрытое)
-  { field: "subcategory" ,headerName:'Категории'}, // отображаем поле подкатегории
-  ...generateProductColumns(agGridData[0].products), // Динамически создаем колонки для продуктов
-];
+// Компонент для создания таблицы с многоуровневыми заголовками
+export const ChartAgGridWithoutPivot = () => {
+  const [rowData, setRowData] = useState(agGridData);
 
-export const ChartAgGrid = () => {
-  const [gridApi, setGridApi] = useState(null);
-  const [gridColumnApi, setGridColumnApi] = useState(null);
-
+  // Автоматическое подгонка размеров колонок
   const onGridReady = useCallback((params) => {
-    setGridApi(params.api);
-    setGridColumnApi(params.columnApi);
+    params.api.sizeColumnsToFit();
   }, []);
 
+  // Настройки по умолчанию для колонок
+  const defaultColDef = useMemo(() => ({
+    sortable: true,
+    filter: true,
+    resizable: true,
+    enableRowGroup: true, // Включаем возможность группировки колонок
+  }), []);
+
+  // Настройки для авто-группировки колонок
+  const autoGroupColumnDef = useMemo(() => ({
+    minWidth: 200,
+    pinned: "left",
+  }), []);
+
+  // Динамическая генерация columnDefs
+  const columnDefs = useMemo(() => generateColumnDefs(rowData), [rowData]);
+
   return (
-    <div className="ag-theme-alpine" style={{ height: '100%', width: "100%" }}>
+    <div className="ag-theme-alpine" style={{ height: '100%', width: '100%' }}>
       <AgGridReact
-        rowData={agGridData} // Данные для строк
-        columnDefs={columnDefs} // Определение колонок
-        defaultColDef={{
-          sortable: true,
-          filter: true,
-          resizable: true, // Возможность изменять размер столбцов
-        }}
-        autoGroupColumnDef={{
-          headerName: "Категория", // Название группирующего столбца
-          field: "subcategory",    // Поле для подкатегории
-        }}
-        groupDisplayType="groupRows" // Включаем группировку по строкам
-        localeText={localeText}      // Устанавливаем русскую локализацию
-        onGridReady={onGridReady}    // Коллбек при готовности сетки
+        rowData={rowData}
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
+        autoGroupColumnDef={autoGroupColumnDef}
+        sideBar={{
+          toolPanels: ['columns'],
+          defaultToolPanel: 'columns', // По умолчанию показывать панель с колонками
+        }} // Панель с колонками для перемещения
+        onGridReady={onGridReady}
+        localeText={localeText}
       />
     </div>
   );

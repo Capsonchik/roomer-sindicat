@@ -3,7 +3,7 @@ import { ModuleRegistry } from '@ag-grid-community/core';
 import { AgGridReact } from '@ag-grid-community/react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { localeText } from "./agGridLocale";
 import { ColumnsToolPanelModule } from "@ag-grid-enterprise/column-tool-panel";
 import { MenuModule } from "@ag-grid-enterprise/menu";
@@ -18,13 +18,14 @@ ModuleRegistry.registerModules([
   RowGroupingModule,
   FiltersToolPanelModule,
 ]);
-const generateColumnDefs = (rowData) => {
+
+const generateColumnDefs = (rowData, minValue, maxValue) => {
   const columns = [];
 
   if (rowData.length === 0) return columns; // Если данные пустые, возвращаем пустой массив
 
   const allKeys = Array.from(new Set(rowData.flatMap(Object.keys)));
-  console.log(allKeys)
+
   allKeys.forEach(key => {
     if (key === 'value') {
       columns.push({
@@ -32,10 +33,22 @@ const generateColumnDefs = (rowData) => {
         headerName: key,
         enableValue: true,
         aggFunc: (params) => {
-          console.log(params)
           return params.values.length > 1 ? null : params.values[0];
-        }, // Отключаем агрегацию для колонки "value"
+        },
+        cellStyle: (params) => {
+          if (params.value == null) return {}; // если значение отсутствует, не применяем стиль
 
+          // Нормализуем значение для диапазона [0, 1]
+          const value = (params.value - minValue) / (maxValue - minValue);
+
+          // Рассчитываем интенсивность цвета
+          const shade = Math.round(255 - value * 255);
+
+          return {
+            backgroundColor: `rgb(${shade}, ${shade}, ${shade})`, // от светлого к темному
+            color: value > 0.7 ? 'white' : 'black', // Контраст текста
+          };
+        }
       });
     } else {
       columns.push({
@@ -44,7 +57,6 @@ const generateColumnDefs = (rowData) => {
         enableRowGroup: true, // Включаем группировку
         enablePivot: true,    // Включаем возможность использования в сводной таблице
         enableValue: false,   // Отключаем использование для агрегации
-
       });
     }
   });
@@ -52,18 +64,25 @@ const generateColumnDefs = (rowData) => {
   return columns;
 };
 
-
-
-
 export const ChartAgGridPivot = () => {
   const [rowData, setRowData] = useState(agGridData);
-
-  useEffect(() => {
-    console.log(autoGroupColumnDef)
-  }, [rowData]);
+  const [minMax, setMinMax] = useState({ minValue: 0, maxValue: 0 });
 
   const onGridReady = useCallback((params) => {
     params.api.sizeColumnsToFit();
+
+    // Вычисляем минимальные и максимальные значения по полю 'value'
+    let minValue = Number.POSITIVE_INFINITY;
+    let maxValue = Number.NEGATIVE_INFINITY;
+
+    params.api.forEachNodeAfterFilterAndSort((node) => {
+      if (node.data && node.data.value != null) {
+        minValue = Math.min(minValue, node.data.value);
+        maxValue = Math.max(maxValue, node.data.value);
+      }
+    });
+
+    setMinMax({ minValue, maxValue });
   }, []);
 
   const defaultColDef = useMemo(() => ({
@@ -74,8 +93,6 @@ export const ChartAgGridPivot = () => {
     enableRowGroup: true,
     enablePivot: false, // Отключаем агрегацию по умолчанию
     aggFunc: null,
-
-
   }), []);
 
   const autoGroupColumnDef = useMemo(() => ({
@@ -85,7 +102,7 @@ export const ChartAgGridPivot = () => {
     pinned: "left",
   }), []);
 
-  const columnDefs = useMemo(() => generateColumnDefs(rowData), [rowData]);
+  const columnDefs = useMemo(() => generateColumnDefs(rowData, minMax.minValue, minMax.maxValue), [rowData, minMax]);
 
   return (
     <div className="ag-theme-alpine" style={{ height: '100%', width: '100%' }}>

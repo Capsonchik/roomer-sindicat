@@ -1,144 +1,159 @@
-import React, { useState } from 'react';
-import PivotTableUI from 'react-pivottable/PivotTableUI';
-import 'react-pivottable/pivottable.css';
-import { aggregators } from 'react-pivottable/Utilities';
-import './chartPivot.scss';
-import { Button } from 'rsuite';
-import { salesData } from './pivot.mocks';
-import { useDispatch } from 'react-redux';
-import { setActiveChart, setOpenDrawer } from '../../../../store/chartSlice/chart.slice';
-import { useDrag, useDrop, DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model';
+import {ModuleRegistry} from '@ag-grid-community/core';
+import {AgGridReact} from '@ag-grid-community/react';
+import '@ag-grid-community/styles/ag-grid.css';
+import '@ag-grid-community/styles/ag-theme-alpine.css';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
+import {localeText} from "./agGridLocale";
+import {ColumnsToolPanelModule} from "@ag-grid-enterprise/column-tool-panel";
+import {MenuModule} from "@ag-grid-enterprise/menu";
+import {RowGroupingModule} from "@ag-grid-enterprise/row-grouping";
+import {FiltersToolPanelModule} from "@ag-grid-enterprise/filter-tool-panel";
+import {agGridData} from "./agGridData";
+import styles from './agGrid.module.scss'
+import {Button} from "rsuite";
+import EditIcon from "@rsuite/icons/Edit";
+import {useDispatch} from "react-redux";
+import {setActiveChart, setOpenDrawer} from "../../../../store/chartSlice/chart.slice";
 
-export const ChartPivot = ({ chart }) => {
-  const dispatch = useDispatch();
-  const russianAggregators = {
-    Сумма: aggregators['Sum'],
-    Максимум: aggregators['Maximum'],
-    Минимум: aggregators['Minimum'],
-    Количество: aggregators['Count'],
-    Среднее: aggregators['Average'],
-    Медиана: aggregators['Median'],
-    'Количество уникальных': aggregators['Count Unique Values'],
-    'Первое значение': aggregators['First'],
-    'Последнее значение': aggregators['Last'],
-  };
+ModuleRegistry.registerModules([
+  ClientSideRowModelModule,
+  ColumnsToolPanelModule,
+  MenuModule,
+  RowGroupingModule,
+  FiltersToolPanelModule,
+]);
 
-  const [state, setState] = useState({
-    data: salesData,
-    rows: ['region', 'product'],
-    cols: ['sales', 'quantity', 'date'],
-    aggregatorName: 'Сумма',
-    vals: ['sales'],
-    aggregators: russianAggregators,
-  });
+const generateColumnDefs = (rowData, minValue, maxValue) => {
+  const columns = [];
 
-  const [isEditable, setIsEditable] = useState(true);
-  const [columns, setColumns] = useState({
-    column1: [],
-    // column1: Object.keys(state.salesData[0]).filter(item => !state.rows.includes(item) &&  !state.cols.includes(item)),
-    column2: state.rows,
-    column3: state.cols,
-  });
+  if (rowData.length === 0) return columns; // Если данные пустые, возвращаем пустой массив
 
-  const handleStateChange = (newState) => {
-    setState((prev) => {
-      console.log('prev', prev);
-      console.log('new', newState);
-      return newState;
-    });
-  };
+  const allKeys = Array.from(new Set(rowData.flatMap(Object.keys)));
 
-  // Типы для DND
-  const ITEM_TYPE = 'ITEM';
+  allKeys.forEach(key => {
+    if (key === 'value') {
+      columns.push({
+        field: key,
+        headerName: key,
+        enableValue: true,
+        aggFunc: (params) => {
+          console.log(params)
+          params.api.expandAll(); // Раскрываем все группы
+          return params.values.length > 1 ? null : params.values[0];
+        },
+        cellStyle: (params) => {
+          if (params.value == null) return {}; // если значение отсутствует, не применяем стиль
 
-  // Элемент, который можно перетаскивать
-  const DraggableItem = ({ name, index, column }) => {
-    const [, drag] = useDrag({
-      type: ITEM_TYPE,
-      item: { name, index, column },
-    });
+          const minValue = 0; // Замените на ваше минимальное значение
+          const maxValue = 100; // Замените на ваше максимальное значение
 
-    return (
-      <div ref={drag} className="draggable-item">
-        {name}
-      </div>
-    );
-  };
+          // Нормализуем значение для диапазона [0, 1]
+          const value = (params.value - minValue) / (maxValue - minValue);
 
-  // Колонка, куда можно сбрасывать элементы
-  const DroppableColumn = ({ children, columnName }) => {
-    const [, drop] = useDrop({
-      accept: ITEM_TYPE,
-      drop: (item) => moveItem(item, columnName),
-    });
+          // Определяем цвета (в формате RGB)
+          const darkColor = [250, 134, 130]; // #f7635c
+          const lightColor = [255, 248, 248]; // #fff2f2
 
-    return (
-      <div ref={drop} className="droppable-column">
-        {children}
-      </div>
-    );
-  };
+          // Интерполируем между светлым и темным цветом
+          const interpolatedColor = darkColor.map((c, i) => Math.round(c + (lightColor[i] - c) * value));
 
-  // Функция для перемещения элементов между колонками
-  const moveItem = (item, toColumn) => {
-    const fromColumn = item.column;
-
-    // Проверяем, не пытается ли пользователь перетащить элемент в ту же колонку
-    if (fromColumn === toColumn) {
-      return;
+          return {
+            backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
+            color: value > 0.5 ? 'black' : 'white', // Контраст текста
+          };
+        }
+      });
+    } else {
+      columns.push({
+        field: key,
+        headerName: key,
+        enableRowGroup: true, // Включаем группировку для category и subcategory
+        enablePivot: true, // Отключаем возможность использования в сводной таблице для productName и period
+        enableValue: false,   // Отключаем использование для агрегации
+      });
     }
+  });
 
-    setColumns((prevColumns) => {
-      // Удаляем элемент из старой колонки
-      const fromItems = [...prevColumns[fromColumn]];
-      fromItems.splice(item.index, 1);
+  return columns;
+};
 
-      // Добавляем элемент в новую колонку
-      const toItems = [...prevColumns[toColumn], item.name];
+export const ChartPivot = ({chart}) => {
+  const gridRef = useRef(null);
+  const dispatch = useDispatch()
+  const [rowData, setRowData] = useState(agGridData);
+  const [minMax, setMinMax] = useState({minValue: 0, maxValue: 0});
 
-      return {
-        ...prevColumns,
-        [fromColumn]: fromItems,
-        [toColumn]: toItems,
-      };
+  const onGridReady = useCallback((params) => {
+    params.api.sizeColumnsToFit();
+    console.log(params)
+    // Устанавливаем rowData сразу
+    // params.api.setRowData(rowData); // Убедитесь, что rowData уже загружены здесь
+
+    // Вычисляем минимальные и максимальные значения по полю 'value'
+    let minValue = Number.POSITIVE_INFINITY;
+    let maxValue = Number.NEGATIVE_INFINITY;
+
+    params.api.forEachNodeAfterFilterAndSort((node) => {
+      if (node.data && node.data.value != null) {
+        minValue = Math.min(minValue, node.data.value);
+        maxValue = Math.max(maxValue, node.data.value);
+      }
     });
-  };
+
+    setMinMax({minValue, maxValue});
+
+    gridRef.current.api.setRowGroupColumns(['category', 'subcategory']);
+    gridRef.current.api.setValueColumns(['values']);
+    gridRef.current.api.setPivotColumns(['productName', 'period']);
+    // Устанавливаем category и subcategory в качестве групп
+    // params.api.setRowGroup(['category', 'subcategory']);
+    params.api.expandAll(); // Раскрываем все группы
+  }, [rowData]);
+
+
+  const defaultColDef = useMemo(() => ({
+    sortable: true,
+    filter: true,
+    resizable: true,
+    enableValue: false,
+    enableRowGroup: true,
+    enablePivot: false, // Отключаем агрегацию по умолчанию
+    aggFunc: null,
+  }), []);
+
+  const autoGroupColumnDef = useMemo(() => ({
+    headerName: "Группы",
+    minWidth: 200,
+    cellRenderer: 'agGroupCellRenderer',
+    pinned: "left",
+  }), []);
+
+  const columnDefs = useMemo(() => generateColumnDefs(rowData, minMax.minValue, minMax.maxValue), [rowData, minMax]);
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div>
-        <div className={'editable'}>
-          <div className={'title_wrapper'}>
-            <h5>{chart.title}</h5>
-          </div>
-          <PivotTableUI onChange={(s) => handleStateChange(s)} {...state} />
-        </div>
+    <div className={styles.wrapper}>
 
-        {/* Блок с тремя колонками */}
-        <div className="columns-container">
-          <DroppableColumn columnName="column1">
-            <h6>Доступно</h6>
-            {columns.column1.map((item, index) => (
-              <DraggableItem key={index} name={item} index={index} column="column1" />
-            ))}
-          </DroppableColumn>
+      <div className="ag-theme-alpine" style={{height: 500, width: '100%'}}>
 
-          <DroppableColumn columnName="column2">
-            <h6>ось X</h6>
-            {columns.column2.map((item, index) => (
-              <DraggableItem key={index} name={item} index={index} column="column2"/>
-            ))}
-          </DroppableColumn>
-
-          <DroppableColumn columnName="column3">
-            <h6>ось Y</h6>
-            {columns.column3.map((item, index) => (
-              <DraggableItem key={index} name={item} index={index} column="column3"/>
-            ))}
-          </DroppableColumn>
-        </div>
+        <AgGridReact
+          ref={gridRef}
+          rowData={rowData}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          autoGroupColumnDef={autoGroupColumnDef}
+          rowGroupPanelShow={"never"} // Всегда показывать панель группировки
+          pivotMode={true} // Отключаем режим сводной таблицы
+          sideBar={"columns"}
+          onGridReady={onGridReady}
+          localeText={localeText}
+          // suppressMovableColumns={true}    // Отключаем возможность перемещения колонок
+          suppressDragLeaveHidesColumns={true} // Отключаем скрытие колонок при перетаскивании
+          suppressAggFuncInHeader={true}   // Скрываем функцию агрегации в заголовках
+          animateRows={true}               // Включаем анимацию строк
+          pivotDefaultExpanded={1}
+        />
       </div>
-    </DndProvider>
+    </div>
   );
 };

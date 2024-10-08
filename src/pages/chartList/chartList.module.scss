@@ -63,6 +63,8 @@
 
 
   .grid_wrapper{
+    //overflow-y: scroll;
+    overflow-y: hidden !important;
     &::-webkit-scrollbar {
       width: 5px; /* Ширина всего элемента навигации */
     }

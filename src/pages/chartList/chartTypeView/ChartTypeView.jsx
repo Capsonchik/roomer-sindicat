@@ -1,6 +1,7 @@
 import {ChartListItem} from "../chartListItem/ChartListItem";
 import {ChartItemTable} from "../chartItemTable/ChartItemTable";
 import {ChartItemPie} from "../chartItemPie/ChartItemPie";
+import '../chartItemPivotTable/styles.css'
 
 import {ChartAgGridPivot} from "../chartItemPivotTable/AgPivotTbale";
 
@@ -17,7 +18,7 @@ export const ChartTypeView = ({chart}) => {
       returnType = <ChartItemPie chart={chart} />
       break
     case 'pivot':
-      returnType =  <ChartAgGridPivot/>
+      returnType =  <ChartAgGridPivot chart={chart}/>
 
 
 

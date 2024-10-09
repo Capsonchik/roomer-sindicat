@@ -12,7 +12,7 @@ export const ChartDrawer = ({open, onClose}) => {
   const chart = useSelector(selectActiveChart)
 
   const handleSave = () => {
-    const {graph_id,xAxisData,seriesData, ...rest} = chart
+    const {graph_id, xAxisData, seriesData, ...rest} = chart
     console.log(rest)
     // dispatch(patchChartFormatting(rest))
     // setTitle(inputTitle)
@@ -20,13 +20,15 @@ export const ChartDrawer = ({open, onClose}) => {
     // onClose()
   }
   return (
-    <Drawer open={open} onClose={onClose} style={{maxWidth: 700, width: '100%'}}>
-      <Drawer.Body style={{maxHeight:'100% !important'}}>
+    <Drawer open={open} onClose={onClose} style={{
+      maxWidth: chart.formatting.type_chart === 'pivot' ? 1200 : 700,
+      width: '100%'
+    }}>
+      <Drawer.Body style={{maxHeight: '100% !important'}}>
         <div className={styles.wrapper}>
 
 
-            <ChartEditor chart={chart} editor={true}/>
-
+          <ChartEditor chart={chart} editor={true}/>
 
 
           {/*<Button onClick={handleSave}>Сохранить</Button>*/}

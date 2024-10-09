@@ -113,6 +113,11 @@
 .ag-watermark{
     display: none !important;
 }
+
+.ag-row{
+    /*height: 30px !important;*/
+    /*transform: translateY(30px) !important;*/
+}
 /*.ag-tool-panel-wrapper::after {*/
 /*    position: absolute;*/
 /*    content: '';*/

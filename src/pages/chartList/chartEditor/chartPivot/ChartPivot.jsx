@@ -21,6 +21,7 @@ import {
   fetchAllChartsFormatByGroupId,
   patchChartFormatting
 } from "../../../../store/chartSlice/chart.actions";
+import {selectCurrentUser} from "../../../../store/userSlice/user.selectors";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -30,113 +31,35 @@ ModuleRegistry.registerModules([
   FiltersToolPanelModule,
 ]);
 
-const generateColumnDefs = (rowData, minValue, maxValue) => {
-  const columns = [];
 
-  if (rowData.length === 0) return columns; // Если данные пустые, возвращаем пустой массив
 
-  const allKeys = Array.from(new Set(rowData.flatMap(Object.keys)));
-
-  allKeys.forEach(key => {
-    columns.push({
-      field: key,
-      headerName: key,
-      enableValue: true,
-      enableRowGroup: true, // Включаем группировку для category и subcategory
-      enablePivot: true, // Отключаем возможность использования в сводной таблице для productName и period
-      aggFunc: (params) => {
-        params.api.expandAll(); // Раскрываем все группы
-        return params.values.length > 1 ? null : params.values[0];
-      },
-      cellStyle: (params) => {
-        if (params.value == null) return {}; // если значение отсутствует, не применяем стиль
-
-        const minValue = 0; // Замените на ваше минимальное значение
-        const maxValue = 100; // Замените на ваше максимальное значение
-
-        // Нормализуем значение для диапазона [0, 1]
-        const value = (params.value - minValue) / (maxValue - minValue);
-
-        // Определяем цвета (в формате RGB)
-        const darkColor = [250, 134, 130]; // #f7635c
-        const lightColor = [255, 248, 248]; // #fff2f2
-
-        // Интерполируем между светлым и темным цветом
-        const interpolatedColor = darkColor.map((c, i) => Math.round(c + (lightColor[i] - c) * value));
-
-        return {
-          backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
-          color: value > 0.5 ? 'black' : 'white', // Контраст текста
-        };
-      }
-    });
-
-  });
-
-  return columns;
-};
-
-export const ChartPivot = ({chart}) => {
+export const ChartPivot = ({chart,columnsDef}) => {
+  const user = useSelector(selectCurrentUser)
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
   const filters = useSelector(selectFilters)
-  const pivotData = chart?.['0']?.table_data ?? []
   const gridRef = useRef(null);
   const dispatch = useDispatch()
-  const [rowData, setRowData] = useState(pivotData);
-  const [minMax, setMinMax] = useState({minValue: 0, maxValue: 0});
+  const [rowData, setRowData] = useState(chart?.['0']?.table_data ?? []);
 
-  const onGridReady = useCallback((params) => {
+  const onGridReady = (params) => {
     params.api.sizeColumnsToFit();
-    // params.api.expandAll();
-    console.log(params)
-    // Устанавливаем rowData сразу
-    // params.api.setRowData(rowData); // Убедитесь, что rowData уже загружены здесь
 
-    // Вычисляем минимальные и максимальные значения по полю 'value'
-    let minValue = Number.POSITIVE_INFINITY;
-    let maxValue = Number.NEGATIVE_INFINITY;
 
-    params.api.forEachNodeAfterFilterAndSort((node) => {
-      if (node.data && node.data.value != null) {
-        minValue = Math.min(minValue, node.data.value);
-        maxValue = Math.max(maxValue, node.data.value);
-      }
-    });
-
-    setMinMax({minValue, maxValue});
-
-    setTimeout(() => {
-      if (chart.formatting.values) {
-        params.api.setValueColumns(chart.formatting.values);
-      }
-
-    },50)
     if (chart.formatting.rowGroups) {
-      params.api.setRowGroupColumns(chart.formatting.rowGroups);
+      gridRef.current.api.setRowGroupColumns(chart.formatting.rowGroups);
     }
     if (chart.formatting.colGroups) {
-      params.api.setPivotColumns(chart.formatting.colGroups);
+      gridRef.current.api.setPivotColumns(chart.formatting.colGroups);
+    }
+    if (chart.formatting.values) {
+      gridRef.current.api.setValueColumns(chart.formatting.values);
     }
 
+
     params.api.expandAll(); // Раскрываем все группы
-
-  }, [rowData]);
-
-
-
-
-
-
-  // const defaultColDef = useMemo(() => ({
-  //   sortable: true,
-  //   filter: true,
-  //   resizable: true,
-  //   enableValue: false,
-  //   enableRowGroup: true,
-  //   enablePivot: true, // Отключаем агрегацию по умолчанию
-  //   aggFunc: null,
-  // }), []);
+  }
+  console.log(columnsDef)
 
   const autoGroupColumnDef = useMemo(() => ({
     headerName: "Группы",
@@ -145,17 +68,13 @@ export const ChartPivot = ({chart}) => {
     pinned: "left",
   }), []);
 
-  console.log(gridRef?.current?.api?.getValueColumns().map(col => col.getColId()))
-  const columnDefs = useMemo(() => generateColumnDefs(rowData, minMax.minValue, minMax.maxValue), [rowData, minMax]);
+
 
   const handlePatch = () => {
     const rowGroupColumns = gridRef.current.api.getRowGroupColumns().map(col => col.getColId());
     const valueColumns = gridRef.current.api.getValueColumns().map(col => col.getColId());
     const pivotColumns = gridRef.current.api.getPivotColumns().map(col => col.getColId());
 
-    console.log("Row Group Columns:", rowGroupColumns);
-    console.log("Value Columns:", valueColumns);
-    console.log("Pivot Columns:", pivotColumns);
 
     const {graph_id, xAxisData, seriesData, ...rest} = chart
     const {isVisibleSeriesChange, ...restFormatting} = rest.formatting
@@ -183,20 +102,12 @@ export const ChartPivot = ({chart}) => {
       dispatch(fetchAllChartsByGroupId({groupId: id, filter_data: {filter_data: request}})).then(() => {
         dispatch(fetchAllChartsFormatByGroupId(id))
       })
-      // dispatch(getFilters(activeGroupId)).then(() => {
-      //   dispatch(setFilterLoading('none'))
-      // })
+
     })
 
     dispatch(setOpenDrawer(false))
 
   }
-
-  // const onFirstDataRendered = useCallback((params) => {
-  //   if (gridRef.current.api.getAllColumns().length > 0) {
-  //     gridRef.current.api.setValueColumns([]); // Очищаем значения колонок
-  //   }
-  // }, []);
 
 
   return (
@@ -207,22 +118,25 @@ export const ChartPivot = ({chart}) => {
         <AgGridReact
           ref={gridRef}
           rowData={rowData}
-          columnDefs={columnDefs}
-          // defaultColDef={defaultColDef}
+          columnDefs={columnsDef}
           autoGroupColumnDef={autoGroupColumnDef}
           rowGroupPanelShow={"never"} // Всегда показывать панель группировки
           pivotMode={true} // Отключаем режим сводной таблицы
-          sideBar={"columns"}
+          sideBar={"none"}
           onGridReady={onGridReady}
           localeText={localeText}
-
-          // onFirstDataRendered={onFirstDataRendered}
           // suppressMovableColumns={true}    // Отключаем возможность перемещения колонок
-          // suppressDragLeaveHidesColumns={true} // Отключаем скрытие колонок при перетаскивании
-          // suppressAggFuncInHeader={true}   // Скрываем функцию агрегации в заголовках
+          suppressDragLeaveHidesColumns={true} // Отключаем скрытие колонок при перетаскивании
+          suppressAggFuncInHeader={true}   // Скрываем функцию агрегации в заголовках
           animateRows={true}               // Включаем анимацию строк
           pivotDefaultExpanded={1}
-          // suppressAggAtRootLevel={true} // Добавляем suppressAggAtRootLevel
+          suppressContextMenu={user.role === 'viewer'}
+          rowHeight={34} // Уменьшаем высоту строки до 25px
+          tooltipShowDelay={200} // Задержка перед показом тултипа
+          tooltipHideDelay={4000} // Время до скрытия тултипа (например, 3 секунды)
+          enableBrowserTooltips={false} // Отключаем нативные браузерные тултипы
+          tooltipComponentParams={{ textAlign: 'center' }}
+
         />
       </div>
       <Button onClick={handlePatch} style={{

@@ -37,9 +37,9 @@ export const localeText = {
 
   // Новые ключи для панели управления колонками
   pivotMode: "Режим сводной таблицы",
-  groups: "Группы",
+  groups: "Строки",
   values: "Значения",
-  pivots: "Повороты",
+  pivots: "Колонки",
   columns: "Столбцы",
   rowGroupColumns: "Группировка строк",
   rowGroupColumnsEmptyMessage: "Перетащите сюда для группировки",

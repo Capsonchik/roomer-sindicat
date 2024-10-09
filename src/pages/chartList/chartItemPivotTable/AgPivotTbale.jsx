@@ -35,46 +35,39 @@ const generateColumnDefs = (rowData, minValue, maxValue) => {
   const allKeys = Array.from(new Set(rowData.flatMap(Object.keys)));
 
   allKeys.forEach(key => {
-    if (key === 'value') {
-      columns.push({
-        field: key,
-        headerName: key,
-        enableValue: true,
-        aggFunc: (params) => {
-          params.api.expandAll(); // Раскрываем все группы
-          return params.values.length > 1 ? null : params.values[0];
-        },
-        cellStyle: (params) => {
-          if (params.value == null) return {}; // если значение отсутствует, не применяем стиль
+    columns.push({
+      field: key,
+      headerName: key,
+      enableValue: true,
+      enableRowGroup: true, // Включаем группировку для category и subcategory
+      enablePivot: true, // Отключаем возможность использования в сводной таблице для productName и period
+      aggFunc: (params) => {
+        params.api.expandAll(); // Раскрываем все группы
+        return params.values.length > 1 ? null : params.values[0];
+      },
+      cellStyle: (params) => {
+        if (params.value == null) return {}; // если значение отсутствует, не применяем стиль
 
-          const minValue = 0; // Замените на ваше минимальное значение
-          const maxValue = 100; // Замените на ваше максимальное значение
+        const minValue = 0; // Замените на ваше минимальное значение
+        const maxValue = 100; // Замените на ваше максимальное значение
 
-          // Нормализуем значение для диапазона [0, 1]
-          const value = (params.value - minValue) / (maxValue - minValue);
+        // Нормализуем значение для диапазона [0, 1]
+        const value = (params.value - minValue) / (maxValue - minValue);
 
-          // Определяем цвета (в формате RGB)
-          const darkColor = [250, 134, 130]; // #f7635c
-          const lightColor = [255, 248, 248]; // #fff2f2
+        // Определяем цвета (в формате RGB)
+        const darkColor = [250, 134, 130]; // #f7635c
+        const lightColor = [255, 248, 248]; // #fff2f2
 
-          // Интерполируем между светлым и темным цветом
-          const interpolatedColor = darkColor.map((c, i) => Math.round(c + (lightColor[i] - c) * value));
+        // Интерполируем между светлым и темным цветом
+        const interpolatedColor = darkColor.map((c, i) => Math.round(c + (lightColor[i] - c) * value));
 
-          return {
-            backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
-            color: value > 0.5 ? 'black' : 'white', // Контраст текста
-          };
-        }
-      });
-    } else {
-      columns.push({
-        field: key,
-        headerName: key,
-        enableRowGroup: true, // Включаем группировку для category и subcategory
-        enablePivot: true, // Отключаем возможность использования в сводной таблице для productName и period
-        enableValue: false,   // Отключаем использование для агрегации
-      });
-    }
+        return {
+          backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
+          color: value > 0.5 ? 'black' : 'white', // Контраст текста
+        };
+      }
+    });
+
   });
 
   return columns;
@@ -82,7 +75,7 @@ const generateColumnDefs = (rowData, minValue, maxValue) => {
 
 export const ChartAgGridPivot = ({chart}) => {
   const pivotData = chart?.['0']?.table_data ?? []
-  // console.log(chart)
+  console.log(pivotData)
   const user = useSelector(selectCurrentUser)
   const gridRef = useRef(null);
   const dispatch = useDispatch()
@@ -108,11 +101,16 @@ export const ChartAgGridPivot = ({chart}) => {
 
     setMinMax({minValue, maxValue});
 
-    // gridRef.current.api.setRowGroupColumns(['category', 'subcategory']);
-    gridRef.current.api.setValueColumns(['value']);
-    // gridRef.current.api.setPivotColumns(['productName', 'period']);
-    // Устанавливаем category и subcategory в качестве групп
-    // params.api.setRowGroup(['category', 'subcategory']);
+    if (chart.formatting.rowGroups) {
+      gridRef.current.api.setRowGroupColumns(chart.formatting.rowGroups);
+    }
+    if (chart.formatting.colGroups) {
+      gridRef.current.api.setPivotColumns(chart.formatting.colGroups);
+    }
+    if (chart.formatting.values) {
+      gridRef.current.api.setValueColumns(chart.formatting.values);
+    }
+
     params.api.expandAll(); // Раскрываем все группы
   }, [rowData]);
 
@@ -121,9 +119,9 @@ export const ChartAgGridPivot = ({chart}) => {
     sortable: true,
     filter: true,
     resizable: true,
-    enableValue: false,
+    enableValue: true,
     enableRowGroup: true,
-    enablePivot: false, // Отключаем агрегацию по умолчанию
+    enablePivot: true, // Отключаем агрегацию по умолчанию
     aggFunc: null,
   }), []);
 

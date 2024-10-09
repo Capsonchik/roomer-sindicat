@@ -146,7 +146,6 @@ export const ChartList = (props) => {
 
     }
   }, [activeGroupId]);
-  console.log(dataLensCharts)
   // console.log(filterLoading)
 
   // if(filterLoading === 'load') {
@@ -203,7 +202,6 @@ export const ChartList = (props) => {
     return {lg: layout};
   };
 
-  console.log(layouts)
 
   useEffect(() => {
     // Генерация лейаута при изменении массива data

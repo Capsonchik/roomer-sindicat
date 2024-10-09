@@ -109,6 +109,10 @@
     height: 550px;
     border:none !important;
 }
+
+.ag-watermark{
+    display: none !important;
+}
 /*.ag-tool-panel-wrapper::after {*/
 /*    position: absolute;*/
 /*    content: '';*/

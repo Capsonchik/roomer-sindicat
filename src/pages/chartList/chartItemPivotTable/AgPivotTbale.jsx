@@ -59,11 +59,11 @@ const generateColumnDefs = (rowData, minValue, maxValue) => {
         const lightColor = [255, 248, 248]; // #fff2f2
 
         // Интерполируем между светлым и темным цветом
-        const interpolatedColor = darkColor.map((c, i) => Math.round(c + (lightColor[i] - c) * value));
+        const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * value));
 
         return {
           backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
-          color: value > 0.5 ? 'black' : 'white', // Контраст текста
+          color: value < 0.5 ? 'black' : 'white', // Контраст текста
         };
       }
     });

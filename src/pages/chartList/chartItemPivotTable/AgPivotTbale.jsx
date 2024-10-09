@@ -101,15 +101,20 @@ export const ChartAgGridPivot = ({chart}) => {
 
     setMinMax({minValue, maxValue});
 
+
     if (chart.formatting.rowGroups) {
       gridRef.current.api.setRowGroupColumns(chart.formatting.rowGroups);
     }
     if (chart.formatting.colGroups) {
       gridRef.current.api.setPivotColumns(chart.formatting.colGroups);
     }
-    if (chart.formatting.values) {
-      gridRef.current.api.setValueColumns(chart.formatting.values);
-    }
+
+    setTimeout(() => {
+      if (chart.formatting.values) {
+        gridRef.current.api.setValueColumns(chart.formatting.values);
+      }
+
+    },50)
 
     params.api.expandAll(); // Раскрываем все группы
   }, [rowData]);

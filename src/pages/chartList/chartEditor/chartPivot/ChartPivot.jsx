@@ -4,7 +4,7 @@ import {ModuleRegistry} from '@ag-grid-community/core';
 import {AgGridReact} from '@ag-grid-community/react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {localeText} from "./agGridLocale";
 import {ColumnsToolPanelModule} from "@ag-grid-enterprise/column-tool-panel";
 import {MenuModule} from "@ag-grid-enterprise/menu";
@@ -88,6 +88,7 @@ export const ChartPivot = ({chart}) => {
 
   const onGridReady = useCallback((params) => {
     params.api.sizeColumnsToFit();
+    // params.api.expandAll();
     console.log(params)
     // Устанавливаем rowData сразу
     // params.api.setRowData(rowData); // Убедитесь, что rowData уже загружены здесь
@@ -105,29 +106,37 @@ export const ChartPivot = ({chart}) => {
 
     setMinMax({minValue, maxValue});
 
+    setTimeout(() => {
+      if (chart.formatting.values) {
+        params.api.setValueColumns(chart.formatting.values);
+      }
+
+    },50)
     if (chart.formatting.rowGroups) {
-      gridRef.current.api.setRowGroupColumns(chart.formatting.rowGroups);
+      params.api.setRowGroupColumns(chart.formatting.rowGroups);
     }
     if (chart.formatting.colGroups) {
-      gridRef.current.api.setPivotColumns(chart.formatting.colGroups);
-    }
-    if (chart.formatting.values) {
-      gridRef.current.api.setValueColumns(chart.formatting.values);
+      params.api.setPivotColumns(chart.formatting.colGroups);
     }
 
     params.api.expandAll(); // Раскрываем все группы
+
   }, [rowData]);
 
 
-  const defaultColDef = useMemo(() => ({
-    sortable: true,
-    filter: true,
-    resizable: true,
-    enableValue: false,
-    enableRowGroup: true,
-    enablePivot: false, // Отключаем агрегацию по умолчанию
-    aggFunc: null,
-  }), []);
+
+
+
+
+  // const defaultColDef = useMemo(() => ({
+  //   sortable: true,
+  //   filter: true,
+  //   resizable: true,
+  //   enableValue: false,
+  //   enableRowGroup: true,
+  //   enablePivot: true, // Отключаем агрегацию по умолчанию
+  //   aggFunc: null,
+  // }), []);
 
   const autoGroupColumnDef = useMemo(() => ({
     headerName: "Группы",
@@ -136,6 +145,7 @@ export const ChartPivot = ({chart}) => {
     pinned: "left",
   }), []);
 
+  console.log(gridRef?.current?.api?.getValueColumns().map(col => col.getColId()))
   const columnDefs = useMemo(() => generateColumnDefs(rowData, minMax.minValue, minMax.maxValue), [rowData, minMax]);
 
   const handlePatch = () => {
@@ -181,6 +191,14 @@ export const ChartPivot = ({chart}) => {
     dispatch(setOpenDrawer(false))
 
   }
+
+  // const onFirstDataRendered = useCallback((params) => {
+  //   if (gridRef.current.api.getAllColumns().length > 0) {
+  //     gridRef.current.api.setValueColumns([]); // Очищаем значения колонок
+  //   }
+  // }, []);
+
+
   return (
     <div className={styles.wrapper}>
 
@@ -190,18 +208,21 @@ export const ChartPivot = ({chart}) => {
           ref={gridRef}
           rowData={rowData}
           columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
+          // defaultColDef={defaultColDef}
           autoGroupColumnDef={autoGroupColumnDef}
           rowGroupPanelShow={"never"} // Всегда показывать панель группировки
           pivotMode={true} // Отключаем режим сводной таблицы
           sideBar={"columns"}
           onGridReady={onGridReady}
           localeText={localeText}
+
+          // onFirstDataRendered={onFirstDataRendered}
           // suppressMovableColumns={true}    // Отключаем возможность перемещения колонок
-          suppressDragLeaveHidesColumns={true} // Отключаем скрытие колонок при перетаскивании
-          suppressAggFuncInHeader={true}   // Скрываем функцию агрегации в заголовках
+          // suppressDragLeaveHidesColumns={true} // Отключаем скрытие колонок при перетаскивании
+          // suppressAggFuncInHeader={true}   // Скрываем функцию агрегации в заголовках
           animateRows={true}               // Включаем анимацию строк
           pivotDefaultExpanded={1}
+          // suppressAggAtRootLevel={true} // Добавляем suppressAggAtRootLevel
         />
       </div>
       <Button onClick={handlePatch} style={{

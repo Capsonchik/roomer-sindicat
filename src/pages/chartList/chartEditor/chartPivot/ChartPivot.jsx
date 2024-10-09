@@ -79,9 +79,10 @@ const generateColumnDefs = (rowData, minValue, maxValue) => {
 };
 
 export const ChartPivot = ({chart}) => {
+  const pivotData = chart?.['0']?.table_data ?? []
   const gridRef = useRef(null);
   const dispatch = useDispatch()
-  const [rowData, setRowData] = useState(agGridData);
+  const [rowData, setRowData] = useState(pivotData);
   const [minMax, setMinMax] = useState({minValue: 0, maxValue: 0});
 
   const onGridReady = useCallback((params) => {
@@ -103,9 +104,9 @@ export const ChartPivot = ({chart}) => {
 
     setMinMax({minValue, maxValue});
 
-    gridRef.current.api.setRowGroupColumns(['category', 'subcategory']);
-    gridRef.current.api.setValueColumns(['values']);
-    gridRef.current.api.setPivotColumns(['productName', 'period']);
+    // gridRef.current.api.setRowGroupColumns(['category', 'subcategory']);
+    gridRef.current.api.setValueColumns(['value']);
+    // gridRef.current.api.setPivotColumns(['productName', 'period']);
     // Устанавливаем category и subcategory в качестве групп
     // params.api.setRowGroup(['category', 'subcategory']);
     params.api.expandAll(); // Раскрываем все группы

@@ -102,7 +102,7 @@ export const fetchAllChartsByGroupId = createAsyncThunk(
   'chart/fetchAllChartsByGroupId',
   async ({groupId, filter_data = {filter_data: []}}) => {
     try {
-      const response = await axiosGraphRequest.post(`/api/v3/filter/get_filtered_graphs_from_group?group_id=${groupId}`,filter_data);
+      const response = await axiosGraphRequest.post(`/api/v3/filter/get_echart_graphs_from_group_new?group_id=${groupId}`,filter_data);
       // console.log(response)
       if (response.status === 200) {
         return response.data;

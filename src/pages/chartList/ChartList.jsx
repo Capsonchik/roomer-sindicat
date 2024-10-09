@@ -184,6 +184,20 @@ export const ChartList = (props) => {
         maxW: 12,
         static: false, // элемент также должен перемещаться
       };
+
+      if(layout.length === 1) {
+        layout[0] = {
+          i: "0", // первый элемент должен сохранять свой индекс
+          x: 0,
+          y: 0,
+          w: 12, // ширина элемента
+          h: 3, // высота элемента
+          minW: 3,
+          minH: 2,
+          maxW: 12,
+          static: false, // элемент также должен перемещаться
+        };
+      }
     }
 
     return {lg: layout};

@@ -15,7 +15,9 @@ import {Button} from "rsuite";
 import {ExelIcon} from "../chartItemTable/icons/ExelIcon";
 import {setActiveChart, setOpenDrawer} from "../../../store/chartSlice/chart.slice";
 import EditIcon from "@rsuite/icons/Edit";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {selectUser} from "../../../store/main.selectors";
+import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -39,7 +41,6 @@ const generateColumnDefs = (rowData, minValue, maxValue) => {
         headerName: key,
         enableValue: true,
         aggFunc: (params) => {
-          console.log(params)
           params.api.expandAll(); // Раскрываем все группы
           return params.values.length > 1 ? null : params.values[0];
         },
@@ -80,14 +81,17 @@ const generateColumnDefs = (rowData, minValue, maxValue) => {
 };
 
 export const ChartAgGridPivot = ({chart}) => {
+  const pivotData = chart?.['0']?.table_data ?? []
+  // console.log(chart)
+  const user = useSelector(selectCurrentUser)
   const gridRef = useRef(null);
   const dispatch = useDispatch()
-  const [rowData, setRowData] = useState(agGridData);
+  const [rowData, setRowData] = useState(pivotData);
   const [minMax, setMinMax] = useState({minValue: 0, maxValue: 0});
 
   const onGridReady = useCallback((params) => {
     params.api.sizeColumnsToFit();
-    console.log(params)
+    // console.log(params)
     // Устанавливаем rowData сразу
     // params.api.setRowData(rowData); // Убедитесь, что rowData уже загружены здесь
 
@@ -104,9 +108,9 @@ export const ChartAgGridPivot = ({chart}) => {
 
     setMinMax({minValue, maxValue});
 
-    gridRef.current.api.setRowGroupColumns(['category', 'subcategory']);
-    gridRef.current.api.setValueColumns(['values']);
-    gridRef.current.api.setPivotColumns(['productName', 'period']);
+    // gridRef.current.api.setRowGroupColumns(['category', 'subcategory']);
+    gridRef.current.api.setValueColumns(['value']);
+    // gridRef.current.api.setPivotColumns(['productName', 'period']);
     // Устанавливаем category и subcategory в качестве групп
     // params.api.setRowGroup(['category', 'subcategory']);
     params.api.expandAll(); // Раскрываем все группы
@@ -162,6 +166,7 @@ export const ChartAgGridPivot = ({chart}) => {
           suppressAggFuncInHeader={true}   // Скрываем функцию агрегации в заголовках
           animateRows={true}               // Включаем анимацию строк
           pivotDefaultExpanded={1}
+          suppressContextMenu={user.role === 'viewer'}
         />
       </div>
     </div>

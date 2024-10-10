@@ -1,7 +1,9 @@
 
 .columnsContainer {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  //display: grid;
+  //grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   max-width: 500px;
   gap: 30px;
 
@@ -22,7 +24,7 @@
   }
 
   .draggableItem {
-    padding: 5px;
+    padding: 8px;
     border-radius: 6px;
     background: #fbe2c6;
     cursor: grab;
@@ -39,15 +41,21 @@
   }
 
   .availableCols {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 6px;
   }
 
   .pivotCols {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 6px;
+
+    .pivotCols_row_cols{
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
   }
 
 }

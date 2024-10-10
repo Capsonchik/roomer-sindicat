@@ -344,17 +344,6 @@ export const ChartPivot = ({chart, columnsDef}) => {
               ))}
             </DroppableColumn>
 
-            <DroppableColumn allowedColumns={['rows', 'cols', 'availableColumnXY']} columnName="availableColumnXY"
-                             moveItem={moveItem}>
-              <h6>Доступно для x y</h6>
-              {columns.availableColumnXY.map((item, index) => (
-                <DraggableItem allowedColumns={['rows', 'cols', 'availableColumnXY']} key={index} name={item}
-                               index={index} column="availableColumnXY"/>
-              ))}
-            </DroppableColumn>
-          </div>
-          <div className={styles.pivotCols}>
-
             <DroppableColumn allowedColumns={['availableColumnValues', 'values']} columnName="values"
                              moveItem={moveItem}>
               <h6>Значения</h6>
@@ -363,22 +352,38 @@ export const ChartPivot = ({chart, columnsDef}) => {
                                index={index} column="values"/>
               ))}
             </DroppableColumn>
-            <DroppableColumn allowedColumns={['availableColumnXY', 'cols','rows']} columnName="cols" moveItem={moveItem}>
-              <h6>ось X</h6>
-              {columns.cols.map((item, index) => (
-                <DraggableItem allowedColumns={['availableColumnXY', 'cols','rows']} key={index} name={item} index={index}
-                               column="cols"/>
+
+          </div>
+          <div className={styles.pivotCols}>
+
+
+            <DroppableColumn allowedColumns={['rows', 'cols', 'availableColumnXY']} columnName="availableColumnXY"
+                             moveItem={moveItem}>
+              <h6>Доступно для x y</h6>
+              {columns.availableColumnXY.map((item, index) => (
+                <DraggableItem allowedColumns={['rows', 'cols', 'availableColumnXY']} key={index} name={item}
+                               index={index} column="availableColumnXY"/>
               ))}
             </DroppableColumn>
+            <div className={styles.pivotCols_row_cols}>
+              <DroppableColumn allowedColumns={['availableColumnXY', 'cols','rows']} columnName="cols" moveItem={moveItem}>
+                <h6>ось X</h6>
+                {columns.cols.map((item, index) => (
+                  <DraggableItem allowedColumns={['availableColumnXY', 'cols','rows']} key={index} name={item} index={index}
+                                 column="cols"/>
+                ))}
+              </DroppableColumn>
 
-            <DroppableColumn allowedColumns={['availableColumnXY', 'rows','cols']} columnName="rows" moveItem={moveItem}>
-              <h6>ось Y</h6>
-              {columns.rows.map((item, index) => (
-                <DraggableItem allowedColumns={['availableColumnXY', 'rows','cols']} key={index} name={item} index={index}
-                               column="rows"/>
-              ))}
-            </DroppableColumn>
+              <DroppableColumn allowedColumns={['availableColumnXY', 'rows','cols']} columnName="rows" moveItem={moveItem}>
+                <h6>ось Y</h6>
+                {columns.rows.map((item, index) => (
+                  <DraggableItem allowedColumns={['availableColumnXY', 'rows','cols']} key={index} name={item} index={index}
+                                 column="rows"/>
+                ))}
+              </DroppableColumn>
 
+
+            </div>
 
           </div>
         </div>

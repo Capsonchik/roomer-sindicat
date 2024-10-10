@@ -99,15 +99,27 @@ export const AgGridDataWrapper = ({chart}) => {
     const max = Math.max(...test)
 
 
+    const availableValues = []
+    const availableColumnsXY = []
     for (const  [key,value] of Object.entries(chart?.['0']?.table_data[0])) {
+      if(typeof value !== 'string' && !chart?.formatting?.values?.includes(key)) {
+        availableValues.push(key)
+      }
+      if(typeof value === 'string' && !chart?.formatting?.rowGroups?.includes(key) && !chart?.formatting?.colGroups?.includes(key)) {
+        availableColumnsXY.push(key)
+      }
       console.log(key,value)
     }
+    setAvailableColumns({
+      availableValues,
+      availableColumnsXY
+    })
 
     const {columnDefs} = generateColumnDefs(chart?.['0']?.table_data ?? [], min, max);
     // console.log(columnDefs)
     setColumnsDef(columnDefs)
   }, [chart])
 
-  return  !!columnsDef.length ? <ChartPivot chart={chart} columnsDef={columnsDef}/> : null
+  return  !!columnsDef.length ? <ChartPivot chart={chart} columnsDef={columnsDef} availableColumns={availableColumns}/> : null
 
 }

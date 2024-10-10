@@ -137,15 +137,7 @@ export const ChartList = (props) => {
 
   const [dataLensCharts, setDataLensCharts] = useState([])
 
-  useEffect(() => {
-    if (activeGroupId) {
-      setDataLensCharts([])
-      dispatch(fetchGetGraphs(activeGroupId)).then((res) => {
-        setDataLensCharts(res.payload)
-      })
 
-    }
-  }, [activeGroupId]);
   // console.log(filterLoading)
 
   // if(filterLoading === 'load') {

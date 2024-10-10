@@ -39,7 +39,7 @@ ModuleRegistry.registerModules([
 const ITEM_TYPE = 'ITEM';
 
 
-export const ChartPivot = ({chart, columnsDef}) => {
+export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
   const user = useSelector(selectCurrentUser)
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
@@ -116,42 +116,25 @@ export const ChartPivot = ({chart, columnsDef}) => {
 
 
   const [columns, setColumns] = useState({
-    availableColumnValues: ['1'],
-    availableColumnXY: ['2'],
-    rows: ['region', 'product'],
-    cols: ['sales', 'quantity', 'date'],
-    values: ['dddd']
+    availableColumnValues: availableColumns.availableValues,
+    availableColumnXY: availableColumns.availableColumnsXY,
+    rows: chart.formatting.rowGroups,
+    cols: chart.formatting.colGroups,
+    values: chart.formatting.values
   });
 
-  const moveItem = (item, toColumn) => {
-    const fromColumn = item.column;
-    const targetIndex = item.targetIndex; // Получаем индекс целевого элемента
-    console.log(item)
-    // Если перемещаем в ту же колонку
-    if (fromColumn === toColumn) {
-      const fromItems = [...columns[fromColumn]];
-      const [movedItem] = fromItems.splice(item.index, 1); // Удаляем элемент
-      fromItems.splice(targetIndex, 0, movedItem); // Вставляем элемент на новое место
+  useEffect(() => {
+    if(gridRef?.current?.api) {
+      gridRef.current.api.setRowGroupColumns(columns.rows);
+      gridRef.current.api.setPivotColumns(columns.cols);
+      gridRef.current.api.setValueColumns(columns.values);
 
-      setColumns((prevColumns) => ({
-        ...prevColumns,
-        [fromColumn]: fromItems,
-      }));
-    } else {
-      // Если перемещаем между колонками
-      const fromItems = [...columns[fromColumn]];
-      const toItems = [...columns[toColumn]];
-
-      const [movedItem] = fromItems.splice(item.index, 1); // Удаляем элемент из исходной колонки
-      toItems.splice(targetIndex, 0, movedItem); // Вставляем элемент в целевую колонку
-
-      setColumns((prevColumns) => ({
-        ...prevColumns,
-        [fromColumn]: fromItems,
-        [toColumn]: toItems,
-      }));
+      gridRef.current.api.expandAll();
     }
-  };
+
+
+  }, [columns, gridRef?.current]);
+
 
   const moveItem2 = (item) => {
     if (item.dropType === 'column') {
@@ -183,15 +166,14 @@ export const ChartPivot = ({chart, columnsDef}) => {
         const dropItemName = currentColumn[item.dropItemIndex]
         const filterdColumn = currentColumn.filter(columnName => columnName !== item.dragItemName);
         const changedDropItemIndex = filterdColumn.indexOf(dropItemName);
-        filterdColumn.splice(item.dragItemIndex !== changedDropItemIndex ?  changedDropItemIndex : changedDropItemIndex +1, 0,item.dragItemName);
+        filterdColumn.splice(item.dragItemIndex !== changedDropItemIndex ? changedDropItemIndex : changedDropItemIndex + 1, 0, item.dragItemName);
         setColumns(prev => {
           return {
             ...prev,
             [item.toColumn]: filterdColumn,
           }
         })
-      }
-      else {
+      } else {
         setColumns(prev => {
           return {
             ...prev,
@@ -255,8 +237,7 @@ export const ChartPivot = ({chart, columnsDef}) => {
     });
 
 
-
-    const [{ isOver, canDrop }, dropRef] = useDrop({
+    const [{isOver, canDrop}, dropRef] = useDrop({
       canDrop: (item) => allowedColumns.includes(item.column),
       accept: ITEM_TYPE,
       drop: (draggedItem) => {
@@ -286,8 +267,6 @@ export const ChartPivot = ({chart, columnsDef}) => {
     });
 
 
-
-
     return (
       <div
         ref={node => {
@@ -296,7 +275,9 @@ export const ChartPivot = ({chart, columnsDef}) => {
         }}
         className={`${styles.draggableItem} ${canDrop && isOver ? styles.canDrop : ''}`}
       >
-        {name}
+        <p>
+          {name}
+        </p>
       </div>
     );
   };
@@ -336,21 +317,27 @@ export const ChartPivot = ({chart, columnsDef}) => {
         <div className={styles.columnsContainer}>
           <div className={styles.availableCols}>
             <DroppableColumn allowedColumns={['values', 'availableColumnValues']} columnName="availableColumnValues"
-                             moveItem={moveItem}>
+            >
               <h6>Доступно для значений</h6>
-              {columns.availableColumnValues.map((item, index) => (
-                <DraggableItem allowedColumns={['values', 'availableColumnValues']} key={index} name={item}
-                               index={index} column="availableColumnValues"/>
-              ))}
+              <div className={styles.columnList}>
+                {columns.availableColumnValues.map((item, index) => (
+                  <DraggableItem allowedColumns={['values', 'availableColumnValues']} key={index} name={item}
+                                 index={index} column="availableColumnValues"/>
+                ))}
+              </div>
+
             </DroppableColumn>
 
             <DroppableColumn allowedColumns={['availableColumnValues', 'values']} columnName="values"
-                             moveItem={moveItem}>
+            >
               <h6>Значения</h6>
-              {columns.values.map((item, index) => (
-                <DraggableItem allowedColumns={['availableColumnValues', 'values']} key={index} name={item}
-                               index={index} column="values"/>
-              ))}
+              <div className={styles.columnList}>
+                {columns.values.map((item, index) => (
+                  <DraggableItem allowedColumns={['availableColumnValues', 'values']} key={index} name={item}
+                                 index={index} column="values"/>
+                ))}
+              </div>
+
             </DroppableColumn>
 
           </div>
@@ -358,28 +345,39 @@ export const ChartPivot = ({chart, columnsDef}) => {
 
 
             <DroppableColumn allowedColumns={['rows', 'cols', 'availableColumnXY']} columnName="availableColumnXY"
-                             moveItem={moveItem}>
+            >
               <h6>Доступно для x y</h6>
-              {columns.availableColumnXY.map((item, index) => (
-                <DraggableItem allowedColumns={['rows', 'cols', 'availableColumnXY']} key={index} name={item}
-                               index={index} column="availableColumnXY"/>
-              ))}
+              <div className={styles.columnList}>
+                {columns.availableColumnXY.map((item, index) => (
+                  <DraggableItem allowedColumns={['rows', 'cols', 'availableColumnXY']} key={index} name={item}
+                                 index={index} column="availableColumnXY"/>
+                ))}
+              </div>
+
             </DroppableColumn>
             <div className={styles.pivotCols_row_cols}>
-              <DroppableColumn allowedColumns={['availableColumnXY', 'cols','rows']} columnName="cols" moveItem={moveItem}>
+              <DroppableColumn allowedColumns={['availableColumnXY', 'cols', 'rows']} columnName="cols">
                 <h6>ось X</h6>
-                {columns.cols.map((item, index) => (
-                  <DraggableItem allowedColumns={['availableColumnXY', 'cols','rows']} key={index} name={item} index={index}
-                                 column="cols"/>
-                ))}
+                <div className={styles.columnList}>
+                  {columns.cols.map((item, index) => (
+                    <DraggableItem allowedColumns={['availableColumnXY', 'cols', 'rows']} key={index} name={item}
+                                   index={index}
+                                   column="cols"/>
+                  ))}
+                </div>
+
               </DroppableColumn>
 
-              <DroppableColumn allowedColumns={['availableColumnXY', 'rows','cols']} columnName="rows" moveItem={moveItem}>
+              <DroppableColumn allowedColumns={['availableColumnXY', 'rows', 'cols']} columnName="rows">
                 <h6>ось Y</h6>
-                {columns.rows.map((item, index) => (
-                  <DraggableItem allowedColumns={['availableColumnXY', 'rows','cols']} key={index} name={item} index={index}
-                                 column="rows"/>
-                ))}
+                <div className={styles.columnList}>
+                  {columns.rows.map((item, index) => (
+                    <DraggableItem allowedColumns={['availableColumnXY', 'rows', 'cols']} key={index} name={item}
+                                   index={index}
+                                   column="rows"/>
+                  ))}
+                </div>
+
               </DroppableColumn>
 
 

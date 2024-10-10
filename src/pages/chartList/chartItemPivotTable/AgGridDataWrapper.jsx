@@ -82,7 +82,7 @@ export const AgGridDataWrapper = ({chart}) => {
     if (chart?.['0']?.table_data.length > 0) {
       chart?.['0']?.table_data.forEach(item => {
 
-        chart.formatting.values.forEach((value) => {
+        chart?.formatting?.values?.forEach((value) => {
           test.push(item[value])
         })
       })

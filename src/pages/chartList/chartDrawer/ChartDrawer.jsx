@@ -21,7 +21,7 @@ export const ChartDrawer = ({open, onClose}) => {
   }
   return (
     <Drawer open={open} onClose={onClose} style={{
-      maxWidth: chart.formatting.type_chart === 'pivot' ? 1200 : 700,
+      maxWidth: chart?.formatting?.type_chart === 'pivot' ? 1200 : 700,
       width: '100%'
     }}>
       <Drawer.Body style={{maxHeight: '100% !important'}}>

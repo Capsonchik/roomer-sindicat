@@ -4,7 +4,12 @@ import {ChartPivot} from "./ChartPivot";
 
 export const AgGridDataWrapper = ({chart}) => {
   const [columnsDef, setColumnsDef] = useState([])
+  const [availableColumns, setAvailableColumns] = useState({
+    availableValues: [],
+    availableColumnsXY: []
+  })
   const generateColumnDefs = (rowData, min, max) => {
+
 
     // console.log(min,max)
     const columnDefs = [];
@@ -14,6 +19,8 @@ export const AgGridDataWrapper = ({chart}) => {
 
 
     const allKeys = Array.from(new Set(rowData.flatMap(Object.keys)));
+
+
 
     // console.log(allKeys)
     allKeys.forEach(key => {
@@ -89,6 +96,11 @@ export const AgGridDataWrapper = ({chart}) => {
     console.log(test)
     const min = Math.min(...test)
     const max = Math.max(...test)
+
+
+    for (const  [key,value] of Object.entries(chart?.['0']?.table_data[0])) {
+      console.log(key,value)
+    }
 
     const {columnDefs} = generateColumnDefs(chart?.['0']?.table_data ?? [], min, max);
     // console.log(columnDefs)

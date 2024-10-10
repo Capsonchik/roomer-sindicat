@@ -22,6 +22,9 @@ import {
   patchChartFormatting
 } from "../../../../store/chartSlice/chart.actions";
 import {selectCurrentUser} from "../../../../store/userSlice/user.selectors";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import {useDrag, useDrop, DndProvider} from 'react-dnd';
+import {salesData} from "./pivot.mocks";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -32,8 +35,11 @@ ModuleRegistry.registerModules([
 ]);
 
 
+// Типы для DND
+const ITEM_TYPE = 'ITEM';
 
-export const ChartPivot = ({chart,columnsDef}) => {
+
+export const ChartPivot = ({chart, columnsDef}) => {
   const user = useSelector(selectCurrentUser)
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
@@ -67,7 +73,6 @@ export const ChartPivot = ({chart,columnsDef}) => {
     cellRenderer: 'agGroupCellRenderer',
     pinned: "left",
   }), []);
-
 
 
   const handlePatch = () => {
@@ -110,38 +115,277 @@ export const ChartPivot = ({chart,columnsDef}) => {
   }
 
 
-  return (
-    <div className={styles.wrapper}>
+  const [columns, setColumns] = useState({
+    availableColumnValues: ['1'],
+    availableColumnXY: ['2'],
+    rows: ['region', 'product'],
+    cols: ['sales', 'quantity', 'date'],
+    values: ['dddd']
+  });
 
-      <div className="ag-theme-alpine" style={{height: 500, width: '100%'}}>
+  const moveItem = (item, toColumn) => {
+    const fromColumn = item.column;
+    const targetIndex = item.targetIndex; // Получаем индекс целевого элемента
+    console.log(item)
+    // Если перемещаем в ту же колонку
+    if (fromColumn === toColumn) {
+      const fromItems = [...columns[fromColumn]];
+      const [movedItem] = fromItems.splice(item.index, 1); // Удаляем элемент
+      fromItems.splice(targetIndex, 0, movedItem); // Вставляем элемент на новое место
 
-        <AgGridReact
-          ref={gridRef}
-          rowData={rowData}
-          columnDefs={columnsDef}
-          autoGroupColumnDef={autoGroupColumnDef}
-          rowGroupPanelShow={"never"} // Всегда показывать панель группировки
-          pivotMode={true} // Отключаем режим сводной таблицы
-          sideBar={"none"}
-          onGridReady={onGridReady}
-          localeText={localeText}
-          // suppressMovableColumns={true}    // Отключаем возможность перемещения колонок
-          suppressDragLeaveHidesColumns={true} // Отключаем скрытие колонок при перетаскивании
-          suppressAggFuncInHeader={true}   // Скрываем функцию агрегации в заголовках
-          animateRows={true}               // Включаем анимацию строк
-          pivotDefaultExpanded={1}
-          suppressContextMenu={user.role === 'viewer'}
-          rowHeight={34} // Уменьшаем высоту строки до 25px
-          tooltipShowDelay={200} // Задержка перед показом тултипа
-          tooltipHideDelay={4000} // Время до скрытия тултипа (например, 3 секунды)
-          enableBrowserTooltips={false} // Отключаем нативные браузерные тултипы
-          tooltipComponentParams={{ textAlign: 'center' }}
+      setColumns((prevColumns) => ({
+        ...prevColumns,
+        [fromColumn]: fromItems,
+      }));
+    } else {
+      // Если перемещаем между колонками
+      const fromItems = [...columns[fromColumn]];
+      const toItems = [...columns[toColumn]];
 
-        />
+      const [movedItem] = fromItems.splice(item.index, 1); // Удаляем элемент из исходной колонки
+      toItems.splice(targetIndex, 0, movedItem); // Вставляем элемент в целевую колонку
+
+      setColumns((prevColumns) => ({
+        ...prevColumns,
+        [fromColumn]: fromItems,
+        [toColumn]: toItems,
+      }));
+    }
+  };
+
+  const moveItem2 = (item) => {
+    if (item.dropType === 'column') {
+
+      if (item.fromColumn === item.toColumn) {
+        const currentColumn = columns[item.toColumn];
+        const filterdColumn = currentColumn.filter(columnName => columnName !== item.dragItemName);
+        filterdColumn.push(item.dragItemName)
+        setColumns(prev => {
+          return {
+            ...prev,
+            [item.toColumn]: filterdColumn,
+          }
+        })
+      } else {
+        setColumns(prev => {
+          return {
+            ...prev,
+            [item.fromColumn]: prev[item.fromColumn].filter(columnName => columnName !== item.dragItemName),
+            [item.toColumn]: [...prev[item.toColumn], item.dragItemName],
+          }
+        })
+      }
+
+    }
+    if (item.dropType === 'item') {
+      if (item.fromColumn === item.toColumn) {
+        const currentColumn = columns[item.toColumn];
+        const dropItemName = currentColumn[item.dropItemIndex]
+        const filterdColumn = currentColumn.filter(columnName => columnName !== item.dragItemName);
+        const changedDropItemIndex = filterdColumn.indexOf(dropItemName);
+        filterdColumn.splice(changedDropItemIndex +1, 0,item.dragItemName);
+        setColumns(prev => {
+          return {
+            ...prev,
+            [item.toColumn]: filterdColumn,
+          }
+        })
+      }
+      else {
+        setColumns(prev => {
+          return {
+            ...prev,
+            [item.fromColumn]: prev[item.fromColumn].filter(columnName => columnName !== item.dragItemName),
+            [item.toColumn]: [...prev[item.toColumn].slice(0, item.dropItemIndex), item.dragItemName, ...prev[item.toColumn].slice(item.dropItemIndex)],
+          }
+        })
+      }
+
+    }
+  }
+
+  // console.log(columns)
+  const DroppableColumn = ({children, columnName, allowedColumns}) => {
+    const [{isOver, canDrop}, drop] = useDrop({
+      accept: ITEM_TYPE,
+      canDrop: (item) => allowedColumns.includes(item.column),
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+      drop: (draggedItem, monitor) => {
+        // Проверяем, был ли дроп на другой элемент
+        if (!monitor.didDrop()) {
+          const item = monitor.getItem();
+
+          // Проверяем, если дропнутый элемент - это DraggableItem
+          if (item && item.index !== undefined) {
+
+
+            // console.log(item)
+            const request = {
+              fromColumn: draggedItem.column,
+              toColumn: columnName,
+              dragItemName: draggedItem.name,
+              dragItemIndex: draggedItem.index,
+              // dropItemIndex: targetIndex,
+              dropType: 'column'
+            };
+            moveItem2(request)
+
+          }
+        }
+      },
+    });
+
+    return (
+      <div
+        ref={drop}
+        className={`${styles.droppableColumn} ${isOver && !canDrop ? styles.notAllowed : ''} ${canDrop && isOver ? styles.canDrop : ''}`}
+      >
+        {children}
       </div>
-      <Button onClick={handlePatch} style={{
-        marginTop: 550
-      }}>Сохранить</Button>
-    </div>
+    );
+  };
+
+  const DraggableItem = ({name, index, column, allowedColumns}) => {
+    const [, drag] = useDrag({
+      type: ITEM_TYPE,
+      item: {name, index, column},
+    });
+
+
+
+    const [{ isOver, canDrop }, dropRef] = useDrop({
+      canDrop: (item) => allowedColumns.includes(item.column),
+      accept: ITEM_TYPE,
+      drop: (draggedItem) => {
+        const targetIndex = index;
+
+        const request = {
+          fromColumn: draggedItem.column,
+          toColumn: column,
+          dragItemName: draggedItem.name,
+          dragItemIndex: draggedItem.index,
+          dropItemIndex: targetIndex,
+          dropType: 'item'
+        };
+        console.log(allowedColumns, column)
+        if (!allowedColumns.includes(column)) return
+
+        // console.log('Dropped on DraggableItem:', draggedItem);
+        // Логика обработки дропа для DraggableItem
+        moveItem2(request);
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+
+
+    });
+
+
+
+
+    return (
+      <div
+        ref={node => {
+          dropRef.current = node;
+          drag(dropRef(node));
+        }}
+        className={`${styles.draggableItem} ${canDrop && isOver ? styles.canDrop : ''}`}
+      >
+        {name}
+      </div>
+    );
+  };
+
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <div className={styles.wrapper}>
+
+        <div className="ag-theme-alpine" style={{height: 500, width: '100%'}}>
+
+          <AgGridReact
+            ref={gridRef}
+            rowData={rowData}
+            columnDefs={columnsDef}
+            autoGroupColumnDef={autoGroupColumnDef}
+            rowGroupPanelShow={"never"} // Всегда показывать панель группировки
+            pivotMode={true} // Отключаем режим сводной таблицы
+            sideBar={"none"}
+            onGridReady={onGridReady}
+            localeText={localeText}
+            // suppressMovableColumns={true}    // Отключаем возможность перемещения колонок
+            suppressDragLeaveHidesColumns={true} // Отключаем скрытие колонок при перетаскивании
+            suppressAggFuncInHeader={true}   // Скрываем функцию агрегации в заголовках
+            animateRows={true}               // Включаем анимацию строк
+            pivotDefaultExpanded={1}
+            suppressContextMenu={user.role === 'viewer'}
+            rowHeight={34} // Уменьшаем высоту строки до 25px
+            tooltipShowDelay={200} // Задержка перед показом тултипа
+            tooltipHideDelay={4000} // Время до скрытия тултипа (например, 3 секунды)
+            enableBrowserTooltips={false} // Отключаем нативные браузерные тултипы
+            tooltipComponentParams={{textAlign: 'center'}}
+
+          />
+        </div>
+
+        <div className={styles.columnsContainer}>
+          <div className={styles.availableCols}>
+            <DroppableColumn allowedColumns={['values', 'availableColumnValues']} columnName="availableColumnValues"
+                             moveItem={moveItem}>
+              <h6>Доступно для значений</h6>
+              {columns.availableColumnValues.map((item, index) => (
+                <DraggableItem allowedColumns={['values', 'availableColumnValues']} key={index} name={item}
+                               index={index} column="availableColumnValues"/>
+              ))}
+            </DroppableColumn>
+
+            <DroppableColumn allowedColumns={['rows', 'cols', 'availableColumnXY']} columnName="availableColumnXY"
+                             moveItem={moveItem}>
+              <h6>Доступно для x y</h6>
+              {columns.availableColumnXY.map((item, index) => (
+                <DraggableItem allowedColumns={['rows', 'cols', 'availableColumnXY']} key={index} name={item}
+                               index={index} column="availableColumnXY"/>
+              ))}
+            </DroppableColumn>
+          </div>
+          <div className={styles.pivotCols}>
+
+            <DroppableColumn allowedColumns={['availableColumnValues', 'values']} columnName="values"
+                             moveItem={moveItem}>
+              <h6>Значения</h6>
+              {columns.values.map((item, index) => (
+                <DraggableItem allowedColumns={['availableColumnValues', 'values']} key={index} name={item}
+                               index={index} column="values"/>
+              ))}
+            </DroppableColumn>
+            <DroppableColumn allowedColumns={['availableColumnXY', 'cols','rows']} columnName="cols" moveItem={moveItem}>
+              <h6>ось X</h6>
+              {columns.cols.map((item, index) => (
+                <DraggableItem allowedColumns={['availableColumnXY', 'cols','rows']} key={index} name={item} index={index}
+                               column="cols"/>
+              ))}
+            </DroppableColumn>
+
+            <DroppableColumn allowedColumns={['availableColumnXY', 'rows','cols']} columnName="rows" moveItem={moveItem}>
+              <h6>ось Y</h6>
+              {columns.rows.map((item, index) => (
+                <DraggableItem allowedColumns={['availableColumnXY', 'rows','cols']} key={index} name={item} index={index}
+                               column="rows"/>
+              ))}
+            </DroppableColumn>
+
+
+          </div>
+        </div>
+        <Button onClick={handlePatch} style={{
+          marginTop: 50
+        }}>Сохранить</Button>
+      </div>
+    </DndProvider>
   );
 };

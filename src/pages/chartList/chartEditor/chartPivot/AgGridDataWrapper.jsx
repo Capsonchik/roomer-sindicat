@@ -69,6 +69,7 @@ export const AgGridDataWrapper = ({chart}) => {
           const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * value));
 
           return {
+            fontSize:20,
             backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
             color: value < 0.5 ? 'black' : 'white', // Контраст текста
           };

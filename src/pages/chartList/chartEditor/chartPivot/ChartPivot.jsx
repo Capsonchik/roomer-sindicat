@@ -183,7 +183,7 @@ export const ChartPivot = ({chart, columnsDef}) => {
         const dropItemName = currentColumn[item.dropItemIndex]
         const filterdColumn = currentColumn.filter(columnName => columnName !== item.dragItemName);
         const changedDropItemIndex = filterdColumn.indexOf(dropItemName);
-        filterdColumn.splice(changedDropItemIndex +1, 0,item.dragItemName);
+        filterdColumn.splice(changedDropItemIndex, 0,item.dragItemName);
         setColumns(prev => {
           return {
             ...prev,

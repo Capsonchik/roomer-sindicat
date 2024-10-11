@@ -40,6 +40,7 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
             <ChartTypeView key={i} chart={charts[i]}/>
           </span>
         )}
+
       </div>
     ));
   };

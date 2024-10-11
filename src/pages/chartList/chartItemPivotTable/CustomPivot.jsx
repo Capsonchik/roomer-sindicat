@@ -61,6 +61,10 @@ export const CustomPivot = ({rowData}) => {
     [rowData, colKey, subColKey]
   );
 
+  if(!rowData.length) {
+    return null;
+  }
+
   return (
     <div>
       <h2 className={styles.title}>Custom Pivot Table</h2>

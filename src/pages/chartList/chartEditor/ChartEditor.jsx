@@ -4,6 +4,7 @@ import styles from './chartEditor.module.scss'
 import {ChartTableEditor} from "./chartTable/ChartTableEditor";
 import {ChartPie} from "./chartPie/ChartPie";
 import {AgGridDataWrapper} from "./chartPivot/AgGridDataWrapper";
+import {CustomPivot} from "../chartItemPivotTable/CustomPivot";
 
 export const ChartEditor = ({chart}) => {
   let returnType = 'неизвестный тип графика'
@@ -18,6 +19,7 @@ export const ChartEditor = ({chart}) => {
       returnType = <ChartPie chart={chart}/>
       break
     case 'pivot':
+      // returnType = <CustomPivot rowData={chart['0'].table_data}/>
       returnType = <AgGridDataWrapper chart={chart}/>
       break
   }

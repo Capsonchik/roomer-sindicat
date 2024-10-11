@@ -36,7 +36,7 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
             Static - {i}
           </span>
         ) : (
-          <span className="text" style={{height: '100%', display:'block'}}>
+          <span className="text" style={{height: '100%', display:'block',overflow:'auto'}}>
             <ChartTypeView key={i} chart={charts[i]}/>
           </span>
         )}

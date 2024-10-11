@@ -4,7 +4,7 @@ import {ChartAgGridPivot} from "./AgPivotTbale";
 
 export const AgGridDataWrapper = ({chart}) => {
   const [columnsDef, setColumnsDef] = useState([])
-  const generateColumnDefs = (rowData, min, max) => {
+  const generateColumnDefs = (rowData, min, max, selectedRows) => {
 
     // console.log(min,max)
     const columnDefs = [];
@@ -26,13 +26,34 @@ export const AgGridDataWrapper = ({chart}) => {
         headerName: key,
         enableValue: true,
         enableRowGroup: true, // Включаем группировку для category и subcategory
-        enablePivot: true, // Отключаем возможность использования в сводной таблице для productName и period
-        aggFunc: (params) => {
-          // params.api.expandAll(); // Раскрываем все группы
-          // console.log(111)
-          // params?.values?.[0] &&  !Number.isNaN(+(params?.values?.[0])) && visibleValues.push(params.values[0])
-          return params.values.length > 1 ? null : params.values[0];
-        },
+        enablePivot: false, // Отключаем возможность использования в сводной таблице для productName и period
+        // aggFunc: (params) => {
+        //   // Проверяем, является ли строка последним уровнем группировки
+        //   // const lastGroupLevel = params.api.getAllDisplayedColumns().filter(col => col.getColDef().rowGroup).length - 1;
+        //   //
+        //   // console.log(params.api)
+        //   // console.log(params)
+        //   // if(selectedRows?.includes(params.colDef.headerName)){
+        //   //   return params.values[0]
+        //   // }
+        //   // else {
+        //   //   return null
+        //   // }
+        //   console.log(params?.values)
+        //   return params?.values?.length > 1 ? null : params.values[0];
+        //   // console.log(params.api.getAllDisplayedColumns())
+        //   // // Проверяем, что это группа и она на последнем уровне rowGroup
+        //   // if (params.rowNode.rowGroupIndex === lastGroupLevel) {
+        //   //   return params.values[0]; // Возвращаем значение для последней группы
+        //   // }
+        //   // console.log(params)
+        //   // Для всех остальных групп возвращаем null, чтобы значение не отображалось
+        //   // return params.values[0];
+        // },
+        // valueGetter: (params) => {
+        //     console.log(params)
+        //   return params.node.data.label
+        // },
         cellStyle: (params) => {
           if (params.value == null) return {}; // если значение отсутствует, не применяем стиль
 
@@ -62,7 +83,7 @@ export const AgGridDataWrapper = ({chart}) => {
           const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * value));
 
           return {
-            fontSize:20,
+            fontSize: 20,
             backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
             color: value < 0.5 ? 'black' : 'white', // Контраст текста
           };
@@ -87,15 +108,16 @@ export const AgGridDataWrapper = ({chart}) => {
         })
       })
     }
-    console.log(test)
+    // console.log(chart.formatting.values)
     const min = Math.min(...test)
     const max = Math.max(...test)
+    const selectedRows = chart.formatting.rows
 
-    const {columnDefs} = generateColumnDefs(chart?.['0']?.table_data ?? [], min, max);
+    const {columnDefs} = generateColumnDefs(chart?.['0']?.table_data ?? [], min, max, selectedRows);
     // console.log(columnDefs)
     setColumnsDef(columnDefs)
   }, [chart])
 
-  return  !!columnsDef.length ? <ChartAgGridPivot chart={chart} columnsDef={columnsDef}/> : null
+  return !!columnsDef.length ? <ChartAgGridPivot chart={chart} columnsDef={columnsDef}/> : null
 
 }

@@ -4,6 +4,7 @@ import {ChartItemPie} from "../chartItemPie/ChartItemPie";
 import '../chartItemPivotTable/styles.css'
 
 import {AgGridDataWrapper} from "../chartItemPivotTable/AgGridDataWrapper";
+import {CustomPivot} from "../chartItemPivotTable/CustomPivot";
 
 export const ChartTypeView = ({chart}) => {
 
@@ -20,7 +21,8 @@ export const ChartTypeView = ({chart}) => {
       returnType = <ChartItemPie chart={chart}/>
       break
     case 'pivot':
-      returnType = <AgGridDataWrapper chart={chart}/>
+      returnType = <CustomPivot rowData={chart['0'].table_data}/>
+      // returnType = <AgGridDataWrapper chart={chart}/>
 
       break
   }

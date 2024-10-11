@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Controller, useFormContext} from "react-hook-form";
 import {Button, SelectPicker} from "rsuite";
 import styles from "./selectPicker.module.scss";
@@ -30,10 +30,10 @@ export const CustomSelectPicker = (
   } = useFormContext();
 
   const inputRef = useRef(null);
+  const [placement, setPlacement] = useState("bottomStart");
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      // Если клик произошел за пределами input и форма не отправляется
       if (!inputRef.current.contains(e.target)) {
         clearErrors(name);
       }
@@ -45,52 +45,54 @@ export const CustomSelectPicker = (
     };
   }, []);
 
-  // Предоставляем метод focus, который будет фокусироваться на контейнере
-/*  useImperativeHandle(ref, () => ({
-    focus: () => {
+  // Проверяем позицию элемента и меняем placement
+  useEffect(() => {
+    const handleResize = () => {
       if (inputRef.current) {
-        inputRef.current.focus(); // фокусируемся на обертке
-      }
-    }
-  }));*/
+        const rect = inputRef.current.getBoundingClientRect();
+        const distanceToBottom = window.innerHeight - rect.bottom;
 
-  // Приведение ошибки к строке
+        if (distanceToBottom < 320) {
+          setPlacement("topStart");
+        } else {
+          setPlacement("bottomStart");
+        }
+      }
+    };
+
+    // Вызываем при монтировании и при изменении размера окна
+    window.addEventListener("resize", handleResize);
+    handleResize(); // первичная проверка
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const errorMessage = typeof errors[name]?.message === "string" ? errors[name]?.message : '';
 
-
   return (
-    <div className={cl(styles.inputWrapper, className)} ref={inputRef} onFocus={() => {}}>
+    <div className={cl(styles.inputWrapper, className)} ref={inputRef}>
       <Controller
         name={name}
         control={control}
         render={({field}) => (
           <SelectPicker
-            // style={{
-            //   width:224
-            // }}
-            menuStyle={{
-              maxWidth:200
-            }}
+            menuStyle={{ maxWidth: 200 }}
             disabled={disabled}
-            // onFocus={() =>{}}
             defaultValue={defaultValue}
             {...field}
             data={data}
             onChange={(selectedValue) => {
-              // Update the form field value
               field.onChange(selectedValue);
-              // Call external onChange handler, if provided
               onChangeOutside && onChangeOutside(selectedValue);
             }}
             searchable={searchable}
             appearance={appearance}
-            placement="bottomStart"
+            placement={placement}
             placeholder={placeholder}
             className={className || styles.type}
             container={container}
-            preventOverflow
-
-            // Добавляем кнопку внутри dropdown
             loading={loading}
             renderExtraFooter={() =>
               conditionForButton && (
@@ -104,10 +106,6 @@ export const CustomSelectPicker = (
           />
         )}
       />
-      {/*/!* Отображаем ошибку, если она есть *!/*/}
-      {/*<div className={cl(styles.inputError, {*/}
-      {/*  [styles.hasError]: !!errorMessage*/}
-      {/*})}>{errorMessage}</div>*/}
     </div>
   );
 };

@@ -50,14 +50,24 @@ const getCellStyle = (value, min, max) => {
   };
 };
 
+// Функция для форматирования значений
+const formatValue = (value, formatType) => {
+  if (formatType === 'k') {
+    return value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value;
+  } else if (formatType === 'm') {
+    return value >= 1000000 ? `${(value / 1000000).toFixed(1)}m` : value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value;
+  }
+  return value;
+};
+
 export const CustomPivot = ({ rowData, chart, isDrawer = false, rowColData }) => {
-  const { rowKey, subRowKey, colKey, subColKey, aggregator } = rowColData;
+  const { rowKey, subRowKey, colKey, subColKey, aggregator  ,format = 'm'} = rowColData;
   const dispatch = useDispatch();
 
   // Агрегированные данные и min/max значения
   const { result: aggregatedData, min, max } = useMemo(
     () => aggregateData(rowData, rowKey, subRowKey, colKey, subColKey, aggregator),
-    [rowData, rowKey, subRowKey, colKey, subColKey, aggregator]
+    [rowData, rowKey, subRowKey, colKey, subColKey, aggregator,format]
   );
 
   // Уникальные строки и подстроки
@@ -140,7 +150,7 @@ export const CustomPivot = ({ rowData, chart, isDrawer = false, rowColData }) =>
                         min, // Используем min из useMemo
                         max  // Используем max из useMemo
                       )}>
-                        {aggregatedData[row]?.[subRow]?.[col]?.[subCol] || <span className={styles.empty}>-</span>}
+                        {formatValue(aggregatedData[row]?.[subRow]?.[col]?.[subCol], format) || <span className={styles.empty}>-</span>}
                       </td>
                     ))
                   )}

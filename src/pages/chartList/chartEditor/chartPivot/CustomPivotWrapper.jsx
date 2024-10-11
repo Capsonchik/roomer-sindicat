@@ -1,6 +1,6 @@
 import {CustomPivot} from "../../chartItemPivotTable/CustomPivot";
 import styles from './customPivotWrapper.module.scss'
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import {
   fetchAllChartsByGroupId,
   fetchAllChartsFormatByGroupId,
@@ -25,6 +25,7 @@ export const CustomPivotWrapper = ({chart}) => {
   const [colKey, setColKey] = useState(chart.formatting?.colKey || 'Segment1');
   const [subColKey, setSubColKey] = useState(chart.formatting?.subColKey || 'Product'); // Вторая группа колонок
   const [aggregator, setAggregator] = useState(chart.formatting?.aggregator || 'Total_value');
+  const [format, setFormat] = useState(chart.formatting?.format || 'm');
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
   const filters = useSelector(selectFilters)
@@ -76,29 +77,35 @@ export const CustomPivotWrapper = ({chart}) => {
 
   }
 
-  const rowRef = React.createRef()
+  const rowRef = useRef()
+  const subRowRef = useRef()
+  const  colRef = useRef()
+  const  subColRef = useRef()
+  const  aggregationRef = useRef()
 
   return (
 
     <FormProvider {...methods}>
       <div className={styles.wrapper}>
-        <CustomPivot rowData={rowData} chart={chart} isDrawer rowColData={{
-          rowKey,
-          subRowKey,
-          colKey,
-          subColKey,
-          aggregator
-        }}/>
+          <CustomPivot rowData={rowData} chart={chart} isDrawer rowColData={{
+            rowKey,
+            subRowKey,
+            colKey,
+            subColKey,
+            aggregator,
+            format
+          }}/>
       </div>
 
       <div className={styles.selects}>
         <div className={styles.selects_items}>
           <h6>Строки</h6>
           <div className={styles.selects_items}>
-            <div >
+            <div>
               <p>row</p>
-              <div ref={rowRef}>
+              <div ref={rowRef} style={{position: 'relative'}}>
                 <CustomSelectPicker
+                  container={() => rowRef.current}
                   // value={rowKey}
                   data={
                     Object.entries(rowData[0])
@@ -113,9 +120,9 @@ export const CustomPivotWrapper = ({chart}) => {
 
             <div>
               <p>subRow</p>
-              <div ref={rowRef}>
+              <div  ref={subRowRef} style={{position: 'relative'}}>
                 <CustomSelectPicker
-                  // value={rowKey}
+                  container={() => subRowRef.current}
                   data={
                     Object.entries(rowData[0])
                       .filter(([field, value]) => typeof value === 'string')
@@ -135,8 +142,9 @@ export const CustomPivotWrapper = ({chart}) => {
           <div className={styles.selects_items}>
             <div>
               <p>col</p>
-              <div ref={rowRef}>
+              <div ref={colRef} style={{position: 'relative'}}>
                 <CustomSelectPicker
+                  container={() => colRef.current}
                   // value={rowKey}
                   data={
                     Object.entries(rowData[0])
@@ -152,8 +160,9 @@ export const CustomPivotWrapper = ({chart}) => {
 
             <div>
               <p>subCol</p>
-              <div ref={rowRef}>
+              <div ref={subColRef} style={{position: 'relative'}}>
                 <CustomSelectPicker
+                  container={() => subColRef.current}
                   data={
                     Object.entries(rowData[0])
                       .filter(([field, value]) => typeof value === 'string')
@@ -173,8 +182,9 @@ export const CustomPivotWrapper = ({chart}) => {
           <h6>Значения</h6>
           <div>
             <p>aggregator</p>
-            <div ref={rowRef}>
+            <div ref={aggregationRef} style={{position: 'relative'}}>
               <CustomSelectPicker
+                container={() => aggregationRef.current}
                 data={
                   Object.entries(rowData[0])
                     .filter(([field, value]) => typeof value !== 'string')
@@ -187,6 +197,23 @@ export const CustomPivotWrapper = ({chart}) => {
 
           </div>
 
+        </div>
+
+        <div className={styles.selects_items}>
+          <h6>Формат</h6>
+          <div>
+            <p>формат числа</p>
+            <div ref={rowRef}>
+              <CustomSelectPicker
+                data={['k','m','без форматирования']
+                    .map((field) => ({value: field, label: field}))
+                }
+                name={'format'}
+                onChangeOutside={(val) => setFormat(val)}
+              />
+            </div>
+
+          </div>
         </div>
       </div>
       <Button onClick={handlePatch} style={{

@@ -126,7 +126,7 @@ export const FilterDrawer = ({open, onClose}) => {
     </Message>
   );
 
-
+  console.log(filters)
   const handleFields = (data) => {
     const newFields = data.map(field => {
       const [db_name, column_name] = field.split(' ')

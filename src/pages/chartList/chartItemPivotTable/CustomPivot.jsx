@@ -1,43 +1,64 @@
-import React, {useState, useMemo} from 'react';
-import styles from './customPivot.module.scss'
+import React, { useState, useMemo } from 'react';
+import styles from './customPivot.module.scss';
+import { Button } from 'rsuite';
+import { setActiveChart, setOpenDrawer } from '../../../store/chartSlice/chart.slice';
+import EditIcon from '@rsuite/icons/Edit';
+import { useDispatch } from 'react-redux';
 
 // Функция для агрегации данных
 const aggregateData = (data, rowKey, subRowKey, colKey, subColKey, aggregator) => {
   const result = {};
+  let min = Infinity;
+  let max = -Infinity;
 
   data.forEach((item) => {
     const row = item[rowKey];
     const subRow = item[subRowKey];
     const col = item[colKey];
     const subCol = item[subColKey];
+    const value = item[aggregator];
 
-    if (!result[row]) {
-      result[row] = {};
-    }
+    if (!result[row]) result[row] = {};
+    if (!result[row][subRow]) result[row][subRow] = {};
+    if (!result[row][subRow][col]) result[row][subRow][col] = {};
 
-    if (!result[row][subRow]) {
-      result[row][subRow] = {};
-    }
+    result[row][subRow][col][subCol] = value;
 
-    if (!result[row][subRow][col]) {
-      result[row][subRow][col] = {};
-    }
-
-    result[row][subRow][col][subCol] = item[aggregator];
+    // Находим min и max значения
+    if (value < min) min = value;
+    if (value > max) max = value;
   });
 
-  return result;
+  return { result, min, max };
 };
 
-export const CustomPivot = ({rowData}) => {
-  const [rowKey, setRowKey] = useState('Region');
-  const [subRowKey, setSubRowKey] = useState('Segment2'); // Вторая группа строк
-  const [colKey, setColKey] = useState('Segment1');
-  const [subColKey, setSubColKey] = useState('Product'); // Вторая группа колонок
-  const [aggregator, setAggregator] = useState('Total_value');
+const getCellStyle = (value, min, max) => {
+  if (value == null) return {}; // если значение отсутствует, не применяем стиль
 
-  // Агрегированные данные
-  const aggregatedData = useMemo(() => aggregateData(rowData, rowKey, subRowKey, colKey, subColKey, aggregator), [rowData, rowKey, subRowKey, colKey, subColKey, aggregator]);
+  const ratio = (value - min) / (max - min); // Простая нормализация
+
+  // От темного (красного) к светлому (белому) в зависимости от значения
+  const darkColor = [250, 134, 130]; // #f7635c
+  const lightColor = [255, 248, 248]; // #fff2f2
+
+  const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * ratio));
+
+  return {
+    fontSize: 20,
+    backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`,
+    color: ratio < 0.5 ? 'black' : 'white',
+  };
+};
+
+export const CustomPivot = ({ rowData, chart, isDrawer = false, rowColData }) => {
+  const { rowKey, subRowKey, colKey, subColKey, aggregator } = rowColData;
+  const dispatch = useDispatch();
+
+  // Агрегированные данные и min/max значения
+  const { result: aggregatedData, min, max } = useMemo(
+    () => aggregateData(rowData, rowKey, subRowKey, colKey, subColKey, aggregator),
+    [rowData, rowKey, subRowKey, colKey, subColKey, aggregator]
+  );
 
   // Уникальные строки и подстроки
   const rowLabels = useMemo(() => [...new Set(rowData.map((item) => item[rowKey]))], [rowData, rowKey]);
@@ -61,147 +82,75 @@ export const CustomPivot = ({rowData}) => {
     [rowData, colKey, subColKey]
   );
 
-  if(!rowData.length) {
+  if (!rowData.length) {
     return null;
   }
 
   return (
-    <div>
-      <h2 className={styles.title}>Custom Pivot Table</h2>
-
-      {/* Выпадающие списки для выбора ключей строк, подстрок, колонок и агрегатора */}
-      <div className={styles.selects}>
-        <div>
-          <h6>Строки</h6>
-          <div>
-            <div>
-              <p>row</p>
-              <label>
-
-                <select value={rowKey} onChange={(e) => setRowKey(e.target.value)}>
-                  {Object.keys(rowData[0]).map((key) => (
-                    <option key={key} value={key}>
-                      {key}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-            <div>
-              <p>subRow</p>
-              <label>
-                <select value={subRowKey} onChange={(e) => setSubRowKey(e.target.value)}>
-                  {Object.keys(rowData[0]).map((key) => (
-                    <option key={key} value={key}>
-                      {key}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-          </div>
-        </div>
-
-        <div>
-          <h6>Колонки</h6>
-          <div>
-            <div>
-              <p>col</p>
-              <label>
-                <select value={colKey} onChange={(e) => setColKey(e.target.value)}>
-                  {Object.keys(rowData[0]).map((key) => (
-                    <option key={key} value={key}>
-                      {key}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-            <div>
-              <p>subCol</p>
-              <label>
-                <select value={subColKey} onChange={(e) => setSubColKey(e.target.value)}>
-                  {Object.keys(rowData[0]).map((key) => (
-                    <option key={key} value={key}>
-                      {key}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-
-          </div>
-        </div>
-
-        <div>
-          <h6>Значения</h6>
-          <div>
-            <p>aggregator</p>
-            <label>
-              <select value={aggregator} onChange={(e) => setAggregator(e.target.value)}>
-                {['Total_value', 'Total_volume', 'Traffic'].map((key) => (
-                  <option key={key} value={key}>
-                    {key}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-        </div>
-
-
-      </div>
-
-      {/* Отображение сводной таблицы */}
-      <table border="1" className={styles.table}>
-        <thead>
-        <tr>
-          <th rowSpan="2">{rowKey}</th>
-          <th rowSpan="2">{subRowKey}</th>
-          {colLabels.map((col) => (
-            <th key={col} colSpan={subColLabels[col].length}>
-              {col}
-            </th>
-          ))}
-        </tr>
-        <tr>
-          {colLabels.map((col) =>
-            subColLabels[col].map((subCol) => (
-              <th key={subCol}>{subCol}</th>
-            ))
+    <div className={`${styles.wrapper} ${isDrawer ? styles.isDrawer : ''}`}>
+      <div className={styles.wrapper_scroll}>
+        <div className={styles.title_wrapper}>
+          <h5 className={styles.title}>{chart.title}</h5>
+          {!isDrawer && (
+            <Button
+              onClick={() => {
+                dispatch(setActiveChart(chart));
+                dispatch(setOpenDrawer(true));
+              }}
+            >
+              <EditIcon />
+            </Button>
           )}
-        </tr>
-        </thead>
-        <tbody>
-        {rowLabels.map((row) => {
-          const subRows = subRowLabels[row] || [];
-          return subRows.map((subRow, index) => (
-            <tr key={subRow}>
-              {index === 0 && (
-                <td rowSpan={subRows.length}>
-                  {row}
-                </td>
-              )}
-              <td>{subRow}</td>
+        </div>
+        <div className={styles.table_scroll}>
+          <table border="1" className={styles.table}>
+            <thead>
+            <tr>
+              <th rowSpan="2">{rowKey}</th>
+              <th rowSpan="2">{subRowKey}</th>
+              {colLabels.map((col) => (
+                <th key={col} colSpan={subColLabels[col].length}>
+                  {col}
+                </th>
+              ))}
+            </tr>
+            <tr>
               {colLabels.map((col) =>
                 subColLabels[col].map((subCol) => (
-                  <td key={subCol}>
-                    {aggregatedData[row] && aggregatedData[row][subRow] && aggregatedData[row][subRow][col] && aggregatedData[row][subRow][col][subCol]
-                      ? aggregatedData[row][subRow][col][subCol]
-                      : '—'}
-                  </td>
+                  <th key={subCol}>{subCol}</th>
                 ))
               )}
             </tr>
-          ));
-        })}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+            {rowLabels.map((row) => {
+              const subRows = subRowLabels[row] || [];
+              return subRows.map((subRow, index) => (
+                <tr key={subRow}>
+                  {index === 0 && (
+                    <td rowSpan={subRows.length}>
+                      {row}
+                    </td>
+                  )}
+                  <td>{subRow}</td>
+                  {colLabels.map((col) =>
+                    subColLabels[col].map((subCol) => (
+                      <td key={subCol} style={getCellStyle(
+                        aggregatedData[row]?.[subRow]?.[col]?.[subCol],
+                        min, // Используем min из useMemo
+                        max  // Используем max из useMemo
+                      )}>
+                        {aggregatedData[row]?.[subRow]?.[col]?.[subCol] || <span className={styles.empty}>-</span>}
+                      </td>
+                    ))
+                  )}
+                </tr>
+              ));
+            })}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

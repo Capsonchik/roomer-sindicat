@@ -5,6 +5,7 @@ import {ChartTableEditor} from "./chartTable/ChartTableEditor";
 import {ChartPie} from "./chartPie/ChartPie";
 import {AgGridDataWrapper} from "./chartPivot/AgGridDataWrapper";
 import {CustomPivot} from "../chartItemPivotTable/CustomPivot";
+import {CustomPivotWrapper} from "./chartPivot/CustomPivotWrapper";
 
 export const ChartEditor = ({chart}) => {
   let returnType = 'неизвестный тип графика'
@@ -19,8 +20,8 @@ export const ChartEditor = ({chart}) => {
       returnType = <ChartPie chart={chart}/>
       break
     case 'pivot':
-      // returnType = <CustomPivot rowData={chart['0'].table_data}/>
-      returnType = <AgGridDataWrapper chart={chart}/>
+      returnType = <CustomPivotWrapper chart={chart}/>
+      // returnType = <AgGridDataWrapper chart={chart}/>
       break
   }
   return (

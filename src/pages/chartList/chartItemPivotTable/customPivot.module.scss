@@ -15,10 +15,89 @@
     border-color: #e6e5e5;
   }
 }
+.table_wrapper{
+
+}
+.table_scroll{
+  max-height: 700px;
+  overflow: auto;
+  height: calc(100% - 60px);
+  &::-webkit-scrollbar {
+    height: 10px; /* Ширина всего элемента навигации */
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #fff; /* Цвет дорожки */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #fa8900; /* Цвет бегунка */
+    border-radius: 20px; /* Округление бегунка */
+  }
+}
 
 .table {
+
+  width: 100%;
   border-color: #e6e5e5;
   td{
-    padding: 6px;
+    padding: 6px !important;
+    min-width: 100px;
+    text-align: center;
+  }
+
+  .empty{
+    color: #cccccc;
+  }
+}
+
+.wrapper {
+  box-shadow: 5px 4px 18px -2px rgba(34, 60, 80, 0.2);
+  border-radius:8px;
+  padding: 10px;
+  height: 100%;
+  &.isDrawer{
+    box-shadow: none;
+  }
+  .title_wrapper {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 8px;
+
+    button{
+      height: 40px;
+      width: 40px;
+      border: 1px solid rgba(0,0,0, .1);
+    }
+
+    .title{
+      margin-right: auto;
+    }
+  }
+}
+
+.wrapper_scroll{
+  height: 100%;
+  //overflow: auto;
+
+  &.isDrawer{
+    overflow: visible;
+  }
+  &::-webkit-scrollbar {
+    width: 10px; /* Ширина всего элемента навигации */
+    height: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #fff; /* Цвет дорожки */
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #fa8900; /* Цвет бегунка */
+    border-radius: 20px; /* Округление бегунка */
   }
 }

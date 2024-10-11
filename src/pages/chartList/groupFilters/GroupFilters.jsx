@@ -47,19 +47,27 @@ export const GroupFilters = () => {
   // Сброс формы и обновление filters через reset, когда filters не пустой
 
   const getValue = (filter) => {
+
     if (filter.multi) {
+      if (!filter.isactive) {
+        return []
+      }
       if (filter?.value) {
         return filter.value
       } else {
         return filter.original_values?.[0] ? [filter.original_values[0]] : []
       }
     } else {
+      if (!filter.isactive) {
+        return ''
+      }
       if (filter?.value) {
         return filter?.value[0] ? filter?.value[0] : []
       } else {
         return filter.original_values[0] ? filter.original_values[0] : ''
       }
     }
+
   }
 
   useEffect(() => {
@@ -91,7 +99,7 @@ export const GroupFilters = () => {
         const request = filters.map(filter => {
           return {
             filter_id: filter.filter_id,
-            filter_values: filter.multi
+            filter_values: !filter.isactive ? [] : filter.multi
               ? filter.value ? filter.value : []
               : filter.value
                 ? Array.isArray(filter.value) ? filter.value : [filter.value]

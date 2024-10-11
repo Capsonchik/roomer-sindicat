@@ -1,7 +1,7 @@
 import styles from "./filterDrawer.module.scss";
 import {Button, Tag} from "rsuite";
 import EditIcon from "@rsuite/icons/Edit";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import MinusIcon from "@rsuite/icons/Minus";
 import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput";
 import CustomToggle from "../../../components/rhfInputs/customToggle/CustomToggle";
@@ -16,7 +16,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectActiveGroupId} from "../../../store/chartSlice/chart.selectors";
 import {PreventOverflowContainer} from "../chartFilters/main/MainForm";
 import {removeFilter, setFilters} from "../../../store/chartSlice/filter.slice";
-import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
 
 
 export const EditFilterForm = ({filter, availableFields}) => {
@@ -24,6 +23,9 @@ export const EditFilterForm = ({filter, availableFields}) => {
   const activeGroupId = useSelector(selectActiveGroupId)
   const [isEditFilter, setIsEditFilter] = useState(false)
   const [isDeleteFilter, setIsDeleteFilter] = useState(false)
+
+
+  // console.log(filter, availableFields)
   const db_colors = availableFields.reduce((acc, item, index) => {
     const name = item.db_adress
     if (!acc[name]) {
@@ -50,14 +52,23 @@ export const EditFilterForm = ({filter, availableFields}) => {
   const methods = useForm({
     resolver: yupResolver(loginSchema),
     shouldFocusError: false,
-    defaultValues: {
-      filter_name: filter.filter_name,
-      multi: filter.multi,
-      isactive: filter.isactive,
-      islimited: filter.islimited,
-      filter_data: filter.filter_data
-    }
+    // defaultValues: {
+    //
+    // }
   })
+
+  useEffect(() => {
+    if(filter) {
+      methods.reset({
+        filter_name: filter.filter_name,
+        multi: filter.multi,
+        isactive: filter.isactive,
+        islimited: filter.islimited,
+        filter_data: filter.filter_data
+      })
+    }
+
+  },[filter])
   const handleFields = (data) => {
     const newFields = data.map(field => {
       const [db_name, column_name] = field.split(' ')

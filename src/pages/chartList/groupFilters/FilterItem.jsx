@@ -23,7 +23,6 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods, setActiveFil
     : [])
 
   useEffect(() => {
-    console.log(activeFilter, i)
 
     if (activeFilter === i) return
     setOriginValues(filter.original_values.map((item) => ({
@@ -108,6 +107,7 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods, setActiveFil
           data={originValues}
           value={filter.isactive ? methods.getValues(`filters.${i}.value`) : null}
           name={`filters.${i}.value`}
+          disabled={!methods.getValues(`filters.${i}.isactive`)}
           onChangeOutside={(value) => {
             if (!methods.getValues(`filters.${i}.isactive`)) {
               return;

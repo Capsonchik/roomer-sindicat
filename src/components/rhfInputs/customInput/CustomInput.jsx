@@ -14,6 +14,7 @@ export const CustomInput = (
     className,
     after,
     as = 'input',
+    onChangeOutside
   }
 ) => {
   // Используем контекст формы для доступа к управлению и ошибкам
@@ -55,8 +56,11 @@ export const CustomInput = (
               {...field}
               type={type} // Передаем тип инпута
               placeholder={placeholder}
-              className={className}
-              onChange={(value) => field.onChange(value)}
+              className={className}onChangeOutside
+              onChange={(value) => {
+                field.onChange(value)
+                onChangeOutside && onChangeOutside(value);
+              }}
               // onBlur={() => {
               //   field.onBlur(); // Вызов onBlur для управления формой
               //   clearErrors(name); // Очищаем ошибку при потере фокуса

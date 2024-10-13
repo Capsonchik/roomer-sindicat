@@ -51,19 +51,36 @@ const getCellStyle = (value, min, max) => {
 };
 
 // Функция для форматирования значений
-const formatValue = (value, formatType) => {
-  if (formatType === 'k') {
-    return value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value;
-  } else if (formatType === 'm') {
-    return value >= 1000000 ? `${(value / 1000000).toFixed(1)}m` : value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value;
+const formatValue = (value, formatType, digitsAfterDot = null) => {
+  // Приводим value к числу, если это не число или undefined
+  const numericValue = Number(value);
+
+  // Если digitsAfterDot не задан, используем 0 по умолчанию
+  const decimalPlaces = digitsAfterDot !== null ? digitsAfterDot : 0;
+
+  // Проверяем, что numericValue является числом
+  if (isNaN(numericValue)) {
+    return value; // Возвращаем исходное значение, если оно не число
   }
-  return value;
+
+  if (formatType === 'k') {
+    return numericValue >= 1000 ? `${(numericValue / 1000).toFixed(decimalPlaces)}k` : numericValue;
+  } else if (formatType === 'm') {
+    if (numericValue >= 1000000) {
+      return `${(numericValue / 1000000).toFixed(decimalPlaces)}m`;
+    } else if (numericValue >= 1000) {
+      return `${(numericValue / 1000).toFixed(decimalPlaces)}k`;
+    }
+  }
+
+  // Возвращаем значение с нужным количеством знаков после запятой
+  return numericValue.toFixed(decimalPlaces);
 };
 
-export const CustomPivot = ({ rowData, chart, isDrawer = false, rowColData }) => {
-  const { rowKey, subRowKey, colKey, subColKey, aggregator  ,format = 'm'} = rowColData;
+export const CustomPivot = ({ chart,rowData, isDrawer = false, rowColData }) => {
+  const { rowKey, subRowKey, colKey, subColKey, aggregator  ,format = 'm',digitsAfterDot} = rowColData;
   const dispatch = useDispatch();
-
+  console.log(digitsAfterDot)
   // Агрегированные данные и min/max значения
   const { result: aggregatedData, min, max } = useMemo(
     () => aggregateData(rowData, rowKey, subRowKey, colKey, subColKey, aggregator),
@@ -150,7 +167,7 @@ export const CustomPivot = ({ rowData, chart, isDrawer = false, rowColData }) =>
                         min, // Используем min из useMemo
                         max  // Используем max из useMemo
                       )}>
-                        {formatValue(aggregatedData[row]?.[subRow]?.[col]?.[subCol], format) || <span className={styles.empty}>-</span>}
+                        {formatValue(aggregatedData[row]?.[subRow]?.[col]?.[subCol], format,digitsAfterDot) || <span className={styles.empty}>-</span>}
                       </td>
                     ))
                   )}

@@ -14,10 +14,11 @@ import {Button} from "rsuite";
 import {CustomSelectPicker} from "../../../../components/rhfInputs/selectPicker/SelectPicker";
 import {FormProvider, useForm} from "react-hook-form";
 import {PreventOverflowContainer} from "../../chartFilters/main/MainForm";
+import {CustomInput} from "../../../../components/rhfInputs/customInput/CustomInput";
 
 
 export const CustomPivotWrapper = ({chart}) => {
-  console.log(chart)
+  // console.log(chart)
   const dispatch = useDispatch();
   const rowData = chart['0'].table_data
   const [rowKey, setRowKey] = useState(chart.formatting?.rowKey || 'Region');
@@ -26,6 +27,7 @@ export const CustomPivotWrapper = ({chart}) => {
   const [subColKey, setSubColKey] = useState(chart.formatting?.subColKey || 'Product'); // Вторая группа колонок
   const [aggregator, setAggregator] = useState(chart.formatting?.aggregator || 'Total_value');
   const [format, setFormat] = useState(chart.formatting?.format || 'm');
+  const [digitsAfterDot, setDigitsAfterDot] = useState(chart.formatting?.digitsAfterDot || null);
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
   const filters = useSelector(selectFilters)
@@ -35,7 +37,9 @@ export const CustomPivotWrapper = ({chart}) => {
       subRowKey,
       colKey,
       subColKey,
-      aggregator
+      aggregator,
+      digitsAfterDot,
+      format
     }
   })
 
@@ -52,6 +56,8 @@ export const CustomPivotWrapper = ({chart}) => {
         colKey,
         subColKey,
         aggregator,
+        digitsAfterDot,
+        format
       }
     }
     dispatch(patchChartFormatting(request)).then(() => {
@@ -93,7 +99,8 @@ export const CustomPivotWrapper = ({chart}) => {
             colKey,
             subColKey,
             aggregator,
-            format
+            format,
+            digitsAfterDot
           }}/>
       </div>
 
@@ -201,19 +208,37 @@ export const CustomPivotWrapper = ({chart}) => {
 
         <div className={styles.selects_items}>
           <h6>Формат</h6>
-          <div>
-            <p>формат числа</p>
-            <div ref={rowRef}>
-              <CustomSelectPicker
-                data={['k','m','без форматирования']
+          <div className={styles.selects_items}>
+            <div>
+              <p>формат числа</p>
+              <div ref={rowRef}>
+                <CustomSelectPicker
+                  data={['k', 'm', 'без форматирования']
                     .map((field) => ({value: field, label: field}))
-                }
-                name={'format'}
-                onChangeOutside={(val) => setFormat(val)}
-              />
-            </div>
+                  }
+                  name={'format'}
+                  onChangeOutside={(val) => setFormat(val)}
+                />
+              </div>
 
+            </div>
+            <div>
+              <p>Кол-во цифр после запятой</p>
+              <div ref={rowRef}>
+                <CustomInput
+
+                  className={styles.digitsAfterDot}
+                  type={'number'}
+                  name={'digitsAfterDot'}
+                  onChangeOutside={(val) => {
+                    +val >= 0 && setDigitsAfterDot(val)
+                  }}
+                />
+              </div>
+
+            </div>
           </div>
+
         </div>
       </div>
       <Button onClick={handlePatch} style={{

@@ -52,6 +52,7 @@ export const CustomInput = (
         render={({field}) => (
           <InputGroup className={cl(styles.inputGroup)}>
             <Input
+              min={0}
               as={as}
               {...field}
               type={type} // Передаем тип инпута

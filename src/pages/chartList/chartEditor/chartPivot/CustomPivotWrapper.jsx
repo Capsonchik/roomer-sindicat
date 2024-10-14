@@ -88,6 +88,7 @@ export const CustomPivotWrapper = ({chart}) => {
   const  colRef = useRef()
   const  subColRef = useRef()
   const  aggregationRef = useRef()
+  const  formatRef = useRef()
 
   return (
 
@@ -211,8 +212,9 @@ export const CustomPivotWrapper = ({chart}) => {
           <div className={styles.selects_items}>
             <div>
               <p>формат числа</p>
-              <div ref={rowRef}>
+              <div ref={formatRef} style={{position: 'relative'}}>
                 <CustomSelectPicker
+                  container={() => formatRef.current}
                   data={['k', 'm', 'без форматирования']
                     .map((field) => ({value: field, label: field}))
                   }
@@ -224,7 +226,7 @@ export const CustomPivotWrapper = ({chart}) => {
             </div>
             <div>
               <p>Кол-во цифр после запятой</p>
-              <div ref={rowRef}>
+              <div >
                 <CustomInput
 
                   className={styles.digitsAfterDot}

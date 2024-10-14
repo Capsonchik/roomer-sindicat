@@ -21,3 +21,4 @@ export const selectFilters = (state) => state.charts.filters;
 export const selectFilterLoading = (state) => state.charts.filterLoading;
 export const selectIsLoadDependentFilters = (state) => state.charts.isLoadDependentFilters;
 export const selectIsEditableMode = (state) => state.charts.isEditableMode;
+export const selectChartTypes = (state) => state.charts.chartTypes;

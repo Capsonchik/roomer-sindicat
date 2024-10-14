@@ -6,7 +6,7 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useDispatch, useSelector} from "react-redux";
 import {
-  selectActiveGroupId, selectActiveReport,
+  selectActiveGroupId, selectActiveReport, selectChartTypes,
   selectGroupsReports,
   selectReportsClients
 } from "../../../store/chartSlice/chart.selectors";
@@ -17,7 +17,7 @@ import CustomToggle from "../../../components/rhfInputs/customToggle/CustomToggl
 import {
   createChart,
   fetchAllChartsByGroupId,
-  fetchAllChartsFormatByGroupId
+  fetchAllChartsFormatByGroupId, getChartTypes
 } from "../../../store/chartSlice/chart.actions";
 import {setActiveGroup, setScrollTabs} from "../../../store/chartSlice/chart.slice";
 import {fetchColumnDB} from "../../../store/chartSlice/filter.actions";
@@ -27,6 +27,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
   const groupsReports = useSelector(selectGroupsReports)
   const activeGroupId = useSelector(selectActiveGroupId)
   const activeReport = useSelector(selectActiveReport)
+  const chartTypes = useSelector(selectChartTypes)
   const [errorDB, setErrorDB] = useState('')
   const [availableFields, setAvailableFields] = useState([])
   const dispatch = useDispatch();
@@ -45,6 +46,11 @@ export const CreateChartDrawer = ({open, onClose}) => {
     resolver: yupResolver(loginSchema),
     shouldFocusError: false,
   })
+
+  useEffect(() => {
+    dispatch(getChartTypes())
+  },[])
+
   useEffect(() => {
     methods.reset({
       ispercent: false,
@@ -63,7 +69,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
     const request = {
       ...data,
       author_id: 1,
-      graph_format_id: 1
+      graph_format_id: data.type_chart
     }
     // console.log(request)
     dispatch(createChart(request))
@@ -165,6 +171,15 @@ export const CreateChartDrawer = ({open, onClose}) => {
               <h6 className={styles.label}>Описание</h6>
               <CustomInput name={'description'} as={'textarea'} className={styles.description}/>
             </div>
+            <div className={styles.input_wrapper}>
+              <h6 className={styles.label}>Тип графика</h6>
+              <CustomSelectPicker
+                data={chartTypes?.map(type => ({label: type.graph_format_name, value: type.graph_format_id}))}
+                name={'type_chart'}
+                className={styles.type_chart}
+              />
+            </div>
+
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Адрес таблицы БД</h6>
               <CustomInput name={'db_adress'} className={styles.input}/>

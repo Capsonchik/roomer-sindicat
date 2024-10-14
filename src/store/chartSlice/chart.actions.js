@@ -227,3 +227,17 @@ export const deleteChartById = createAsyncThunk(
     }
   }
 );
+export const getChartTypes = createAsyncThunk(
+  'chart/getChartTypes',
+  async (id) => {
+    try {
+      const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_graph_format`);
+      // console.log(response)
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);

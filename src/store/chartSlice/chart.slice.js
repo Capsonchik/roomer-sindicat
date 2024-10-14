@@ -6,7 +6,7 @@ import {
   fetchAllClients, fetchAllGroups,
   // fetchAllGroups,
   fetchAllReports,
-  fetchChartById,
+  fetchChartById, getChartTypes,
   patchChartById, patchGroupById, postGroup
 } from "./chart.actions";
 import {fa} from "@faker-js/faker";
@@ -19,6 +19,7 @@ const initialState = {
   activeReport: null,
   groupsChart: [],
   charts: [],
+  chartTypes: [],
   activeChart: null,
   activeGroupId: null,
   isChartLoading: false,
@@ -193,6 +194,10 @@ export const chartSlice = createSlice({
 
       .addCase(postDependentFilters.rejected, (state, action) => {
         state.isLoadDependentFilters = false
+      })
+
+      .addCase(getChartTypes.fulfilled, (state, action) => {
+        state.chartTypes = action.payload
       })
 
 

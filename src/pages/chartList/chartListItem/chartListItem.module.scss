@@ -10,6 +10,12 @@
   display: flex;
   flex-direction: column;
   //padding-inline: 10px;
+
+  .empty_chart{
+    flex-grow: 1;
+    align-content: center;
+    padding-inline: 50px;
+  }
   
   .chart{
     background:  var(--rs-gray-50);

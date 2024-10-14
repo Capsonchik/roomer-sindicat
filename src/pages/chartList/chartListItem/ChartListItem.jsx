@@ -4,7 +4,7 @@ import * as echarts from "echarts";
 import {chartOption} from "../../editorChart/chartConfig";
 // import {colors, legendConfig, tooltipConfig} from "./config";
 import EditIcon from "@rsuite/icons/Edit";
-import {Button} from "rsuite";
+import {Button, Divider} from "rsuite";
 import {ChartDrawer} from "../chartDrawer/ChartDrawer";
 import {FormProvider, useForm} from "react-hook-form";
 import {ChartFilters} from "../chartFilters/ChartFIlters";
@@ -33,32 +33,34 @@ export const ChartListItem = ({chart}) => {
 
 
   useEffect(() => {
+    if (!chartRef.current) return; // Проверка на существование DOM-элемента
+
     const myChart = echarts.init(chartRef.current);
     setChartInstance(myChart);
 
-
     return () => {
-      myChart.dispose();
+      if (myChart) {
+        myChart.dispose(); // Очищаем график при размонтировании
+      }
     };
   }, []);
 
   useEffect(() => {
+    if (!chartInstance || !chartRef.current) return; // Проверка на существование экземпляра графика и DOM-элемента
+
     const handleResize = () => {
       if (chartInstance) {
-        chartInstance.resize();
+        chartInstance.resize(); // Изменение размеров графика при изменении размеров окна
       }
     };
 
     const resizeObserver = new ResizeObserver(handleResize);
-    if (chartRef.current) {
-      resizeObserver.observe(chartRef.current);
-    }
+    resizeObserver.observe(chartRef.current);
 
-    // Cleanup observer on unmount
     return () => {
-      resizeObserver.disconnect();
+      resizeObserver.disconnect(); // Отключаем наблюдателя при размонтировании
     };
-  }, [chartInstance, chartRef]);
+  }, [chartInstance]);
 
 
   useLayoutEffect(() => {
@@ -162,6 +164,21 @@ export const ChartListItem = ({chart}) => {
       lazyUpdate: false,
     });
   }, [chartInstance, chartState]);
+
+  // console.log(Object.entries(chart.seriesData)[0][1].length)
+  if (chart.xAxisData.length !== Object.entries(chart.seriesData)[0][1].length) {
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles.title_wrapper}>
+          <h5>{chart.title}</h5>
+
+        </div>
+        <div className={styles.empty_chart}>
+          <Divider>По данным фильтрам нет данных</Divider>
+        </div>
+      </div>
+    )
+  }
 
 
   return (

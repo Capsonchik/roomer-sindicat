@@ -27,19 +27,19 @@ export const CustomInput = (
   // console.log(errors)
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      // Если клик произошел за пределами input и форма не отправляется
-      if (!inputRef.current.contains(e.target)) {
-        clearErrors(name);
-      }
-    };
-
-    window.addEventListener("click", handleClickOutside);
-    return () => {
-      window.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const handleClickOutside = (e) => {
+  //     // Если клик произошел за пределами input и форма не отправляется
+  //     if (!inputRef.current.contains(e.target)) {
+  //       clearErrors(name);
+  //     }
+  //   };
+  //
+  //   window.addEventListener("click", handleClickOutside);
+  //   return () => {
+  //     window.removeEventListener("click", handleClickOutside);
+  //   };
+  // }, []);
 
   // Приведение ошибки к строке
   const errorMessage = typeof errors[name]?.message === "string" ? errors[name]?.message : '';

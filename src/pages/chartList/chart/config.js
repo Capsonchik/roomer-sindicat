@@ -1,4 +1,4 @@
-export const colors = ['#FF8200', '#000500', '#8A95A5', '#613F75',"#D6CE93","#689689","#2176AE","#6C464E",'#716A5C','#5B7B7A']
+export const colors = ['#FF8200', '#5f719f', '#8A95A5', '#613F75',"#D6CE93","#689689","#2176AE","#6C464E",'#716A5C','#5B7B7A']
 
 export const tooltipConfig = {
   tooltip: {

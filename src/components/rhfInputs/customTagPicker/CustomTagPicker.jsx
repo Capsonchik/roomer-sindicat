@@ -18,7 +18,7 @@ export const CustomTagPicker = (
     container,
     preventOverflow,
     renderValue,
-    disabledItemValues
+    disabledItemValues,
   }
 ) => {
   const {control} = useFormContext();

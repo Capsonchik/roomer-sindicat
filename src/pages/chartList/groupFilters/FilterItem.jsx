@@ -13,6 +13,7 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods, setActiveFil
   // const [activeFilter, setActiveFilter] = useState(null); // Хранение индекса активного фильтра
   const filterLoading = useSelector(selectIsLoadDependentFilters);
   const originValuesLoading = useSelector(selectOriginValuesLoading);
+  console.log('ieeeee',filter)
 
   const divRef = useRef(null); // Ссылка на div
   const [originValues, setOriginValues] = useState(filter.original_values
@@ -25,7 +26,7 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods, setActiveFil
   useEffect(() => {
 
     if (activeFilter === i) return
-    setOriginValues(filter.original_values.map((item) => ({
+    setOriginValues(filter?.original_values?.map((item) => ({
       label: item,
       value: item,
     })))
@@ -116,6 +117,7 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods, setActiveFil
             setActiveFilter(i)
             methods.handleSubmit(handleChangeFilter)();
           }}
+          placeholder={!methods.getValues(`filters.${i}.isactive`) ? "Фильтр не активен" : filter.filter_name}
         />
       )}
     </div>

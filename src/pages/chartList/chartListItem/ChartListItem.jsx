@@ -166,7 +166,7 @@ export const ChartListItem = ({chart}) => {
   }, [chartInstance, chartState]);
 
   // console.log(Object.entries(chart.seriesData)[0][1].length)
-  if (chart.xAxisData.length !== Object.entries(chart.seriesData)[0][1].length) {
+  if (chart.xAxisData.length !== Object.entries(chart.seriesData)?.[0]?.[1]?.length) {
     return (
       <div className={styles.wrapper}>
         <div className={styles.title_wrapper}>

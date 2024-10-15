@@ -26,6 +26,8 @@ export const ChartTypeView = ({chart}) => {
         subRowKey: chart.formatting?.subRowKey || 'Segment2',
         colKey: chart.formatting?.colKey || 'Segment1',
         subColKey: chart.formatting?.subColKey || 'Product',
+        // rowKeys: ['Region','Segment2','Brand'],
+        // colKeys: ['Segment1','Product','Chain'],
         aggregator: chart.formatting?.aggregator || 'Total_value',
         digitsAfterDot: chart.formatting?.digitsAfterDot || null
       }}/>

@@ -64,7 +64,7 @@ export const GroupFilters = () => {
       if (filter?.value) {
         return filter?.value[0] ? filter?.value[0] : []
       } else {
-        return filter.original_values[0] ? filter.original_values[0] : ''
+        return filter.original_values?.[0] ? filter.original_values?.[0] : ''
       }
     }
 

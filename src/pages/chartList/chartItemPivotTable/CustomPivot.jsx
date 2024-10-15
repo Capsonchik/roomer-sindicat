@@ -55,27 +55,28 @@ const formatValue = (value, formatType, digitsAfterDot = null) => {
   // Приводим value к числу, если это не число или undefined
   const numericValue = Number(value);
 
-  // Если digitsAfterDot не задан, используем 0 по умолчанию
-  const decimalPlaces = digitsAfterDot !== null ? digitsAfterDot : 0;
-
   // Проверяем, что numericValue является числом
   if (isNaN(numericValue)) {
     return value; // Возвращаем исходное значение, если оно не число
   }
 
+  // Форматирование в зависимости от типа
   if (formatType === 'k') {
-    return numericValue >= 1000 ? `${(numericValue / 1000).toFixed(decimalPlaces)}k` : numericValue;
+    return numericValue >= 1000
+      ? `${(numericValue / 1000).toFixed(digitsAfterDot !== null ? digitsAfterDot : 0)}k`
+      : numericValue;
   } else if (formatType === 'm') {
     if (numericValue >= 1000000) {
-      return `${(numericValue / 1000000).toFixed(decimalPlaces)}m`;
+      return `${(numericValue / 1000000).toFixed(digitsAfterDot !== null ? digitsAfterDot : 0)}m`;
     } else if (numericValue >= 1000) {
-      return `${(numericValue / 1000).toFixed(decimalPlaces)}k`;
+      return `${(numericValue / 1000).toFixed(digitsAfterDot !== null ? digitsAfterDot : 0)}k`;
     }
   }
 
-  // Возвращаем значение с нужным количеством знаков после запятой
-  return numericValue.toFixed(decimalPlaces);
+  // Возвращаем значение с нужным количеством знаков после запятой, если digitsAfterDot не null
+  return digitsAfterDot !== null ? numericValue.toFixed(digitsAfterDot) : numericValue;
 };
+
 
 export const CustomPivot = ({ chart,rowData, isDrawer = false, rowColData }) => {
   const { rowKey, subRowKey, colKey, subColKey, aggregator  ,format = 'm',digitsAfterDot} = rowColData;

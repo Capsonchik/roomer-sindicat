@@ -78,6 +78,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
         islimited: filter.islimited,
         filter_data: filter.filter_data,
         column_limit: filter.column_limit,
+        data_limiting: filter.data_limiting,
       })
     }
 
@@ -256,6 +257,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
              setLimitedRequestFields={setLimitedRequestFields}
              limitedRequestFields={limitedRequestFields}
              handleLimitedRequestFields={handleLimitedRequestFields}
+
            />}
 
 

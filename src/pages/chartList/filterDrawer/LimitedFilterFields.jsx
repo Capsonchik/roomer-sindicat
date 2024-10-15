@@ -3,11 +3,13 @@ import styles from "./filterDrawer.module.scss";
 import {PreventOverflowContainer} from "../chartFilters/main/MainForm";
 import {CustomTagPicker} from "../../../components/rhfInputs/customTagPicker/CustomTagPicker";
 import {Button, Tag} from "rsuite";
-import React from "react";
+import React, {useEffect} from "react";
+import {useFormContext} from "react-hook-form";
 
 
 export const LimitedFilterFields = (
-  {availableFields,
+  {
+    availableFields,
     limitFieldsState,
     db_colors,
     setLimitFieldsState,
@@ -18,6 +20,25 @@ export const LimitedFilterFields = (
     limitedRequestFields,
     handleLimitedRequestFields
   }) => {
+  const {getValues} = useFormContext()
+
+  useEffect(() => {
+    if (getValues('data_limiting')?.length) {
+      const dataForStateLimitedRequest = getValues('data_limiting').reduce((acc, item) => {
+        const items = item.value.map((value) => {
+          return `${value};${item.column_name};${item.db_name}`
+        })
+        acc = [...acc, ...items];
+
+        return acc
+      }, [])
+      getValuesFromColumn().then(() => {
+        setLimitedRequestFields(dataForStateLimitedRequest)
+      })
+    }
+  }, [getValues('data_limiting')]);
+
+  console.log(getValues('data_limiting'))
   return (
     <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>
       <h6 className={styles.label}>Выберите таблицу для лимита</h6>

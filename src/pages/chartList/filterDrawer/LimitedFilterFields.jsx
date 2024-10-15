@@ -18,11 +18,13 @@ export const LimitedFilterFields = (
     limitedFields,
     setLimitedRequestFields,
     limitedRequestFields,
-    handleLimitedRequestFields
+    handleLimitedRequestFields,
+    isCreate = false
   }) => {
   const {getValues, setValue} = useFormContext()
 
   useEffect(() => {
+    if(isCreate) return
     if (getValues('data_limiting')?.length) {
       const dataForStateLimitedRequest = getValues('data_limiting').reduce((acc, item) => {
         const items = item.value.map((value) => {
@@ -38,7 +40,6 @@ export const LimitedFilterFields = (
       })
     }
   }, [getValues('data_limiting')]);
-  console.log(limitedRequestFields)
   return (
     <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>
       <h6 className={styles.label}>Выберите таблицу для лимита</h6>

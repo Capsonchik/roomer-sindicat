@@ -6,7 +6,7 @@ import {Tag} from "rsuite";
 import React from "react";
 
 
-export const DefaultFilterFields = ({availableFields,fieldsState,setFieldsState,db_colors,handleFields}) => {
+export const DefaultFilterFields = ({availableFields,fieldsState,setFieldsState,db_colors,handleFields,isCreate}) => {
   return (
     <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>
       <h6 className={styles.label}>Доступные поля</h6>

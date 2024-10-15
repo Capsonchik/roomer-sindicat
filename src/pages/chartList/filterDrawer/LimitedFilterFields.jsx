@@ -20,7 +20,7 @@ export const LimitedFilterFields = (
     limitedRequestFields,
     handleLimitedRequestFields
   }) => {
-  const {getValues} = useFormContext()
+  const {getValues, setValue} = useFormContext()
 
   useEffect(() => {
     if (getValues('data_limiting')?.length) {
@@ -32,13 +32,13 @@ export const LimitedFilterFields = (
 
         return acc
       }, [])
+      setValue('limited_fields', dataForStateLimitedRequest)
       getValuesFromColumn().then(() => {
         setLimitedRequestFields(dataForStateLimitedRequest)
       })
     }
   }, [getValues('data_limiting')]);
-
-  console.log(getValues('data_limiting'))
+  console.log(limitedRequestFields)
   return (
     <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>
       <h6 className={styles.label}>Выберите таблицу для лимита</h6>
@@ -209,9 +209,9 @@ export const LimitedFilterFields = (
                       closable // Добавляем крестик для закрытия
                       onClose={(e) => {
                         e.stopPropagation()
-                        setLimitedRequestFields(prev => {
-                          console.log(prev, value)
-                          return prev.filter(item => item !== value)
+                        setLimitedRequestFields(() => {
+                          // console.log(prev, value)
+                          return limitedRequestFields.filter(item => item !== value)
                         })
                         // console.log(value)
                       }} // Обработчик удаления

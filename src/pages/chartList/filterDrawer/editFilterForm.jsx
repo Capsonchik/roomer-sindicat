@@ -159,7 +159,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
     }
 
     if (data.column_limit) {
-     const limited_fields = data.limited_fields.reduce((acc, item) => {
+     const limited_fields = limitedRequestFields?.reduce((acc, item) => {
         if (typeof item === 'string') {
           const [value, column, db] = item.split(';');
 

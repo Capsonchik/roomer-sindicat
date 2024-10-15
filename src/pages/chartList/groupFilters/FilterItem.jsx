@@ -13,7 +13,6 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods, setActiveFil
   // const [activeFilter, setActiveFilter] = useState(null); // Хранение индекса активного фильтра
   const filterLoading = useSelector(selectIsLoadDependentFilters);
   const originValuesLoading = useSelector(selectOriginValuesLoading);
-  console.log('ieeeee',filter)
 
   const divRef = useRef(null); // Ссылка на div
   const [originValues, setOriginValues] = useState(filter.original_values

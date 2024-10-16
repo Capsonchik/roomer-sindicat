@@ -5,24 +5,38 @@ import React, {useEffect, useRef, useState} from "react";
 import {setFilters} from "../../../store/chartSlice/chart.slice";
 import {getFilters, postDependentFilters} from "../../../store/chartSlice/filter.actions";
 import {setDependentFilters, setFilterLoading} from "../../../store/chartSlice/chart.slice";
-import {fetchAllChartsByGroupId, fetchAllChartsFormatByGroupId} from "../../../store/chartSlice/chart.actions";
+import {
+  fetchAllChartsByGroupId,
+  fetchAllChartsFormatByGroupId, saveFilters,
+  updateSaveFilters
+} from "../../../store/chartSlice/chart.actions";
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectActiveGroupId,
   selectActiveReport,
   selectFilterLoading,
-  selectFilters
+  selectFilters, selectGroupsReports
 } from "../../../store/chartSlice/chart.selectors";
 import {FilterItem} from "./FilterItem";
+import {Button} from "rsuite";
 
-export const GroupFilters = () => {
+export const GroupFilters = ({groups}) => {
   const activeGroupId = useSelector(selectActiveGroupId)
   const filters = useSelector(selectFilters)
   const dispatch = useDispatch();
   const filterLoading = useSelector(selectFilterLoading);
   const activeReport = useSelector(selectActiveReport)
+  // const groups = useSelector(selectGroupsReports)
   const [activeFilter, setActiveFilter] = useState(null);
+  const [activeGroup, setActiveGroup] = useState(null)
 
+  // useEffect(() => {
+  //   if(activeGroupId && !groups.length) {
+  //     const activeGroup = groups.find(group => group.group_id === activeGroupId);
+  //     setActiveGroup(activeGroup)
+  //   }
+  //
+  // }, [activeGroupId,groups]);
 
   const methods = useForm({
     defaultValues: {
@@ -47,7 +61,8 @@ export const GroupFilters = () => {
   }, [activeGroupId]);
   // Сброс формы и обновление filters через reset, когда filters не пустой
 
-  const getValue = (filter) => {
+  const getValue = (filter, savedFilter) => {
+    console.log(savedFilter)
 
     if (filter.multi) {
       if (!filter.isactive) {
@@ -56,7 +71,7 @@ export const GroupFilters = () => {
       if (filter?.value) {
         return filter.value
       } else {
-        return filter.original_values?.[0] ? [filter.original_values[0]] : []
+        return savedFilter ? savedFilter.filter_values : filter.original_values?.[0] ? [filter.original_values[0]] : []
       }
     } else {
       if (!filter.isactive) {
@@ -65,7 +80,7 @@ export const GroupFilters = () => {
       if (filter?.value) {
         return filter?.value[0] ? filter?.value[0] : []
       } else {
-        return filter.original_values?.[0] ? filter.original_values?.[0] : ''
+        return savedFilter ? savedFilter.filter_values[0] : filter.original_values?.[0] ? filter.original_values?.[0] : ''
       }
     }
 
@@ -74,22 +89,32 @@ export const GroupFilters = () => {
   useEffect(() => {
     if (!activeGroupId) return
     if (filters.length > 0) {
-      const filterValues = filters.filter(filter => !filter.column_limit).map(filter => ({
-        filter_name: filter.filter_name,
-        filter_id: filter.filter_id,
-        original_values: filter.original_values,
-        multi: filter.multi,
-        isactive: filter.isactive,
-        islimited: filter.islimited,
-        value: getValue(filter)
-      }));
+      const filterValues = filters.filter(filter => !filter.column_limit).map(filter => {
+        const activeGroup = groups.find(group => group.group_id === activeGroupId);
+        const savedFilter = Object.keys(activeGroup.saved_filters).length
+          ? activeGroup.saved_filters.filter_data.find(innerFilter => innerFilter.filter_id === filter.filter_id)
+          : null
+        return {
+          filter_name: filter.filter_name,
+          filter_id: filter.filter_id,
+          original_values: filter.original_values,
+          multi: filter.multi,
+          isactive: filter.isactive,
+          islimited: filter.islimited,
+          value: savedFilter ? getValue(filter, savedFilter) : getValue(filter, null),
+
+        }
+      });
 
       // console.log(methods.getValues('activeFilter'))
 
       // dispatch(setFilters({data: filterValues || [], activeGroupId}))
 
+      const activeGroup = groups.find(group => group.group_id === activeGroupId);
+      const savedFilterId = Object.keys(activeGroup.saved_filters).length ? activeGroup.saved_filters.filter_id : null
       methods.reset({
         filters: filterValues,
+        savedFilterId : savedFilterId
         // activeFilter: methods.getValues('activeFilter')
         // activeFilter: null
       });
@@ -97,7 +122,7 @@ export const GroupFilters = () => {
       const getCharts = () => {
 
         const filters = methods.getValues('filters')
-        const request = filters.map(filter => {
+        let request = filters.map(filter => {
           return {
             filter_id: filter.filter_id,
             filter_values: !filter.isactive ? [] : filter.multi
@@ -107,6 +132,19 @@ export const GroupFilters = () => {
                 : []
           }
         })
+        // if(Object.keys(activeGroup.saved_filters).length) {
+        //   request = filters.map(filter => {
+        //
+        //     return {
+        //       filter_id: filter.filter_id,
+        //       filter_values: !filter.isactive ? [] : filter.multi
+        //         ? filter.value ? filter.value : []
+        //         : filter.value
+        //           ? Array.isArray(filter.value) ? filter.value : [filter.value]
+        //           : []
+        //     }
+        //   })
+        // }
         // isFirstRender.current = false
 
         dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request || []}}))
@@ -129,7 +167,24 @@ export const GroupFilters = () => {
     }
   }, [filters]);
 
+  const onSaveFilter = (data) => {
+    const request = data.filters.map(filter => {
+      return {
+        filter_id: filter.filter_id,
+        filter_values: filter.value
+      }
+    })
 
+    if(data.savedFilterId) {
+    dispatch(updateSaveFilters({data: {filter_id: data.savedFilterId, filter_data: request}, activeGroupId}))
+
+    }
+    else {
+      dispatch(saveFilters({data: {group_id: activeGroupId, filter_data: request}, activeGroupId}))
+    }
+
+    // console.log({filter_id: 2, filter_data: request}, activeGroupId)
+  }
   const handleChangeFilter = (data) => {
     // console.log(data)
     const request = {
@@ -153,6 +208,8 @@ export const GroupFilters = () => {
           : filter.value ? [filter.value] : [],
       }
     })
+
+
     // return
     // }
     if (request.to_recalculate.length) {
@@ -196,7 +253,11 @@ export const GroupFilters = () => {
                 methods={methods}
               />
             ))}
+            <Button style={{alignSelf:'flex-end'}} onClick={() => {
+              methods.handleSubmit(onSaveFilter)()
+            }}>Сохранить</Button>
           </div>}
+
         </FormProvider>
       )}
     </div>

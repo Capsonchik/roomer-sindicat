@@ -7,7 +7,7 @@ import {
   // fetchAllGroups,
   fetchAllReports,
   fetchChartById, getChartTypes,
-  patchChartById, patchGroupById, postGroup
+  patchChartById, patchGroupById, postGroup, saveFilters, updateSaveFilters
 } from "./chart.actions";
 import {fa} from "@faker-js/faker";
 import {createFilter, getFilters, postDependentFilters} from "./filter.actions";
@@ -200,6 +200,35 @@ export const chartSlice = createSlice({
 
       .addCase(getChartTypes.fulfilled, (state, action) => {
         state.chartTypes = action.payload
+      })
+
+      .addCase(updateSaveFilters.fulfilled, (state, action) => {
+        const {savedFilter,activeGroupId} = action.payload
+
+        state.groupsChart = state.groupsChart.map(group => {
+          if(group.group_id === activeGroupId){
+            return {
+              ...group,
+              saved_filters: savedFilter
+            }
+          }
+
+          return group
+        })
+      })
+      .addCase(saveFilters.fulfilled, (state, action) => {
+        const {savedFilter,activeGroupId} = action.payload
+
+        state.groupsChart = state.groupsChart.map(group => {
+          if(group.group_id === activeGroupId){
+            return {
+              ...group,
+              saved_filters: savedFilter
+            }
+          }
+
+          return group
+        })
       })
 
 

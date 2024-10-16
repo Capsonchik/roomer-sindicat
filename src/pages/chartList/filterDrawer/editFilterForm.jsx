@@ -31,7 +31,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
 
   // console.log(filter, availableFields)
   let currentColorIndex = 0
-  const db_colors = availableFields.reduce((acc, item, index) => {
+  const db_colors = availableFields?.reduce((acc, item, index) => {
     const name = item.db_adress
     if (!acc[name]) {
 
@@ -63,7 +63,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
   });
   const methods = useForm({
     resolver: yupResolver(loginSchema),
-    shouldFocusError: false,
+    // shouldFocusError: false,
     // defaultValues: {
     //
     // }
@@ -165,6 +165,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
       multi: Boolean(data.multi),
       isactive: Boolean(data.isactive),
       islimited: Boolean(data.islimited),
+      column_limit: Boolean(data.column_limit),
       filter_data: limitFieldsState.map(field => {
         const [db_name, column_name] = field.split(' ')
         return {

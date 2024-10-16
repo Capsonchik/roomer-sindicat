@@ -211,7 +211,7 @@ export const ChartList = (props) => {
 
     <>
       <TopFilters layouts={layouts}/>
-      <GroupFilters/>
+      <GroupFilters groups={groups}/>
       <div
         className={styles.list}>
         { (filterLoading === 'load')  && (

@@ -241,3 +241,33 @@ export const getChartTypes = createAsyncThunk(
     }
   }
 );
+export const updateSaveFilters = createAsyncThunk(
+  'chart/updateSaveFilters',
+  async ({data, activeGroupId}) => {
+    try {
+      const response = await axiosGraphRequest.patch(`api/v3/filter/update_save_filters`,data);
+      // console.log(response)
+      if (response.status === 200) {
+
+        return {savedFilter:response.data, activeGroupId};
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);
+export const saveFilters = createAsyncThunk(
+  'chart/saveFilters',
+  async ({data, activeGroupId}) => {
+    try {
+      const response = await axiosGraphRequest.post(`api/v3/filter/save_filters`,data);
+      // console.log(response)
+      if (response.status === 200) {
+
+        return {savedFilter:response.data, activeGroupId};
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);

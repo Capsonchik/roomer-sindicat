@@ -42,7 +42,7 @@ export const FilterDrawer = ({open, onClose}) => {
     //     db_name: yup.string().required("ОПА"), // Валидация для каждого объекта в массиве
     //   })
     // ),
-    filter_name: yup.string().required("Название обязательно"),
+    // filter_name: yup.string().required("Название обязательно"),
     filter_data: yup.array().min(1, "Название обязательно"),
   });
   const methods = useForm({
@@ -87,7 +87,6 @@ export const FilterDrawer = ({open, onClose}) => {
   }
 
 
-
   const handleLimitFields = (data) => {
     console.log(data)
     const newFields = data.map(field => {
@@ -95,7 +94,18 @@ export const FilterDrawer = ({open, onClose}) => {
       return `${db_name} ${column_name}`
     })
     setLimitFieldsState(newFields)
+    if (methods.getValues('filter_data').length) {
+      getValuesFromColumn()
+    }
   }
+
+  useEffect(() => {
+    if (limitFieldsState.length) {
+      getValuesFromColumn()
+    }
+
+
+  }, [limitFieldsState])
 
   const handleLimitedRequestFields = (data) => {
     // console.log(data)
@@ -130,7 +140,6 @@ export const FilterDrawer = ({open, onClose}) => {
     // console.log(fields)
 
   }
-
 
 
   const db_colors = availableFields?.reduce((acc, item, index) => {
@@ -168,7 +177,7 @@ export const FilterDrawer = ({open, onClose}) => {
       isactive: Boolean(data.isactive),
       islimited: Boolean(data.islimited),
       column_limit: Boolean(data.column_limit),
-      data_limiting:  [],
+      data_limiting: [],
       filter_data: data.filter_data?.map((item) => {
         const [db_name, column_name] = item.split(' ')
         return {
@@ -177,7 +186,7 @@ export const FilterDrawer = ({open, onClose}) => {
         }
       }),
     }
-    if (data.column_limit) {
+    // if (data.column_limit) {
       const limited_fields = limitedRequestFields?.reduce((acc, item) => {
         if (typeof item === 'string') {
           const [value, column, db] = item.split(';');
@@ -193,27 +202,27 @@ export const FilterDrawer = ({open, onClose}) => {
         return acc;
       }, {}); // Убедимся, что начальное значение acc - объект
 
-      request['data_limiting'] = Object.entries(limited_fields).map(([key,value]) => {
-        const [column,db] = key.split(';')
+      request['data_limiting'] = Object.entries(limited_fields).map(([key, value]) => {
+        const [column, db] = key.split(';')
         return {
-          db_name:db,
+          db_name: db,
           column_name: column,
-          value:value
+          value: value
         }
       })
 
       // console.log('limitedFields',limitedFields)
-      request['filter_data'] = Object.entries(limited_fields).map(([key,value]) => {
+      request['filter_data'] = Object.entries(limited_fields).map(([key, value]) => {
         const [column, db] = key.split(';')
         return {
-          db_name:db,
+          db_name: db,
           column_name: column
         }
       })
 
       // console.log(request);
       // return;
-    }
+    // }
 
 
     // console.log(request)
@@ -319,31 +328,32 @@ export const FilterDrawer = ({open, onClose}) => {
 
                   <MainForm/>
 
-                  {methods.getValues('column_limit') && (
-                    <LimitedFilterFields
-                      availableFields={availableFields}
-                      db_colors={db_colors}
-                      limitedFields={limitedFields}
-                      setLimitedFields={setLimitedFields}
-                      limitedRequestFields={limitedRequestFields}
-                      setLimitedRequestFields={setLimitedRequestFields}
-                      limitFieldsState={limitFieldsState}
-                      setLimitFieldsState={setLimitFieldsState}
-                      handleLimitFields={handleLimitFields}
-                      getValuesFromColumn={getValuesFromColumn}
-                      handleLimitedRequestFields={handleLimitedRequestFields}
-                      isCreate/>
-                  )}
-                  {!methods.getValues('column_limit') && (
-                    <DefaultFilterFields
-                      fieldsState={fieldsState}
-                      setFieldsState={setFieldsState}
-                      availableFields={availableFields}
-                      db_colors={db_colors}
-                      handleFields={handleFields}
-                      isCreate
-                    />
-                  )}
+                  {/*{methods.getValues('column_limit') && (*/}
+                  <LimitedFilterFields
+                    availableFields={availableFields}
+                    db_colors={db_colors}
+                    limitedFields={limitedFields}
+                    setLimitedFields={setLimitedFields}
+                    limitedRequestFields={limitedRequestFields}
+                    setLimitedRequestFields={setLimitedRequestFields}
+                    limitFieldsState={limitFieldsState}
+                    setLimitFieldsState={setLimitFieldsState}
+                    handleLimitFields={handleLimitFields}
+                    getValuesFromColumn={getValuesFromColumn}
+                    handleLimitedRequestFields={handleLimitedRequestFields}
+                    isCreate/>
+                  {/*)*/}
+                  {/*// }*/}
+                  {/*{!methods.getValues('column_limit') && (*/}
+                  {/*  <DefaultFilterFields*/}
+                  {/*    fieldsState={fieldsState}*/}
+                  {/*    setFieldsState={setFieldsState}*/}
+                  {/*    availableFields={availableFields}*/}
+                  {/*    db_colors={db_colors}*/}
+                  {/*    handleFields={handleFields}*/}
+                  {/*    isCreate*/}
+                  {/*  />*/}
+                  {/*)}*/}
 
                   {/*{!!availableFields.length && (*/}
                   {/*  <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>*/}

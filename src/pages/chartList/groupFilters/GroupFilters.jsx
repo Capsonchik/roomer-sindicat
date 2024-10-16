@@ -23,6 +23,7 @@ export const GroupFilters = () => {
   const activeReport = useSelector(selectActiveReport)
   const [activeFilter, setActiveFilter] = useState(null);
 
+
   const methods = useForm({
     defaultValues: {
       filters: [],
@@ -73,7 +74,7 @@ export const GroupFilters = () => {
   useEffect(() => {
     if (!activeGroupId) return
     if (filters.length > 0) {
-      const filterValues = filters.map(filter => ({
+      const filterValues = filters.filter(filter => !filter.column_limit).map(filter => ({
         filter_name: filter.filter_name,
         filter_id: filter.filter_id,
         original_values: filter.original_values,

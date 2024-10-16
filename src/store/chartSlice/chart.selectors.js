@@ -18,6 +18,7 @@ export const selectTypeGroupDrawer = (state) => state.charts.typeGroupDrawer;
 export const selectErrorCharts = (state) => state.charts.errorCharts;
 export const selectScrollTabs = (state) => state.charts.scrollTabs;
 export const selectFilters = (state) => state.charts.filters;
+export const selectFiltersDrawer = (state) => state.charts.filtersDrawer;
 export const selectFilterLoading = (state) => state.charts.filterLoading;
 export const selectIsLoadDependentFilters = (state) => state.charts.isLoadDependentFilters;
 export const selectIsEditableMode = (state) => state.charts.isEditableMode;

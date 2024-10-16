@@ -44,11 +44,11 @@ export const EditFilterForm = ({filter, availableFields}) => {
 
   }, {})
   // console.log(db_colors)
-  const [fieldsState, setFieldsState] = useState(filter.column_limit ? [] : filter?.filter_data?.map(field => {
+  const [fieldsState, setFieldsState] = useState(filter?.filter_data?.map(field => {
 
     return `${field.db_name} ${field.column_name}`
   }))
-  const [limitFieldsState, setLimitFieldsState] = useState(!filter.column_limit ? [] : filter?.filter_data?.map(field => {
+  const [limitFieldsState, setLimitFieldsState] = useState(filter?.filter_data?.map(field => {
 
     return `${field.db_name} ${field.column_name}`
   }))
@@ -91,13 +91,29 @@ export const EditFilterForm = ({filter, availableFields}) => {
     setFieldsState(newFields)
   }
   const handleLimitFields = (data) => {
-    console.log(data)
     const newFields = data.map(field => {
       const [db_name, column_name] = field.split(' ')
       return `${db_name} ${column_name}`
     })
+    // console.log(newFields)
     setLimitFieldsState(newFields)
+    if (methods.getValues('filter_data').length) {
+      getValuesFromColumn()
+    }
+    // } else {
+    //   setLimitedFields([])
+    //   // setLimitedRequestFields([])
+    // }
   }
+
+  useEffect(() => {
+    if (limitFieldsState.length) {
+      getValuesFromColumn()
+    }
+
+
+  }, [limitFieldsState])
+
 
   const [limitedRequestFields, setLimitedRequestFields] = useState()
 
@@ -149,7 +165,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
       multi: Boolean(data.multi),
       isactive: Boolean(data.isactive),
       islimited: Boolean(data.islimited),
-      filter_data: fieldsState.map(field => {
+      filter_data: limitFieldsState.map(field => {
         const [db_name, column_name] = field.split(' ')
         return {
           db_name,
@@ -158,44 +174,44 @@ export const EditFilterForm = ({filter, availableFields}) => {
       })
     }
 
-    if (data.column_limit) {
-     const limited_fields = limitedRequestFields?.reduce((acc, item) => {
-        if (typeof item === 'string') {
-          const [value, column, db] = item.split(';');
+    // if (data.column_limit) {
+    const limited_fields = limitedRequestFields?.reduce((acc, item) => {
+      if (typeof item === 'string') {
+        const [value, column, db] = item.split(';');
 
-          // Убедимся, что acc является объектом и можем присвоить значения
-          if (!acc[`${column};${db}`]) {
-            acc[`${column};${db}`] = [value];
-          } else {
-            acc[`${column};${db}`].push(value);
-          }
+        // Убедимся, что acc является объектом и можем присвоить значения
+        if (!acc[`${column};${db}`]) {
+          acc[`${column};${db}`] = [value];
+        } else {
+          acc[`${column};${db}`].push(value);
         }
+      }
 
-        return acc;
-      }, {}); // Убедимся, что начальное значение acc - объект
+      return acc;
+    }, {}); // Убедимся, что начальное значение acc - объект
 
-      request['data_limiting'] = Object.entries(limited_fields).map(([key,value]) => {
-        const [column,db] = key.split(';')
-        return {
-          db_name:db,
-          column_name: column,
-          value:value
-        }
-      })
+    request['data_limiting'] = Object.entries(limited_fields).map(([key, value]) => {
+      const [column, db] = key.split(';')
+      return {
+        db_name: db,
+        column_name: column,
+        value: value
+      }
+    })
 
-      // console.log('limitedFields',limitedFields)
-      request['filter_data'] = Object.entries(limited_fields).map(([key,value]) => {
-        const [column, db] = key.split(';')
-        return {
-          db_name:db,
-          column_name: column
-        }
-      })
-      request['column_limit'] = true
+    // console.log('limitedFields',limitedFields)
+    // request['filter_data'] = Object.entries(limited_fields).map(([key,value]) => {
+    //   const [column, db] = key.split(';')
+    //   return {
+    //     db_name:db,
+    //     column_name: column
+    //   }
+    // })
+    // request['column_limit'] = true
 
-      // console.log(request);
-      // return;
-    }
+    // console.log(request);
+    // return;
+    // }
     // console.log(request, filter.filter_id)
     const filter_id = filter.filter_id
     // console.log(request)
@@ -232,33 +248,36 @@ export const EditFilterForm = ({filter, availableFields}) => {
 
         <div className={styles.create_form}>
 
-         <MainForm/>
+          <MainForm/>
 
 
+          {/*{!methods.getValues('column_limit') &&*/}
+          {/*  <DefaultFilterFields*/}
+          {/*    availableFields={availableFields}*/}
+          {/*    fieldsState={fieldsState}*/}
+          {/*    setFieldsState={setFieldsState}*/}
+          {/*    db_colors={db_colors}*/}
+          {/*    handleFields={handleFields}*/}
+          {/*  />}*/}
 
-          {!methods.getValues('column_limit') &&
-            <DefaultFilterFields
-              availableFields={availableFields}
-              fieldsState={fieldsState}
-              setFieldsState={setFieldsState}
-              db_colors={db_colors}
-              handleFields={handleFields}
-            />}
+          {/*{methods.getValues('column_limit') &&*/}
+          <LimitedFilterFields
+            fieldsState={fieldsState}
+            setFieldsState={setFieldsState}
+            setLimitedFields={setLimitedFields}
+            availableFields={availableFields}
+            limitFieldsState={limitFieldsState}
+            db_colors={db_colors}
+            setLimitFieldsState={setLimitFieldsState}
+            handleLimitFields={handleLimitFields}
+            getValuesFromColumn={getValuesFromColumn}
+            limitedFields={limitedFields}
+            setLimitedRequestFields={setLimitedRequestFields}
+            limitedRequestFields={limitedRequestFields}
+            handleLimitedRequestFields={handleLimitedRequestFields}
 
-          {methods.getValues('column_limit') &&
-           <LimitedFilterFields
-             availableFields={availableFields}
-             limitFieldsState={limitFieldsState}
-             db_colors={db_colors}
-             setLimitFieldsState={setLimitFieldsState}
-             handleLimitFields={handleLimitFields}
-             getValuesFromColumn={getValuesFromColumn}
-             limitedFields={limitedFields}
-             setLimitedRequestFields={setLimitedRequestFields}
-             limitedRequestFields={limitedRequestFields}
-             handleLimitedRequestFields={handleLimitedRequestFields}
-
-           />}
+          />
+          {/*}*/}
 
 
           <div className={styles.buttons}>
@@ -304,7 +323,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
 
   return (
     <div key={filter.filter_name} className={styles.filter_wrapper}>
-      <p>{filter.filter_name}</p>
+      <p>{`${filter.filter_name} ${filter.column_limit ? '(лимит)' : ''}`}</p>
       <div className={styles.line}></div>
       <Button onClick={() => {
         setIsEditFilter(true)

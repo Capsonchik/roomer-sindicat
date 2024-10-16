@@ -33,6 +33,9 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods, setActiveFil
   }, [filter.original_values]);
 
   // console.log(originValues,activeFilter,i)
+  if(filter.column_limit) {
+    return  null
+  }
 
   return (
     <div

@@ -9,7 +9,7 @@ import React, {useEffect, useState} from "react";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useDispatch, useSelector} from "react-redux";
 import {
-  selectActiveGroupId, selectActiveReport, selectFilters,
+  selectActiveGroupId, selectActiveReport, selectFilters, selectFiltersDrawer,
   selectGroupsReports,
   selectReportsClients
 } from "../../../store/chartSlice/chart.selectors";
@@ -68,7 +68,7 @@ export const FilterDrawer = ({open, onClose}) => {
   const reportsClients = useSelector(selectReportsClients)
   const groupsReports = useSelector(selectGroupsReports)
   const activeReport = useSelector(selectActiveReport)
-  const filters = useSelector(selectFilters)
+  const filters = useSelector(selectFiltersDrawer)
   const [isOpenDBInputs, setIsOpenDBInputs] = useState(false)
   const [availableFields, setAvailableFields] = useState([])
   const [errorDBRequest, setErrorDBRequest] = useState('')
@@ -85,6 +85,8 @@ export const FilterDrawer = ({open, onClose}) => {
     })
     setFieldsState(newFields)
   }
+
+
 
   const handleLimitFields = (data) => {
     console.log(data)

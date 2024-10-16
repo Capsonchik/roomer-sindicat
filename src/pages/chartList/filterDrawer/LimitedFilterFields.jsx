@@ -9,6 +9,7 @@ import {useFormContext} from "react-hook-form";
 
 export const LimitedFilterFields = (
   {
+    fieldsState,
     availableFields,
     limitFieldsState,
     db_colors,
@@ -19,12 +20,22 @@ export const LimitedFilterFields = (
     setLimitedRequestFields,
     limitedRequestFields,
     handleLimitedRequestFields,
+    setLimitedFields,
     isCreate = false
   }) => {
-  const {getValues, setValue} = useFormContext()
+  const {getValues, setValue,trigger} = useFormContext()
 
   useEffect(() => {
+    if(!limitFieldsState.length) {
+      setLimitedFields([])
+    }
+
+  }, [limitFieldsState]);
+  // console.log(limitFieldsState)
+  useEffect(() => {
+    console.log(1111)
     if(isCreate) return
+    console.log(2222)
     if (getValues('data_limiting')?.length) {
       const dataForStateLimitedRequest = getValues('data_limiting').reduce((acc, item) => {
         const items = item.value.map((value) => {
@@ -42,7 +53,7 @@ export const LimitedFilterFields = (
   }, [getValues('data_limiting')]);
   return (
     <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>
-      <h6 className={styles.label}>Выберите таблицу для лимита</h6>
+      <h6 className={styles.label}>Выберите доступные таблицы</h6>
       <PreventOverflowContainer>
         {getContainer => (
           <CustomTagPicker
@@ -114,6 +125,7 @@ export const LimitedFilterFields = (
                         // console.log(prev, value)
                         return prev.filter(item => item !== value)
                       })
+                      trigger()
                       // console.log(value)
                     }} // Обработчик удаления
                     style={{
@@ -145,8 +157,8 @@ export const LimitedFilterFields = (
 
       </PreventOverflowContainer>
 
-      <Button onClick={getValuesFromColumn} style={{marginTop: 24, marginBottom: 24}}>Получить значения
-        таблиц</Button>
+      {/*<Button onClick={getValuesFromColumn} style={{marginTop: 24, marginBottom: 24}}>Получить значения*/}
+      {/*  таблиц</Button>*/}
 
       {!!limitedFields?.length && <div className={cl(styles.input_wrapper, {}, [styles.available_fields])}>
         <h6 className={styles.label}>Выберите лимитированные поля</h6>

@@ -35,6 +35,7 @@ const initialState = {
   errorCharts: false,
   scrollTabs: 1,
   filters: [],
+  filtersDrawer: [],
   filterLoading: 'none',
   isLoadDependentFilters: false,
   isEditableMode: false
@@ -180,6 +181,7 @@ export const chartSlice = createSlice({
       })
       .addCase(getFilters.fulfilled, (state, action) => {
         state.filters = action.payload
+        state.filtersDrawer = action.payload
         state.filterLoading = 'idle'
       })
       .addCase(getFilters.pending, (state, action) => {

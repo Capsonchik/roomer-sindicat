@@ -84,12 +84,14 @@
       gap: 16px;
     }
 
+
     &.available_fields {
       //display: flex;
       //flex-direction: column;
       //gap: 16px;
 
       .visible_list {
+
         width: 100%;
         //margin-bottom: 16px;
 
@@ -113,6 +115,13 @@
 
     .label {
       margin-bottom: 12px;
+
+    }
+
+    .available_fields {
+      .label {
+        margin-top: 24px;
+      }
     }
 
     .description {

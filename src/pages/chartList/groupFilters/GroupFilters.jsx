@@ -173,7 +173,7 @@ export const GroupFilters = ({groups}) => {
     const request = data.filters.map(filter => {
       return {
         filter_id: filter.filter_id,
-        filter_values: filter.value
+        filter_values: filter.multi ? filter.value : [filter.value]
       }
     })
 

@@ -76,6 +76,7 @@ export const ChartList = (props) => {
 
   useEffect(() => {
     if (filterLoading !== 'idle') return
+    // console.log(groups,activeGroupId)
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
     if (foundGroup) {
       setActiveGroup(foundGroup)

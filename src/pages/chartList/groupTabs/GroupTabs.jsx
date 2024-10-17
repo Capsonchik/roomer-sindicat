@@ -21,13 +21,13 @@ export const GroupTabs = ({groupsReports}) => {
 
   useEffect(() => {
 
-    if (groupsReports.length > 0) {
+    if (groupsReports.length > 0 && !activeGroupId) {
       handleSelect(groupsReports[0].group_id);
     }
     // else {
     //   handleSelect(activeGroupId);
     // }
-  }, [groupsReports]);
+  }, [groupsReports,activeGroupId]);
 
   useEffect(() => {
     // if(activeGroupId) {

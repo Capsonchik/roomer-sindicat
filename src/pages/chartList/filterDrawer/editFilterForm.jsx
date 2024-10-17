@@ -191,7 +191,7 @@ export const EditFilterForm = ({filter, availableFields}) => {
       return acc;
     }, {}); // Убедимся, что начальное значение acc - объект
 
-    request['data_limiting'] = Object.entries(limited_fields).map(([key, value]) => {
+    request['data_limiting'] = !limited_fields ? [] : Object.entries(limited_fields).map(([key, value]) => {
       const [column, db] = key.split(';')
       return {
         db_name: db,

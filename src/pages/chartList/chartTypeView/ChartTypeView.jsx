@@ -21,7 +21,7 @@ export const ChartTypeView = ({chart}) => {
       returnType = <ChartItemPie chart={chart}/>
       break
     case 'pivot':
-      returnType = <CustomPivot rowData={chart['0'].table_data} chart={chart} rowColData={{
+      returnType = <CustomPivot rowData={chart?.['0']?.table_data} chart={chart} rowColData={{
         rowKey: chart.formatting?.rowKey || 'Region',
         subRowKey: chart.formatting?.subRowKey || 'Segment2',
         colKey: chart.formatting?.colKey || 'Segment1',

@@ -19,8 +19,10 @@ import {
 } from "../../../store/chartSlice/chart.selectors";
 import {FilterItem} from "./FilterItem";
 import {Button} from "rsuite";
+import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
 
 export const GroupFilters = ({groups}) => {
+  const user = useSelector(selectCurrentUser)
   const activeGroupId = useSelector(selectActiveGroupId)
   const filters = useSelector(selectFilters)
   const dispatch = useDispatch();
@@ -253,9 +255,9 @@ export const GroupFilters = ({groups}) => {
                 methods={methods}
               />
             ))}
-            <Button style={{alignSelf:'flex-end'}} onClick={() => {
+            {user.role !== 'viewer' && <Button style={{alignSelf:'flex-end'}} onClick={() => {
               methods.handleSubmit(onSaveFilter)()
-            }}>Сохранить</Button>
+            }}>Сохранить</Button>}
           </div>}
 
         </FormProvider>

@@ -119,6 +119,7 @@ export const Chart = ({chart}) => {
   }, [originalColors]);
 
   const fetchCharts = (id) => {
+    console.log(111111,id)
     dispatch(fetchAllChartsByGroupId({groupId: id, filter_data: activeFilters})).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(id));
     });

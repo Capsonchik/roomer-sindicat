@@ -20,6 +20,7 @@ import {
 import {FilterItem} from "./FilterItem";
 import {Button} from "rsuite";
 import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
+import {setActiveSavedFilters} from "../../../store/chartSlice/filter.slice";
 
 export const GroupFilters = ({groups}) => {
   const user = useSelector(selectCurrentUser)
@@ -93,6 +94,13 @@ export const GroupFilters = ({groups}) => {
     if (filters.length > 0) {
       const filterValues = filters.filter(filter => !filter.column_limit).map(filter => {
         const activeGroup = groups.find(group => group.group_id === activeGroupId);
+        if (Object.keys(activeGroup.saved_filters).length) {
+          dispatch(setActiveSavedFilters(activeGroup.saved_filters.filter_id))
+
+        }
+        else {
+          dispatch(setActiveSavedFilters(null))
+        }
         const savedFilter = Object.keys(activeGroup.saved_filters).length
           ? activeGroup.saved_filters.filter_data.find(innerFilter => innerFilter.filter_id === filter.filter_id)
           : null
@@ -116,7 +124,7 @@ export const GroupFilters = ({groups}) => {
       const savedFilterId = Object.keys(activeGroup.saved_filters).length ? activeGroup.saved_filters.filter_id : null
       methods.reset({
         filters: filterValues,
-        savedFilterId : savedFilterId
+        savedFilterId: savedFilterId
         // activeFilter: methods.getValues('activeFilter')
         // activeFilter: null
       });
@@ -177,15 +185,13 @@ export const GroupFilters = ({groups}) => {
       }
     })
 
-    if(data.savedFilterId) {
-    dispatch(updateSaveFilters({data: {filter_id: data.savedFilterId, filter_data: request}, activeGroupId}))
+    if (data.savedFilterId) {
+      dispatch(updateSaveFilters({data: {filter_id: data.savedFilterId, filter_data: request}, activeGroupId}))
 
-    }
-    else {
+    } else {
       dispatch(saveFilters({data: {group_id: activeGroupId, filter_data: request}, activeGroupId}))
     }
 
-    // console.log({filter_id: 2, filter_data: request}, activeGroupId)
   }
   const handleChangeFilter = (data) => {
     // console.log(data)
@@ -255,9 +261,9 @@ export const GroupFilters = ({groups}) => {
                 methods={methods}
               />
             ))}
-            {user.role !== 'viewer' && <Button style={{alignSelf:'flex-end'}} onClick={() => {
-              methods.handleSubmit(onSaveFilter)()
-            }}>Сохранить</Button>}
+            {/*{user.role !== 'viewer' && <Button style={{alignSelf:'flex-end'}} onClick={() => {*/}
+            {/*  methods.handleSubmit(onSaveFilter)()*/}
+            {/*}}>Сохранить</Button>}*/}
           </div>}
 
         </FormProvider>

@@ -1,5 +1,5 @@
 import styles from './groupControlButtons.module.scss'
-import {Button, Tooltip, Whisper} from "rsuite";
+import {Button, Message, Tooltip, useToaster, Whisper} from "rsuite";
 import {downloadPpt} from "../downloadPptx";
 import React, {useEffect, useState} from "react";
 import {axiosGraphRequest} from "../../../api/ApiConfig";
@@ -8,7 +8,7 @@ import {PresentationDrawer} from "../presentationDrawer/PresentationDrawer";
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectActiveGroupId,
-  selectCharts,
+  selectCharts, selectFilters,
   selectGroupsReports,
   selectIsChartLoading, selectIsEditableMode
 } from "../../../store/chartSlice/chart.selectors";
@@ -16,9 +16,14 @@ import {CreateChartDrawer} from "../createChartDrawer/CreateChartDrawer";
 import {PowerPointIcon} from "./powerPointIcon";
 import {setEditableMode} from "../../../store/chartSlice/chart.slice";
 import GridIcon from '@rsuite/icons/Grid';
+import {saveFilters, updateSaveFilters} from "../../../store/chartSlice/chart.actions";
+import {selectActiveSavedFilters} from "../../../store/chartSlice/filter.selectors";
+import SettingHorizontalIcon from '@rsuite/icons/SettingHorizontal';
 
 export const GroupControlButtons = ({layouts}) => {
   const [fileList, setFileList] = React.useState([]);
+  const filters = useSelector(selectFilters)
+  const activeSavedFilters = useSelector(selectActiveSavedFilters)
   const dispatch = useDispatch();
   const [activeGroup, setActiveGroup] = useState()
   const charts = useSelector(selectCharts)
@@ -28,6 +33,8 @@ export const GroupControlButtons = ({layouts}) => {
   const isEditableMode = useSelector(selectIsEditableMode);
   const [openPresentationDrawer, setOpenPresentationDrawer] = useState(false)
   const [openChartDrawer, setOpenChartDrawer] = useState(false)
+  const toaster = useToaster();
+  const [placement, setPlacement] = React.useState('topCenter');
   const getDataCharts = ({charts, activeGroup}) => {
     return convertDataCharts({charts, activeGroup})
   }
@@ -45,6 +52,33 @@ export const GroupControlButtons = ({layouts}) => {
   }, [activeGroupId, groups])
   // console.log(isChartLoading)
 
+  const message = (
+    <Message showIcon type={'info'} closable>
+      <strong>Сохранено</strong>
+    </Message>
+  );
+
+
+  const onSaveFilter = () => {
+    const request = filters.map(filter => {
+      return {
+        filter_id: filter.filter_id,
+        filter_values: filter.multi ? filter.value : [filter.value]
+      }
+    })
+
+    if(activeSavedFilters) {
+      dispatch(updateSaveFilters({data: {filter_id: activeSavedFilters, filter_data: request}, activeGroupId}))
+
+    }
+    else {
+      dispatch(saveFilters({data: {group_id: activeGroupId, filter_data: request}, activeGroupId}))
+    }
+
+    toaster.push(message, { placement, duration: 5000 })
+
+  }
+
   return (
     <>
       <div className={styles.wrapper}>
@@ -55,6 +89,24 @@ export const GroupControlButtons = ({layouts}) => {
         {/*>*/}
         {/*  Создать презентацию*/}
         {/*</Button>*/}
+
+        <Whisper
+          placement={'bottom'}
+          speaker={<Tooltip>Сохранить фильтры</Tooltip>}>
+          <Button
+            // style={{
+            //   background: isEditableMode ? '#ff8200' : '#f7f7fa',
+            //   color: isEditableMode ? '#fff' : '#575757'
+            // }}
+            className={styles.btn}
+            disabled={isChartLoading}
+            onClick={onSaveFilter} // Передаем весь массив charts
+            // className={styles.save_pptx}
+          >
+            <SettingHorizontalIcon />
+
+          </Button>
+        </Whisper>
 
         <Whisper
           placement={'bottom'}

@@ -14,7 +14,9 @@ import {createFilter, getFilterOriginalValues, getFilters} from "./filter.action
 
 const initialState = {
   activeFilters: {},
-  originValuesLoading: false
+  originValuesLoading: false,
+
+  activeSavedFilters: null
 }
 
 export const filterSlice = createSlice({
@@ -25,6 +27,14 @@ export const filterSlice = createSlice({
       const {data, activeGroupId} = action.payload
       // if (!state.activeFilters[activeGroupId]) {
       state.activeFilters[activeGroupId] = data;
+      // }
+      // else {
+      //   state.activeFilters[activeGroupId] = data;
+      // }
+    },
+    setActiveSavedFilters: (state, action) => {
+      // if (!state.activeFilters[activeGroupId]) {
+      state.activeSavedFilters = action.payload;
       // }
       // else {
       //   state.activeFilters[activeGroupId] = data;
@@ -53,7 +63,7 @@ export const filterSlice = createSlice({
   }
 })
 
-export const {removeFilters,removeFilter,setFilters} = filterSlice.actions;
+export const {setActiveSavedFilters,removeFilters,removeFilter,setFilters} = filterSlice.actions;
 
 export default filterSlice.reducer;
 

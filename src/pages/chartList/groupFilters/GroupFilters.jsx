@@ -95,8 +95,10 @@ export const GroupFilters = ({groups}) => {
     if (filters.length > 0) {
       const filterValues = filters.filter(filter => !filter.column_limit).map(filter => {
         const activeGroup = groups.find(group => group.group_id === activeGroupId);
+        // console.log(Object.keys(activeGroup.saved_filters).length)
         if (Object.keys(activeGroup.saved_filters).length) {
-          dispatch(setActiveSavedFilters(activeGroup.saved_filters.filter_id))
+          console.log(activeGroup.saved_filters.id)
+          dispatch(setActiveSavedFilters(activeGroup.saved_filters.id))
 
         } else {
           dispatch(setActiveSavedFilters(null))

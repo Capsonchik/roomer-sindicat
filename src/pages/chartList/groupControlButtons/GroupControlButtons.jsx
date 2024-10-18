@@ -66,6 +66,8 @@ export const GroupControlButtons = ({layouts}) => {
         filter_values: filter.multi ? filter.value : filter.value
       }
     })
+    // console.log(activeSavedFilters)
+    // return
 
     if(activeSavedFilters) {
       dispatch(updateSaveFilters({data: {filter_id: activeSavedFilters, filter_data: request}, activeGroupId}))

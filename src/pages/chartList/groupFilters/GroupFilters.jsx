@@ -90,6 +90,7 @@ export const GroupFilters = ({groups}) => {
   }
 
   useEffect(() => {
+    console.log(filters)
     if (!activeGroupId) return
     if (filters.length > 0) {
       const filterValues = filters.filter(filter => !filter.column_limit).map(filter => {
@@ -97,8 +98,7 @@ export const GroupFilters = ({groups}) => {
         if (Object.keys(activeGroup.saved_filters).length) {
           dispatch(setActiveSavedFilters(activeGroup.saved_filters.filter_id))
 
-        }
-        else {
+        } else {
           dispatch(setActiveSavedFilters(null))
         }
         const savedFilter = Object.keys(activeGroup.saved_filters).length
@@ -142,20 +142,8 @@ export const GroupFilters = ({groups}) => {
                 : []
           }
         })
-        // if(Object.keys(activeGroup.saved_filters).length) {
-        //   request = filters.map(filter => {
-        //
-        //     return {
-        //       filter_id: filter.filter_id,
-        //       filter_values: !filter.isactive ? [] : filter.multi
-        //         ? filter.value ? filter.value : []
-        //         : filter.value
-        //           ? Array.isArray(filter.value) ? filter.value : [filter.value]
-        //           : []
-        //     }
-        //   })
-        // }
-        // isFirstRender.current = false
+        // setFilters(filters.map(filter => ({filter_id:filter.filter_id, filter_values:filter.filter_values})))
+
 
         dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request || []}}))
           .then(() => {
@@ -177,23 +165,9 @@ export const GroupFilters = ({groups}) => {
     }
   }, [filters]);
 
-  const onSaveFilter = (data) => {
-    const request = data.filters.map(filter => {
-      return {
-        filter_id: filter.filter_id,
-        filter_values: filter.multi ? filter.value : [filter.value]
-      }
-    })
 
-    if (data.savedFilterId) {
-      dispatch(updateSaveFilters({data: {filter_id: data.savedFilterId, filter_data: request}, activeGroupId}))
-
-    } else {
-      dispatch(saveFilters({data: {group_id: activeGroupId, filter_data: request}, activeGroupId}))
-    }
-
-  }
   const handleChangeFilter = (data) => {
+    // console.log(data)
     // console.log(data)
     const request = {
       to_recalculate: data.filters.slice(data.activeFilter + 1).map(filter => filter.filter_id).filter(Boolean),
@@ -217,6 +191,7 @@ export const GroupFilters = ({groups}) => {
       }
     })
 
+    // console.log(filters)
 
     // return
     // }
@@ -232,6 +207,7 @@ export const GroupFilters = ({groups}) => {
         }
 
       })
+      // dispatch(setFilters(filters))
       return
     } else {
       dispatch(setFilters(filters))
@@ -240,6 +216,7 @@ export const GroupFilters = ({groups}) => {
 
   }
 
+  // console.log(methods.getValues('filters'))
   return (
     <div>
       {activeReport && !!filters?.length && (

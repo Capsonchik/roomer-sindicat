@@ -63,7 +63,7 @@ export const GroupControlButtons = ({layouts}) => {
     const request = filters.map(filter => {
       return {
         filter_id: filter.filter_id,
-        filter_values: filter.multi ? filter.value : [filter.value]
+        filter_values: filter.multi ? filter.value : filter.value
       }
     })
 

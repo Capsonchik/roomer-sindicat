@@ -7,8 +7,9 @@ import {convertDataCharts} from "../topFilters/convertDataCharts";
 import {PresentationDrawer} from "../presentationDrawer/PresentationDrawer";
 import {useDispatch, useSelector} from "react-redux";
 import {
+  selectActiveGraphsPosition,
   selectActiveGroupId,
-  selectCharts, selectFilters,
+  selectCharts, selectFilters, selectGraphsPosition,
   selectGroupsReports,
   selectIsChartLoading, selectIsEditableMode
 } from "../../../store/chartSlice/chart.selectors";
@@ -16,7 +17,12 @@ import {CreateChartDrawer} from "../createChartDrawer/CreateChartDrawer";
 import {PowerPointIcon} from "./powerPointIcon";
 import {setEditableMode} from "../../../store/chartSlice/chart.slice";
 import GridIcon from '@rsuite/icons/Grid';
-import {saveFilters, updateSaveFilters} from "../../../store/chartSlice/chart.actions";
+import {
+  saveFilters,
+  saveGraphsPosition,
+  updateGraphsPosition,
+  updateSaveFilters
+} from "../../../store/chartSlice/chart.actions";
 import {selectActiveSavedFilters} from "../../../store/chartSlice/filter.selectors";
 import SettingHorizontalIcon from '@rsuite/icons/SettingHorizontal';
 
@@ -31,6 +37,8 @@ export const GroupControlButtons = ({layouts}) => {
   const isChartLoading = useSelector(selectIsChartLoading)
   const activeGroupId = useSelector(selectActiveGroupId)
   const isEditableMode = useSelector(selectIsEditableMode);
+  const graphsPosition = useSelector(selectGraphsPosition);
+  const activeGraphsPosition = useSelector(selectActiveGraphsPosition);
   const [openPresentationDrawer, setOpenPresentationDrawer] = useState(false)
   const [openChartDrawer, setOpenChartDrawer] = useState(false)
   const toaster = useToaster();
@@ -69,16 +77,33 @@ export const GroupControlButtons = ({layouts}) => {
     // console.log(activeSavedFilters)
     // return
 
-    if(activeSavedFilters) {
+    if (activeSavedFilters) {
       dispatch(updateSaveFilters({data: {filter_id: activeSavedFilters, filter_data: request}, activeGroupId}))
 
-    }
-    else {
+    } else {
       dispatch(saveFilters({data: {group_id: activeGroupId, filter_data: request}, activeGroupId}))
     }
 
-    toaster.push(message, { placement, duration: 5000 })
+    toaster.push(message, {placement, duration: 5000})
 
+  }
+
+  const onSaveGraphsPosition = () => {
+    if (activeGraphsPosition) {
+      dispatch(updateGraphsPosition({
+        id: activeGraphsPosition,
+        graphs_position: graphsPosition.lg,
+        groupId:activeGroupId
+      }))
+
+    } else {
+      dispatch(saveGraphsPosition({
+        group_id: activeGroupId,
+        graphs_position: graphsPosition.lg
+      }))
+
+    }
+    // saveGraphsPosition
   }
 
   return (
@@ -105,7 +130,7 @@ export const GroupControlButtons = ({layouts}) => {
             onClick={onSaveFilter} // Передаем весь массив charts
             // className={styles.save_pptx}
           >
-            <SettingHorizontalIcon />
+            <SettingHorizontalIcon/>
 
           </Button>
         </Whisper>
@@ -120,10 +145,16 @@ export const GroupControlButtons = ({layouts}) => {
             }}
             className={styles.btn}
             disabled={isChartLoading}
-            onClick={() => dispatch(setEditableMode(!isEditableMode))} // Передаем весь массив charts
+            onClick={() => {
+              dispatch(setEditableMode(!isEditableMode))
+              if (isEditableMode) {
+                onSaveGraphsPosition()
+              }
+
+            }} // Передаем весь массив charts
             // className={styles.save_pptx}
           >
-            <GridIcon />
+            <GridIcon/>
 
           </Button>
         </Whisper>
@@ -135,16 +166,14 @@ export const GroupControlButtons = ({layouts}) => {
           <Button
             className={styles.btn}
             disabled={isChartLoading}
-            onClick={() => downloadPpt(charts, activeGroup,layouts)} // Передаем весь массив charts
+            onClick={() => downloadPpt(charts, activeGroup, layouts)} // Передаем весь массив charts
             // className={styles.save_pptx}
           >
             <PowerPointIcon/>
 
 
-
           </Button>
         </Whisper>
-
 
 
       </div>

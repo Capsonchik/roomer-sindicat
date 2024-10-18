@@ -7,7 +7,7 @@ import {
   // fetchAllGroups,
   fetchAllReports,
   fetchChartById, getChartTypes,
-  patchChartById, patchGroupById, postGroup, saveFilters, updateSaveFilters
+  patchChartById, patchGroupById, postGroup, saveFilters, saveGraphsPosition, updateGraphsPosition, updateSaveFilters
 } from "./chart.actions";
 import {fa} from "@faker-js/faker";
 import {createFilter, getFilters, postDependentFilters} from "./filter.actions";
@@ -38,13 +38,21 @@ const initialState = {
   filtersDrawer: [],
   filterLoading: 'none',
   isLoadDependentFilters: false,
-  isEditableMode: false
+  isEditableMode: false,
+  graphsPosition: [],
+  activeGraphsPosition: null,
 }
 
 export const chartSlice = createSlice({
   name: 'chartSlice',
   initialState,
   reducers: {
+    setActiveGraphsPosition: (state, action) => {
+      state.activeGraphsPosition = action.payload;
+    },
+    setGraphsPosition: (state, action) => {
+      state.graphsPosition = action.payload;
+    },
     setEditableMode: (state, action) => {
       state.isEditableMode = action.payload;
     },
@@ -98,7 +106,7 @@ export const chartSlice = createSlice({
       //     return filters[index]
       //   }
       // })
-      const convertedFilters = filters.map(filter=> {
+      const convertedFilters = filters.map(filter => {
         return {
           ...filter,
           value: [filter.original_values[0]]
@@ -208,11 +216,45 @@ export const chartSlice = createSlice({
         state.chartTypes = action.payload
       })
 
+      .addCase(updateGraphsPosition.fulfilled, (state, action) => {
+        state.groupsChart = state.groupsChart.map(group => {
+
+          if (group.group_id === action.payload.groupId) {
+            return {
+              ...group,
+              graphs_position: {
+                ...group.graphs_position,
+                positions: action.payload.graphs_position
+              }
+            }
+          }
+
+          return group
+        })
+      })
+
+      .addCase(saveGraphsPosition.fulfilled, (state, action) => {
+        state.groupsChart = state.groupsChart.map(group => {
+
+          if (group.group_id === action.payload.group_id) {
+            return {
+              ...group,
+              graphs_position: {
+                ...group.graphs_position,
+                positions: action.payload.graphs_position
+              }
+            }
+          }
+
+          return group
+        })
+      })
+
       .addCase(updateSaveFilters.fulfilled, (state, action) => {
-        const {savedFilter,activeGroupId} = action.payload
+        const {savedFilter, activeGroupId} = action.payload
 
         state.groupsChart = state.groupsChart.map(group => {
-          if(group.group_id === activeGroupId){
+          if (group.group_id === activeGroupId) {
             return {
               ...group,
               saved_filters: savedFilter
@@ -223,10 +265,10 @@ export const chartSlice = createSlice({
         })
       })
       .addCase(saveFilters.fulfilled, (state, action) => {
-        const {savedFilter,activeGroupId} = action.payload
+        const {savedFilter, activeGroupId} = action.payload
 
         state.groupsChart = state.groupsChart.map(group => {
-          if(group.group_id === activeGroupId){
+          if (group.group_id === activeGroupId) {
             return {
               ...group,
               saved_filters: savedFilter
@@ -242,6 +284,8 @@ export const chartSlice = createSlice({
 })
 
 export const {
+  setActiveGraphsPosition,
+  setGraphsPosition,
   setEditableMode,
   setDependentFilters,
   setCharts,

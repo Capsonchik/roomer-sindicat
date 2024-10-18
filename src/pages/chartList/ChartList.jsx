@@ -20,9 +20,9 @@ import {
 } from "../../store/chartSlice/chart.selectors";
 import {ChartDrawer} from "./chartDrawer/ChartDrawer";
 import {
-  setActiveChart,
+  setActiveChart, setActiveGraphsPosition,
   setDependentFilters,
-  setFilterLoading,
+  setFilterLoading, setGraphsPosition,
   setOpenDrawer,
   setTypeGroupDrawer
 } from "../../store/chartSlice/chart.slice";
@@ -177,7 +177,7 @@ export const ChartList = (props) => {
         static: false, // элемент также должен перемещаться
       };
 
-      if(layout.length === 1) {
+      if (layout.length === 1) {
         layout[0] = {
           i: "0", // первый элемент должен сохранять свой индекс
           x: 0,
@@ -191,8 +191,19 @@ export const ChartList = (props) => {
         };
       }
     }
+    console.log(activeGroup)
+    let postions = []
+    // console.log(activeGroup)
+    const saved_position = activeGroup?.graphs_position && Object.keys(activeGroup.graphs_position)
+    if (saved_position?.length) {
+      dispatch(setActiveGraphsPosition(activeGroup.graphs_position.id))
+      postions = activeGroup.graphs_position.positions
+    }
+    else {
+      dispatch(setActiveGraphsPosition(null))
+    }
 
-    return {lg: layout};
+    return {lg: saved_position?.length ? postions : layout};
   };
 
 
@@ -205,6 +216,7 @@ export const ChartList = (props) => {
 
   const onLayoutChange = (layout, allLayouts) => {
     setLayouts(allLayouts);
+    dispatch(setGraphsPosition(allLayouts))
   };
 
 
@@ -215,7 +227,7 @@ export const ChartList = (props) => {
       <GroupFilters groups={groups}/>
       <div
         className={styles.list}>
-        { (filterLoading === 'load')  && (
+        {(filterLoading === 'load') && (
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>
@@ -242,12 +254,12 @@ export const ChartList = (props) => {
               <div
                 className={styles.grid_wrapper}
                 style={{
-                width: '100%',
-                // height: 'calc(100vh - 80px)',
-                // padding: '20px',
-                overflowY: 'auto',
-                overflowX: 'hidden'
-              }}>
+                  width: '100%',
+                  // height: 'calc(100vh - 80px)',
+                  // padding: '20px',
+                  overflowY: 'auto',
+                  overflowX: 'hidden'
+                }}>
                 <ShowcaseLayout
                   onLayoutChange={onLayoutChange}
                   initialLayout={layouts.lg}

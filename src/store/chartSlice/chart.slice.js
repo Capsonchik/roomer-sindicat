@@ -98,7 +98,13 @@ export const chartSlice = createSlice({
       //     return filters[index]
       //   }
       // })
-      state.filters = originFilters.slice(0, activeFilterIndex + 1).concat(filters)
+      const convertedFilters = filters.map(filter=> {
+        return {
+          ...filter,
+          value: [filter.original_values[0]]
+        }
+      })
+      state.filters = originFilters.slice(0, activeFilterIndex + 1).concat(convertedFilters)
     },
 
 

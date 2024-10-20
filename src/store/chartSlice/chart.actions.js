@@ -301,3 +301,18 @@ export const updateGraphsPosition = createAsyncThunk(
     }
   }
 );
+export const getGroupById = createAsyncThunk(
+  'chart/getGroupById',
+  async (groupId) => {
+    try {
+      const response = await axiosGraphRequest.get(`/api/v2/echart_graphs/get_group_by_id?group_id=${groupId}`);
+      // console.log(response)
+      if (response.status === 200) {
+
+        return response.data;
+      }
+    } catch (error) {
+      throw new Error('fetchAllClients error');
+    }
+  }
+);

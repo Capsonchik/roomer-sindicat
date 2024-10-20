@@ -15,7 +15,7 @@ import {
 } from "../../../store/chartSlice/chart.selectors";
 import {CreateChartDrawer} from "../createChartDrawer/CreateChartDrawer";
 import {PowerPointIcon} from "./powerPointIcon";
-import {setEditableMode} from "../../../store/chartSlice/chart.slice";
+import {setActiveGraphsPosition, setEditableMode} from "../../../store/chartSlice/chart.slice";
 import GridIcon from '@rsuite/icons/Grid';
 import {
   saveFilters,
@@ -94,13 +94,17 @@ export const GroupControlButtons = ({layouts}) => {
         id: activeGraphsPosition,
         graphs_position: graphsPosition.lg,
         groupId:activeGroupId
-      }))
+      })).then((res) => {
+        dispatch(setActiveGraphsPosition(res.payload.id))
+      })
 
     } else {
       dispatch(saveGraphsPosition({
         group_id: activeGroupId,
         graphs_position: graphsPosition.lg
-      }))
+      })).then((res) => {
+        dispatch(setActiveGraphsPosition(res.payload.id))
+      })
 
     }
     // saveGraphsPosition

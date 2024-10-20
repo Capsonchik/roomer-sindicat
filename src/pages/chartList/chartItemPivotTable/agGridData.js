@@ -1,4 +1,4 @@
-export const agGridData  = [
+export const rowData  = [
   { category: "Пол", subcategory: "Мужской", productName: "product1", period: 'q1', value: 23 },
   { category: "Пол", subcategory: "Мужской", productName: "product1", period: 'q2', value: 34 },
   { category: "Пол", subcategory: "Мужской", productName: "product1", period: 'q3', value: 67 },
@@ -47,3 +47,13 @@ export const agGridData  = [
   { category: "Наличие детей", subcategory: "2 детей", productName: "product2", period: 'q2', value: 45 },
   { category: "Наличие детей", subcategory: "2 детей", productName: "product2", period: 'q3', value: 23 }
 ];
+
+export const rowColData = {
+  rowKey:  'Region',
+  subRowKey: 'Segment2',
+  colKey: 'Segment1',
+  subColKey:  'Product',
+
+  aggregator: 'Total_value',
+  digitsAfterDot:   null
+}

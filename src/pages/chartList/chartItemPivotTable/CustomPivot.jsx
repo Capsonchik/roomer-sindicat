@@ -81,7 +81,6 @@ const formatValue = (value, formatType, digitsAfterDot = null) => {
 export const CustomPivot = ({ chart,rowData, isDrawer = false, rowColData }) => {
   const { rowKey, subRowKey, colKey, subColKey, aggregator  ,format = 'm',digitsAfterDot} = rowColData;
   const dispatch = useDispatch();
-  console.log(digitsAfterDot)
   // Агрегированные данные и min/max значения
   const { result: aggregatedData, min, max } = useMemo(
     () => aggregateData(rowData, rowKey, subRowKey, colKey, subColKey, aggregator),

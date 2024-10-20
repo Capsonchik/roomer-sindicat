@@ -191,25 +191,26 @@ export const ChartList = (props) => {
         };
       }
     }
-    console.log(activeGroup)
-    let postions = []
     // console.log(activeGroup)
-    const saved_position = activeGroup?.graphs_position && Object.keys(activeGroup.graphs_position)
-    if (saved_position?.length) {
+    let positions = []
+    // console.log(activeGroup)
+    if (activeGroup?.graphs_position) {
       dispatch(setActiveGraphsPosition(activeGroup.graphs_position.id))
-      postions = activeGroup.graphs_position.positions
+      positions = activeGroup.graphs_position.positions
     }
     else {
       dispatch(setActiveGraphsPosition(null))
     }
 
-    return {lg: saved_position?.length ? postions : layout};
+    return {lg: activeGroup?.graphs_position ? positions : layout};
   };
 
 
   useEffect(() => {
     // Генерация лейаута при изменении массива data
+    // const length =
     if (data.length) {
+      console.log(data.length,activeGroup?.graphs_position )
       setLayouts(generateLayout(data));
     }
   }, [data]);
@@ -262,7 +263,7 @@ export const ChartList = (props) => {
                 }}>
                 <ShowcaseLayout
                   onLayoutChange={onLayoutChange}
-                  initialLayout={layouts.lg}
+                  initialLayout={activeGroup?.graphs_position ? activeGroup.graphs_position.positions : layouts.lg}
                   charts={data}>
                 </ShowcaseLayout>
               </div>

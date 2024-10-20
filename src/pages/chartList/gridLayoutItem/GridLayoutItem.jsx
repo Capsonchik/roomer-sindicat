@@ -14,7 +14,7 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
   const [compactType, setCompactType] = useState("vertical");
   const isEditableMode = useSelector(selectIsEditableMode);
   const [layouts, setLayouts] = useState({ lg: initialLayout });
-
+  console.log(initialLayout,charts)
   useEffect(() => {
     setLayouts({ lg: initialLayout });
   }, [initialLayout]);

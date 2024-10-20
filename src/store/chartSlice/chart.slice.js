@@ -6,7 +6,7 @@ import {
   fetchAllClients, fetchAllGroups,
   // fetchAllGroups,
   fetchAllReports,
-  fetchChartById, getChartTypes,
+  fetchChartById, getChartTypes, getGroupById,
   patchChartById, patchGroupById, postGroup, saveFilters, saveGraphsPosition, updateGraphsPosition, updateSaveFilters
 } from "./chart.actions";
 import {fa} from "@faker-js/faker";
@@ -214,6 +214,15 @@ export const chartSlice = createSlice({
 
       .addCase(getChartTypes.fulfilled, (state, action) => {
         state.chartTypes = action.payload
+      })
+      .addCase(getGroupById.fulfilled, (state, action) => {
+        state.groupsChart = state.groupsChart.map(group => {
+          if(group.group_id === action.payload.group_id) {
+            return  action.payload
+          }
+
+          return group
+        })
       })
 
       .addCase(updateGraphsPosition.fulfilled, (state, action) => {

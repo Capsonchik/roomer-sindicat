@@ -7,7 +7,7 @@ import {FormProvider, useForm} from "react-hook-form";
 import {ChartFilters} from "../chartFilters/ChartFIlters";
 import {
   setActiveChart,
-  setFilterLoading,
+  setFilterLoading, setGraphsPosition,
   setOpenDrawer,
   setOriginalColors
 } from "../../../store/chartSlice/chart.slice";
@@ -20,7 +20,7 @@ import {
 import {
   deleteChartById,
   fetchAllChartsByGroupId,
-  fetchAllChartsFormatByGroupId,
+  fetchAllChartsFormatByGroupId, getGroupById,
   patchChartFormatting
 } from "../../../store/chartSlice/chart.actions";
 import {convertValuesByPercent} from "./convertValuesByPercent";
@@ -119,15 +119,24 @@ export const Chart = ({chart}) => {
   }, [originalColors]);
 
   const fetchCharts = (id) => {
-    console.log(111111,id)
-    dispatch(fetchAllChartsByGroupId({groupId: id, filter_data: activeFilters})).then(() => {
+    console.log(111111, id)
+    dispatch(fetchAllChartsByGroupId({
+      groupId: id,
+      filter_data: (activeFilters && Object.keys(activeFilters).length) ? activeFilters : {filter_data: []}
+    })).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(id));
     });
   }
 
   const handleDelete = () => {
+
+    dispatch(setGraphsPosition([]))
     dispatch(deleteChartById(chart.id)).then(() => {
-      fetchCharts(activeGroupId)
+      dispatch(getGroupById(activeGroupId)).then((res) => {
+        console.log(res.payload)
+        fetchCharts(activeGroupId)
+
+      })
 
       dispatch(getFilters(activeGroupId)).then(() => {
         dispatch(setFilterLoading('none'))

@@ -90,22 +90,22 @@ export const GroupFilters = ({groups}) => {
   }
 
   useEffect(() => {
-    console.log(filters)
+    // console.log(filters)
     if (!activeGroupId) return
     if (filters.length > 0) {
       const filterValues = filters.filter(filter => !filter.column_limit).map(filter => {
         const activeGroup = groups.find(group => group.group_id === activeGroupId);
         // console.log(Object.keys(activeGroup.saved_filters).length)
-        if (Object.keys(activeGroup.saved_filters).length) {
-          console.log(activeGroup.saved_filters.id)
+        if (activeGroup.saved_filters) {
           dispatch(setActiveSavedFilters(activeGroup.saved_filters.id))
 
         } else {
           dispatch(setActiveSavedFilters(null))
         }
-        const savedFilter = Object.keys(activeGroup.saved_filters).length
-          ? activeGroup.saved_filters.filter_data.find(innerFilter => innerFilter.filter_id === filter.filter_id)
+        const savedFilter = activeGroup.saved_filters
+          ? activeGroup.saved_filters.filter_data?.find(innerFilter => innerFilter.filter_id === filter.filter_id)
           : null
+          // console.log(activeGroup,filter.filter_id)
         return {
           filter_name: filter.filter_name,
           filter_id: filter.filter_id,
@@ -123,7 +123,7 @@ export const GroupFilters = ({groups}) => {
       // dispatch(setFilters({data: filterValues || [], activeGroupId}))
 
       const activeGroup = groups.find(group => group.group_id === activeGroupId);
-      const savedFilterId = Object.keys(activeGroup.saved_filters).length ? activeGroup.saved_filters.filter_id : null
+      const savedFilterId = activeGroup.saved_filters ? activeGroup.saved_filters.filter_id : null
       methods.reset({
         filters: filterValues,
         savedFilterId: savedFilterId

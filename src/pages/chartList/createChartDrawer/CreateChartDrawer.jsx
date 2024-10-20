@@ -6,7 +6,8 @@ import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useDispatch, useSelector} from "react-redux";
 import {
-  selectActiveGroupId, selectActiveReport, selectChartTypes,
+  selectActiveGraphsPosition,
+  selectActiveGroupId, selectActiveReport, selectChartTypes, selectGraphsPosition,
   selectGroupsReports,
   selectReportsClients
 } from "../../../store/chartSlice/chart.selectors";
@@ -17,9 +18,14 @@ import CustomToggle from "../../../components/rhfInputs/customToggle/CustomToggl
 import {
   createChart,
   fetchAllChartsByGroupId,
-  fetchAllChartsFormatByGroupId, getChartTypes
+  fetchAllChartsFormatByGroupId, getChartTypes, getGroupById, updateGraphsPosition
 } from "../../../store/chartSlice/chart.actions";
-import {setActiveGroup, setScrollTabs} from "../../../store/chartSlice/chart.slice";
+import {
+  setActiveGraphsPosition,
+  setActiveGroup,
+  setGraphsPosition,
+  setScrollTabs
+} from "../../../store/chartSlice/chart.slice";
 import {fetchColumnDB} from "../../../store/chartSlice/filter.actions";
 
 export const CreateChartDrawer = ({open, onClose}) => {
@@ -31,6 +37,9 @@ export const CreateChartDrawer = ({open, onClose}) => {
   const [errorDB, setErrorDB] = useState('')
   const [availableFields, setAvailableFields] = useState([])
   const dispatch = useDispatch();
+  const activeGraphsPosition = useSelector(selectActiveGraphsPosition);
+  const [activeGroupObj, setActiveGroupObj] = useState()
+  const graphsPosition = useSelector(selectGraphsPosition);
 
   const loginSchema = yup.object().shape({
     title: yup.string().required("Название обязательно"),
@@ -47,9 +56,21 @@ export const CreateChartDrawer = ({open, onClose}) => {
     shouldFocusError: false,
   })
 
+  // useEffect(() => {
+  //
+  //   const foundGroup = groupsReports.find((group) => group.group_id == activeGroupId)
+  //   if (foundGroup) {
+  //     setActiveGroupObj(foundGroup)
+  //   } else if (groupsReports.length) {
+  //     setActiveGroupObj(groupsReports[0])
+  //   }
+  //   // setFileList([])
+  //
+  // }, [activeGroupId, groupsReports])
+
   useEffect(() => {
     dispatch(getChartTypes())
-  },[])
+  }, [])
 
   useEffect(() => {
     methods.reset({
@@ -66,13 +87,54 @@ export const CreateChartDrawer = ({open, onClose}) => {
   }
 
   const handleCreateChart = (data) => {
+    console.log(graphsPosition)
+    const positions = graphsPosition.lg.slice()
+    const maxHeight = positions.reduce((acc, item) => {
+
+      acc = acc < item.h ? item.h : acc;
+
+      return acc
+
+    }, 0)
+    const newPosition = {
+      i: positions.length.toString(), // первый элемент должен сохранять свой индекс
+      x: 0,
+      y: maxHeight,
+      w: 12, // ширина элемента
+      h: 3, // высота элемента
+      minW: 3,
+      minH: 2,
+      maxW: 12,
+      static: false, // элемент также должен перемещаться
+    }
+    positions.push(newPosition)
+    // console.log(maxHeight)
+    // // return
+    // if (activeGraphsPosition) {
+    //   dispatch(updateGraphsPosition({
+    //     id: activeGraphsPosition,
+    //     graphs_position: positions,
+    //     groupId: activeGroupId
+    //   }))
+    //
+    // }
+    dispatch(setGraphsPosition(positions))
     const request = {
       ...data,
       author_id: 1,
       graph_format_id: data.type_chart
     }
-    // console.log(request)
-    dispatch(createChart(request))
+    console.log(activeGraphsPosition)
+    dispatch(createChart(request)).then((res) => {
+      if (activeGraphsPosition) {
+        dispatch(updateGraphsPosition({
+          id: activeGraphsPosition,
+          graphs_position: positions,
+          groupId: activeGroupId
+        }))
+        // dispatch(getGroupById(activeGroupId))
+      }
+    })
     dispatch(setActiveGroup(+data.group_id))
     const index = groupsReports.findIndex(group => {
       return +group.group_id === +data.group_id

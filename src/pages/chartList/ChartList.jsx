@@ -12,7 +12,7 @@ import {
   fetchAllClients, fetchChartById
 } from "../../store/chartSlice/chart.actions";
 import {
-  selectActiveClient, selectActiveGroupId, selectActiveReport,
+  selectActiveClient, selectActiveGraphsPosition, selectActiveGroupId, selectActiveReport,
   selectCharts,
   selectClients, selectErrorCharts, selectFilterLoading, selectFilters, selectGroupsReports,
   selectIsChartLoading, selectIsLoadDependentFilters, selectIsOpenDrawer,
@@ -61,6 +61,7 @@ export const ChartList = (props) => {
   const filterLoading = useSelector(selectFilterLoading);
   const filterDependentLoading = useSelector(selectIsLoadDependentFilters);
   const activeFilters = useSelector(selectActiveFilters)
+  const activeGraphsPosition = useSelector(selectActiveGraphsPosition);
   const [filtersState, setFiltersState] = useState([filters])
 
 
@@ -197,20 +198,27 @@ export const ChartList = (props) => {
     if (activeGroup?.graphs_position) {
       dispatch(setActiveGraphsPosition(activeGroup.graphs_position.id))
       positions = activeGroup.graphs_position.positions
-    }
-    else {
+    } else {
       dispatch(setActiveGraphsPosition(null))
     }
 
     return {lg: activeGroup?.graphs_position ? positions : layout};
   };
 
+  useEffect(() => {
+    if (activeGroup && activeGroup.graphs_position) {
+      dispatch(setGraphsPosition(activeGroup?.graphs_position.positions))
+
+    }
+
+  }, [activeGroup]);
 
   useEffect(() => {
     // Генерация лейаута при изменении массива data
     // const length =
     if (data.length) {
-      console.log(data.length,activeGroup?.graphs_position )
+      console.log(data.length, activeGroup?.graphs_position)
+      // if(data.length !== activeGroup?.graphs_position) return
       setLayouts(generateLayout(data));
     }
   }, [data]);
@@ -219,6 +227,10 @@ export const ChartList = (props) => {
     setLayouts(allLayouts);
     dispatch(setGraphsPosition(allLayouts))
   };
+
+  // if (!activeGroup) {
+  //   return <Loader size="lg" content="Загрузка..."/>;
+  // }
 
 
   return (
@@ -263,7 +275,7 @@ export const ChartList = (props) => {
                 }}>
                 <ShowcaseLayout
                   onLayoutChange={onLayoutChange}
-                  initialLayout={activeGroup?.graphs_position ? activeGroup.graphs_position.positions : layouts.lg}
+                  initialLayout={ layouts.lg}
                   charts={data}>
                 </ShowcaseLayout>
               </div>
@@ -271,29 +283,6 @@ export const ChartList = (props) => {
           )}
 
 
-          {/*{!filterDependentLoading && filterLoading !== 'load' && !isChartLoading && !resize && data[0]?.title && data.map((chart, index) => (*/}
-
-          {/*  <div style={{*/}
-          {/*    width: '100%',*/}
-          {/*    height: 'calc(100vh - 80px)',*/}
-          {/*    padding: '20px',*/}
-          {/*    overflowY: 'auto',*/}
-          {/*    overflowX: 'hidden'*/}
-          {/*  }}>*/}
-          {/*    <ShowcaseLayout onLayoutChange={onLayoutChange} initialLayout={layouts.lg}*/}
-          {/*                    chart={<ChartTypeView key={index} chart={chart}/>}>*/}
-          {/*      /!*<ChartTypeView key={index} chart={chart}/>*!/*/}
-          {/*    </ShowcaseLayout>*/}
-          {/*  </div>*/}
-          {/*))}*/}
-
-
-          {/*{dataLensCharts?.map(dataLensChart => {*/}
-          {/*  return (*/}
-          {/*   <DataLensChartItem dataLensChart={dataLensChart}/>*/}
-
-          {/*  )*/}
-          {/*})}*/}
         </div>}
 
         {activeReport && filterLoading !== 'load' && !isChartLoading && !data.length && (

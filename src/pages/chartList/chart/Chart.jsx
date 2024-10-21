@@ -31,6 +31,7 @@ import cl from "classnames";
 import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
 import {getFilters} from "../../../store/chartSlice/filter.actions";
 import {selectActiveFilters} from "../../../store/chartSlice/filter.slice";
+import {selectSelectedFilters} from "../../../store/chartSlice/filter.selectors";
 
 
 export const Chart = ({chart}) => {
@@ -45,6 +46,7 @@ export const Chart = ({chart}) => {
   const activeFilters = useSelector(selectActiveFilters)
   const filters = useSelector(selectFilters)
   const user = useSelector(selectCurrentUser)
+  const selectedFilters = useSelector(selectSelectedFilters)
   const [isDelete, setIsDelete] = useState(false)
   // console.log(chart)
   const inputs = methods.watch()
@@ -118,29 +120,32 @@ export const Chart = ({chart}) => {
 
   }, [originalColors]);
 
+  const selected = selectedFilters.map(filter=> ({filter_id:filter.filter_id, filter_values: filter.value})) || []
+
   const fetchCharts = (id) => {
     console.log(111111, id)
     dispatch(fetchAllChartsByGroupId({
       groupId: id,
-      filter_data: (activeFilters && Object.keys(activeFilters).length) ? activeFilters : {filter_data: []}
+      filter_data: selected ? {filter_data:selected} : {filter_data: []}
     })).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(id));
     });
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
 
-    dispatch(setGraphsPosition([]))
+    // dispatch(setGraphsPosition([]))
     dispatch(deleteChartById(chart.id)).then(() => {
-      dispatch(getGroupById(activeGroupId)).then((res) => {
-        console.log(res.payload)
+      // dispatch(getGroupById(activeGroupId)).then((res) => {
+      //   console.log(res.payload)
+      //   dispatch(setGraphsPosition(res.payload?.graphs_position?.positions))
+      //
+      // })
         fetchCharts(activeGroupId)
 
-      })
-
-      dispatch(getFilters(activeGroupId)).then(() => {
-        dispatch(setFilterLoading('none'))
-      })
+      // dispatch(getFilters(activeGroupId)).then(() => {
+      //   dispatch(setFilterLoading('none'))
+      // })
     })
     dispatch(setOpenDrawer(false))
   }

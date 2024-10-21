@@ -20,7 +20,7 @@ import {
 import {FilterItem} from "./FilterItem";
 import {Button} from "rsuite";
 import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
-import {setActiveSavedFilters} from "../../../store/chartSlice/filter.slice";
+import {setActiveSavedFilters, setSelectedFilters} from "../../../store/chartSlice/filter.slice";
 
 export const GroupFilters = ({groups}) => {
   const user = useSelector(selectCurrentUser)
@@ -213,6 +213,7 @@ export const GroupFilters = ({groups}) => {
       return
     } else {
       dispatch(setFilters(filters))
+      dispatch(setSelectedFilters(filters))
 
     }
 

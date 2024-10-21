@@ -7,7 +7,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectActiveGraphsPosition,
-  selectActiveGroupId, selectActiveReport, selectChartTypes, selectGraphsPosition,
+  selectActiveGroupId, selectActiveReport, selectChartTypes, selectFilters, selectGraphsPosition,
   selectGroupsReports,
   selectReportsClients
 } from "../../../store/chartSlice/chart.selectors";
@@ -27,6 +27,7 @@ import {
   setScrollTabs
 } from "../../../store/chartSlice/chart.slice";
 import {fetchColumnDB} from "../../../store/chartSlice/filter.actions";
+import {selectSelectedFilters} from "../../../store/chartSlice/filter.selectors";
 
 export const CreateChartDrawer = ({open, onClose}) => {
   const reportsClients = useSelector(selectReportsClients)
@@ -40,6 +41,9 @@ export const CreateChartDrawer = ({open, onClose}) => {
   const activeGraphsPosition = useSelector(selectActiveGraphsPosition);
   const [activeGroupObj, setActiveGroupObj] = useState()
   const graphsPosition = useSelector(selectGraphsPosition);
+  const filters = useSelector(selectFilters)
+  const selectedFilters = useSelector(selectSelectedFilters)
+
 
   const loginSchema = yup.object().shape({
     title: yup.string().required("Название обязательно"),
@@ -56,17 +60,17 @@ export const CreateChartDrawer = ({open, onClose}) => {
     shouldFocusError: false,
   })
 
-  // useEffect(() => {
-  //
-  //   const foundGroup = groupsReports.find((group) => group.group_id == activeGroupId)
-  //   if (foundGroup) {
-  //     setActiveGroupObj(foundGroup)
-  //   } else if (groupsReports.length) {
-  //     setActiveGroupObj(groupsReports[0])
-  //   }
-  //   // setFileList([])
-  //
-  // }, [activeGroupId, groupsReports])
+  useEffect(() => {
+
+    const foundGroup = groupsReports.find((group) => group.group_id == activeGroupId)
+    if (foundGroup) {
+      setActiveGroupObj(foundGroup)
+    } else if (groupsReports.length) {
+      setActiveGroupObj(groupsReports[0])
+    }
+    // setFileList([])
+
+  }, [activeGroupId, groupsReports])
 
   useEffect(() => {
     dispatch(getChartTypes())
@@ -80,8 +84,17 @@ export const CreateChartDrawer = ({open, onClose}) => {
     })
   }, [activeGroupId]);
 
+
+
   const fetchCharts = (id) => {
-    dispatch(fetchAllChartsByGroupId({groupId: id})).then(() => {
+    console.log(selectedFilters)
+    const filterData = {
+      filter_data: activeGroupObj?.saved_filters?.filter_data?.filter(saveFilter => {
+        console.log(saveFilter,filters)
+        return !filters.some(filter => filter.filter_id === saveFilter.filter_id && !filter.isactive)
+      }) || selectedFilters.map(filter=> ({filter_id:filter.filter_id, filter_values: filter.value})) || []
+    }
+    dispatch(fetchAllChartsByGroupId({groupId: id,filter_data:filterData})).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(id));
     });
   }
@@ -126,14 +139,27 @@ export const CreateChartDrawer = ({open, onClose}) => {
     }
     console.log(activeGraphsPosition)
     dispatch(createChart(request)).then((res) => {
-      if (activeGraphsPosition) {
-        dispatch(updateGraphsPosition({
-          id: activeGraphsPosition,
-          graphs_position: positions,
-          groupId: activeGroupId
-        }))
-        // dispatch(getGroupById(activeGroupId))
-      }
+      dispatch(getGroupById(activeGroupId)).then((res) => {
+        console.log(res.payload.id)
+        if(res.payload.id) {
+          dispatch(updateGraphsPosition({
+            id: activeGraphsPosition,
+            graphs_position: positions,
+            groupId: activeGroupId
+          }))
+        }
+      })
+      // if (activeGraphsPosition) {
+      //   dispatch(updateGraphsPosition({
+      //     id: activeGraphsPosition,
+      //     graphs_position: positions,
+      //     groupId: activeGroupId
+      //   })).then(() => {
+      //     // console.log(f)
+      //
+      //
+      //   })
+      // }
     })
     dispatch(setActiveGroup(+data.group_id))
     const index = groupsReports.findIndex(group => {
@@ -143,6 +169,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
 
     // задержка чтобы успело создаться в базе
     setTimeout(() => {
+      console.log(filters)
       fetchCharts(+data.group_id)
     }, 500)
     methods.reset({})

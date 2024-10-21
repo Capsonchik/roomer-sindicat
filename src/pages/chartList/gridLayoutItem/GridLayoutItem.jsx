@@ -4,8 +4,9 @@ import _ from "lodash";
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import {ChartTypeView} from "../chartTypeView/ChartTypeView";
-import {selectIsEditableMode} from "../../../store/chartSlice/chart.selectors";
+import {selectActiveGraphsPosition, selectIsEditableMode} from "../../../store/chartSlice/chart.selectors";
 import {useSelector} from "react-redux";
+import {Loader} from "rsuite";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 
@@ -13,13 +14,17 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
   const [currentBreakpoint, setCurrentBreakpoint] = useState("lg");
   const [compactType, setCompactType] = useState("vertical");
   const isEditableMode = useSelector(selectIsEditableMode);
+
   const [layouts, setLayouts] = useState({ lg: initialLayout });
   console.log(initialLayout,charts)
   useEffect(() => {
+    // if(initialLayout.length !== charts.length) return
     setLayouts({ lg: initialLayout });
-  }, [initialLayout]);
+  }, [initialLayout.length,charts.length]);
 
   const generateDOM = () => {
+    if(layouts.lg.length !== charts.length) return
+    console.log(layouts.lg,charts)
     return _.map(layouts.lg, (l, i) => (
       <div key={i} className={l.static ? "static" : ""}
            style={{
@@ -63,6 +68,9 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
     setLayouts(layouts);
     onLayoutChange(layout, layouts);
   };
+  if(initialLayout.length !== charts.length) {
+    return <Loader/>
+  }
 
   return (
     <div>

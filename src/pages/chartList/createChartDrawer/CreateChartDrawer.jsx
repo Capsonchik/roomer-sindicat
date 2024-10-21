@@ -22,7 +22,7 @@ import {
 } from "../../../store/chartSlice/chart.actions";
 import {
   setActiveGraphsPosition,
-  setActiveGroup,
+  setActiveGroup, setFilterLoading,
   setGraphsPosition,
   setScrollTabs
 } from "../../../store/chartSlice/chart.slice";
@@ -85,18 +85,20 @@ export const CreateChartDrawer = ({open, onClose}) => {
   }, [activeGroupId]);
 
 
-
-  const fetchCharts = (id) => {
+  const fetchCharts = async (id) => {
     console.log(selectedFilters)
     const filterData = {
       filter_data: activeGroupObj?.saved_filters?.filter_data?.filter(saveFilter => {
-        console.log(saveFilter,filters)
+        console.log(saveFilter, filters)
         return !filters.some(filter => filter.filter_id === saveFilter.filter_id && !filter.isactive)
-      }) || selectedFilters.map(filter=> ({filter_id:filter.filter_id, filter_values: filter.value})) || []
+      }) || selectedFilters.map(filter => ({filter_id: filter.filter_id, filter_values: filter.value})) || []
     }
-    dispatch(fetchAllChartsByGroupId({groupId: id,filter_data:filterData})).then(() => {
-      dispatch(fetchAllChartsFormatByGroupId(id));
-    });
+    dispatch(fetchAllChartsByGroupId({groupId: id, filter_data: filterData}))
+      .then(() => {
+        dispatch(fetchAllChartsFormatByGroupId(id));
+      }).then(() => {
+
+    })
   }
 
   const handleCreateChart = (data) => {
@@ -104,7 +106,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
     const positions = graphsPosition.lg.slice()
     const maxHeight = positions.reduce((acc, item) => {
 
-      if(!acc['y']) {
+      if (!acc['y']) {
         acc['y'] = item.y
         acc['h'] = item.h
       }
@@ -117,7 +119,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
 
       return acc
 
-    }, {h:0,y:0})
+    }, {h: 0, y: 0})
     const newPosition = {
       i: positions.length.toString(), // первый элемент должен сохранять свой индекс
       x: 0,
@@ -147,7 +149,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
       graph_format_id: data.type_chart
     }
     console.log(activeGraphsPosition)
-    dispatch(createChart(request)).then(async(res) => {
+    dispatch(createChart(request)).then(async (res) => {
       const update = async () => {
         if (activeGraphsPosition) {
           dispatch(updateGraphsPosition({
@@ -160,17 +162,14 @@ export const CreateChartDrawer = ({open, onClose}) => {
       await update()
 
 
-      dispatch(getGroupById(activeGroupId)).then((res) => {
-        console.log(res.payload.id)
-        // if(res.payload.id) {
-        //   dispatch(updateGraphsPosition({
-        //     id: res.payload.id,
-        //     graphs_position: positions,
-        //     groupId: activeGroupId
-        //   }))
-        // }
+      fetchCharts(+data.group_id).then(() => {
+        dispatch(getGroupById(activeGroupId)).then((res) => {
+          console.log(res.payload.id)
+
+        }).then(() => {
+          dispatch(setFilterLoading('idle'))
+        })
       })
-      fetchCharts(+data.group_id)
       // if (activeGraphsPosition) {
       //   dispatch(updateGraphsPosition({
       //     id: activeGraphsPosition,

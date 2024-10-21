@@ -241,7 +241,7 @@ export const ChartList = (props) => {
       <GroupFilters groups={groups}/>
       <div
         className={styles.list}>
-        {(filterLoading === 'load') && (
+        {isChartLoading && (
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>
@@ -262,7 +262,7 @@ export const ChartList = (props) => {
           })}
         >
 
-          {(filterLoading !== 'load' || !isChartLoading) && data[0]?.title && (
+          {(!filterLoading || !isChartLoading) && data[0]?.title && (
             <>
 
               <div
@@ -286,7 +286,7 @@ export const ChartList = (props) => {
 
         </div>}
 
-        {activeReport && filterLoading !== 'load' && !isChartLoading && !data.length && (
+        {activeReport && !filterLoading && !isChartLoading && !data.length && (
           <div className={styles.placeholder}>
             <Divider>{errorCharts ? 'По выбранным фильтрам нет данных' : 'Нет графиков'}</Divider>
 

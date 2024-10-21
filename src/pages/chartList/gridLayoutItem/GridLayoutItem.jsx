@@ -51,6 +51,7 @@ const generateInitial = (data) => {
         minW: 3,
         minH: 2,
         maxW: 12,
+        moved:true,
         static: false, // элемент также должен перемещаться
       };
     }
@@ -80,11 +81,11 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
   useEffect(() => {
     // if(initialLayout.length !== charts.length) return
     setLayouts({ lg: initialLayout });
-  }, [initialLayout.length,charts.length,graphsPosition]);
+  }, [initialLayout.length]);
 
   const generateDOM = () => {
     if(layouts.lg.length !== charts.length) {
-      setLayouts(generateInitial(charts));
+      // setLayouts(generateInitial(charts));
       return
     }
     console.log(layouts.lg,charts)
@@ -131,9 +132,9 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
     setLayouts(layouts);
     onLayoutChange(layout, layouts);
   };
-  if(initialLayout.length !== charts.length) {
-    return <Loader/>
-  }
+  // if(initialLayout.length !== charts.length) {
+  //   return <Loader/>
+  // }
 
   return (
     <div>

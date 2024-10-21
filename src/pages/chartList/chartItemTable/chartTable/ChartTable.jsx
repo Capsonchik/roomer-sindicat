@@ -16,8 +16,8 @@ const {Column, HeaderCell, Cell} = Table;
 const CompactCell = props => <Cell {...props} style={{padding: 4}}/>;
 const CompactHeaderCell = props => <HeaderCell {...props} style={{padding: 4}}/>;
 
-export const ChartTable = ({sittings}) => {
-
+export const ChartTable = ({sittings, table_data}) => {
+  console.log(table_data)
   const dispatch = useDispatch();
 
   // Получаем сортировку и столбцы из Redux
@@ -32,7 +32,17 @@ export const ChartTable = ({sittings}) => {
   // Инициализация колонок на основе Redux
   useEffect(() => {
     const visibleColumns = DEFAULT_COLUMNS.filter((column) => columnKeys.includes(column.key));
-    setColumns(visibleColumns);
+    console.log('visibleColumns', visibleColumns);
+    setColumns(Object.keys(table_data[0]).map(column => {
+      return {
+        key: column,
+        label: column,
+        fixed: true,
+        width: 70,
+        customColor: true
+      }
+    }));
+    // setColumns(visibleColumns);
   }, [columnKeys]);
 
   const CustomCell = sittings?.compact ? CompactCell : Cell;
@@ -66,7 +76,7 @@ export const ChartTable = ({sittings}) => {
 
   const getData = () => {
     if (sortColumn && sortType) {
-      return data.sort((a, b) => {
+      return table_data.sort((a, b) => {
         let x = a[sortColumn];
         let y = b[sortColumn];
         if (typeof x === 'string') {
@@ -95,7 +105,7 @@ export const ChartTable = ({sittings}) => {
       hover={sittings?.hover}
       showHeader={sittings?.showHeader}
       autoHeight={sittings?.autoHeight}
-      data={getData()}
+      data={table_data}
       sortColumn={sortColumn}
       sortType={sortType}
       onSortColumn={handleSortColumn}

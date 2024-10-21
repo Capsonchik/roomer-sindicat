@@ -12,6 +12,7 @@ import {setTableSittings} from "../../../store/tableSlice/table.slice";
 import {selectTableSittings} from "../../../store/tableSlice/table.selectors";
 
 export const ChartItemTable = ({chart}) => {
+  // console.log(chart)
   const dispatch = useDispatch();
 
   const sittings = useSelector(selectTableSittings);
@@ -46,7 +47,7 @@ export const ChartItemTable = ({chart}) => {
 
       </div>
 
-      <ChartTable format={chart.formatting} sittings={sittings}/>
+      <ChartTable format={chart.formatting} sittings={sittings} table_data={chart['0'].table_data} exportToExel={exportToExel}/>
 
     </div>
   )

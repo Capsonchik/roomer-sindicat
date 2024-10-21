@@ -123,7 +123,7 @@ export const ChartTableEditor = ({chart}) => {
 
       <Heading level={6}>Визуализация измененной таблицы</Heading>
 
-      <ChartTable format={chart.formatting} sittings={sittings}/>
+      <ChartTable table_data={chart[0].table_data} format={chart.formatting} sittings={sittings}/>
 
       <div className={styles.buttons}>
         <Button className={styles.delete_btn}>Удалить</Button>

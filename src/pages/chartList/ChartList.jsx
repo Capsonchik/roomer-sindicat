@@ -14,7 +14,7 @@ import {
 import {
   selectActiveClient, selectActiveGraphsPosition, selectActiveGroupId, selectActiveReport,
   selectCharts,
-  selectClients, selectErrorCharts, selectFilterLoading, selectFilters, selectGroupsReports,
+  selectClients, selectErrorCharts, selectFilterLoading, selectFilters, selectGraphsPosition, selectGroupsReports,
   selectIsChartLoading, selectIsLoadDependentFilters, selectIsOpenDrawer,
   selectReportsClients
 } from "../../store/chartSlice/chart.selectors";
@@ -63,6 +63,7 @@ export const ChartList = (props) => {
   const activeFilters = useSelector(selectActiveFilters)
   const activeGraphsPosition = useSelector(selectActiveGraphsPosition);
   const [filtersState, setFiltersState] = useState([filters])
+  const graphsPosition = useSelector(selectGraphsPosition);
 
 
   const [activeGroup, setActiveGroup] = useState()
@@ -86,7 +87,7 @@ export const ChartList = (props) => {
     }
     // setActiveGroup(foundGroup)
 
-  }, [activeGroupId, groups, filterLoading])
+  }, [activeGroupId, groups, filterLoading,charts])
 
   useEffect(() => {
     if (!activeClient) {
@@ -221,7 +222,7 @@ export const ChartList = (props) => {
       // if(data.length !== activeGroup?.graphs_position) return
       setLayouts(generateLayout(data));
     }
-  }, [data]);
+  }, [data.length,activeGroup ]);
 
   const onLayoutChange = (layout, allLayouts) => {
     setLayouts(allLayouts);
@@ -275,7 +276,7 @@ export const ChartList = (props) => {
                 }}>
                 <ShowcaseLayout
                   onLayoutChange={onLayoutChange}
-                  initialLayout={ layouts.lg}
+                  initialLayout={activeGroup?.graphs_position?.positions ? activeGroup?.graphs_position?.positions: layouts.lg}
                   charts={data}>
                 </ShowcaseLayout>
               </div>

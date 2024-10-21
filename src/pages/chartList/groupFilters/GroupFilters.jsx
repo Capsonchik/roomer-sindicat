@@ -145,8 +145,8 @@ export const GroupFilters = ({groups}) => {
           }
         })
         // setFilters(filters.map(filter => ({filter_id:filter.filter_id, filter_values:filter.filter_values})))
-
-
+        const selected = request.map(filter => ({filter_id:filter.filter_id,value:filter.filter_values}))
+        dispatch(setSelectedFilters(selected))
         dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request || []}}))
           .then(() => {
             dispatch(fetchAllChartsFormatByGroupId(activeGroupId));

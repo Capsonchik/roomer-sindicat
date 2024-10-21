@@ -120,13 +120,13 @@ export const Chart = ({chart}) => {
 
   }, [originalColors]);
 
-  const selected = selectedFilters.map(filter=> ({filter_id:filter.filter_id, filter_values: filter.value})) || []
 
   const fetchCharts = (id) => {
-    console.log(111111, id)
+    const selected = selectedFilters.map(filter => ({filter_id: filter.filter_id, filter_values: filter.value})) || []
+    console.log(111111, id,selected)
     dispatch(fetchAllChartsByGroupId({
       groupId: id,
-      filter_data: selected ? {filter_data:selected} : {filter_data: []}
+      filter_data: selected ? {filter_data: selected} : {filter_data: []}
     })).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(id));
     });
@@ -136,12 +136,13 @@ export const Chart = ({chart}) => {
 
     // dispatch(setGraphsPosition([]))
     dispatch(deleteChartById(chart.id)).then(() => {
-      // dispatch(getGroupById(activeGroupId)).then((res) => {
-      //   console.log(res.payload)
-      //   dispatch(setGraphsPosition(res.payload?.graphs_position?.positions))
-      //
-      // })
+      dispatch(getGroupById(activeGroupId)).then((res) => {
+        console.log(res.payload)
+        dispatch(setGraphsPosition(res.payload?.graphs_position?.positions))
         fetchCharts(activeGroupId)
+
+
+      })
 
       // dispatch(getFilters(activeGroupId)).then(() => {
       //   dispatch(setFilterLoading('none'))

@@ -4,26 +4,89 @@ import _ from "lodash";
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import {ChartTypeView} from "../chartTypeView/ChartTypeView";
-import {selectActiveGraphsPosition, selectIsEditableMode} from "../../../store/chartSlice/chart.selectors";
+import {
+  selectActiveGraphsPosition,
+  selectGraphsPosition,
+  selectIsEditableMode
+} from "../../../store/chartSlice/chart.selectors";
 import {useSelector} from "react-redux";
 import {Loader} from "rsuite";
+import {setActiveGraphsPosition} from "../../../store/chartSlice/chart.slice";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+const generateInitial = (data) => {
+  const layout = data.map((item, index) => ({
+    i: String(index), // уникальный идентификатор, оставляем индекс без изменений
+    x: (index % 2) * 6, // два элемента в строке, по 6 единиц ширины каждый
+    y: Math.floor(index / 2) * 2, // каждые два элемента на новой строке
+    w: 6, // ширина элемента (половина ширины контейнера)
+    h: 2, // высота элемента
+    minW: 3, // минимальная ширина
+    minH: 2, // минимальная высота
+    maxW: 12, // максимальная ширина
+    static: false, // чтобы элемент можно было перемещать
+  }));
+
+  // Специально обновляем первый элемент, делаем его таким же по ширине, как и остальные
+  if (layout.length > 0) {
+    layout[0] = {
+      i: "0", // первый элемент должен сохранять свой индекс
+      x: 0,
+      y: 0,
+      w: 6, // ширина элемента
+      h: 2, // высота элемента
+      minW: 3,
+      minH: 2,
+      maxW: 12,
+      static: false, // элемент также должен перемещаться
+    };
+
+    if (layout.length === 1) {
+      layout[0] = {
+        i: "0", // первый элемент должен сохранять свой индекс
+        x: 0,
+        y: 0,
+        w: 12, // ширина элемента
+        h: 3, // высота элемента
+        minW: 3,
+        minH: 2,
+        maxW: 12,
+        static: false, // элемент также должен перемещаться
+      };
+    }
+  }
+  // console.log(activeGroup)
+  // let positions = []
+  // // console.log(activeGroup)
+  // if (activeGroup?.graphs_position) {
+  //   dispatch(setActiveGraphsPosition(activeGroup.graphs_position.id))
+  //   positions = activeGroup.graphs_position.positions
+  // } else {
+  //   dispatch(setActiveGraphsPosition(null))
+  // }
+
+  return {lg:  layout};
+};
 
 
 const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
   const [currentBreakpoint, setCurrentBreakpoint] = useState("lg");
   const [compactType, setCompactType] = useState("vertical");
   const isEditableMode = useSelector(selectIsEditableMode);
+  const graphsPosition = useSelector(selectGraphsPosition);
 
   const [layouts, setLayouts] = useState({ lg: initialLayout });
   console.log(initialLayout,charts)
   useEffect(() => {
     // if(initialLayout.length !== charts.length) return
     setLayouts({ lg: initialLayout });
-  }, [initialLayout.length,charts.length]);
+  }, [initialLayout.length,charts.length,graphsPosition]);
 
   const generateDOM = () => {
-    if(layouts.lg.length !== charts.length) return
+    if(layouts.lg.length !== charts.length) {
+      setLayouts(generateInitial(charts));
+      return
+    }
     console.log(layouts.lg,charts)
     return _.map(layouts.lg, (l, i) => (
       <div key={i} className={l.static ? "static" : ""}

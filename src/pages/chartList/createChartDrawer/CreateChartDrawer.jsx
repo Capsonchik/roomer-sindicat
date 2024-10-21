@@ -104,15 +104,24 @@ export const CreateChartDrawer = ({open, onClose}) => {
     const positions = graphsPosition.lg.slice()
     const maxHeight = positions.reduce((acc, item) => {
 
-      acc = acc < item.h ? item.h : acc;
+      if(!acc['y']) {
+        acc['y'] = item.y
+        acc['h'] = item.h
+      }
+
+      if (acc['y'] < item.y) {
+        acc['y'] = item.y
+        acc['h'] = item.h
+      }
+      // acc[y] = acc < item.y ? item.y : acc;
 
       return acc
 
-    }, 0)
+    }, {h:0,y:0})
     const newPosition = {
       i: positions.length.toString(), // первый элемент должен сохранять свой индекс
       x: 0,
-      y: maxHeight,
+      y: maxHeight.y + maxHeight.h,
       w: 12, // ширина элемента
       h: 3, // высота элемента
       minW: 3,
@@ -138,17 +147,30 @@ export const CreateChartDrawer = ({open, onClose}) => {
       graph_format_id: data.type_chart
     }
     console.log(activeGraphsPosition)
-    dispatch(createChart(request)).then((res) => {
-      dispatch(getGroupById(activeGroupId)).then((res) => {
-        console.log(res.payload.id)
-        if(res.payload.id) {
+    dispatch(createChart(request)).then(async(res) => {
+      const update = async () => {
+        if (activeGraphsPosition) {
           dispatch(updateGraphsPosition({
             id: activeGraphsPosition,
             graphs_position: positions,
             groupId: activeGroupId
           }))
         }
+      }
+      await update()
+
+
+      dispatch(getGroupById(activeGroupId)).then((res) => {
+        console.log(res.payload.id)
+        // if(res.payload.id) {
+        //   dispatch(updateGraphsPosition({
+        //     id: res.payload.id,
+        //     graphs_position: positions,
+        //     groupId: activeGroupId
+        //   }))
+        // }
       })
+      fetchCharts(+data.group_id)
       // if (activeGraphsPosition) {
       //   dispatch(updateGraphsPosition({
       //     id: activeGraphsPosition,
@@ -167,11 +189,11 @@ export const CreateChartDrawer = ({open, onClose}) => {
     })
     dispatch(setScrollTabs(index))
 
-    // задержка чтобы успело создаться в базе
-    setTimeout(() => {
-      console.log(filters)
-      fetchCharts(+data.group_id)
-    }, 500)
+    // // задержка чтобы успело создаться в базе
+    // setTimeout(() => {
+    //   console.log(filters)
+    //   fetchCharts(+data.group_id)
+    // }, 500)
     methods.reset({})
     onClose()
 

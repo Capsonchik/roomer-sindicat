@@ -88,7 +88,7 @@ export const ChartTable = ({sittings, table_data}) => {
         return sortType === 'asc' ? x - y : y - x;
       });
     }
-    return data;
+    return table_data;
   };
 
   const handleSortColumn = (sortColumn, sortType) => {
@@ -98,6 +98,7 @@ export const ChartTable = ({sittings, table_data}) => {
       dispatch(setTableSortColumn({column: sortColumn, type: sortType}));
     }, 500);
   };
+  console.log(getData())
 
   return (
     <Table
@@ -105,7 +106,7 @@ export const ChartTable = ({sittings, table_data}) => {
       hover={sittings?.hover}
       showHeader={sittings?.showHeader}
       autoHeight={sittings?.autoHeight}
-      data={table_data}
+      data={getData()}
       sortColumn={sortColumn}
       sortType={sortType}
       onSortColumn={handleSortColumn}

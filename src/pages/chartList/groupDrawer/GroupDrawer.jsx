@@ -27,7 +27,7 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
   const loginSchema = yup.object().shape({
     title: yup.string().required("Название обязательно"),
     report_id: yup.string().required("Название обязательно"),
-    description: yup.string().required("Описание обязательно").max(200, 'Маскимальное количетсво символов 200'), // Add the password field
+    description: yup.string().max(200, 'Маскимальное количество символов 200'), // Add the password field
   });
 
   const methods = useForm({

@@ -47,7 +47,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
 
   const loginSchema = yup.object().shape({
     title: yup.string().required("Название обязательно"),
-    description: yup.string().required("Описание обязательно").max(200, 'Маскимальное количетсво символов 200'), // Add the password field
+    description: yup.string().max(200, 'Маскимальное количетсво символов 200'), // Add the password field
     db_adress: yup.string().required("Название обязательно"),
     xvalue: yup.string().required("Название обязательно"),
     yvalue: yup.string().required("Название обязательно"),

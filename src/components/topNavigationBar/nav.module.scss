@@ -1,13 +1,10 @@
-
 .nav_item {
-  transition: all .3s;
+  color: white;
+  padding: 10px;
+  transition: all 0.3s;
 
   &:hover {
-    background-color: #de7405 !important;
-    color: #fff !important;
-    //span {
-    //  background: #de7405;
-    //
-    //}
+    background: linear-gradient(90deg, #FF8200, #FF8200); // Цвет по умолчанию
+    color: white;
   }
 }

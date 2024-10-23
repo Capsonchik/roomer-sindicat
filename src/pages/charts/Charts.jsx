@@ -17,6 +17,8 @@ export const Charts = () => {
   return (
     <div>
       <Outlet/>
+
+
     </div>
   )
 }

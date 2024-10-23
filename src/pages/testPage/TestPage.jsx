@@ -8,6 +8,7 @@ import {selectCurrentUser} from "../../store/userSlice/user.selectors";
 import {fetchGetUser} from "../../store/main.actions";
 import {axiosLoginRequest} from "../../api/ApiConfig";
 import styles from './styles.module.scss'
+import {GroupFilters} from "../chartList/groupFilters/GroupFilters";
 
 export const TestPage = () => {
   const dispatch = useDispatch();

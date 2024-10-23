@@ -9,6 +9,7 @@ import {fetchGetUser} from "../../store/main.actions";
 import {axiosLoginRequest} from "../../api/ApiConfig";
 import styles from './styles.module.scss'
 import {GroupFilters} from "../chartList/groupFilters/GroupFilters";
+import {GroupFiltersWrapper, GroupFIltersWrapper} from "../chartList/groupFilters/GroupFIltersWrapper";
 
 export const TestPage = () => {
   const dispatch = useDispatch();

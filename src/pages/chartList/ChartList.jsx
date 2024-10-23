@@ -44,6 +44,7 @@ import {fetchGetGraphs} from "../../store/reportSlice/reportSlice.actions";
 import {DataLensChartItem} from "./dataLensChartItem/DataLensChartItem";
 import ShowcaseLayout from "./gridLayoutItem/GridLayoutItem";
 import {TableTest} from "./tableTest/TableTest";
+import {GroupFiltersWrapper} from "./groupFilters/GroupFIltersWrapper";
 // import {charts} from "./chartMocks";
 
 export const ChartList = (props) => {
@@ -259,7 +260,8 @@ export const ChartList = (props) => {
 
       </div>
       <div ref={groupFiltersRef}>
-      <GroupFilters groups={groups}/>
+        {/*GroupFiltersWrapper*/}
+      <GroupFiltersWrapper groups={groups}/>
 
       </div>
       <div

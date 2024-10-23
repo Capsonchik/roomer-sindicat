@@ -54,7 +54,7 @@ export const TopNavigationBar = () => {
   // box-shadow: 5px 4px 18px -2px rgba(34, 60, 80, 0.2);
   return (
     <Navbar style={{
-      background: gradient,
+      background: colors.length > 1 ? gradient : colors[0],
       borderRadius: 8,
       margin: 15,
       color: 'white',

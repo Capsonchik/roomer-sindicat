@@ -26,6 +26,22 @@ export const CustomInput = (
   } = useFormContext();
   // console.log(errors)
   const inputRef = useRef(null);
+  const errorMessage = typeof errors[name]?.message === "string" ? errors[name]?.message : '';
+  useEffect(() => {
+    if (errorMessage) {
+      // setIsFadingOut(false); // Убираем состояние исчезновения при появлении ошибки
+      const timeout = setTimeout(() => {
+        // setIsFadingOut(true); // Включаем исчезновение через 3 секунды
+        setTimeout(() => {
+          clearErrors(name); // Очищаем ошибку через 3 секунды после включения fadeOut
+        }, 300); // Длительность исчезновения
+      }, 3000); // Пауза перед началом исчезновения
+
+      return () => clearTimeout(timeout); // Очистка таймера при размонтировании
+    } else {
+      // setIsFadingOut(false); // Если ошибки нет, убираем состояние исчезновения
+    }
+  }, [errorMessage, clearErrors, name]);
 
   // useEffect(() => {
   //   const handleClickOutside = (e) => {
@@ -42,7 +58,7 @@ export const CustomInput = (
   // }, []);
 
   // Приведение ошибки к строке
-  const errorMessage = typeof errors[name]?.message === "string" ? errors[name]?.message : '';
+
 
   return (
     <div className={cl(styles.inputWrapper, className)} ref={inputRef}>

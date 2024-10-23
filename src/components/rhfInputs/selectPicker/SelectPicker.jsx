@@ -19,7 +19,8 @@ export const CustomSelectPicker = (
     preventOverflow,
     disabled = false,
     conditionForButton = false,  // условие для отображения кнопки
-    buttonFunction = () => {},
+    buttonFunction = () => {
+    },
     loading
   }
 ) => {
@@ -77,33 +78,43 @@ export const CustomSelectPicker = (
         name={name}
         control={control}
         render={({field}) => (
-          <SelectPicker
-            menuStyle={{ maxWidth: 200 }}
-            disabled={disabled}
-            defaultValue={defaultValue}
-            {...field}
-            data={data}
-            onChange={(selectedValue) => {
-              field.onChange(selectedValue);
-              onChangeOutside && onChangeOutside(selectedValue);
-            }}
-            searchable={searchable}
-            appearance={appearance}
-            placement={placement}
-            placeholder={placeholder}
-            className={className || styles.type}
-            container={container}
-            loading={loading}
-            renderExtraFooter={() =>
-              conditionForButton && (
-                <div className={styles.actionButtonWrapper}>
-                  <Button onClick={buttonFunction} appearance="primary" className={styles.actionButton}>
-                    Загрузить еще
-                  </Button>
-                </div>
-              )
-            }
-          />
+          <>
+            <SelectPicker
+              menuStyle={{maxWidth: 200}}
+              disabled={disabled}
+              defaultValue={defaultValue}
+              {...field}
+              data={data}
+              onChange={(selectedValue) => {
+                field.onChange(selectedValue);
+                onChangeOutside && onChangeOutside(selectedValue);
+              }}
+              searchable={searchable}
+              appearance={appearance}
+              placement={placement}
+              placeholder={placeholder}
+              className={className || styles.type}
+              container={container}
+              loading={loading}
+              renderExtraFooter={() =>
+                conditionForButton && (
+                  <div className={styles.actionButtonWrapper}>
+                    <Button onClick={buttonFunction} appearance="primary" className={styles.actionButton}>
+                      Загрузить еще
+                    </Button>
+                  </div>
+                )
+              }
+            />
+            {errorMessage && (
+              <div className={cl(styles.inputError, {
+                [styles.hasError]: !!errorMessage,
+                // [styles.fadeOut]: isFadingOut, // Применение класса fadeOut, если ошибка исчезает
+              })}>
+                {errorMessage}
+              </div>
+            )}
+          </>
         )}
       />
     </div>

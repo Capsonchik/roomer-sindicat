@@ -49,8 +49,8 @@ export const CreateChartDrawer = ({open, onClose}) => {
     title: yup.string().required("Название обязательно"),
     description: yup.string().max(200, 'Маскимальное количетсво символов 200'), // Add the password field
     db_adress: yup.string().required("Название обязательно"),
-    xvalue: yup.string().required("Название обязательно"),
-    yvalue: yup.string().required("Название обязательно"),
+    xvalue: yup.string(),
+    yvalue: yup.string(),
     group_id: yup.string().required("Название обязательно"),
     report_id: yup.string().required("Название обязательно"),
   });
@@ -59,6 +59,13 @@ export const CreateChartDrawer = ({open, onClose}) => {
     resolver: yupResolver(loginSchema),
     shouldFocusError: false,
   })
+
+  useEffect(() => {
+    if (!open) {
+      setAvailableFields([])
+    }
+
+  }, [open]);
 
   useEffect(() => {
 
@@ -102,53 +109,60 @@ export const CreateChartDrawer = ({open, onClose}) => {
   }
 
   const handleCreateChart = (data) => {
-    console.log(graphsPosition)
-    const positions = graphsPosition.lg.slice()
-    const maxHeight = positions.reduce((acc, item) => {
-
-      if (!acc['y']) {
-        acc['y'] = item.y
-        acc['h'] = item.h
-      }
-
-      if (acc['y'] < item.y) {
-        acc['y'] = item.y
-        acc['h'] = item.h
-      }
-      // acc[y] = acc < item.y ? item.y : acc;
-
-      return acc
-
-    }, {h: 0, y: 0})
-    const newPosition = {
-      i: positions.length.toString(), // первый элемент должен сохранять свой индекс
-      x: 0,
-      y: maxHeight.y + maxHeight.h,
-      w: 12, // ширина элемента
-      h: 3, // высота элемента
-      minW: 3,
-      minH: 2,
-      maxW: 12,
-      static: false, // элемент также должен перемещаться
+    if (!data.type_chart) {
+      methods.setError('type_chart', {message: 'поле обязательно'})
+      return
     }
-    positions.push(newPosition)
-    // console.log(maxHeight)
-    // // return
-    // if (activeGraphsPosition) {
-    //   dispatch(updateGraphsPosition({
-    //     id: activeGraphsPosition,
-    //     graphs_position: positions,
-    //     groupId: activeGroupId
-    //   }))
-    //
-    // }
-    dispatch(setGraphsPosition(positions))
+    if ((data.type_chart === 1 || data.type_chart === 2) && !methods.getValues('xvalue')) {
+      methods.setError('xvalue', {message: 'поле обязательно'})
+      return
+    }
+    if ((data.type_chart === 1 || data.type_chart === 2) && !methods.getValues('yvalue')) {
+      methods.setError('yvalue', {message: 'поле обязательно'})
+      return
+    }
+    let positions = []
+    if (graphsPosition?.lg) {
+      positions = graphsPosition.lg.slice()
+      const maxHeight = positions.reduce((acc, item) => {
+
+        if (!acc['y']) {
+          acc['y'] = item.y
+          acc['h'] = item.h
+        }
+
+        if (acc['y'] < item.y) {
+          acc['y'] = item.y
+          acc['h'] = item.h
+        }
+        // acc[y] = acc < item.y ? item.y : acc;
+
+        return acc
+
+      }, {h: 0, y: 0})
+      const newPosition = {
+        i: positions.length.toString(), // первый элемент должен сохранять свой индекс
+        x: 0,
+        y: maxHeight.y + maxHeight.h,
+        w: 12, // ширина элемента
+        h: 3, // высота элемента
+        minW: 3,
+        minH: 2,
+        maxW: 12,
+        static: false, // элемент также должен перемещаться
+      }
+      positions.push(newPosition)
+
+      dispatch(setGraphsPosition(positions))
+
+    }
     const request = {
       ...data,
       author_id: 1,
       graph_format_id: data.type_chart
     }
-    console.log(activeGraphsPosition)
+
+    // console.log(activeGraphsPosition)
     dispatch(createChart(request)).then(async (res) => {
       const update = async () => {
         if (activeGraphsPosition) {
@@ -170,17 +184,7 @@ export const CreateChartDrawer = ({open, onClose}) => {
           dispatch(setFilterLoading('idle'))
         })
       })
-      // if (activeGraphsPosition) {
-      //   dispatch(updateGraphsPosition({
-      //     id: activeGraphsPosition,
-      //     graphs_position: positions,
-      //     groupId: activeGroupId
-      //   })).then(() => {
-      //     // console.log(f)
-      //
-      //
-      //   })
-      // }
+
     })
     dispatch(setActiveGroup(+data.group_id))
     const index = groupsReports.findIndex(group => {
@@ -284,6 +288,12 @@ export const CreateChartDrawer = ({open, onClose}) => {
             <div className={styles.input_wrapper}>
               <h6 className={styles.label}>Тип графика</h6>
               <CustomSelectPicker
+                onChangeOutside={(val) => {
+                  if (!val) {
+                    setAvailableFields([])
+                  }
+                  // methods.trigger()
+                }}
                 data={chartTypes?.map(type => ({label: type.graph_format_name, value: type.graph_format_id}))}
                 name={'type_chart'}
                 className={styles.type_chart}
@@ -294,65 +304,76 @@ export const CreateChartDrawer = ({open, onClose}) => {
               <h6 className={styles.label}>Адрес таблицы БД</h6>
               <CustomInput name={'db_adress'} className={styles.input}/>
             </div>
-            <Button onClick={handleGetColumnDB} className={styles.available_btn}
-              // disabled={!methods.getValues('db_adress')?.length}
-            >Запросить доступные
-              поля</Button>
+            {(methods.getValues('type_chart') === 1 || methods.getValues('type_chart') === 2) &&
+              <Button onClick={() => {
+                // if(!methods.getValues('type_chart')) {
+                //   methods.setError('type_chart', {message:'Ввыберите тип'})
+                //   return
+                // }
+                handleGetColumnDB()
+              }} className={styles.available_btn}
+                // disabled={!methods.getValues('db_adress')?.length}
+              >Запросить доступные
+                поля</Button>}
             {!!errorDB && message}
 
             {!!availableFields.length && (
               <div className={styles.available_wrapper}>
-                <div className={styles.input_wrapper}>
-                  <h6 className={styles.label}>X значение</h6>
-                  <PreventOverflowContainer
+                {(methods.getValues('type_chart') === 1 || methods.getValues('type_chart') === 2) && <div>
+                  <div className={styles.input_wrapper}>
+                    <h6 className={styles.label}>X значение</h6>
+                    <PreventOverflowContainer
 
-                  >
-                    {getContainer => (
-                      <CustomSelectPicker
-                        name={'xvalue'}
-                        placeholder={'Выберите x значение'}
-                        className={styles.select}
-                        data={availableFields.map((x) => ({label: x, value: x}))}
-                        container={getContainer}
-                      />
-                    )}
+                    >
+                      {getContainer => (
+                        <CustomSelectPicker
+                          name={'xvalue'}
+                          placeholder={'Выберите x значение'}
+                          className={styles.select}
+                          data={availableFields.map((x) => ({label: x, value: x}))}
+                          container={getContainer}
+                        />
+                      )}
 
-                  </PreventOverflowContainer>
-                </div>
-                <div className={styles.input_wrapper}>
-                  <h6 className={styles.label}>Y значение</h6>
-                  <PreventOverflowContainer
+                    </PreventOverflowContainer>
+                  </div>
+                  <div className={styles.input_wrapper}>
+                    <h6 className={styles.label}>Y значение</h6>
+                    <PreventOverflowContainer
 
-                  >
-                    {getContainer => (
-                      <CustomSelectPicker
-                        name={'yvalue'}
-                        placeholder={'Выберите y значение'}
-                        className={styles.select}
-                        data={availableFields.map((x) => ({label: x, value: x}))}
-                        container={getContainer}
-                      />
-                    )}
+                    >
+                      {getContainer => (
+                        <CustomSelectPicker
+                          name={'yvalue'}
+                          placeholder={'Выберите y значение'}
+                          className={styles.select}
+                          data={availableFields.map((x) => ({label: x, value: x}))}
+                          container={getContainer}
+                        />
+                      )}
 
-                  </PreventOverflowContainer>
-                </div>
-                <div className={styles.input_wrapper}>
-                  <h6 className={styles.label}>Z значение</h6>
-                  <PreventOverflowContainer
+                    </PreventOverflowContainer>
+                  </div>
+                  <div className={styles.input_wrapper}>
+                    <h6 className={styles.label}>Z значение</h6>
+                    <PreventOverflowContainer
 
-                  >
-                    {getContainer => (
-                      <CustomSelectPicker
-                        name={'zvalue'}
-                        placeholder={'Выберите z значение'}
-                        className={styles.select}
-                        data={availableFields.map((x) => ({label: x, value: x}))}
-                        container={getContainer}
-                      />
-                    )}
+                    >
+                      {getContainer => (
+                        <CustomSelectPicker
+                          name={'zvalue'}
+                          placeholder={'Выберите z значение'}
+                          className={styles.select}
+                          data={availableFields.map((x) => ({label: x, value: x}))}
+                          container={getContainer}
+                        />
+                      )}
 
-                  </PreventOverflowContainer>
-                </div>
+                    </PreventOverflowContainer>
+                  </div>
+                </div>}
+
+
                 <div className={styles.input_wrapper}>
                   <h6 className={styles.label}>Использовать проценты</h6>
                   <CustomToggle
@@ -364,13 +385,12 @@ export const CreateChartDrawer = ({open, onClose}) => {
                 </div>
 
 
-                <Button className={styles.patch_btn} onClick={(e) => {
-                  e.stopPropagation()
-                  methods.handleSubmit(handleCreateChart)()
-                }}>Создать</Button>
               </div>
             )}
-
+            <Button className={styles.patch_btn} onClick={(e) => {
+              e.stopPropagation()
+              methods.handleSubmit(handleCreateChart)()
+            }}>Создать</Button>
             <br/>
           </FormProvider>
         </div>

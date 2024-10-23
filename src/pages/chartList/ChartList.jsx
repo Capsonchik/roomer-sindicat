@@ -1,7 +1,7 @@
 import styles from './chartList.module.scss';
 import {Chart} from "./chart/Chart";
 import {Button, Divider, Loader, useMediaQuery} from "rsuite";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {downloadPpt} from "./downloadPptx";
 // import {charts} from "./chartMocks";
 import {TopFilters} from "./topFilters/TopFilters";
@@ -232,14 +232,41 @@ export const ChartList = (props) => {
   // if (!activeGroup) {
   //   return <Loader size="lg" content="Загрузка..."/>;
   // }
+  const [topOffset, setTopOffset] = useState(0);
+  const topFiltersRef = useRef(null);
+  const groupFiltersRef = useRef(null);
 
+  useLayoutEffect(() => {
+    const calculateTop = () => {
+      const topFiltersHeight = topFiltersRef.current?.offsetHeight || 0;
+      const groupFiltersHeight = groupFiltersRef.current?.offsetHeight || 0;
+      const totalTopOffset = topFiltersHeight + groupFiltersHeight;
+      setTopOffset(totalTopOffset);
+    };
+
+    calculateTop();
+
+    // Пересчитываем при изменении окна
+    window.addEventListener('resize', calculateTop);
+    return () => window.removeEventListener('resize', calculateTop);
+  }, []);
 
   return (
 
     <>
+      <div ref={topFiltersRef}>
       <TopFilters layouts={layouts}/>
+
+      </div>
+      <div ref={groupFiltersRef}>
       <GroupFilters groups={groups}/>
+
+      </div>
       <div
+        style={{
+          top: `${topOffset}px`,
+          height: `calc(100vh - ${topOffset + 80}px)`,
+        }}
         className={styles.list}>
         {isChartLoading && (
           <div className={styles.loader_wrapper}>

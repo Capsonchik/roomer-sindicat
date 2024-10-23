@@ -44,7 +44,7 @@ const getCellStyle = (value, min, max) => {
   const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * ratio));
 
   return {
-    fontSize: 20,
+    fontSize: 16,
     backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`,
     color: ratio < 0.5 ? 'black' : 'white',
   };
@@ -136,8 +136,8 @@ export const CustomPivot = ({chart, rowData, isDrawer = false, rowColData}) => {
           <table border="1" className={styles.table}>
             <thead>
             <tr>
-              <th rowSpan="2">{rowKey}</th>
-              <th rowSpan="2">{subRowKey}</th>
+              <th className={styles.row} rowSpan="2">{rowKey}</th>
+              <th className={styles.row} rowSpan="2">{subRowKey}</th>
               {colLabels.map((col) => (
                 <th key={col} colSpan={subColLabels[col].length}>
                   {col}

@@ -13,13 +13,13 @@ export const GroupFiltersWrapper = ({groups}) => {
   const toggleShow = () => {
     setShow((prevShow) => !prevShow);
   };
-  if(!activeReport || !groups.length || !filters.length) {
-    return null
-  }
+  // if(!activeReport || !groups.length) {
+  //   return null
+  // }
 
   return (
     <div >
-      <Divider style={{cursor:'pointer'}} onClick={toggleShow} >{show ? "Скрыть фильтры" : "Показать фильтры"}</Divider>
+      {activeReport && !!groups.length && !!filters.length && <Divider style={{cursor:'pointer'}} onClick={toggleShow} >{show ? "Скрыть фильтры" : "Показать фильтры"}</Divider>}
       {/*<button onClick={toggleShow} className="toggle-button">*/}
       {/*  {show ? "Скрыть фильтры" : "Показать фильтры"}*/}
       {/*</button>*/}

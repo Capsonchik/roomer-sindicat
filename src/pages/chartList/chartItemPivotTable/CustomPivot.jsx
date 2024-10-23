@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, {useState, useMemo} from 'react';
 import styles from './customPivot.module.scss';
-import { Button } from 'rsuite';
-import { setActiveChart, setOpenDrawer } from '../../../store/chartSlice/chart.slice';
+import {Button} from 'rsuite';
+import {setActiveChart, setOpenDrawer} from '../../../store/chartSlice/chart.slice';
 import EditIcon from '@rsuite/icons/Edit';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 // Функция для агрегации данных
 const aggregateData = (data, rowKey, subRowKey, colKey, subColKey, aggregator) => {
@@ -29,7 +29,7 @@ const aggregateData = (data, rowKey, subRowKey, colKey, subColKey, aggregator) =
     if (value > max) max = value;
   });
 
-  return { result, min, max };
+  return {result, min, max};
 };
 
 const getCellStyle = (value, min, max) => {
@@ -54,7 +54,10 @@ const getCellStyle = (value, min, max) => {
 const formatValue = (value, formatType, digitsAfterDot = null) => {
   // Приводим value к числу, если это не число или undefined
   const numericValue = Number(value);
-
+  console.log(value)
+  if (typeof value !== 'number') {
+    return null
+  }
   // Проверяем, что numericValue является числом
   if (isNaN(numericValue)) {
     return value; // Возвращаем исходное значение, если оно не число
@@ -78,13 +81,13 @@ const formatValue = (value, formatType, digitsAfterDot = null) => {
 };
 
 
-export const CustomPivot = ({ chart,rowData, isDrawer = false, rowColData }) => {
-  const { rowKey, subRowKey, colKey, subColKey, aggregator  ,format = 'm',digitsAfterDot} = rowColData;
+export const CustomPivot = ({chart, rowData, isDrawer = false, rowColData}) => {
+  const {rowKey, subRowKey, colKey, subColKey, aggregator, format = 'm', digitsAfterDot} = rowColData;
   const dispatch = useDispatch();
   // Агрегированные данные и min/max значения
-  const { result: aggregatedData, min, max } = useMemo(
+  const {result: aggregatedData, min, max} = useMemo(
     () => aggregateData(rowData, rowKey, subRowKey, colKey, subColKey, aggregator),
-    [rowData, rowKey, subRowKey, colKey, subColKey, aggregator,format]
+    [rowData, rowKey, subRowKey, colKey, subColKey, aggregator, format]
   );
 
   // Уникальные строки и подстроки
@@ -125,7 +128,7 @@ export const CustomPivot = ({ chart,rowData, isDrawer = false, rowColData }) => 
                 dispatch(setOpenDrawer(true));
               }}
             >
-              <EditIcon />
+              <EditIcon/>
             </Button>
           )}
         </div>
@@ -167,7 +170,8 @@ export const CustomPivot = ({ chart,rowData, isDrawer = false, rowColData }) => 
                         min, // Используем min из useMemo
                         max  // Используем max из useMemo
                       )}>
-                        {formatValue(aggregatedData[row]?.[subRow]?.[col]?.[subCol], format,digitsAfterDot) || <span className={styles.empty}>-</span>}
+                        {formatValue(aggregatedData[row]?.[subRow]?.[col]?.[subCol], format, digitsAfterDot) ||
+                          <span className={styles.empty}>-</span>}
                       </td>
                     ))
                   )}

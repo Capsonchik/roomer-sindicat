@@ -1,7 +1,7 @@
 import styles from './chart.module.scss';
 import React, {useEffect, useRef, useState} from "react";
 import * as echarts from "echarts";
-import {colors, legendConfig, tooltipConfig} from "./config";
+import {colors as colorsConsts,  legendConfig, tooltipConfig} from "./config";
 import {Button} from "rsuite";
 import {FormProvider, useForm} from "react-hook-form";
 import {ChartFilters} from "../chartFilters/ChartFIlters";
@@ -13,7 +13,8 @@ import {
 } from "../../../store/chartSlice/chart.slice";
 import {useDispatch, useSelector} from "react-redux";
 import {
-  selectActiveGroupId, selectFilters,
+  selectActiveClient,
+  selectActiveGroupId, selectCharts, selectClients, selectFilters,
   selectGroupsReports,
   selectOriginalColors
 } from "../../../store/chartSlice/chart.selectors";
@@ -32,6 +33,7 @@ import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
 import {getFilters} from "../../../store/chartSlice/filter.actions";
 import {selectActiveFilters} from "../../../store/chartSlice/filter.slice";
 import {selectSelectedFilters} from "../../../store/chartSlice/filter.selectors";
+import {generateColors} from "../../../lib/generateColors";
 
 
 export const Chart = ({chart}) => {
@@ -46,9 +48,22 @@ export const Chart = ({chart}) => {
   const activeFilters = useSelector(selectActiveFilters)
   const filters = useSelector(selectFilters)
   const user = useSelector(selectCurrentUser)
+  const clients = useSelector(selectClients)
+  const activeClient = useSelector(selectActiveClient)
   const selectedFilters = useSelector(selectSelectedFilters)
+  const charts = useSelector(selectCharts)
   const [isDelete, setIsDelete] = useState(false)
+  const [colors, setColors] = useState(colorsConsts)
   // console.log(chart)
+  useEffect(() => {
+    const client = clients.find(clnt => clnt.client_id === activeClient)
+    if (client?.chart_colors && client?.chart_colors?.colors) {
+      // const test = ['#1675e0', '#fa8900']
+      const gradientColors = generateColors(client?.chart_colors?.colors, Object.keys(chart.seriesData).length)
+      // console.log(chart.seriesData)
+      setColors(gradientColors)
+    }
+  },[charts])
   const inputs = methods.watch()
   // console.log(chart)
 
@@ -71,18 +86,18 @@ export const Chart = ({chart}) => {
   useEffect(() => {
     const myChart = echarts.init(chartRef.current);
     setChartInstance(myChart);
-    const colorsTest = chart?.formatting?.colors || colors
-    const colorEntrieis = colorsTest.map(color => [color, true])
-    dispatch(setOriginalColors(colorEntrieis))
+    // const colorsTest = chart?.formatting?.colors || colors
+    // const colorEntrieis = colorsTest.map(color => [color, true])
+    // dispatch(setOriginalColors(colorEntrieis))
 
     return () => {
       myChart.dispose();
     };
   }, []);
-  useEffect(() => {
-    const colorsTest = chart?.formatting?.colors || colors.map(color => [color, true])
-    dispatch(setOriginalColors(colorsTest))
-  }, []);
+  // useEffect(() => {
+  //   const colorsTest = chart?.formatting?.colors || colors.map(color => [color, true])
+  //   dispatch(setOriginalColors(colorsTest))
+  // }, []);
 
   useEffect(() => {
     let format_value = chartState.formatting.format_value ?? 1
@@ -104,26 +119,26 @@ export const Chart = ({chart}) => {
     })
   }, []);
 
-  useEffect(() => {
-
-    setChartState(prev => {
-      return {
-        ...prev,
-        formatting: {
-          ...prev.formatting,
-          colors: Object.values(originalColors).filter(color => color[1]).map(color => color[0]),
-          isVisibleSeriesChange: false
-        }
-      }
-    })
-
-
-  }, [originalColors]);
+  // useEffect(() => {
+  //
+  //   setChartState(prev => {
+  //     return {
+  //       ...prev,
+  //       formatting: {
+  //         ...prev.formatting,
+  //         colors: Object.values(originalColors).filter(color => color[1]).map(color => color[0]),
+  //         isVisibleSeriesChange: false
+  //       }
+  //     }
+  //   })
+  //
+  //
+  // }, [originalColors]);
 
 
   const fetchCharts = (id) => {
     const selected = selectedFilters.map(filter => ({filter_id: filter.filter_id, filter_values: filter.value})) || []
-    console.log(111111, id,selected)
+    // console.log(111111, id,selected)
     dispatch(fetchAllChartsByGroupId({
       groupId: id,
       filter_data: selected ? {filter_data: selected} : {filter_data: []}
@@ -262,7 +277,7 @@ export const Chart = ({chart}) => {
         verticalAlign: 'middle',
         fontSize: chartState.formatting.label_size
       },
-      color: chartState.formatting.colors || Object.values(originalColors).filter(color => color[1]).map(color => color[0]),
+      color: colors,
       series: seriesOptions,
       barCategoryGap: `${50 - chartState.formatting.column_width} %`,
       barGap: `${chartState.formatting.column_gap} %`,

@@ -90,6 +90,8 @@ export const TopFilters = ({layouts}) => {
   // console.log(activeGroup,activeGroupId)
   const handleClientChange = (clientId) => {
     if (clientId) {
+      // const activeClient
+      dispatch(setActiveClient(clientId))
       if (clientId !== activeClient) {
         dispatch(fetchAllReports(clientId))
         dispatch(setActiveReport(null))

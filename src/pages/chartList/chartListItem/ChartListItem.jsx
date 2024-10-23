@@ -15,21 +15,41 @@ import {
   setTypeGroupDrawer
 } from "../../../store/chartSlice/chart.slice";
 import {useDispatch, useSelector} from "react-redux";
-import {selectIsOpenDrawer, selectOriginalColors} from "../../../store/chartSlice/chart.selectors";
+import {
+  selectActiveClient, selectCharts,
+  selectClients,
+  selectIsOpenDrawer,
+  selectOriginalColors
+} from "../../../store/chartSlice/chart.selectors";
 import {patchChartFormatting} from "../../../store/chartSlice/chart.actions";
-import {colors, legendConfig, tooltipConfig} from "../chart/config";
+import {colors as colorsConsts, legendConfig, tooltipConfig} from "../chart/config";
 import {convertValuesByPercent} from "../chart/convertValuesByPercent";
 import {getSumValues} from "../getSumValues";
 import {calculateMaxValue} from "../calculateMaxValue";
 import {calculateStepSize} from "../calculateStepSize";
+import {generateColors} from "../../../lib/generateColors";
 
 
 export const ChartListItem = ({chart}) => {
   const dispatch = useDispatch();
+  const charts = useSelector(selectCharts)
   const methods = useForm()
   const chartRef = useRef(null);
   const [chartInstance, setChartInstance] = useState(null);
   const [chartState, setChartState] = useState(chart)
+  const [colors, setColors] = useState(colorsConsts)
+  const activeClient = useSelector(selectActiveClient)
+  const clients = useSelector(selectClients)
+
+  useEffect(() => {
+  const client = clients.find(clnt => clnt.client_id === activeClient)
+    if (client?.chart_colors && client?.chart_colors?.colors) {
+      // const test = ['#1675e0', '#fa8900']
+      const gradientColors = generateColors(client?.chart_colors?.colors, Object.keys(chart.seriesData).length)
+      // console.log(chart.seriesData)
+      setColors(gradientColors)
+    }
+  },[charts])
 
 
   useEffect(() => {
@@ -127,7 +147,7 @@ export const ChartListItem = ({chart}) => {
     const option = {
       ...tooltipConfig,
       ...legendConfig,
-      color: chartState.formatting.colors,
+      color: colors,
       label: {
         show: true,
         position: chartState.formatting.label_position,

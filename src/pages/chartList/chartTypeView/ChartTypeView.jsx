@@ -3,14 +3,17 @@ import {ChartItemTable} from "../chartItemTable/ChartItemTable";
 import {ChartItemPie} from "../chartItemPie/ChartItemPie";
 import '../chartItemPivotTable/styles.css'
 
-import {AgGridDataWrapper} from "../chartItemPivotTable/AgGridDataWrapper";
 import {CustomPivot} from "../chartItemPivotTable/CustomPivot";
+import {ChartItemTree} from "../chartItemTree/ChartItemTree";
 
 export const ChartTypeView = ({chart}) => {
 
 
   let returnType = 'неизвестный тип графика'
   switch (chart.formatting.type_chart) {
+    case 'tree':
+      returnType = <ChartItemTree/>
+      break
     case 'bar':
       returnType = <ChartListItem chart={chart}/>
       break

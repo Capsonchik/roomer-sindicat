@@ -93,7 +93,7 @@ export const CustomSelectPicker = (
               appearance={appearance}
               placement={placement}
               placeholder={placeholder}
-              className={className || styles.type}
+              className={className || styles.select}
               container={container}
               loading={loading}
               renderExtraFooter={() =>

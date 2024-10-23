@@ -31,7 +31,7 @@ export const CustomTagPicker = (
         render={({field}) => (
           <TagPicker
             {...field}
-            className={className}
+            className={`${className} ${styles.select}`}
             renderValue={renderValue}
             disabledItemValues={disabledItemValues}
             data={data}

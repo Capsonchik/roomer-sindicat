@@ -18,7 +18,7 @@ import {
   selectFilters, selectGroupsReports
 } from "../../../store/chartSlice/chart.selectors";
 import {FilterItem} from "./FilterItem";
-import {Button} from "rsuite";
+import {Button, Loader} from "rsuite";
 import {selectCurrentUser} from "../../../store/userSlice/user.selectors";
 import {setActiveSavedFilters, setSelectedFilters} from "../../../store/chartSlice/filter.slice";
 
@@ -105,7 +105,7 @@ export const GroupFilters = ({groups}) => {
         const savedFilter = activeGroup.saved_filters
           ? activeGroup.saved_filters.filter_data?.find(innerFilter => innerFilter.filter_id === filter.filter_id)
           : null
-          // console.log(activeGroup,filter.filter_id)
+        // console.log(activeGroup,filter.filter_id)
         return {
           filter_name: filter.filter_name,
           filter_id: filter.filter_id,
@@ -145,7 +145,7 @@ export const GroupFilters = ({groups}) => {
           }
         })
         // setFilters(filters.map(filter => ({filter_id:filter.filter_id, filter_values:filter.filter_values})))
-        const selected = request.map(filter => ({filter_id:filter.filter_id,value:filter.filter_values}))
+        const selected = request.map(filter => ({filter_id: filter.filter_id, value: filter.filter_values}))
         dispatch(setSelectedFilters(selected))
         dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request || []}}))
           .then(() => {
@@ -224,6 +224,7 @@ export const GroupFilters = ({groups}) => {
     <div>
       {activeReport && !!filters?.length && (
         <FormProvider {...methods}>
+          {filterLoading === 'load' && <div style={{display:'flex',justifyContent:'center',marginTop:30}}><Loader size={'md'}/></div>}
           {filterLoading !== 'load' && <div
             className={styles.filters}
             // style={{

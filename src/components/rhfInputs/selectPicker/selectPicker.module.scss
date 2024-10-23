@@ -1,8 +1,10 @@
 .inputWrapper {
   position: relative;
+  width: 100%;
 
   .select {
     height: 35px; // Высота селекта
+    width: 100% !important;
   }
 
   .inputError {

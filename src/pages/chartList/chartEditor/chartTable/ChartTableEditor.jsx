@@ -14,30 +14,75 @@ import {
   setSittingsSort
 } from "../../../../store/tableSlice/table.slice";
 import {DEFAULT_COLUMNS} from "../../../../consts/tableMocks";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {ColumnPicker} from "../../chartItemTable/columnPicker/ColumnPicker";
 import {
+  deleteChartById,
   fetchAllChartsByGroupId,
-  fetchAllChartsFormatByGroupId,
+  fetchAllChartsFormatByGroupId, getGroupById,
   patchChartFormatting
 } from "../../../../store/chartSlice/chart.actions";
-import {selectActiveGroupId, selectGroupsReports} from "../../../../store/chartSlice/chart.selectors";
+import {selectActiveGroupId, selectFilters, selectGroupsReports} from "../../../../store/chartSlice/chart.selectors";
 import {selectActiveFilters} from "../../../../store/chartSlice/filter.slice";
-import {setOpenDrawer} from "../../../../store/chartSlice/chart.slice";
+import {setGraphsPosition, setOpenDrawer} from "../../../../store/chartSlice/chart.slice";
+import {selectSelectedFilters} from "../../../../store/chartSlice/filter.selectors";
 
 export const ChartTableEditor = ({chart}) => {
   const dispatch = useDispatch();
-
+  const selectedFilters = useSelector(selectSelectedFilters)
   const [tableNameInput, setTableNameInput] = useState(chart.title)
-
+  const filters = useSelector(selectFilters)
   const sittings = useSelector(selectTableSittings);
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
   const activeFilters = useSelector(selectActiveFilters)
-
+  const [activeGroupObj, setActiveGroupObj] = useState()
   const [columnKeys, setColumnKeys] = useState(DEFAULT_COLUMNS.map(column => column.key));
   const columns = DEFAULT_COLUMNS.filter(column => columnKeys.some(key => key === column.key));
+  useEffect(() => {
 
+    const foundGroup = groupsReports.find((group) => group.group_id == activeGroupId)
+    if (foundGroup) {
+      setActiveGroupObj(foundGroup)
+    } else if (groupsReports.length) {
+      setActiveGroupObj(groupsReports[0])
+    }
+    // setFileList([])
+
+  }, [])
+  console.log(activeGroupObj)
+
+  const handleDelete = async () => {
+    const filterData = {
+      filter_data: activeGroupObj?.saved_filters?.filter_data?.filter(saveFilter => {
+        // console.log(saveFilter, filters)
+        return !filters.some(filter => filter.filter_id === saveFilter.filter_id && !filter.isactive)
+      }) || selectedFilters.map(filter => ({filter_id: filter.filter_id, filter_values: filter.value})) || []
+    }
+    const id = activeGroupId || groupsReports[0].group_id
+    dispatch(deleteChartById(chart.id)).then(() => {
+      dispatch(getGroupById(activeGroupId)).then((res) => {
+        console.log(res.payload)
+        // const activeFiltersRequest = activeFilters[activeGroupId]
+        // const request = activeFiltersRequest
+        //   ? activeFiltersRequest.map(filter => {
+        //     return {
+        //       filter_id: filter.filter_id,
+        //       filter_values: filter.value,
+        //       isactive: filter.isactive,
+        //     }
+        //   })
+        //     .filter(filter => filter.isactive && Array.isArray(filter.filter_values) && filter.filter_values.length > 0)
+        //   : []
+        dispatch(setGraphsPosition(res.payload?.graphs_position?.positions))
+        dispatch(fetchAllChartsByGroupId({groupId: id, filter_data: filterData})).then(() => {
+          dispatch(fetchAllChartsFormatByGroupId(id))
+        })
+      })
+
+    })
+    dispatch(setOpenDrawer(false))
+  }
   const handleSave = () => {
     const {seriesData, xAxisData, ...rest} = chart
 
@@ -126,7 +171,7 @@ export const ChartTableEditor = ({chart}) => {
       <ChartTable table_data={chart[0].table_data} format={chart.formatting} sittings={sittings}/>
 
       <div className={styles.buttons}>
-        <Button className={styles.delete_btn}>Удалить</Button>
+        <Button className={styles.delete_btn} onClick={handleDelete}>Удалить</Button>
         <Button className={styles.save_btn} onClick={handleSave}>Сохранить</Button>
       </div>
     </div>

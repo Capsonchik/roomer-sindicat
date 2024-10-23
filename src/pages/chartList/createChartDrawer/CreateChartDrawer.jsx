@@ -156,10 +156,15 @@ export const CreateChartDrawer = ({open, onClose}) => {
       dispatch(setGraphsPosition(positions))
 
     }
+    const {type_chart,...rest} = data
     const request = {
-      ...data,
+      ...rest,
       author_id: 1,
-      graph_format_id: data.type_chart
+      graph_format_id: +data.type_chart,
+      report_id: +data.report_id,
+      group_id: +data.group_id,
+      xvalue: data.xvalue || '',
+      yvalue: data.yvalue || '',
     }
 
     // console.log(activeGraphsPosition)

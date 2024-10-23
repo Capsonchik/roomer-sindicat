@@ -54,6 +54,19 @@ export const Chart = ({chart}) => {
   const charts = useSelector(selectCharts)
   const [isDelete, setIsDelete] = useState(false)
   const [colors, setColors] = useState(colorsConsts)
+  const [activeGroupObj, setActiveGroupObj] = useState()
+  useEffect(() => {
+
+    const foundGroup = groupsReports.find((group) => group.group_id == activeGroupId)
+    if (foundGroup) {
+      setActiveGroupObj(foundGroup)
+    } else if (groupsReports.length) {
+      setActiveGroupObj(groupsReports[0])
+    }
+    // setFileList([])
+
+  }, [])
+  console.log(activeGroupObj)
   // console.log(chart)
   useEffect(() => {
     const client = clients.find(clnt => clnt.client_id === activeClient)
@@ -137,31 +150,29 @@ export const Chart = ({chart}) => {
 
 
   const fetchCharts = (id) => {
-    const selected = selectedFilters.map(filter => ({filter_id: filter.filter_id, filter_values: filter.value})) || []
+    const filterData = {
+      filter_data: activeGroupObj?.saved_filters?.filter_data?.filter(saveFilter => {
+        console.log(saveFilter, filters)
+        return !filters.some(filter => filter.filter_id === saveFilter.filter_id && !filter.isactive)
+      }) || selectedFilters.map(filter => ({filter_id: filter.filter_id, filter_values: filter.value})) || []
+    }
     // console.log(111111, id,selected)
     dispatch(fetchAllChartsByGroupId({
       groupId: id,
-      filter_data: selected ? {filter_data: selected} : {filter_data: []}
+      filter_data: filterData
     })).then(() => {
       dispatch(fetchAllChartsFormatByGroupId(id));
     });
   }
 
   const handleDelete = async () => {
-
-    // dispatch(setGraphsPosition([]))
     dispatch(deleteChartById(chart.id)).then(() => {
       dispatch(getGroupById(activeGroupId)).then((res) => {
         console.log(res.payload)
         dispatch(setGraphsPosition(res.payload?.graphs_position?.positions))
         fetchCharts(activeGroupId)
-
-
       })
 
-      // dispatch(getFilters(activeGroupId)).then(() => {
-      //   dispatch(setFilterLoading('none'))
-      // })
     })
     dispatch(setOpenDrawer(false))
   }

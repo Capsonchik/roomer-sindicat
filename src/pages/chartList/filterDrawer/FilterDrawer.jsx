@@ -168,7 +168,7 @@ export const FilterDrawer = ({open, onClose}) => {
   const {errors} = methods.formState;
 
   const handleCreateFilter = (data) => {
-
+    console.log(data)
     // if (!data.filter_data?.length) return
     const request = {
       filter_group_id: data.group_id,
@@ -212,13 +212,13 @@ export const FilterDrawer = ({open, onClose}) => {
       })
 
       // console.log('limitedFields',limitedFields)
-      request['filter_data'] = Object.entries(limited_fields).map(([key, value]) => {
-        const [column, db] = key.split(';')
-        return {
-          db_name: db,
-          column_name: column
-        }
-      })
+      // request['filter_data'] = Object.entries(limited_fields).map(([key, value]) => {
+      //   const [column, db] = key.split(';')
+      //   return {
+      //     db_name: db,
+      //     column_name: column
+      //   }
+      // })
 
       // console.log(request);
       // return;

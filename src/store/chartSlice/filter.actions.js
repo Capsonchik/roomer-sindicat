@@ -60,9 +60,9 @@ export const updateFilter = createAsyncThunk(
 );
 export const deleteFilter = createAsyncThunk(
   'filter/deleteFilter',
-  async ( filter_id) => {
+  async ( filter_id,group_id) => {
     try {
-      const response = await axiosGraphRequest.delete(`/api/v3/filter/delete_filter?filter_id=${filter_id}`);
+      const response = await axiosGraphRequest.delete(`/api/v3/filter/delete_filter?filter_id=${filter_id}&group_id=${group_id}`);
       // console.log(response)
       if (response.status === 200) {
         return response.data;

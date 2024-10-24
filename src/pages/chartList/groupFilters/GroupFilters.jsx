@@ -32,6 +32,7 @@ export const GroupFilters = ({groups}) => {
   // const groups = useSelector(selectGroupsReports)
   const [activeFilter, setActiveFilter] = useState(null);
   const [activeGroup, setActiveGroup] = useState(null)
+  const isFirstRender = useRef(true)
 
   // useEffect(() => {
   //   if(activeGroupId && !groups.length) {
@@ -65,13 +66,13 @@ export const GroupFilters = ({groups}) => {
   // Сброс формы и обновление filters через reset, когда filters не пустой
 
   const getValue = (filter, savedFilter) => {
-    console.log(savedFilter)
+    // console.log(savedFilter)
 
     if (filter.multi) {
       if (!filter.isactive) {
         return []
       }
-      if (filter?.value) {
+      if (filter?.value && filter.value[0]) {
         return filter.value
       } else {
         return savedFilter ? savedFilter.filter_values : filter.original_values?.[0] ? [filter.original_values[0]] : []
@@ -88,6 +89,8 @@ export const GroupFilters = ({groups}) => {
     }
 
   }
+
+
 
   useEffect(() => {
     // console.log(filters)
@@ -113,7 +116,7 @@ export const GroupFilters = ({groups}) => {
           multi: filter.multi,
           isactive: filter.isactive,
           islimited: filter.islimited,
-          value: savedFilter ? getValue(filter, savedFilter) : getValue(filter, null),
+          value: (savedFilter && isFirstRender.current) ? getValue(filter, savedFilter) : getValue(filter, null),
 
         }
       });
@@ -130,10 +133,11 @@ export const GroupFilters = ({groups}) => {
         // activeFilter: methods.getValues('activeFilter')
         // activeFilter: null
       });
-
+      isFirstRender.current = false
       const getCharts = () => {
 
         const filters = methods.getValues('filters')
+        console.log(filters)
         let request = filters.map(filter => {
           return {
             filter_id: filter.filter_id,

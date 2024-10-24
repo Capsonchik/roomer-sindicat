@@ -77,7 +77,7 @@ const getCellStyle = (value, min, max, baseColorHex) => {
 const formatValue = (value, formatType, digitsAfterDot = null) => {
   // Приводим value к числу, если это не число или undefined
   const numericValue = Number(value);
-  console.log(value)
+  // console.log(value)
   if (typeof value !== 'number') {
     return null
   }

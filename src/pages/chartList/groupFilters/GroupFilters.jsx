@@ -34,13 +34,10 @@ export const GroupFilters = ({groups}) => {
   const [activeGroup, setActiveGroup] = useState(null)
   const isFirstRender = useRef(true)
 
-  // useEffect(() => {
-  //   if(activeGroupId && !groups.length) {
-  //     const activeGroup = groups.find(group => group.group_id === activeGroupId);
-  //     setActiveGroup(activeGroup)
-  //   }
-  //
-  // }, [activeGroupId,groups]);
+  useEffect(() => {
+    isFirstRender.current = true
+
+  }, [activeGroupId]);
 
   const methods = useForm({
     defaultValues: {
@@ -96,6 +93,7 @@ export const GroupFilters = ({groups}) => {
     // console.log(filters)
     if (!activeGroupId) return
     if (filters.length > 0) {
+        console.log(isFirstRender.current)
       const filterValues = filters.filter(filter => !filter.column_limit).map(filter => {
         const activeGroup = groups.find(group => group.group_id === activeGroupId);
         // console.log(Object.keys(activeGroup.saved_filters).length)
@@ -133,11 +131,11 @@ export const GroupFilters = ({groups}) => {
         // activeFilter: methods.getValues('activeFilter')
         // activeFilter: null
       });
-      isFirstRender.current = false
+
       const getCharts = () => {
 
         const filters = methods.getValues('filters')
-        console.log(filters)
+        // console.log(filters)
         let request = filters.map(filter => {
           return {
             filter_id: filter.filter_id,
@@ -153,6 +151,7 @@ export const GroupFilters = ({groups}) => {
         dispatch(setSelectedFilters(selected))
         dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: request || []}}))
           .then(() => {
+            isFirstRender.current = false
             dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
           });
 

@@ -179,24 +179,27 @@ export const CytoscapeTree = () => {
         <div
           id="cy"
           ref={cyRef}
-          style={{width: "100%", height: "1000px", border: "1px solid #ccc"}}
+          style={{width: "100%",maxWidth:800,margin:'0 auto', height: "1000px", border: "1px solid #ccc"}}
         />
         <div style={{marginLeft: "20px", display: 'flex', flexDirection: 'column'}}>
           <h3>Управление узлами и связями</h3>
-          {nodes.map(node => (
-            <div key={node.value} style={{marginBottom: "10px"}}>
-              <strong>{node.label}</strong>
-              <CheckPicker
-                data={nodes.filter(n => n.value !== node.value)}
-                value={edgesMap[node.value] || []}
-                onChange={(values) => handleChangeEdges(node.value, values)}
-                style={{width: 200, marginLeft: 10}}
-                block
-                placeholder="Выберите цели"
-                searchable
-              />
-            </div>
-          ))}
+          <div >
+            {nodes.map(node => (
+              <div key={node.value} style={{marginBottom: "10px"}}>
+                <strong>{node.label}</strong>
+                <CheckPicker
+                  data={nodes.filter(n => n.value !== node.value)}
+                  value={edgesMap[node.value] || []}
+                  onChange={(values) => handleChangeEdges(node.value, values)}
+                  style={{width: 200, marginLeft: 10}}
+                  block
+                  placeholder="Выберите цели"
+                  searchable
+                />
+              </div>
+            ))}
+          </div>
+
         </div>
       </div>
     </>

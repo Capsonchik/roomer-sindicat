@@ -1,9 +1,14 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 import styles from './customPivot.module.scss';
 import {Button} from 'rsuite';
 import {setActiveChart, setOpenDrawer} from '../../../store/chartSlice/chart.slice';
 import EditIcon from '@rsuite/icons/Edit';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {hexToHSL} from "../../../lib/hexToHSL";
+import {hslToHex} from "../../../lib/HSLToHex";
+import {generateColors} from "../../../lib/generateColors";
+import {selectActiveClient, selectCharts, selectClients} from "../../../store/chartSlice/chart.selectors";
+import {colors as colorsConsts} from "../chart/config";
 
 // Функция для агрегации данных
 const aggregateData = (data, rowKey, subRowKey, colKey, subColKey, aggregator) => {
@@ -32,21 +37,39 @@ const aggregateData = (data, rowKey, subRowKey, colKey, subColKey, aggregator) =
   return {result, min, max};
 };
 
-const getCellStyle = (value, min, max) => {
-  if (value == null) return {}; // если значение отсутствует, не применяем стиль
+// Функция для создания темного и светлого оттенка на основе одного цвета
+const getShadesFromHex = (hex, lightnessFactor = 0.9, darknessFactor = 0.6) => {
+  // Преобразуем HEX в HSL
+  const [h, s, l] = hexToHSL(hex);
+
+  // Создаем светлый и темный оттенки
+  const lightShade = hslToHex(h, s, l + (100 - l) * lightnessFactor);
+  const darkShade = hslToHex(h, s, l * darknessFactor);
+
+  return { lightShade, darkShade };
+};
+
+const getCellStyle = (value, min, max, baseColorHex) => {
+  if (value == null) return {}; // Если значение отсутствует, не применяем стиль
 
   const ratio = (value - min) / (max - min); // Простая нормализация
 
-  // От темного (красного) к светлому (белому) в зависимости от значения
-  const darkColor = [250, 134, 130]; // #f7635c
-  const lightColor = [255, 248, 248]; // #fff2f2
+  // Генерация темного и светлого оттенков из базового цвета
+  const { lightShade, darkShade } = getShadesFromHex(baseColorHex);
 
+  // Преобразуем HEX цвета в RGB для дальнейшего интерполирования
+  const hexToRGB = (hex) => hex.match(/\w\w/g).map(x => parseInt(x, 16));
+
+  const darkColor = hexToRGB(darkShade);
+  const lightColor = hexToRGB(lightShade);
+
+  // Интерполируем цвет в зависимости от значения
   const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * ratio));
 
   return {
     fontSize: 16,
     backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`,
-    color: ratio < 0.5 ? 'black' : 'white',
+    color: ratio < 0.5 ? 'black' : 'white', // Черный текст на светлом фоне, белый на темном
   };
 };
 
@@ -82,6 +105,19 @@ const formatValue = (value, formatType, digitsAfterDot = null) => {
 
 
 export const CustomPivot = ({chart, rowData, isDrawer = false, rowColData}) => {
+  const clients = useSelector(selectClients)
+  const activeClient = useSelector(selectActiveClient)
+  const charts = useSelector(selectCharts)
+  const [colors, setColors] = useState(colorsConsts)
+  useEffect(() => {
+    const client = clients.find(clnt => clnt.client_id === activeClient)
+    if (client?.chart_colors && client?.chart_colors?.colors) {
+      // const test = ['#1675e0', '#fa8900']
+      // const gradientColors = generateColors(client?.chart_colors?.colors, Object.keys(chart.seriesData).length)
+      // console.log(chart.seriesData)
+      setColors(client?.chart_colors?.colors)
+    }
+  },[charts])
   const {rowKey, subRowKey, colKey, subColKey, aggregator, format = 'm', digitsAfterDot} = rowColData;
   const dispatch = useDispatch();
   // Агрегированные данные и min/max значения
@@ -168,7 +204,8 @@ export const CustomPivot = ({chart, rowData, isDrawer = false, rowColData}) => {
                       <td key={subCol} style={getCellStyle(
                         aggregatedData[row]?.[subRow]?.[col]?.[subCol],
                         min, // Используем min из useMemo
-                        max  // Используем max из useMemo
+                        max,  // Используем max из useMemo
+                        colors[0]
                       )}>
                         {formatValue(aggregatedData[row]?.[subRow]?.[col]?.[subCol], format, digitsAfterDot) ||
                           <span className={styles.empty}>-</span>}

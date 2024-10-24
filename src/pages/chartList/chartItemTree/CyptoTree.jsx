@@ -10,17 +10,24 @@ cytoscape.use(dagre);
 nodeHtmlLabel(cytoscape); // Подключаем nodeHtmlLabel плагин
 
 const initialState = [
-  {data: {id: "a", label: "Узел A", values: [{value: 1333, percent: '+20'}, {value: 1663, percent: '+20'}]}},
-  {data: {id: "b", label: "Узел B", values: [{value: 4545, percent: '+20'}, {value: 7878, percent: '-20'}]}},
-  {data: {id: "c", label: "Узел C", values: [{value: 2323, percent: '+20'}, {value: 656, percent: '+20'}]}},
-  {data: {id: "d", label: "Узел D", values: [{value: 454, percent: '-20'}, {value: 787, percent: '+20'}]}},
-  {data: {id: "f", label: "Узел F", values: [{value: 2121, percent: '+20'}, {value: 6767, percent: '-20'}]}},
-  {data: {id: "g", label: "Узел G", values: [{value: 232, percent: '-20'}, {value: 6767, percent: '+20'}]}},
+  {data: {id: "p", label: "Узел P",type: 'one', values: [{value: 2444, percent: '+20'}, {value: 999, percent: '+20'}]}},
+  {data: {id: "r", label: "Узел R",type: 'one', values: [{value: 2444, percent: '+20'}, {value: 999, percent: '+20'}]}},
+  {data: {id: "a", label: "Узел A",type: 'one', values: [{value: 1333, percent: '+20'}, {value: 1663, percent: '+20'}]}},
+  {data: {id: "q", label: "Узел Q",type: 'two', values: [{value: 2444, percent: '+20'}, {value: 999, percent: '+20'}]}},
+  {data: {id: "b", label: "Узел B",type: 'one', values: [{value: 4545, percent: '+20'}, {value: 7878, percent: '-20'}]}},
+  {data: {id: "c", label: "Узел C",type: 'two', values: [{value: 2323, percent: '+20'}, {value: 656, percent: '+20'}]}},
+  {data: {id: "d", label: "Узел D",type: 'two', values: [{value: 454, percent: '-20'}, {value: 787, percent: '+20'}]}},
+  {data: {id: "f", label: "Узел F",type: 'two', values: [{value: 2121, percent: '+20'}, {value: 6767, percent: '-20'}]}},
+  {data: {id: "g", label: "Узел G",type: 'one', values: [{value: 232, percent: '-20'}, {value: 6767, percent: '+20'}]}},
   {data: {source: "a", target: "b"}},
+  {data: {source: "a", target: "p"}},
+  {data: {source: "p", target: "r"}},
+  {data: {source: "p", target: "q"}},
   {data: {source: "b", target: "d"}},
   {data: {source: "b", target: "f"}},
   {data: {source: "b", target: "c"}},
   {data: {source: "c", target: "g"}},
+  {data: {source: "c", target: "p"}},
   {data: {source: "f", target: "g"}},
 ];
 
@@ -39,7 +46,7 @@ export const CytoscapeTree = () => {
         rankDir: "TB",
         nodeSep: 150,
         edgeSep: 10,
-        rankSep: 200,
+        rankSep: 100,
       },
       style: [
         {
@@ -48,6 +55,8 @@ export const CytoscapeTree = () => {
             shape: "rectangle",
             "background-color": "#0074D9",
             "text-valign": "center",
+            width: 10,
+            height: 10,
             "text-halign": "center",
             color: "#fff",
             "background-opacity": 0.9,
@@ -61,12 +70,15 @@ export const CytoscapeTree = () => {
             "target-arrow-color": "#FF4136",
             "target-arrow-shape": "triangle",
             "curve-style": "taxi", // Устанавливаем тип ребра taxi
-            "taxi-turn": "50px",
+            "taxi-turn": "20px",
             "taxi-turn-min-distance": "20px",
             "taxi-direction": "vertical",
           },
         },
       ],
+      minZoom: 0.5,  // Минимальный уровень зума
+      maxZoom: 2,    // Максимальный уровень зума
+      wheelSensitivity: 0.1,  // Чувствительность зума (меньшее значение = более плавный зум
     });
 
     setCyInstance(cy);
@@ -81,16 +93,16 @@ export const CytoscapeTree = () => {
         halignBox: 'center',
         tpl: (data) => {
           return (
-            `<div style="color: red; border-radius: 5px; width: 150px; height: 70px; border: 1px solid #ccc; z-index: 1000; background: white">
-      <div style="background: #88b6e8; color: #fff; text-align: center">
+            `<div style="color: red; border-radius: 5px; width: 150px; height: 60px; border: 1px solid #ccc; z-index: 1000; background: white">
+      <div style="background: ${data.type === 'one' ? '#88b6e8' :'#c2cfdf'}; color: #fff; text-align: center">
         <strong>${data.label}</strong>
       </div>
-      <div style="display: flex; height: 48px">
+      <div style="display: flex; height: 40px">
         ${data.values.map((item, index) => {
               return (
                 `<div style="flex-grow: 1; text-align: center; ${index < data.values.length - 1 ? 'border-right: 1px solid #ccc;' : ''}">
               <div style="color:#050c26">${item.value}</div>
-              <div  style="color: ${item.percent.startsWith('+') ? 'green': 'red'}">${item.percent}</div>
+              <div  style="color: ${item.percent.startsWith('+') ? 'green': 'red'};border-top: 1px solid #ccc">${item.percent}</div>
             </div>`
               );
             }).join('')}
@@ -126,7 +138,7 @@ export const CytoscapeTree = () => {
         rankDir: "TB",
         nodeSep: 150,
         edgeSep: 10,
-        rankSep: 200,
+        rankSep: 100,
         animate: true,
       }).run();
     }
@@ -157,7 +169,7 @@ export const CytoscapeTree = () => {
             rankDir: "TB",
             nodeSep: 150,
             edgeSep: 10,
-            rankSep: 200,
+            rankSep: 100,
             animate: true,
           }).run();
         }

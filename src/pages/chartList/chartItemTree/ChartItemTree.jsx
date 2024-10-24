@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Tree from "react-d3-tree";
 
 // Пример данных для дерева
@@ -51,9 +51,22 @@ const straightPathFunc = (linkDatum, orientation) => {
 
 export const ChartItemTree = () => {
   const [translate] = useState({ x: 200, y: 200 });
+  const treeContainerRef = useRef(null);
+  const [links, setLinks] = useState([]);
+
+  useEffect(() => {
+    // Пример: дополнительное соединение между Внук 2 и Внук 3 (горизонтальная линия)
+    const additionalLinks = [
+      {
+        source: { x: 300, y: 450 }, // Позиция Внук 2
+        target: { x: 300, y: 600 }, // Позиция Внук 3
+      }
+    ];
+    setLinks(additionalLinks);
+  }, []);
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div ref={treeContainerRef} style={{ width: "100%", height: "500px" }}>
       <Tree
         data={treeData}
         translate={translate}
@@ -61,6 +74,20 @@ export const ChartItemTree = () => {
         pathFunc={straightPathFunc} // Кастомная функция для линий
         renderCustomNodeElement={renderCustomNodeElement} // Кастомный рендер узлов
       />
+      {/* Рендер дополнительных соединений между узлами */}
+      <svg style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}>
+        {links.map((link, index) => (
+          <line
+            key={index}
+            x1={link.source.y}
+            y1={link.source.x}
+            x2={link.target.y}
+            y2={link.target.x}
+            stroke="blue"
+            strokeWidth="2"
+          />
+        ))}
+      </svg>
     </div>
   );
 };

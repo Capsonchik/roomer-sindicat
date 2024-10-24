@@ -10,6 +10,9 @@ import {axiosLoginRequest} from "../../api/ApiConfig";
 import styles from './styles.module.scss'
 import {GroupFilters} from "../chartList/groupFilters/GroupFilters";
 import {GroupFiltersWrapper, GroupFIltersWrapper} from "../chartList/groupFilters/GroupFIltersWrapper";
+import {ChartItemGraph} from "../chartList/chartItemTree/ChartItemGraph";
+import {CytoscapeTree} from "../chartList/chartItemTree/CyptoTree";
+import {ChartItemTree} from "../chartList/chartItemTree/ChartItemTree";
 
 export const TestPage = () => {
   const dispatch = useDispatch();
@@ -67,6 +70,7 @@ export const TestPage = () => {
   return (
     <Container className={styles.wrapper}>
       <TopNavigationBar/>
+      {/*<CytoscapeTree/>*/}
       <Outlet/>
     </Container>
   );

@@ -60,17 +60,45 @@ export const ChartItemGraph = () => {
     graph.addEdge("d", "f", { size: 10 });
     graph.addEdge("e", "f", { size: 10 });
 
-    // Инициализация рендера Sigma с использованием кастомных узлов (NodeSquareProgram)
+    // Создание пользовательской логики рендеринга ребер
     const renderer = new Sigma(graph, container, {
       nodeProgramClasses: {
         ...DEFAULT_NODE_PROGRAM_CLASSES,
         square: NodeSquareProgram,
       },
+      renderEdge: (context, data, settings) => {
+        const source = graph.getNodeAttributes(data.source);
+        const target = graph.getNodeAttributes(data.target);
+
+        // Координаты узлов
+        const x1 = source.x;
+        const y1 = source.y;
+        const x2 = target.x;
+        const y2 = target.y;
+
+        // Логика рисования прямоугольных углов (сначала по x, затем по y)
+        const middleX = (x1 + x2) / 2;
+
+        // Установка стилей линии
+        context.beginPath();
+        context.moveTo(x1, y1);  // Начальная точка
+        context.lineTo(middleX, y1);  // Линия по горизонтали
+        context.lineTo(middleX, y2);  // Линия по вертикали
+        context.lineTo(x2, y2);  // Линия до конечной точки
+        context.strokeStyle = "black";
+        context.lineWidth = 2;
+        context.stroke();
+      }
     });
 
-    // Уничтожаем рендерер при размонтировании компонента
+    // Отключение drag событий по всему документу
+    const preventDefaultDrag = (e) => e.preventDefault();
+    document.addEventListener("dragstart", preventDefaultDrag);
+
+    // Уничтожаем рендерер и удаляем слушатели событий при размонтировании компонента
     return () => {
       renderer.kill();
+      document.removeEventListener("dragstart", preventDefaultDrag);
     };
   }, []);
 
@@ -78,11 +106,12 @@ export const ChartItemGraph = () => {
     <div
       id="sigma-container"
       style={{
-        height: "100vh", // Высота на всю доступную область
+        height: "500px", // Высота на всю доступную область
         width: "100%",   // Ширина на всю доступную область
         overflow: "hidden", // Избегаем прокрутки
       }}
       onDragStart={(e) => e.preventDefault()} // Отключаем создание копий при перетаскивании
+      onDrop={(e) => e.preventDefault()} // Отключаем события drop
     ></div>
   );
 };

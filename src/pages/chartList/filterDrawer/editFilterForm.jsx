@@ -289,7 +289,8 @@ export const EditFilterForm = ({filter, availableFields}) => {
               onClick={(e) => {
                 if (isDeleteFilter) {
                   e.stopPropagation()
-                  dispatch(deleteFilter(filter.filter_id,activeGroupId)).then(() => {
+                  console.log(activeGroupId)
+                  dispatch(deleteFilter({filter_id:filter.filter_id,group_id: activeGroupId})).then(() => {
                     setIsEditFilter(false)
                     dispatch(getFilters(activeGroupId))
                   })

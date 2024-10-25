@@ -84,11 +84,11 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
   }, [initialLayout.length]);
 
   const generateDOM = () => {
+
     if(layouts.lg.length !== charts.length) {
       // setLayouts(generateInitial(charts));
       return
     }
-    console.log(layouts.lg,charts)
     return _.map(layouts.lg, (l, i) => (
       <div key={i} className={l.static ? "static" : ""}
            style={{

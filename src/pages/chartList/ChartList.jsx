@@ -270,7 +270,7 @@ export const ChartList = (props) => {
           height: `calc(100vh - ${topOffset + 80}px)`,
         }}
         className={styles.list}>
-        {isChartLoading && (
+        {(isChartLoading || filterLoading === 'load') &&  (
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>

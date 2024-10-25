@@ -196,7 +196,7 @@ export const chartSlice = createSlice({
       .addCase(getFilters.fulfilled, (state, action) => {
         state.filters = action.payload
         state.filtersDrawer = action.payload
-        state.filterLoading = 'idle'
+        state.filterLoading = 'none'
       })
       .addCase(getFilters.pending, (state, action) => {
         state.filterLoading = 'load'

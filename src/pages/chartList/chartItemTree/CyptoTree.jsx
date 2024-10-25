@@ -10,7 +10,7 @@ cytoscape.use(dagre);
 nodeHtmlLabel(cytoscape); // Подключаем nodeHtmlLabel плагин
 
 const initialState = [
-  {data: {id: "p", label: "Узел P",type: 'one', values: [{value: 2444, percent: '+20'}, {value: 999, percent: '+20'}]}},
+  {data: {id: "p", label: "Узел P",type: 'one', values: [{value: 2444, percent: '+20'},{value: 2444, percent: '+20'}, {value: 999, percent: '+20'}]}},
   {data: {id: "r", label: "Узел R",type: 'one', values: [{value: 2444, percent: '+20'}, {value: 999, percent: '+20'}]}},
   {data: {id: "a", label: "Узел A",type: 'one', values: [{value: 1333, percent: '+20'}, {value: 1663, percent: '+20'}]}},
   {data: {id: "q", label: "Узел Q",type: 'two', values: [{value: 2444, percent: '+20'}, {value: 999, percent: '+20'}]}},
@@ -19,6 +19,7 @@ const initialState = [
   {data: {id: "d", label: "Узел D",type: 'two', values: [{value: 454, percent: '-20'}, {value: 787, percent: '+20'}]}},
   {data: {id: "f", label: "Узел F",type: 'two', values: [{value: 2121, percent: '+20'}, {value: 6767, percent: '-20'}]}},
   {data: {id: "g", label: "Узел G",type: 'one', values: [{value: 232, percent: '-20'}, {value: 6767, percent: '+20'}]}},
+  {data: {id: "h", label: "Узел GH  ",type: 'one', values: [{value: 232, percent: '-20'}, {value: 6767, percent: '+20'}]}},
   {data: {source: "a", target: "b"}},
   {data: {source: "a", target: "p"}},
   {data: {source: "p", target: "r"}},
@@ -159,48 +160,49 @@ export const CytoscapeTree = () => {
 
   return (
     <>
-      <button onClick={() => {
-        setEdges(initialState.filter(el => el.data.source));
-        if (cyInstance) {
-          cyInstance.elements().remove();
-          cyInstance.add(initialState);
-          cyInstance.layout({
-            name: "dagre",
-            rankDir: "TB",
-            nodeSep: 150,
-            edgeSep: 10,
-            rankSep: 100,
-            animate: true,
-          }).run();
-        }
-      }}>Сброс
-      </button>
-      <div style={{display: 'flex', marginTop: "10px", height: 800}}>
+      {/*<button onClick={() => {*/}
+      {/*  setEdges(initialState.filter(el => el.data.source));*/}
+      {/*  if (cyInstance) {*/}
+      {/*    cyInstance.elements().remove();*/}
+      {/*    cyInstance.add(initialState);*/}
+      {/*    cyInstance.layout({*/}
+      {/*      name: "dagre",*/}
+      {/*      rankDir: "TB",*/}
+      {/*      nodeSep: 150,*/}
+      {/*      edgeSep: 10,*/}
+      {/*      rankSep: 100,*/}
+      {/*      animate: true,*/}
+      {/*    }).run();*/}
+      {/*  }*/}
+      {/*}}>Сброс*/}
+      {/*</button>*/}
+      <div >
+      {/*<div style={{display: 'flex', marginTop: "10px", height: '100%'}}>*/}
         <div
           id="cy"
           ref={cyRef}
-          style={{width: "100%",maxWidth:800,margin:'0 auto', height: "1000px", border: "1px solid #ccc"}}
+          style={{width: "100%",margin:'0 auto', height: "500px", border: "1px solid #ccc"}}
         />
-        <div style={{marginLeft: "20px", display: 'flex', flexDirection: 'column'}}>
-          <h3>Управление узлами и связями</h3>
-          <div >
-            {nodes.map(node => (
-              <div key={node.value} style={{marginBottom: "10px"}}>
-                <strong>{node.label}</strong>
-                <CheckPicker
-                  data={nodes.filter(n => n.value !== node.value)}
-                  value={edgesMap[node.value] || []}
-                  onChange={(values) => handleChangeEdges(node.value, values)}
-                  style={{width: 200, marginLeft: 10}}
-                  block
-                  placeholder="Выберите цели"
-                  searchable
-                />
-              </div>
-            ))}
-          </div>
+        {/*<div style={{marginLeft: "20px", display: 'flex', flexDirection: 'column'}}>*/}
+        {/*  <h3>Управление узлами и связями</h3>*/}
+        {/*  <div >*/}
+        {/*    {nodes.map(node => (*/}
+        {/*      <div key={node.value} style={{marginBottom: "10px"}}>*/}
+        {/*        <strong>{node.label}</strong>*/}
+        {/*        <CheckPicker*/}
+        {/*          data={nodes.filter(n => n.value !== node.value)}*/}
+        {/*          value={edgesMap[node.value] || []}*/}
+        {/*          onChange={(values) => handleChangeEdges(node.value, values)}*/}
+        {/*          style={{width: 200, marginLeft: 10}}*/}
+        {/*          block*/}
+        {/*          placeholder="Выберите цели"*/}
+        {/*          searchable*/}
+        {/*        />*/}
+        {/*      </div>*/}
+        {/*    ))}*/}
+        {/*  </div>*/}
 
-        </div>
+        {/*</div>*/}
       </div>
     </>
   );

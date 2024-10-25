@@ -6,16 +6,17 @@ import '../chartItemPivotTable/styles.css'
 import {CustomPivot} from "../chartItemPivotTable/CustomPivot";
 import {ChartItemTree} from "../chartItemTree/ChartItemTree";
 import {ChartItemGraph} from "../chartItemTree/ChartItemGraph";
+import {CytoscapeTree} from "../chartItemTree/CyptoTree";
 
 export const ChartTypeView = ({chart}) => {
 
 
   let returnType = 'неизвестный тип графика'
   switch (chart.formatting.type_chart) {
-    case 'tree':
-      returnType = <ChartItemGraph/>
-      // returnType = <ChartItemTree/>
-      break
+    // case 'graph':
+    //   returnType = <CytoscapeTree/>
+    //   // returnType = <ChartItemTree/>
+    //   break
     case 'bar':
       returnType = <ChartListItem chart={chart}/>
       break

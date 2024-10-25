@@ -56,7 +56,7 @@ export const GroupFilters = ({groups}) => {
     if (!activeGroupId) return
     methods.reset({filters: []})
     dispatch(getFilters(activeGroupId)).then(() => {
-      dispatch(setFilterLoading('none'))
+      // dispatch(setFilterLoading('none'))
     })
 
   }, [activeGroupId]);
@@ -94,7 +94,7 @@ export const GroupFilters = ({groups}) => {
     if (!activeGroupId) return
     if (filters.length > 0) {
         console.log(isFirstRender.current)
-      const filterValues = filters.filter(filter => !filter.column_limit).map(filter => {
+      const filterValues = filters.map(filter => {
         const activeGroup = groups.find(group => group.group_id === activeGroupId);
         // console.log(Object.keys(activeGroup.saved_filters).length)
         if (activeGroup.saved_filters) {
@@ -159,16 +159,31 @@ export const GroupFilters = ({groups}) => {
 
       getCharts()
     } else {
-      dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: []}}))
-        .then(() => {
-          dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
-        });
+      // if(filterLoading === 'load') {
+      //
+      //   dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: []}}))
+      //     .then(() => {
+      //       dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
+      //     });
+      // }
     }
 
     return () => {
       methods.reset({})
     }
   }, [filters]);
+
+  useEffect(() => {
+    if(!activeGroupId) return
+    if(filterLoading === 'none' && !filters.length) {
+
+      dispatch(fetchAllChartsByGroupId({groupId: activeGroupId, filter_data: {filter_data: []}}))
+        .then(() => {
+          dispatch(fetchAllChartsFormatByGroupId(activeGroupId));
+        });
+    }
+
+  }, [filterLoading,filters]);
 
 
   const handleChangeFilter = (data) => {

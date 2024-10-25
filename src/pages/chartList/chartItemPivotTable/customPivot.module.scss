@@ -117,3 +117,46 @@
     border-radius: 20px; /* Округление бегунка */
   }
 }
+
+//.wrapper_scroll {
+//  overflow-x: auto;
+//}
+//
+//.table_container {
+//  display: block;
+//  overflow-x: auto;
+//  white-space: nowrap;
+//}
+
+.table_scroll {
+  overflow-x: auto;
+  position: relative;
+}
+
+.fixed {
+  position: sticky;
+  background-color: white;
+  z-index: 1; /* Увеличьте значение z-index, если нужно */
+}
+
+.row {
+  left: 0;
+  z-index: 2;
+}
+
+.subRow {
+  left: 100px; /* Подберите значение по ширине первой колонки (row) */
+  z-index: 2;
+}
+
+.col {
+  left: 0; /* Положение фиксированной колонки */
+  z-index: 2;
+}
+
+.subCol {
+  left: 100px; /* Задайте позицию подколонки (ширина фиксированной колонки) */
+  z-index: 2;
+}
+
+

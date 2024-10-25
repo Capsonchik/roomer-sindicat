@@ -112,6 +112,7 @@ export const GroupFilters = ({groups}) => {
           filter_id: filter.filter_id,
           original_values: filter.original_values,
           multi: filter.multi,
+          column_limit:filter.column_limit,
           isactive: filter.isactive,
           islimited: filter.islimited,
           value: filter.column_limit ? []: (savedFilter && isFirstRender.current) ? getValue(filter, savedFilter) : getValue(filter, null),
@@ -240,7 +241,7 @@ export const GroupFilters = ({groups}) => {
   // console.log(methods.getValues('filters'))
   return (
     <div>
-      {activeReport && !!filters?.length && (
+      {activeReport && !!filters?.filter(filter => !filter.column_limit).length && (
         <FormProvider {...methods}>
           {filterLoading === 'load' && <div style={{display:'flex',justifyContent:'center',marginTop:30}}><Loader size={'md'}/></div>}
           {filterLoading !== 'load' && <div
@@ -249,7 +250,7 @@ export const GroupFilters = ({groups}) => {
             //
             // }}
           >
-            {fields.filter(filter => filter.column_limit).map((filter, i) => (
+            {fields.map((filter, i) => (
               <FilterItem
                 isSearch
                 activeFilter={activeFilter}

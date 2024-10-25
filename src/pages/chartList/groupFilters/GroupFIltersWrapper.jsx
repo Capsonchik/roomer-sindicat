@@ -19,7 +19,7 @@ export const GroupFiltersWrapper = ({groups}) => {
 
   return (
     <div >
-      {activeReport && !!groups.length && !!filters.length && <Divider style={{cursor:'pointer'}} onClick={toggleShow} >{show ? "Скрыть фильтры" : "Показать фильтры"}</Divider>}
+      {activeReport && !!groups.length && !!filters.filter(filter => !filter.column_limit).length && <Divider style={{cursor:'pointer'}} onClick={toggleShow} >{show ? "Скрыть фильтры" : "Показать фильтры"}</Divider>}
 
       <div className={`filter-wrapper ${show ? "show" : "hide"}`}>
         <div className="filter-content">

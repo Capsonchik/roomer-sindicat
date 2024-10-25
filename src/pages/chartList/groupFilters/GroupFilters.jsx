@@ -114,7 +114,7 @@ export const GroupFilters = ({groups}) => {
           multi: filter.multi,
           isactive: filter.isactive,
           islimited: filter.islimited,
-          value: (savedFilter && isFirstRender.current) ? getValue(filter, savedFilter) : getValue(filter, null),
+          value: filter.column_limit ? []: (savedFilter && isFirstRender.current) ? getValue(filter, savedFilter) : getValue(filter, null),
 
         }
       });
@@ -249,7 +249,7 @@ export const GroupFilters = ({groups}) => {
             //
             // }}
           >
-            {fields.map((filter, i) => (
+            {fields.filter(filter => filter.column_limit).map((filter, i) => (
               <FilterItem
                 isSearch
                 activeFilter={activeFilter}

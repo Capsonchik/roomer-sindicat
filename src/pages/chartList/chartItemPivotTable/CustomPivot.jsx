@@ -1,16 +1,18 @@
-import React, {useState, useMemo, useEffect} from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import styles from './customPivot.module.scss';
-import {Button} from 'rsuite';
-import {setActiveChart, setOpenDrawer} from '../../../store/chartSlice/chart.slice';
+import { Button } from 'rsuite';
+import { setActiveChart, setOpenDrawer } from '../../../store/chartSlice/chart.slice';
 import EditIcon from '@rsuite/icons/Edit';
-import {useDispatch, useSelector} from 'react-redux';
-import {hexToHSL} from "../../../lib/hexToHSL";
-import {hslToHex} from "../../../lib/HSLToHex";
-import {generateColors} from "../../../lib/generateColors";
-import {selectActiveClient, selectCharts, selectClients} from "../../../store/chartSlice/chart.selectors";
-import {colors as colorsConsts} from "../chart/config";
+import { useDispatch, useSelector } from 'react-redux';
+import { hexToHSL } from "../../../lib/hexToHSL";
+import { hslToHex } from "../../../lib/HSLToHex";
+import { generateColors } from "../../../lib/generateColors";
+import { selectActiveClient, selectCharts, selectClients } from "../../../store/chartSlice/chart.selectors";
+import { colors as colorsConsts } from "../chart/config";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-// Функция для агрегации данных
+// Aggregation function for data
 const aggregateData = (data, rowKey, subRowKey, colKey, subColKey, aggregator) => {
   const result = {};
   let min = Infinity;
@@ -29,196 +31,213 @@ const aggregateData = (data, rowKey, subRowKey, colKey, subColKey, aggregator) =
 
     result[row][subRow][col][subCol] = value;
 
-    // Находим min и max значения
     if (value < min) min = value;
     if (value > max) max = value;
   });
 
-  return {result, min, max};
+  return { result, min, max };
 };
 
-// Функция для создания темного и светлого оттенка на основе одного цвета
+// Function to create shades from a hex color
 const getShadesFromHex = (hex, lightnessFactor = 0.9, darknessFactor = 0.6) => {
-  // Преобразуем HEX в HSL
   const [h, s, l] = hexToHSL(hex);
-
-  // Создаем светлый и темный оттенки
   const lightShade = hslToHex(h, s, l + (100 - l) * lightnessFactor);
   const darkShade = hslToHex(h, s, l * darknessFactor);
-
   return { lightShade, darkShade };
 };
 
+// Cell styling based on value and color gradient
 const getCellStyle = (value, min, max, baseColorHex) => {
-  if (value == null) return {}; // Если значение отсутствует, не применяем стиль
+  if (value == null) return {};
 
-  const ratio = (value - min) / (max - min); // Простая нормализация
-
-  // Генерация темного и светлого оттенков из базового цвета
+  const ratio = (value - min) / (max - min);
   const { lightShade, darkShade } = getShadesFromHex(baseColorHex);
 
-  // Преобразуем HEX цвета в RGB для дальнейшего интерполирования
   const hexToRGB = (hex) => hex.match(/\w\w/g).map(x => parseInt(x, 16));
-
   const darkColor = hexToRGB(darkShade);
   const lightColor = hexToRGB(lightShade);
-
-  // Интерполируем цвет в зависимости от значения
   const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * ratio));
 
   return {
     fontSize: 16,
     backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`,
-    color: ratio < 0.5 ? 'black' : 'white', // Черный текст на светлом фоне, белый на темном
+    color: ratio < 0.5 ? 'black' : 'white',
   };
 };
 
-// Функция для форматирования значений
+// Function to format values
 const formatValue = (value, formatType, digitsAfterDot = null) => {
-  // Приводим value к числу, если это не число или undefined
   const numericValue = Number(value);
-  // console.log(value)
-  if (typeof value !== 'number') {
-    return null
-  }
-  // Проверяем, что numericValue является числом
-  if (isNaN(numericValue)) {
-    return value; // Возвращаем исходное значение, если оно не число
-  }
+  if (typeof value !== 'number' || isNaN(numericValue)) return null;
 
-  // Форматирование в зависимости от типа
   if (formatType === 'k') {
     return numericValue >= 1000
-      ? `${(numericValue / 1000).toFixed(digitsAfterDot !== null ? digitsAfterDot : 0)}k`
+      ? `${(numericValue / 1000).toFixed(digitsAfterDot ?? 0)}k`
       : numericValue;
   } else if (formatType === 'm') {
-    if (numericValue >= 1000000) {
-      return `${(numericValue / 1000000).toFixed(digitsAfterDot !== null ? digitsAfterDot : 0)}m`;
-    } else if (numericValue >= 1000) {
-      return `${(numericValue / 1000).toFixed(digitsAfterDot !== null ? digitsAfterDot : 0)}k`;
-    }
+    return numericValue >= 1_000_000
+      ? `${(numericValue / 1_000_000).toFixed(digitsAfterDot ?? 0)}m`
+      : numericValue >= 1000
+        ? `${(numericValue / 1000).toFixed(digitsAfterDot ?? 0)}k`
+        : numericValue;
   }
 
-  // Возвращаем значение с нужным количеством знаков после запятой, если digitsAfterDot не null
   return digitsAfterDot !== null ? numericValue.toFixed(digitsAfterDot) : numericValue;
 };
 
+const COLUMN_TYPE = 'column';
 
-export const CustomPivot = ({chart, rowData, isDrawer = false, rowColData}) => {
-  const clients = useSelector(selectClients)
-  const activeClient = useSelector(selectActiveClient)
-  const charts = useSelector(selectCharts)
-  const [colors, setColors] = useState(colorsConsts)
+// Custom hook for draggable column headers
+const DraggableColumnHeader = ({ col, index, moveColumn, setIsDragging }) => {
+  const [, ref] = useDrag({
+    type: COLUMN_TYPE,
+    item: { index },
+    collect: (monitor) => {
+      setIsDragging(monitor.isDragging());
+    },
+  });
+
+  const [, drop] = useDrop({
+    accept: COLUMN_TYPE,
+    hover: (draggedItem) => {
+      if (draggedItem.index !== index) {
+        moveColumn(draggedItem.index, index);
+        draggedItem.index = index;
+      }
+    },
+  });
+
+  return (
+    <th style={{cursor:'grab'}} ref={(node) => ref(drop(node))} colSpan={1} className={styles.columnHeader}>
+      {col}
+    </th>
+  );
+};
+
+export const CustomPivot = ({ chart, rowData, isDrawer = false, rowColData }) => {
+  const clients = useSelector(selectClients);
+  const activeClient = useSelector(selectActiveClient);
+  const charts = useSelector(selectCharts);
+  const [columnOrder, setColumnOrder] = useState([]);
+  const [colors, setColors] = useState(colorsConsts);
+  const [isDragging, setIsDragging] = useState(false);
+
   useEffect(() => {
-    const client = clients.find(clnt => clnt.client_id === activeClient)
-    if (client?.chart_colors && client?.chart_colors?.colors) {
-      // const test = ['#1675e0', '#fa8900']
-      // const gradientColors = generateColors(client?.chart_colors?.colors, Object.keys(chart.seriesData).length)
-      // console.log(chart.seriesData)
-      setColors(client?.chart_colors?.colors)
-    }
-  },[charts])
-  const {rowKey, subRowKey, colKey, subColKey, aggregator, format = 'm', digitsAfterDot} = rowColData;
+    const client = clients.find(clnt => clnt.client_id === activeClient);
+    if (client?.chart_colors?.colors) setColors(client.chart_colors.colors);
+  }, [charts]);
+
+  const { rowKey, subRowKey, colKey, subColKey, aggregator, format = 'm', digitsAfterDot } = rowColData;
   const dispatch = useDispatch();
-  // Агрегированные данные и min/max значения
-  const {result: aggregatedData, min, max} = useMemo(
-    () => aggregateData(rowData, rowKey, subRowKey, colKey, subColKey, aggregator),
-    [rowData, rowKey, subRowKey, colKey, subColKey, aggregator, format]
+
+  const { result: aggregatedData, min, max } = useMemo(
+    () => {
+      if (!isDragging) {
+        return aggregateData(rowData, rowKey, subRowKey, colKey, subColKey, aggregator);
+      }
+      return { result: {}, min: 0, max: 0 };
+    },
+    [rowData, rowKey, subRowKey, colKey, subColKey, aggregator, isDragging]
   );
 
-  // Уникальные строки и подстроки
   const rowLabels = useMemo(() => [...new Set(rowData.map((item) => item[rowKey]))], [rowData, rowKey]);
   const subRowLabels = useMemo(
-    () =>
-      rowLabels.reduce((acc, row) => {
-        acc[row] = [...new Set(rowData.filter((item) => item[rowKey] === row).map((item) => item[subRowKey]))];
-        return acc;
-      }, {}),
+    () => rowLabels.reduce((acc, row) => {
+      acc[row] = [...new Set(rowData.filter((item) => item[rowKey] === row).map((item) => item[subRowKey]))];
+      return acc;
+    }, {}),
     [rowData, rowKey, subRowKey]
   );
 
-  // Уникальные колонки и подколонки
   const colLabels = useMemo(() => [...new Set(rowData.map((item) => item[colKey]))], [rowData, colKey]);
   const subColLabels = useMemo(
-    () =>
-      colLabels.reduce((acc, col) => {
-        acc[col] = [...new Set(rowData.filter((item) => item[colKey] === col).map((item) => item[subColKey]))];
-        return acc;
-      }, {}),
+    () => colLabels.reduce((acc, col) => {
+      acc[col] = [...new Set(rowData.filter((item) => item[colKey] === col).map((item) => item[subColKey]))];
+      return acc;
+    }, {}),
     [rowData, colKey, subColKey]
   );
 
-  if (!rowData.length) {
-    return null;
-  }
+  useEffect(() => setColumnOrder(colLabels), [colLabels]);
+
+  const moveColumn = (fromIndex, toIndex) => {
+    setColumnOrder((prevOrder) => {
+      const newOrder = [...prevOrder];
+      const [movedItem] = newOrder.splice(fromIndex, 1);
+      newOrder.splice(toIndex, 0, movedItem);
+      return newOrder;
+    });
+    setIsDragging(false);
+  };
+
+  if (!rowData.length) return null;
 
   return (
-    <div className={`${styles.wrapper} ${isDrawer ? styles.isDrawer : ''}`}>
-      <div className={styles.wrapper_scroll}>
-        <div className={styles.title_wrapper}>
-          <h5 className={styles.title}>{chart.title}</h5>
-          {!isDrawer && (
-            <Button
-              onClick={() => {
-                dispatch(setActiveChart(chart));
-                dispatch(setOpenDrawer(true));
-              }}
-            >
-              <EditIcon/>
-            </Button>
-          )}
-        </div>
-        <div className={styles.table_scroll}>
-          <table border="1" className={styles.table}>
-            <thead>
-            <tr>
-              <th className={styles.row} rowSpan="2">{rowKey}</th>
-              <th className={styles.row} rowSpan="2">{subRowKey}</th>
-              {colLabels.map((col) => (
-                <th key={col} colSpan={subColLabels[col].length}>
-                  {col}
-                </th>
-              ))}
-            </tr>
-            <tr>
-              {colLabels.map((col) =>
-                subColLabels[col].map((subCol) => (
-                  <th key={subCol}>{subCol}</th>
+    <DndProvider backend={HTML5Backend}>
+      <div className={`${styles.wrapper} ${isDrawer ? styles.isDrawer : ''}`}>
+        <div className={styles.wrapper_scroll}>
+          <div className={styles.title_wrapper}>
+            <h5 className={styles.title}>{chart.title}</h5>
+            {!isDrawer && (
+              <Button onClick={() => { dispatch(setActiveChart(chart)); dispatch(setOpenDrawer(true)); }}>
+                <EditIcon />
+              </Button>
+            )}
+          </div>
+          <div className={styles.table_scroll}>
+            <table border="1" className={styles.table}>
+              <thead>
+              <tr>
+                <th className={styles.row} rowSpan="2">{rowKey}</th>
+                <th className={styles.row} rowSpan="2">{subRowKey}</th>
+                {columnOrder.map((col, index) => (
+                  <DraggableColumnHeader
+                    key={col}
+                    col={col}
+                    index={index}
+                    moveColumn={moveColumn}
+                    setIsDragging={setIsDragging}
+                  />
+                ))}
+              </tr>
+              <tr>
+                {columnOrder.flatMap((col) =>
+                  subColLabels[col].map((subCol) => (
+                    <th key={subCol} className={styles.columnHeader}>
+                      {subCol}
+                    </th>
+                  ))
+                )}
+              </tr>
+              </thead>
+              <tbody>
+              {rowLabels.map((rowLabel) =>
+                subRowLabels[rowLabel].map((subRowLabel, subRowIndex) => (
+                  <tr key={`${rowLabel}-${subRowLabel}`}>
+                    {subRowIndex === 0 && (
+                      <td className={styles.row} rowSpan={subRowLabels[rowLabel].length}>
+                        {rowLabel}
+                      </td>
+                    )}
+                    <td className={styles.row}>{subRowLabel}</td>
+                    {columnOrder.flatMap((col) =>
+                      subColLabels[col].map((subCol) => (
+                        <td
+                          key={`${col}-${subCol}`}
+                          style={getCellStyle(aggregatedData[rowLabel]?.[subRowLabel]?.[col]?.[subCol], min, max, colors[0])}
+                        >
+                          {formatValue(aggregatedData[rowLabel]?.[subRowLabel]?.[col]?.[subCol], format, digitsAfterDot)}
+                        </td>
+                      ))
+                    )}
+                  </tr>
                 ))
               )}
-            </tr>
-            </thead>
-            <tbody>
-            {rowLabels.map((row) => {
-              const subRows = subRowLabels[row] || [];
-              return subRows.map((subRow, index) => (
-                <tr key={subRow}>
-                  {index === 0 && (
-                    <td rowSpan={subRows.length}>
-                      {row}
-                    </td>
-                  )}
-                  <td>{subRow}</td>
-                  {colLabels.map((col) =>
-                    subColLabels[col].map((subCol) => (
-                      <td key={subCol} style={getCellStyle(
-                        aggregatedData[row]?.[subRow]?.[col]?.[subCol],
-                        min, // Используем min из useMemo
-                        max,  // Используем max из useMemo
-                        colors[0]
-                      )}>
-                        {formatValue(aggregatedData[row]?.[subRow]?.[col]?.[subCol], format, digitsAfterDot) ||
-                          <span className={styles.empty}>-</span>}
-                      </td>
-                    ))
-                  )}
-                </tr>
-              ));
-            })}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
+    </DndProvider>
   );
 };

@@ -40,12 +40,15 @@
   max-width: 150px;
 }
 .table {
+  //border-collapse: separate;
+  //overflow: hidden;
 
   width: 100%;
   border-color: #e6e5e5;
   th{
     line-height: 18px;
     padding-inline: 5px;
+    //border: 1px solid #e6e5e5;
   }
   td{
     padding-inline: 5px !important;
@@ -136,7 +139,7 @@
 .fixed {
   position: sticky;
   background-color: white;
-  z-index: 1; /* Увеличьте значение z-index, если нужно */
+  z-index: 1; /* При необходимости увеличить значение */
 }
 
 .row {
@@ -148,15 +151,4 @@
   left: 100px; /* Подберите значение по ширине первой колонки (row) */
   z-index: 2;
 }
-
-.col {
-  left: 0; /* Положение фиксированной колонки */
-  z-index: 2;
-}
-
-.subCol {
-  left: 100px; /* Задайте позицию подколонки (ширина фиксированной колонки) */
-  z-index: 2;
-}
-
 

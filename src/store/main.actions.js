@@ -23,7 +23,7 @@ export const fetchGetUser = createAsyncThunk(
     console.log('token',token)
     try {
       const response = await fetch(
-        'https://852d-212-45-6-6.ngrok-free.app/auth/users/me', {
+        'https://ed45-212-45-6-6.ngrok-free.app/auth/users/me', {
           headers: {
             "Authorization": `Bearer ${token}`,
             Accept: 'application/json',

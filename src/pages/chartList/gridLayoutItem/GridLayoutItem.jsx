@@ -1,5 +1,5 @@
-import { Responsive, WidthProvider, Layout } from "react-grid-layout";
-import { useEffect, useState } from "react";
+import {Responsive, WidthProvider, Layout} from "react-grid-layout";
+import {useEffect, useState} from "react";
 import _ from "lodash";
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -12,6 +12,7 @@ import {
 import {useSelector} from "react-redux";
 import {Loader} from "rsuite";
 import {setActiveGraphsPosition} from "../../../store/chartSlice/chart.slice";
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const generateInitial = (data) => {
@@ -51,7 +52,7 @@ const generateInitial = (data) => {
         minW: 3,
         minH: 2,
         maxW: 12,
-        moved:true,
+        moved: true,
         static: false, // элемент также должен перемещаться
       };
     }
@@ -66,33 +67,39 @@ const generateInitial = (data) => {
   //   dispatch(setActiveGraphsPosition(null))
   // }
 
-  return {lg:  layout};
+  return {lg: layout};
 };
 
 
-const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
+const ShowcaseLayout = ({onLayoutChange, initialLayout, charts, image, images}) => {
   const [currentBreakpoint, setCurrentBreakpoint] = useState("lg");
   const [compactType, setCompactType] = useState("vertical");
   const isEditableMode = useSelector(selectIsEditableMode);
   const graphsPosition = useSelector(selectGraphsPosition);
 
-  const [layouts, setLayouts] = useState({ lg: initialLayout });
-  console.log(initialLayout,charts)
+  const [layouts, setLayouts] = useState({lg: initialLayout});
+  // console.log(images,initialLayout)
   useEffect(() => {
+    // console.log(initialLayout)
+    if(!initialLayout.length) return
     // if(initialLayout.length !== charts.length) return
-    setLayouts({ lg: initialLayout });
+    setLayouts({lg: initialLayout});
   }, [initialLayout.length]);
 
+  // useEffect(() => {
+  //   console.log(images)
+  // }, [images]);
+  // console.log('charts',charts)
   const generateDOM = () => {
 
-    if(layouts.lg.length !== charts.length) {
+    if (layouts.lg.length !== charts.length) {
       // setLayouts(generateInitial(charts));
       return
     }
     return _.map(layouts.lg, (l, i) => (
       <div key={i} className={l.static ? "static" : ""}
            style={{
-             border: isEditableMode ? "1px solid lightgray": 'none',
+             border: isEditableMode ? "1px solid lightgray" : 'none',
              boxSizing: "border-box",
              // padding: "10px"
            }}
@@ -105,8 +112,13 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
             Static - {i}
           </span>
         ) : (
-          <span className="text" style={{height: '100%', display:'block'}}>
-            <ChartTypeView key={i} chart={charts[i]}/>
+          <span className="text" style={{height: '100%', display: 'block'}}>
+               <ChartTypeView key={i} chart={charts[i]}/>
+
+            {/*{image*/}
+            {/*  ? <img src={images?.[i]} alt=""/>*/}
+            {/*}*/}
+
           </span>
         )}
 
@@ -144,8 +156,8 @@ const ShowcaseLayout = ({ onLayoutChange, initialLayout, charts}) => {
         }}
         className="layout"
         layouts={layouts}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+        breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
+        cols={{lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}}
         rowHeight={200}
         isResizable={isEditableMode}  // Меняем значение на основе состояния
         isDraggable={isEditableMode}  // Меняем значение на основе состояния

@@ -39,6 +39,8 @@ import createChartIcon from './assets/create-chart.svg'
 import filtersIcon from './assets/filters.svg'
 import createPresentationIcon from './assets/create-presentation.svg'
 import SettingHorizontalIcon from '@rsuite/icons/SettingHorizontal';
+import {ImageDrawer} from "../imageDrawer/ImageDrawer";
+import ImageIcon from '@rsuite/icons/Image';
 
 export const TopFilters = ({layouts}) => {
   const dispatch = useDispatch();
@@ -61,6 +63,7 @@ export const TopFilters = ({layouts}) => {
   const [openPresentationDrawer, setOpenPresentationDrawer] = useState(false)
   const [openGroupDrawer, setOpenGroupDrawer] = useState(false)
   const [openFilterDrawer, setOpenFilterDrawer] = useState(false)
+  const [openImageDrawer, setOpenImageDrawer] = useState(false)
 
   useEffect(() => {
     if (user && user.role !== 'admin') {
@@ -236,6 +239,16 @@ export const TopFilters = ({layouts}) => {
                     <img src={filtersIcon}/>
                     Фильтры листа
                   </Dropdown.Item>
+                  <Dropdown.Item
+                    className={styles.dropdown_item}
+                    onClick={() => {
+                      setOpenImageDrawer(true)
+                    }}
+                  >
+                    <ImageIcon/>
+                    {/*<img src={filtersIcon}/>*/}
+                    Картинки листа
+                  </Dropdown.Item>
 
                   <Dropdown.Separator/>
                   <Dropdown.Item
@@ -312,6 +325,10 @@ export const TopFilters = ({layouts}) => {
       <FilterDrawer
         open={openFilterDrawer}
         onClose={() => setOpenFilterDrawer(false)}
+      />
+      <ImageDrawer
+        open={openImageDrawer}
+        onClose={() => setOpenImageDrawer(false)}
       />
     </>
   )

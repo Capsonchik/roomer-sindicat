@@ -29,18 +29,10 @@ export const GroupTabs = ({groupsReports}) => {
     // }
   }, [groupsReports,activeGroupId]);
 
-  useEffect(() => {
-    // if(activeGroupId) {
-    //
-    //   dispatch(getFilters(activeGroupId)).then(() => {
-    //     dispatch(setFilterLoading('none'))
-    //   })
-    // }
-    //   fetchCharts(activeGroupId)
-    // // if (activeGroupId) {
-    // // }
-
-  }, [])
+  // useEffect(() => {
+  //   dispatch(setActiveGroup(groupsReports?.[0].group_id));
+  //
+  // }, [])
 
 
   const fetchCharts = (id) => {

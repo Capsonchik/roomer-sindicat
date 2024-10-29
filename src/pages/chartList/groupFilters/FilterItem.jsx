@@ -37,6 +37,8 @@ export const FilterItem = ({filter, i, handleChangeFilter, methods, setActiveFil
     return  null
   }
 
+
+
   return (
     <div
       // ref={divRef} // Привязываем ссылку к div

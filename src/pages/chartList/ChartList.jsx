@@ -75,20 +75,24 @@ export const ChartList = (props) => {
 
   const [isTablet] = useMediaQuery('(max-width: 1200px)');
   const isFirstRender = useRef(true)
+  const [images, setImages] = useState([])
+  // console.log(images)
 
 
   useEffect(() => {
+    // setImages([])
     if (filterLoading !== 'idle') return
     // console.log(groups,activeGroupId)
     const foundGroup = groups.find((group) => group.group_id == activeGroupId)
     if (foundGroup) {
       setActiveGroup(foundGroup)
+
     } else if (groups.length) {
       setActiveGroup(groups[0])
     }
-    // setActiveGroup(foundGroup)
 
-  }, [activeGroupId, groups, filterLoading,charts])
+  }, [activeGroupId, groups, filterLoading, charts])
+
 
   useEffect(() => {
     if (!activeClient) {
@@ -105,52 +109,11 @@ export const ChartList = (props) => {
 
   useEffect(() => {
     // console.log('create')
-    setData(charts)
+   setData(charts)
   }, [charts])
-  // console.log(data)
-
-  useEffect(() => {
-    // console.log('444444444444444444')
-    let resizeTimeout;
-
-    const handleResize = () => {
-      setResize(true)
-      // setData([]); // Перерендеринг списка
-      if (resizeTimeout) {
-        clearTimeout(resizeTimeout);
-      }
-
-      resizeTimeout = setTimeout(() => {
-        setResize(false)
-        setData([...charts]); // Перерендеринг списка
-
-      }, 300); // Задержка в 300 мс перед вызовом функции
-    };
-
-    // Добавляем слушатель события resize
-    window.addEventListener('resize', handleResize);
-
-    // Удаляем слушатель при размонтировании компонента
-    return () => {
-      if (resizeTimeout) {
-        clearTimeout(resizeTimeout);
-      }
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [charts]);
-
-  const [dataLensCharts, setDataLensCharts] = useState([])
 
 
-  // console.log(filterLoading)
-
-  // if(filterLoading === 'load') {
-  //   return (
-  //     <Loader/>
-  //   )
-  // }
   const [layouts, setLayouts] = useState({lg: []});
-  const [isEditMode, setIsEditMode] = useState(false); // состояние для редактирования
 
 
   const generateLayout = (data) => {
@@ -216,23 +179,28 @@ export const ChartList = (props) => {
   }, [activeGroup]);
 
   useEffect(() => {
-    // Генерация лейаута при изменении массива data
-    // const length =
+
     if (data.length) {
-      console.log(data.length, activeGroup?.graphs_position)
-      // if(data.length !== activeGroup?.graphs_position) return
+
       setLayouts(generateLayout(data));
     }
-  }, [data.length,activeGroup ]);
+
+  }, [data.length, activeGroup]);
+
+  useEffect(() => {
+    if(activeGroup?.images) {
+      setLayouts(generateLayout(activeGroup?.images));
+      setData(activeGroup?.images.map(img => ({...img, title: 'image', formatting: {type_chart: 'image',}})))
+    }
+
+  }, [activeGroup]);
+
 
   const onLayoutChange = (layout, allLayouts) => {
     setLayouts(allLayouts);
     dispatch(setGraphsPosition(allLayouts))
   };
 
-  // if (!activeGroup) {
-  //   return <Loader size="lg" content="Загрузка..."/>;
-  // }
   const [topOffset, setTopOffset] = useState(0);
   const topFiltersRef = useRef(null);
   const groupFiltersRef = useRef(null);
@@ -252,18 +220,17 @@ export const ChartList = (props) => {
     return () => window.removeEventListener('resize', calculateTop);
   }, []);
 
-  // if(activeGroup.)
-
   return (
 
     <>
       <div ref={topFiltersRef}>
-      <TopFilters layouts={layouts}/>
+        <TopFilters layouts={layouts}/>
 
       </div>
       <div ref={groupFiltersRef}>
         {/*GroupFiltersWrapper*/}
-      <GroupFiltersWrapper groups={groups}/>
+        {!activeGroup?.images && <GroupFiltersWrapper groups={groups}/>}
+
 
       </div>
       <div
@@ -272,18 +239,13 @@ export const ChartList = (props) => {
           height: `calc(100vh - ${topOffset + 80}px)`,
         }}
         className={styles.list}>
-        {(isChartLoading || filterLoading === 'load') &&  (
+        {(isChartLoading || filterLoading === 'load') && !activeGroup?.images && (
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>
         )}
 
-        {/*{activeReport && !isChartLoading && !resize && (*/}
-        {/*  <div className={styles.info}>*/}
-        {/*    <h4 className={styles.group_name}>{activeGroup?.group_name}</h4>*/}
-        {/*    <h6 className={styles.title_group}>{activeGroup?.description}</h6>*/}
-        {/*  </div>*/}
-        {/*)}*/}
+
         {activeReport && <div
           // className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}
           className={cl(styles.wrapper, {
@@ -307,8 +269,10 @@ export const ChartList = (props) => {
                 }}>
                 <ShowcaseLayout
                   onLayoutChange={onLayoutChange}
-                  initialLayout={activeGroup?.graphs_position?.positions ? activeGroup?.graphs_position?.positions: layouts.lg}
-                  charts={data}>
+                  initialLayout={activeGroup?.graphs_position?.positions ? activeGroup?.graphs_position?.positions : layouts.lg}
+                  charts={data}
+                  // images={images}
+                >
                 </ShowcaseLayout>
               </div>
             </>

@@ -4,6 +4,7 @@ import dagre from "cytoscape-dagre";
 import {CheckPicker} from "rsuite";
 import "rsuite/dist/rsuite.min.css"; // Подключаем стили для CheckPicker
 import nodeHtmlLabel from "cytoscape-node-html-label";
+import styles from './cyptoTree.module.scss'
 
 // Подключаем плагины
 cytoscape.use(dagre);
@@ -179,6 +180,7 @@ export const CytoscapeTree = () => {
       <div >
       {/*<div style={{display: 'flex', marginTop: "10px", height: '100%'}}>*/}
         <div
+          className={styles.wrapper}
           id="cy"
           ref={cyRef}
           style={{width: "100%",margin:'0 auto', height: "500px", border: "1px solid #ccc"}}

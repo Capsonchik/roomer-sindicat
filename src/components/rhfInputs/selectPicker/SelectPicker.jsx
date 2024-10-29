@@ -92,6 +92,7 @@ export const CustomSelectPicker = (
               searchable={searchable}
               appearance={appearance}
               placement={placement}
+              // preventOverflow
               placeholder={placeholder}
               className={className || styles.select}
               container={container}

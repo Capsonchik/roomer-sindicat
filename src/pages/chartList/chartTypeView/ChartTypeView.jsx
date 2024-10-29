@@ -24,6 +24,12 @@ export const ChartTypeView = ({chart}) => {
     //   returnType = <CytoscapeTree/>
     //   // returnType = <ChartItemTree/>
     //   break
+    case 'image':
+      returnType = <img src={chart.file_url} alt="" style={{objectFit: "contain",width: '100%',height: '100%'}} />
+      break
+    case 'graph':
+      returnType = <CytoscapeTree/>
+      break
     case 'bar':
       returnType = <ChartListItem chart={chart}/>
       break

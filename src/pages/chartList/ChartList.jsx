@@ -252,6 +252,8 @@ export const ChartList = (props) => {
     return () => window.removeEventListener('resize', calculateTop);
   }, []);
 
+  // if(activeGroup.)
+
   return (
 
     <>

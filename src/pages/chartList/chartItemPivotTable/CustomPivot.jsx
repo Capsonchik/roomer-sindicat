@@ -1,5 +1,4 @@
-// CustomPivot.js
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import styles from './customPivot.module.scss';
 import { Button } from 'rsuite';
 import { setActiveChart, setOpenDrawer } from '../../../store/chartSlice/chart.slice';
@@ -8,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { aggregateData } from './utils/aggregateData';
 import { getCellStyle } from './utils/colorUtils';
 import { formatValue } from './utils/formatUtils';
+import * as XLSX from 'xlsx'; // Импортируем SheetJS
 import { selectActiveClient, selectCharts, selectClients } from '../../../store/chartSlice/chart.selectors';
 import { colors as colorsConsts } from '../chart/config';
 
@@ -16,6 +16,9 @@ export const CustomPivot = ({ chart, rowData, isDrawer = false, rowColData }) =>
   const activeClient = useSelector(selectActiveClient);
   const charts = useSelector(selectCharts);
   const [colors, setColors] = useState(colorsConsts);
+
+  const headerRef = useRef(null);
+  const bodyRef = useRef(null);
 
   useEffect(() => {
     const client = clients.find(clnt => clnt.client_id === activeClient);
@@ -49,6 +52,58 @@ export const CustomPivot = ({ chart, rowData, isDrawer = false, rowColData }) =>
     }, {}),
     [rowData, colKey, subColKey]
   );
+  //
+  // useEffect(() => {
+  //   // Синхронизация ширины ячеек `thead` и `tbody`
+  //   if (headerRef.current && bodyRef.current) {
+  //     const headerCells = headerRef.current.querySelectorAll('th');
+  //     const bodyCells = bodyRef.current.querySelectorAll('td');
+  //     headerCells.forEach((headerCell, index) => {
+  //       const bodyCell = bodyCells[index];
+  //       if (bodyCell) {
+  //         const width = bodyCell.offsetWidth;
+  //         headerCell.style.width = `${width}px`;
+  //       }
+  //     });
+  //   }
+  // }, [rowData]);
+
+  // Функция для экспорта данных в Excel
+  const exportToExcel = () => {
+    const exportData = []; // Массив для хранения данных таблицы
+
+    // Добавляем заголовок в форматированном виде
+    exportData.push([
+      rowKey,
+      subRowKey,
+      ...colLabels.flatMap(col => subColLabels[col].map(subCol => `${col} - ${subCol}`))
+    ]);
+
+    // Добавляем строки данных
+    rowLabels.forEach(row => {
+      const subRows = subRowLabels[row] || [];
+      subRows.forEach(subRow => {
+        const rowData = [
+          row,
+          subRow,
+          ...colLabels.flatMap(col =>
+            subColLabels[col].map(subCol =>
+              formatValue(aggregatedData[row]?.[subRow]?.[col]?.[subCol], format, digitsAfterDot) || '-'
+            )
+          )
+        ];
+        exportData.push(rowData);
+      });
+    });
+
+    // Создаем новый рабочий лист и книгу Excel
+    const ws = XLSX.utils.aoa_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Pivot Table');
+
+    // Генерируем и загружаем файл Excel
+    XLSX.writeFile(wb, `${chart.title || 'pivot_table'}.xlsx`);
+  };
 
   if (!rowData.length) {
     return null;
@@ -60,25 +115,26 @@ export const CustomPivot = ({ chart, rowData, isDrawer = false, rowColData }) =>
         <div className={styles.title_wrapper}>
           <h5 className={styles.title}>{chart.title}</h5>
           {!isDrawer && (
-            <Button
-              onClick={() => {
-                dispatch(setActiveChart(chart));
-                dispatch(setOpenDrawer(true));
-              }}
-            >
-              <EditIcon />
-            </Button>
+            <>
+              <Button
+                onClick={() => {
+                  dispatch(setActiveChart(chart));
+                  dispatch(setOpenDrawer(true));
+                }}
+              >
+                <EditIcon />
+              </Button>
+              <Button onClick={exportToExcel}>
+                Excel
+              </Button>
+            </>
+
           )}
         </div>
+        {/* Отдельная таблица для заголовков */}
         <div className={styles.table_scroll}>
-          <table border="1" className={styles.table}>
-            <thead style={{
-              // position:'sticky',
-              // top:0,
-              // zIndex:1000,
-              // background:'#fff',
-              // border:'1px solid #ccc'
-            }}>
+          <table border="1" className={styles.table} ref={headerRef}>
+            <thead>
             <tr>
               <th className={styles.row} rowSpan="2">{rowKey}</th>
               <th className={styles.row} rowSpan="2">{subRowKey}</th>
@@ -96,35 +152,41 @@ export const CustomPivot = ({ chart, rowData, isDrawer = false, rowColData }) =>
               )}
             </tr>
             </thead>
-            <tbody>
-            {rowLabels.map((row) => {
-              const subRows = subRowLabels[row] || [];
-              return subRows.map((subRow, index) => (
-                <tr key={subRow}>
-                  {index === 0 && (
-                    <td rowSpan={subRows.length}>
-                      {row}
-                    </td>
-                  )}
-                  <td>{subRow}</td>
-                  {colLabels.map((col) =>
-                    subColLabels[col].map((subCol) => (
-                      <td key={subCol} style={getCellStyle(
-                        aggregatedData[row]?.[subRow]?.[col]?.[subCol],
-                        min,
-                        max,
-                        colors[0]
-                      )}>
-                        {formatValue(aggregatedData[row]?.[subRow]?.[col]?.[subCol], format, digitsAfterDot) ||
-                          <span className={styles.empty}>-</span>}
-                      </td>
-                    ))
-                  )}
-                </tr>
-              ));
-            })}
-            </tbody>
           </table>
+          {/* Основная таблица для данных */}
+          <div className={styles.table_body_wrapper}>
+            <table border="1" className={`${styles.table} ${styles.table_body}`} ref={bodyRef}>
+              <tbody>
+              {rowLabels.map((row) => {
+                const subRows = subRowLabels[row] || [];
+                return subRows.map((subRow, index) => (
+                  <tr key={subRow}>
+                    {index === 0 && (
+                      <td rowSpan={subRows.length}>
+                        {row}
+                      </td>
+                    )}
+                    <td>{subRow}</td>
+                    {colLabels.map((col) =>
+                      subColLabels[col].map((subCol) => (
+                        <td key={subCol} style={getCellStyle(
+                          aggregatedData[row]?.[subRow]?.[col]?.[subCol],
+                          min,
+                          max,
+                          colors[0]
+                        )}>
+                          {formatValue(aggregatedData[row]?.[subRow]?.[col]?.[subCol], format, digitsAfterDot) ||
+                            <span className={styles.empty}>-</span>}
+                        </td>
+                      ))
+                    )}
+                  </tr>
+                ));
+              })}
+              </tbody>
+            </table>
+          </div>
+
         </div>
       </div>
     </div>

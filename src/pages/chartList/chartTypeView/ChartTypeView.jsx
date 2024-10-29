@@ -8,7 +8,11 @@ import {ChartItemTree} from "../chartItemTree/ChartItemTree";
 import {ChartItemGraph} from "../chartItemTree/ChartItemGraph";
 import {CytoscapeTree} from "../chartItemTree/CyptoTree";
 import {NewPivotTable, PivotTable} from "../chartItemPivotTable/NewPivot";
-const rowFields = ['Top_region', 'Region', ];
+import {ChartAgGridWithoutPivot} from "../chartItemPivotTable/ChartAgGrid";
+import {ChartAgGridPivot} from "../chartItemPivotTable/AgPivotTbale";
+import {AgGridDataWrapper} from "../chartItemPivotTable/AgGridDataWrapper";
+
+const rowFields = ['Top_region', 'Region',];
 const colFields = ['period', 'Producer'];
 const aggField = 'Total_value';
 export const ChartTypeView = ({chart}) => {
@@ -30,16 +34,19 @@ export const ChartTypeView = ({chart}) => {
       returnType = <ChartItemPie chart={chart}/>
       break
     case 'pivot':
+      returnType = <AgGridDataWrapper chart={chart}/>
+      // returnType = <AgGridDataWrapper chart={chart}/>
       // returnType = <CustomPivot chart={chart} rowData={chart?.['0']?.table_data} rowFields={rowFields} colFields={colFields} aggregator={aggField} />
-      returnType = <CustomPivot rowData={chart?.['0']?.table_data} chart={chart} rowColData={{
-        rowKey: chart.formatting?.rowKey || 'Region',
-        subRowKey: chart.formatting?.subRowKey || 'Segment2',
-        colKey: chart.formatting?.colKey || 'Segment1',
-        subColKey: chart.formatting?.subColKey || 'Product',
-        aggregator: chart.formatting?.aggregator || 'Total_value',
-        digitsAfterDot: chart.formatting?.digitsAfterDot || null
-      }}/>
-        // case 'pivot':
+      // returnType = <CustomPivot rowData={chart?.['0']?.table_data} chart={chart} rowColData={{
+      //   rowKey: chart.formatting?.rowKey || 'Region',
+      //   subRowKey: chart.formatting?.subRowKey || 'Segment2',
+      //   colKey: chart.formatting?.colKey || 'Segment1',
+      //   subColKey: chart.formatting?.subColKey || 'Product',
+      //   aggregator: chart.formatting?.aggregator || 'Total_value',
+      //   digitsAfterDot: chart.formatting?.digitsAfterDot || null
+      // }}
+      // />
+      // case 'pivot':
       // returnType = <CustomPivot rowData={chart?.['0']?.table_data} chart={chart} rowColData={{
       //   rowKey: chart.formatting?.rowKey || 'Region',
       //   subRowKey: chart.formatting?.subRowKey || 'Segment2',

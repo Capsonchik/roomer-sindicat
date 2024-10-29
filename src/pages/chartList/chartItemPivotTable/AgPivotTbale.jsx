@@ -54,32 +54,36 @@ export const ChartAgGridPivot = ({chart,columnsDef}) => {
     params.api.expandAll(); // Раскрываем все группы
   }
 
-  const autoGroupColumnDef = useMemo(() => ({
-    headerName: "Группы",
-    minWidth: 200,
-    cellRenderer: 'agGroupCellRenderer',
-    pinned: "left",
-    // cellRendererParams: {
-    //   innerRenderer: (params) => {
-    //     if (params.node.allLeafChildren.length > 0) {
-    //       return  null
-    //       // У группы есть дети, можно отобразить количество детей или их сумму
-    //       const totalChildren = params.node.allLeafChildren.length;
-    //       const aggregatedValue = params.node.allLeafChildren.reduce((sum, child) => sum + (child.data?.[params.colDef.field] || 0), 0);
-    //       return `${params.value} (Количество детей: ${totalChildren}, Сумма: ${aggregatedValue})`;
-    //     } else {
-    //       // У группы нет детей, отображаем стандартное значение
-    //       return params.value;
-    //     }
-    //   }
-    // }
-  }), []);
+  // const autoGroupColumnDef = useMemo(() => ({
+  //   headerName: "Группы",
+  //   minWidth: 200,
+  //   cellRenderer: 'agGroupCellRenderer',
+  //   pinned: "left",
+  //   // cellRendererParams: {
+  //   //   innerRenderer: (params) => {
+  //   //     if (params.node.allLeafChildren.length > 0) {
+  //   //       return  null
+  //   //       // У группы есть дети, можно отобразить количество детей или их сумму
+  //   //       const totalChildren = params.node.allLeafChildren.length;
+  //   //       const aggregatedValue = params.node.allLeafChildren.reduce((sum, child) => sum + (child.data?.[params.colDef.field] || 0), 0);
+  //   //       return `${params.value} (Количество детей: ${totalChildren}, Сумма: ${aggregatedValue})`;
+  //   //     } else {
+  //   //       // У группы нет детей, отображаем стандартное значение
+  //   //       return params.value;
+  //   //     }
+  //   //   }
+  //   // }
+  // }), []);
 
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.title_wrapper}>
         <h5 className={styles.title}>{chart.title}</h5>
+        {/*<Button onClick={() => {*/}
+        {/*  // console.log(gridRef.current.api);*/}
+        {/*  // gridRef.current.api.exportDataAsExcel()*/}
+        {/*}}>Экспорт excel</Button>*/}
         <Button onClick={() => {
           dispatch(setActiveChart(chart))
           dispatch(setOpenDrawer(true))
@@ -94,16 +98,20 @@ export const ChartAgGridPivot = ({chart,columnsDef}) => {
           ref={gridRef}
           rowData={rowData}
           columnDefs={columnsDef}
-          autoGroupColumnDef={autoGroupColumnDef}
+          // autoGroupColumnDef={autoGroupColumnDef}
           rowGroupPanelShow={"never"} // Всегда показывать панель группировки
           pivotMode={true} // Отключаем режим сводной таблицы
-          sideBar={"none"}
+          sideBar={'never'}
+          groupDisplayType={'multipleColumns'}
+          // groupHideOpenParents={true}
+          // groupDefaultExpanded={-1} // Expand all row groups by default
+          // defaultExcelExportParams={{fileName:'demo_export_not_correct'}}
           onGridReady={onGridReady}
           localeText={localeText}
-          // suppressMovableColumns={true}    // Отключаем возможность перемещения колонок
-          suppressDragLeaveHidesColumns={true} // Отключаем скрытие колонок при перетаскивании
+          suppressMovableColumns={false}    // Отключаем возможность перемещения колонок
+          suppressDragLeaveHidesColumns={false} // Отключаем скрытие колонок при перетаскивании
           suppressAggFuncInHeader={true}   // Скрываем функцию агрегации в заголовках
-          animateRows={true}               // Включаем анимацию строк
+          // animateRows={true}               // Включаем анимацию строк
           pivotDefaultExpanded={1}
           suppressContextMenu={user.role === 'viewer'}
           rowHeight={34} // Уменьшаем высоту строки до 25px

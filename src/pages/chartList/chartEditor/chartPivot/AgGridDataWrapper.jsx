@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {ChartPivot} from "./ChartPivot";
 
 
@@ -8,22 +8,14 @@ export const AgGridDataWrapper = ({chart}) => {
     availableValues: [],
     availableColumnsXY: []
   })
+
   const generateColumnDefs = (rowData, min, max) => {
 
-
-    // console.log(min,max)
     const columnDefs = [];
-
-    // console.log(111)
-    // if (rowData.length === 0) return columnDefs; // Если данные пустые, возвращаем пустой массив
-
-
     const allKeys = Array.from(new Set(rowData.flatMap(Object.keys)));
 
-
-
-    // console.log(allKeys)
     allKeys.forEach(key => {
+      let maxGroupingLevel = 0;
       // params.values.length > 1 ? null : params.values[0]
       columnDefs.push({
         field: key,
@@ -34,11 +26,15 @@ export const AgGridDataWrapper = ({chart}) => {
         enableValue: true,
         enableRowGroup: true, // Включаем группировку для category и subcategory
         enablePivot: true, // Отключаем возможность использования в сводной таблице для productName и period
+
         aggFunc: (params) => {
-          // params.api.expandAll(); // Раскрываем все группы
-          // console.log(111)
-          // params?.values?.[0] &&  !Number.isNaN(+(params?.values?.[0])) && visibleValues.push(params.values[0])
-          return params.values.length > 1 ? null : params.values[0];
+          if (params.rowNode.level === params.api.getState()?.rowGroup?.groupColIds?.length - 1) {
+
+            // console.log(params.values)
+            const filteredValues = params.values.filter(Boolean)
+            return filteredValues.length > 1 ? `~${filteredValues[0]}` : filteredValues[0]; // Берем только первое значение
+          }
+          return null;
         },
         cellStyle: (params) => {
           if (params.value == null) return {}; // если значение отсутствует, не применяем стиль
@@ -54,9 +50,10 @@ export const AgGridDataWrapper = ({chart}) => {
               color: 'black'
             };
           }
-
+          const valueConverted = params.value.toString().split(',')[0].replace('~','')
+          // console.log(params.value)
           // Нормализуем значение для диапазона [0, 1] с логарифмом для учета малых значений
-          const logValue = Math.log(params.value > 0 ? params.value : 1e-10); // Логарифм от значения
+          const logValue = Math.log(valueConverted > 0 ? valueConverted : 1e-10); // Логарифм от значения
           const logMin = Math.log(minValue);
           const logMax = Math.log(maxValue);
           const value = (logValue - logMin) / (logMax - logMin); // Нормализация в диапазон [0, 1]
@@ -83,21 +80,25 @@ export const AgGridDataWrapper = ({chart}) => {
     return {columnDefs};
   };
 
+  // const [test, setTest] = useState([])
+
   useEffect(() => {
     if (chart.formatting.type_chart !== 'pivot') return
     const test = []
     if (chart?.['0']?.table_data.length > 0) {
       chart?.['0']?.table_data.forEach(item => {
 
-        chart.formatting.values.forEach((value) => {
+
+        chart.formatting?.values?.forEach((value) => {
           test.push(item[value])
         })
       })
     }
-    console.log(test)
-    const min = Math.min(...test)
-    const max = Math.max(...test)
-
+    // console.log(test)
+    // Установка значений min и max в зависимости от наличия элементов в test
+    const min = test.length > 0 ? Math.min(...test) : null;
+    const max = test.length > 0 ? Math.max(...test) : null;
+    console.log('minmax',min,max,test)
 
     const availableValues = []
     const availableColumnsXY = []
@@ -108,18 +109,21 @@ export const AgGridDataWrapper = ({chart}) => {
       if(typeof value === 'string' && !chart?.formatting?.rowGroups?.includes(key) && !chart?.formatting?.colGroups?.includes(key)) {
         availableColumnsXY.push(key)
       }
-      console.log(key,value)
+      // console.log(key,value)
     }
     setAvailableColumns({
       availableValues,
       availableColumnsXY
     })
 
+
+
     const {columnDefs} = generateColumnDefs(chart?.['0']?.table_data ?? [], min, max);
     // console.log(columnDefs)
+    // console.log(2222222222)
     setColumnsDef(columnDefs)
   }, [chart])
 
-  return  !!columnsDef.length ? <ChartPivot chart={chart} columnsDef={columnsDef} availableColumns={availableColumns}/> : null
+  return  !!columnsDef.length ? <ChartPivot  chart={chart} columnsDef={columnsDef} availableColumns={availableColumns}/> : null
 
 }

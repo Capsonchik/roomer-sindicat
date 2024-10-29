@@ -20,8 +20,8 @@
 }
 .table_scroll{
   max-height: 700px;
-  overflow: auto;
-  height: calc(100% - 60px);
+  //overflow: auto;
+  //height: calc(100% - 60px);
   &::-webkit-scrollbar {
     height: 10px; /* Ширина всего элемента навигации */
     width: 10px;
@@ -43,6 +43,13 @@
   //border-collapse: separate;
   //overflow: hidden;
 
+  &.table_body{
+    //height: 1000px;
+    overflow-y: auto;
+    //overflow-y: scroll;
+    height: 100%;
+  } 
+
   width: 100%;
   border-color: #e6e5e5;
   th{
@@ -50,20 +57,22 @@
     padding-inline: 5px;
     //border: 1px solid #e6e5e5;
   }
-  td{
+  td,th{
     padding-inline: 5px !important;
     font-size: 16px;
     //padding: 6px !important;
-    min-width: 100px;
-    max-width: 100px;
+    min-width: 150px;
+    max-width: 150px;
+    //width: 100%;
     text-align: center;
     line-height: 16px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  td:nth-child(1) {
-    max-width: 150px;
+  td:nth-child(1),th:nth-child(1){
+    //width: 250px;
+    //max-width: 250px;
   }
 
   .empty{
@@ -101,6 +110,7 @@
 
 .wrapper_scroll{
   height: 100%;
+  //overflow-x: auto;
   //overflow: auto;
 
   &.isDrawer{
@@ -133,6 +143,8 @@
 
 .table_scroll {
   overflow-x: auto;
+  overflow-y: hidden;
+  //overflow-y: hidden;
   position: relative;
 }
 
@@ -150,5 +162,11 @@
 .subRow {
   left: 100px; /* Подберите значение по ширине первой колонки (row) */
   z-index: 2;
+}
+
+.table_body_wrapper{
+  height: 100%;
+  overflow-y: auto;
+  //overflow-y: scroll;
 }
 

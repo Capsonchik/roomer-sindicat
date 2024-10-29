@@ -9,7 +9,7 @@ import { ColumnsToolPanelModule } from "@ag-grid-enterprise/column-tool-panel";
 import { MenuModule } from "@ag-grid-enterprise/menu";
 import { RowGroupingModule } from "@ag-grid-enterprise/row-grouping";
 import { FiltersToolPanelModule } from "@ag-grid-enterprise/filter-tool-panel";
-import { agGridData } from "./agGridData";
+import { rowData as test } from "./agGridData";
 
 // Регистрация модулей
 ModuleRegistry.registerModules([
@@ -68,7 +68,7 @@ const generateColumnDefs = (rowData) => {
 
 // Компонент для создания таблицы с многоуровневыми заголовками
 export const ChartAgGridWithoutPivot = () => {
-  const [rowData, setRowData] = useState(agGridData);
+  const [rowData, setRowData] = useState(test);
 
   // Автоматическое подгонка размеров колонок
   const onGridReady = useCallback((params) => {

@@ -20,8 +20,8 @@ export const ChartEditor = ({chart}) => {
       returnType = <ChartPie chart={chart}/>
       break
     case 'pivot':
-      returnType = <CustomPivotWrapper chart={chart}/>
-      // returnType = <AgGridDataWrapper chart={chart}/>
+      // returnType = <CustomPivotWrapper chart={chart}/>
+      returnType = <AgGridDataWrapper chart={chart}/>
       break
   }
   return (

@@ -39,7 +39,7 @@ ModuleRegistry.registerModules([
 const ITEM_TYPE = 'ITEM';
 
 
-export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
+export const ChartPivot = ({chart, columnsDef, availableColumns,}) => {
   const user = useSelector(selectCurrentUser)
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
@@ -48,6 +48,65 @@ export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
   const dispatch = useDispatch()
   const [rowData, setRowData] = useState(chart?.['0']?.table_data ?? []);
 
+
+  function updateColumnColors(columnsDef, columns) {
+
+    // Собираем все значения из table_data для указанных полей в formatting.values
+    const test = []
+    if (chart?.['0']?.table_data.length > 0) {
+      chart?.['0']?.table_data.forEach(item => {
+
+
+        columns?.values?.forEach((value) => {
+          test.push(item[value])
+        })
+      })
+    }
+
+    // Находим минимальное и максимальное значения в test
+    const minValue = test.length > 0 ? Math.min(...test) : 1; // избегаем деления на 0
+    const maxValue = test.length > 0 ? Math.max(...test) : 1; // избегаем деления на 0
+
+    // console.log(test,minValue,maxValue)
+    // Функция для вычисления цвета на основе значения
+    function getColor(value) {
+      const valueConverted = value.toString().split(',')[0].replace('~', ''); // Преобразование значения
+      // Нормализуем значение для диапазона [0, 1] с логарифмом для учета малых значений
+      const logValue = Math.log(+valueConverted > 0 ? +valueConverted : 1e-10); // Логарифм от значения
+      const logMin = Math.log(minValue);
+      const logMax = Math.log(maxValue);
+      const normalizedValue = (logValue - logMin) / (logMax - logMin); // Нормализация в диапазон [0, 1]
+
+      // Определяем цвета (в формате RGB)
+      const darkColor = [250, 134, 130]; // #f7635c
+      const lightColor = [255, 248, 248]; // #fff2f2
+
+      // Интерполируем между светлым и темным цветом
+      const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * normalizedValue));
+      console.log(logValue)
+
+      return {
+        fontSize: 20,
+        backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
+        color: normalizedValue < 0.5 ? 'black' : 'white', // Контраст текста
+      };
+    }
+
+    console.log(columnsDef)
+    // Обновляем цвета в columnsDef
+    columnsDef.forEach(column => {
+      // if (column.field && columns.values.includes(column.field)) {
+      console.log(111)
+        column.cellStyle = params => {
+          console.log(params)
+          const value = params.value;
+          if(!value) return ;
+          console.log(getColor(value))
+          return getColor(value); // Применяем функцию получения цвета
+        };
+      // }
+    });
+  }
   const onGridReady = (params) => {
     params.api.sizeColumnsToFit();
 
@@ -64,15 +123,10 @@ export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
 
 
     params.api.expandAll(); // Раскрываем все группы
+    // setRowsLength(chart.formatting.rowGroups.length)
   }
-  console.log(columnsDef)
+  // console.log(columnsDef)
 
-  const autoGroupColumnDef = useMemo(() => ({
-    headerName: "Группы",
-    minWidth: 200,
-    cellRenderer: 'agGroupCellRenderer',
-    pinned: "left",
-  }), []);
 
 
   const handlePatch = () => {
@@ -118,10 +172,12 @@ export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
   const [columns, setColumns] = useState({
     availableColumnValues: availableColumns.availableValues,
     availableColumnXY: availableColumns.availableColumnsXY,
-    rows: chart.formatting.rowGroups,
-    cols: chart.formatting.colGroups,
-    values: chart.formatting.values
+    rows: chart?.formatting?.rowGroups || [],
+    cols: chart?.formatting?.colGroups || [],
+    values: chart?.formatting?.values || []
   });
+
+  console.log(columns)
 
   useEffect(() => {
     if(gridRef?.current?.api) {
@@ -129,11 +185,17 @@ export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
       gridRef.current.api.setPivotColumns(columns.cols);
       gridRef.current.api.setValueColumns(columns.values);
 
+
+
       gridRef.current.api.expandAll();
     }
 
 
   }, [columns, gridRef?.current]);
+
+  // useEffect(() => {
+  //   updateColumnColors(columnsDef, columns);
+  // }, [columns.values]);
 
 
   const moveItem2 = (item) => {
@@ -293,15 +355,17 @@ export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
             ref={gridRef}
             rowData={rowData}
             columnDefs={columnsDef}
-            autoGroupColumnDef={autoGroupColumnDef}
+            // autoGroupColumnDef={autoGroupColumnDef}
             rowGroupPanelShow={"never"} // Всегда показывать панель группировки
             pivotMode={true} // Отключаем режим сводной таблицы
-            sideBar={"none"}
+            // sideBar={""}
+            sideBar={'never'}
+            groupDisplayType={'multipleColumns'}
             onGridReady={onGridReady}
             localeText={localeText}
             // suppressMovableColumns={true}    // Отключаем возможность перемещения колонок
-            suppressDragLeaveHidesColumns={true} // Отключаем скрытие колонок при перетаскивании
-            suppressAggFuncInHeader={true}   // Скрываем функцию агрегации в заголовках
+            suppressDragLeaveHidesColumns={false} // Отключаем скрытие колонок при перетаскивании
+            suppressAggFuncInHeader={false}   // Скрываем функцию агрегации в заголовках
             animateRows={true}               // Включаем анимацию строк
             pivotDefaultExpanded={1}
             suppressContextMenu={user.role === 'viewer'}
@@ -320,7 +384,7 @@ export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
             >
               <h6>Доступно для значений</h6>
               <div className={styles.columnList}>
-                {columns.availableColumnValues.map((item, index) => (
+                {columns?.availableColumnValues?.map((item, index) => (
                   <DraggableItem allowedColumns={['values', 'availableColumnValues']} key={index} name={item}
                                  index={index} column="availableColumnValues"/>
                 ))}
@@ -332,7 +396,7 @@ export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
             >
               <h6>Значения</h6>
               <div className={styles.columnList}>
-                {columns.values.map((item, index) => (
+                {columns?.values?.map((item, index) => (
                   <DraggableItem allowedColumns={['availableColumnValues', 'values']} key={index} name={item}
                                  index={index} column="values"/>
                 ))}
@@ -348,7 +412,7 @@ export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
             >
               <h6>Доступно для x y</h6>
               <div className={styles.columnList}>
-                {columns.availableColumnXY.map((item, index) => (
+                {columns?.availableColumnXY?.map((item, index) => (
                   <DraggableItem allowedColumns={['rows', 'cols', 'availableColumnXY']} key={index} name={item}
                                  index={index} column="availableColumnXY"/>
                 ))}
@@ -359,7 +423,7 @@ export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
               <DroppableColumn allowedColumns={['availableColumnXY', 'cols', 'rows']} columnName="cols">
                 <h6>ось X</h6>
                 <div className={styles.columnList}>
-                  {columns.cols.map((item, index) => (
+                  {columns?.cols?.map((item, index) => (
                     <DraggableItem allowedColumns={['availableColumnXY', 'cols', 'rows']} key={index} name={item}
                                    index={index}
                                    column="cols"/>
@@ -371,7 +435,7 @@ export const ChartPivot = ({chart, columnsDef, availableColumns}) => {
               <DroppableColumn allowedColumns={['availableColumnXY', 'rows', 'cols']} columnName="rows">
                 <h6>ось Y</h6>
                 <div className={styles.columnList}>
-                  {columns.rows.map((item, index) => (
+                  {columns?.rows?.map((item, index) => (
                     <DraggableItem allowedColumns={['availableColumnXY', 'rows', 'cols']} key={index} name={item}
                                    index={index}
                                    column="rows"/>

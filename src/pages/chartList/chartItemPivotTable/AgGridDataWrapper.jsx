@@ -27,33 +27,19 @@ export const AgGridDataWrapper = ({chart}) => {
         enableValue: true,
         enableRowGroup: true, // Включаем группировку для category и subcategory
         enablePivot: false, // Отключаем возможность использования в сводной таблице для productName и period
-        // aggFunc: (params) => {
-        //   // Проверяем, является ли строка последним уровнем группировки
-        //   // const lastGroupLevel = params.api.getAllDisplayedColumns().filter(col => col.getColDef().rowGroup).length - 1;
-        //   //
-        //   // console.log(params.api)
-        //   // console.log(params)
-        //   // if(selectedRows?.includes(params.colDef.headerName)){
-        //   //   return params.values[0]
-        //   // }
-        //   // else {
-        //   //   return null
-        //   // }
-        //   console.log(params?.values)
-        //   return params?.values?.length > 1 ? null : params.values[0];
-        //   // console.log(params.api.getAllDisplayedColumns())
-        //   // // Проверяем, что это группа и она на последнем уровне rowGroup
-        //   // if (params.rowNode.rowGroupIndex === lastGroupLevel) {
-        //   //   return params.values[0]; // Возвращаем значение для последней группы
-        //   // }
-        //   // console.log(params)
-        //   // Для всех остальных групп возвращаем null, чтобы значение не отображалось
-        //   // return params.values[0];
+        // valueFormatter: (p) => {
+        //   console.log(p)
+        //   return p.value;
         // },
-        // valueGetter: (params) => {
-        //     console.log(params)
-        //   return params.node.data.label
-        // },
+        // aggFunc: null,
+        // Логика для получения точного значения на последнем уровне группировки
+        aggFunc: (params) => {
+          if (params.rowNode.level === params.api.getState()?.rowGroup?.groupColIds?.length - 1) {
+            const filteredValues = params.values.filter(Boolean)
+            return filteredValues.length > 1 ? `~${filteredValues[0]}` : filteredValues[0]; // Берем только первое значение
+          }
+          return null;
+        },
         cellStyle: (params) => {
           if (params.value == null) return {}; // если значение отсутствует, не применяем стиль
 
@@ -70,7 +56,7 @@ export const AgGridDataWrapper = ({chart}) => {
           }
 
           // Нормализуем значение для диапазона [0, 1] с логарифмом для учета малых значений
-          const logValue = Math.log(params.value > 0 ? params.value : 1e-10); // Логарифм от значения
+          const logValue = Math.log(params.value.toString().replace('~','') > 0 ? params.value.toString().replace('~','') : 1e-10); // Логарифм от значения
           const logMin = Math.log(minValue);
           const logMax = Math.log(maxValue);
           const value = (logValue - logMin) / (logMax - logMin); // Нормализация в диапазон [0, 1]

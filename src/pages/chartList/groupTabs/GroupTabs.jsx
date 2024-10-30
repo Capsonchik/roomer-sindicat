@@ -14,7 +14,7 @@ import {Navigation, Mousewheel, Keyboard, Scrollbar} from 'swiper/modules';
 import {
   selectActiveGroupId,
   selectCharts,
-  selectCurrentGroupLoading, selectFilterLoading,
+  selectCurrentGroupLoading, selectFilterLoading, selectIsChartLoading,
   selectScrollTabs
 } from "../../../store/chartSlice/chart.selectors";
 import {getFilters} from "../../../store/chartSlice/filter.actions";
@@ -25,9 +25,11 @@ export const GroupTabs = ({groupsReports}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const activeGroupId = useSelector(selectActiveGroupId)
   const currentGroupLoading = useSelector(selectCurrentGroupLoading)
+  const isChartLoading = useSelector(selectIsChartLoading)
   const filterLoading = useSelector(selectFilterLoading);
   const scrollTabs = useSelector(selectScrollTabs)
   const charts = useSelector(selectCharts)
+
   const isFirstRender = useRef(true)
 
   useEffect(() => {
@@ -138,8 +140,11 @@ export const GroupTabs = ({groupsReports}) => {
           >
             <div
 
-              className={`${styles.carouselItem} ${activeGroupId === group.group_id ? styles.active : ''} ${!filterLoading ? styles.loading: ''}`}
-              onClick={() => handleItemClick(group.group_id)}
+              className={`${styles.carouselItem} ${activeGroupId === group.group_id ? styles.active : ''} ${(currentGroupLoading || filterLoading === 'load' || isChartLoading) ? styles.loading: ''}`}
+              onClick={() => {
+                if(currentGroupLoading || filterLoading === 'load' || isChartLoading) return
+                handleItemClick(group.group_id)
+              }}
             >
               <p>
                 {group.group_name}

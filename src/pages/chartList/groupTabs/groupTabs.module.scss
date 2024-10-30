@@ -90,7 +90,8 @@
 
 
   &.loading {
-    pointer-events: none;
+    //pointer-events: none;
+    cursor: not-allowed;
   }
   &.active {
     //z-index: 100000000;

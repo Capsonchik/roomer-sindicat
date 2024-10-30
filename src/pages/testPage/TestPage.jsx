@@ -1,6 +1,6 @@
 import {Container, Message, useToaster} from "rsuite";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {fetchGetAllClients} from "../../store/reportSlice/reportSlice.actions";
 import {TopNavigationBar} from "../../components/topNavigationBar/TopNavigationBar";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
@@ -13,6 +13,7 @@ import {GroupFiltersWrapper, GroupFIltersWrapper} from "../chartList/groupFilter
 import {ChartItemGraph} from "../chartList/chartItemTree/ChartItemGraph";
 import {CytoscapeTree} from "../chartList/chartItemTree/CyptoTree";
 import {ChartItemTree} from "../chartList/chartItemTree/ChartItemTree";
+import {selectActiveGroupId, selectGroupsReports} from "../../store/chartSlice/chart.selectors";
 
 export const TestPage = () => {
   const dispatch = useDispatch();
@@ -21,29 +22,26 @@ export const TestPage = () => {
   const user = useSelector(selectCurrentUser)
   const toaster = useToaster();
   const placement = 'topEnd'
+  const [activeGroup, setActiveGroup] = useState()
+  const groups = useSelector(selectGroupsReports);
+  const activeGroupId = useSelector(selectActiveGroupId)
 
-  // useEffect(() => {
-  //   const checkAuth = async () => {
-  //     const token = localStorage.getItem('authToken')
-  //     const response = await fetch(
-  //       'https://aca1-212-45-6-6.ngrok-free.app/api/v1/users/me', {
-  //         headers: {
-  //           "Authorization": `Bearer ${token}`,
-  //           Accept: 'application/json',
-  //           'Content-Type': 'application/x-www-form-urlencoded',
-  //           'Accept-Language': 'ru',
-  //           "ngrok-skip-browser-warning": 'true',
-  //         }
-  //
-  //       }).catch(() => {
-  //       navigate('/')
-  //     });
-  //     // if (!response) {
-  //     //   navigate('/')
-  //     // }
-  //   }
-  //   checkAuth()
-  // }, []);
+  useEffect(() => {
+
+    const foundGroup = groups.find((group) => group.group_id == activeGroupId)
+    if (foundGroup) {
+      setActiveGroup(foundGroup)
+
+
+    } else if (groups.length) {
+      setActiveGroup(groups[0])
+
+
+    }
+
+  }, [activeGroupId, groups])
+
+
 
   useEffect(() => {
     if (location.pathname === "/main/report") {

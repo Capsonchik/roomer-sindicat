@@ -25,3 +25,4 @@ export const selectIsEditableMode = (state) => state.charts.isEditableMode;
 export const selectChartTypes = (state) => state.charts.chartTypes;
 export const selectGraphsPosition = (state) => state.charts.graphsPosition;
 export const selectActiveGraphsPosition = (state) => state.charts.activeGraphsPosition;
+export const selectCurrentGroup = (state) => state.charts.currentGroup;

@@ -41,6 +41,7 @@ const initialState = {
   isEditableMode: false,
   graphsPosition: [],
   activeGraphsPosition: null,
+  currentGroup: null
 }
 
 export const chartSlice = createSlice({
@@ -216,6 +217,7 @@ export const chartSlice = createSlice({
         state.chartTypes = action.payload
       })
       .addCase(getGroupById.fulfilled, (state, action) => {
+        state.currentGroup = action.payload
         state.groupsChart = state.groupsChart.map(group => {
           if(group.group_id === action.payload.group_id) {
             return  action.payload

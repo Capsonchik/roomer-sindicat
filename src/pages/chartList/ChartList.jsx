@@ -12,10 +12,21 @@ import {
   fetchAllClients, fetchChartById
 } from "../../store/chartSlice/chart.actions";
 import {
-  selectActiveClient, selectActiveGraphsPosition, selectActiveGroupId, selectActiveReport,
+  selectActiveClient,
+  selectActiveGraphsPosition,
+  selectActiveGroupId,
+  selectActiveReport,
   selectCharts,
-  selectClients, selectErrorCharts, selectFilterLoading, selectFilters, selectGraphsPosition, selectGroupsReports,
-  selectIsChartLoading, selectIsLoadDependentFilters, selectIsOpenDrawer,
+  selectClients,
+  selectCurrentGroup,
+  selectErrorCharts,
+  selectFilterLoading,
+  selectFilters,
+  selectGraphsPosition,
+  selectGroupsReports,
+  selectIsChartLoading,
+  selectIsLoadDependentFilters,
+  selectIsOpenDrawer,
   selectReportsClients
 } from "../../store/chartSlice/chart.selectors";
 import {ChartDrawer} from "./chartDrawer/ChartDrawer";
@@ -55,6 +66,9 @@ export const ChartList = (props) => {
   const activeReport = useSelector(selectActiveReport)
   const isOpenDrawer = useSelector(selectIsOpenDrawer)
   const activeGroupId = useSelector(selectActiveGroupId)
+  const activeGroup = useSelector(selectCurrentGroup)
+
+
   const errorCharts = useSelector(selectErrorCharts)
   const user = useSelector(selectCurrentUser)
   const filters = useSelector(selectFilters)
@@ -67,7 +81,7 @@ export const ChartList = (props) => {
   const graphsPosition = useSelector(selectGraphsPosition);
 
 
-  const [activeGroup, setActiveGroup] = useState()
+  // const [activeGroup, setActiveGroup] = useState()
   const [data, setData] = useState(charts)
   const [placeholderText, setPlaceholderText] = useState('')
   const [openGroupDrawer, setOpenGroupDrawer] = useState(false)
@@ -76,22 +90,26 @@ export const ChartList = (props) => {
   const [isTablet] = useMediaQuery('(max-width: 1200px)');
   const isFirstRender = useRef(true)
   const [images, setImages] = useState([])
+  const [groupLoading, setGroupLoading] = useState(true)
   // console.log(images)
 
-
-  useEffect(() => {
-    // setImages([])
-    if (filterLoading !== 'idle') return
-    // console.log(groups,activeGroupId)
-    const foundGroup = groups.find((group) => group.group_id == activeGroupId)
-    if (foundGroup) {
-      setActiveGroup(foundGroup)
-
-    } else if (groups.length) {
-      setActiveGroup(groups[0])
-    }
-
-  }, [activeGroupId, groups, filterLoading, charts])
+  //
+  // useEffect(() => {
+  //   // setImages([])
+  //   if (filterLoading !== 'idle') return
+  //   // console.log(groups,activeGroupId)
+  //   const foundGroup = groups.find((group) => group.group_id == activeGroupId)
+  //   if (foundGroup) {
+  //     setActiveGroup(foundGroup)
+  //     setGroupLoading(false)
+  //
+  //   } else if (groups.length) {
+  //     setActiveGroup(groups[0])
+  //     setGroupLoading(false)
+  //
+  //   }
+  //
+  // }, [activeGroupId, groups, filterLoading, charts])
 
 
   useEffect(() => {
@@ -188,6 +206,7 @@ export const ChartList = (props) => {
   }, [data.length, activeGroup]);
 
   useEffect(() => {
+    console.log('griup', activeGroup)
     if(activeGroup?.images) {
       setLayouts(generateLayout(activeGroup?.images));
       setData(activeGroup?.images.map(img => ({...img, title: 'image', formatting: {type_chart: 'image',}})))
@@ -220,6 +239,7 @@ export const ChartList = (props) => {
     return () => window.removeEventListener('resize', calculateTop);
   }, []);
 
+  console.log(data)
   return (
 
     <>
@@ -239,14 +259,14 @@ export const ChartList = (props) => {
           height: `calc(100vh - ${topOffset + 80}px)`,
         }}
         className={styles.list}>
-        {(isChartLoading || filterLoading === 'load') && !activeGroup?.images && (
+        {!activeGroup?.images && (isChartLoading || filterLoading === 'load') &&  (
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>
         )}
 
 
-        {activeReport && <div
+        {activeReport && activeGroup &&  <div
           // className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}
           className={cl(styles.wrapper, {
             // [styles.col_2]: data.length % 2 === 0,
@@ -255,7 +275,7 @@ export const ChartList = (props) => {
           })}
         >
 
-          {(!filterLoading || !isChartLoading) && data[0]?.title && (
+          {(!filterLoading || !isChartLoading ) && data[0]?.title && (
             <>
 
               <div

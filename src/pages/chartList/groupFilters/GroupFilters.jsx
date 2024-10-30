@@ -13,7 +13,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectActiveGroupId,
-  selectActiveReport,
+  selectActiveReport, selectCurrentGroupLoading,
   selectFilterLoading,
   selectFilters, selectGroupsReports
 } from "../../../store/chartSlice/chart.selectors";
@@ -29,10 +29,12 @@ export const GroupFilters = ({groups}) => {
   const dispatch = useDispatch();
   const filterLoading = useSelector(selectFilterLoading);
   const activeReport = useSelector(selectActiveReport)
+  const currentGroupLoading = useSelector(selectCurrentGroupLoading)
   // const groups = useSelector(selectGroupsReports)
   const [activeFilter, setActiveFilter] = useState(null);
   const [activeGroup, setActiveGroup] = useState(null)
   const isFirstRender = useRef(true)
+  const abortControllerRef = useRef(new AbortController());
 
   useEffect(() => {
     isFirstRender.current = true
@@ -55,9 +57,14 @@ export const GroupFilters = ({groups}) => {
   useEffect(() => {
     if (!activeGroupId) return
     methods.reset({filters: []})
-    dispatch(getFilters(activeGroupId)).then(() => {
-      // dispatch(setFilterLoading('none'))
+    dispatch(getFilters(activeGroupId,{ signal: abortControllerRef.current.signal })).then(() => {
+      dispatch(setFilterLoading('none'))
     })
+
+    return () => {
+      // Отменяем запрос при размонтировании компонента
+      abortControllerRef.current.abort();
+    };
 
   }, [activeGroupId]);
   // Сброс формы и обновление filters через reset, когда filters не пустой
@@ -237,6 +244,9 @@ export const GroupFilters = ({groups}) => {
     }
 
   }
+  // if(currentGroupLoading) {
+  //   return <Loader/>
+  // }
 
   // console.log(methods.getValues('filters'))
   return (

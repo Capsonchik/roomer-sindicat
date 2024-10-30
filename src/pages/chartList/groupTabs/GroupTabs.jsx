@@ -11,7 +11,12 @@ import {
 import {setActiveGroup, setCharts, setFilterLoading, setFilters} from "../../../store/chartSlice/chart.slice";
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Navigation, Mousewheel, Keyboard, Scrollbar} from 'swiper/modules';
-import {selectActiveGroupId, selectCharts, selectScrollTabs} from "../../../store/chartSlice/chart.selectors";
+import {
+  selectActiveGroupId,
+  selectCharts,
+  selectCurrentGroupLoading,
+  selectScrollTabs
+} from "../../../store/chartSlice/chart.selectors";
 import {getFilters} from "../../../store/chartSlice/filter.actions";
 
 export const GroupTabs = ({groupsReports}) => {
@@ -19,6 +24,7 @@ export const GroupTabs = ({groupsReports}) => {
   const swiperRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const activeGroupId = useSelector(selectActiveGroupId)
+  const currentGroupLoading = useSelector(selectCurrentGroupLoading)
   const scrollTabs = useSelector(selectScrollTabs)
   const charts = useSelector(selectCharts)
   const isFirstRender = useRef(true)
@@ -49,7 +55,7 @@ export const GroupTabs = ({groupsReports}) => {
     // const selectedGroup = groupsReports[index];
     // if (selectedGroup) {
     dispatch(setActiveGroup(id));
-    dispatch(getGroupById(id));
+    // dispatch(getGroupById(id));
 
     // dispatch(fetchAllChartsByGroupId(selectedGroup.group_id)).then(() => {
     //   dispatch(fetchAllChartsFormatByGroupId(selectedGroup.group_id));
@@ -130,6 +136,7 @@ export const GroupTabs = ({groupsReports}) => {
             key={group.group_id}
           >
             <div
+
               className={`${styles.carouselItem} ${activeGroupId === group.group_id ? styles.active : ''}`}
               onClick={() => handleItemClick(group.group_id)}
             >

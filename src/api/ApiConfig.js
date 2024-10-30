@@ -114,7 +114,9 @@ const createAxiosGraphnstance = () => {
   return instance;
 };
 
-
+export const axiosGetSignal = async (url, signal) => {
+  return axiosGraphRequest.get(url, { signal });
+};
 
 export const axiosGraphRequest = createAxiosGraphnstance();
 

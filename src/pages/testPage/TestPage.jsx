@@ -1,4 +1,4 @@
-import {Container, Message, useToaster} from "rsuite";
+import {Container, Loader, Message, useToaster} from "rsuite";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {fetchGetAllClients} from "../../store/reportSlice/reportSlice.actions";
@@ -13,7 +13,11 @@ import {GroupFiltersWrapper, GroupFIltersWrapper} from "../chartList/groupFilter
 import {ChartItemGraph} from "../chartList/chartItemTree/ChartItemGraph";
 import {CytoscapeTree} from "../chartList/chartItemTree/CyptoTree";
 import {ChartItemTree} from "../chartList/chartItemTree/ChartItemTree";
-import {selectActiveGroupId, selectGroupsReports} from "../../store/chartSlice/chart.selectors";
+import {
+  selectActiveGroupId,
+  selectCurrentGroupLoading,
+  selectGroupsReports
+} from "../../store/chartSlice/chart.selectors";
 
 export const TestPage = () => {
   const dispatch = useDispatch();
@@ -25,6 +29,7 @@ export const TestPage = () => {
   const [activeGroup, setActiveGroup] = useState()
   const groups = useSelector(selectGroupsReports);
   const activeGroupId = useSelector(selectActiveGroupId)
+  const сurrentGroupLoading = useSelector(selectCurrentGroupLoading)
 
   useEffect(() => {
 
@@ -64,6 +69,10 @@ export const TestPage = () => {
   //   toaster.push(message, {placement, duration: 3000})
   //
   // }, [user]);
+
+  // if(сurrentGroupLoading) {
+  //   return <Loader/>
+  // }
 
   return (
     <Container className={styles.wrapper}>

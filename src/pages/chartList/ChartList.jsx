@@ -259,14 +259,14 @@ export const ChartList = (props) => {
           height: `calc(100vh - ${topOffset + 80}px)`,
         }}
         className={styles.list}>
-        {!activeGroup?.images && (isChartLoading || filterLoading === 'load') &&  (
+        { (isChartLoading || filterLoading === 'load') &&  (
           <div className={styles.loader_wrapper}>
             <Loader size={'lg'}/>
           </div>
         )}
 
 
-        {activeReport && activeGroup &&  <div
+        {activeReport &&  <div
           // className={`${styles.wrapper} ${data.length % 2 === 0 ? styles.col_2 : ''} ${data.length === 3 ? styles.col_3 : ''}`}
           className={cl(styles.wrapper, {
             // [styles.col_2]: data.length % 2 === 0,

@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {axiosGetSignal, axiosGraphRequest} from "../../api/ApiConfig";
+import {axiosGraphRequest} from "../../api/ApiConfig";
 
 export const fetchColumnDB = createAsyncThunk(
   'filter/fetchColumnDB',
@@ -81,7 +81,7 @@ export const getFilters = createAsyncThunk(
   'filter/getFilters',
   async (group_id,{signal}) => {
     try {
-      const response = await axiosGetSignal(`/api/v3/filter/get_filters_async?group_id=${group_id}`,signal);
+      const response = await axiosGraphRequest.get(`/api/v3/filter/get_filters_async?group_id=${group_id}`,{signal});
       // console.log(response)
       if (response.status === 200) {
         return response.data;

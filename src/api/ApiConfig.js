@@ -98,6 +98,10 @@ const createAxiosGraphnstance = () => {
       return response;
     },
     (error) => {
+      if (axios.isCancel(error)) {
+        console.warn('Запрос был отменен');
+        return Promise.reject(new Error('Запрос отменен'));
+      }
       if (error.response) {
         console.error('Ошибка на стороне сервера:', error.response);
         throw new Error(JSON.stringify(error.response) || 'Ошибка на сервере');

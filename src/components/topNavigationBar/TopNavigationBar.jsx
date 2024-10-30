@@ -76,68 +76,70 @@ export const TopNavigationBar = () => {
   };
 
   return (
-    <Navbar
-      style={{
-        background: colors.length > 1 ? gradient : colors[0],
-        borderRadius: 8,
-        margin: 15,
-        color: 'white',
-        boxShadow: '5px 4px 18px -2px rgba(34, 60, 80, 0.4)'
-      }}
-      appearance={'subtle'}
-    >
-      <Navbar.Brand style={{padding: '13px 20px'}} href="#" onClick={() => handleNavigate('/main')}>
-        <img style={{height: 30, objectFit: 'contain'}} src={logoWhite} alt="logo"/>
-      </Navbar.Brand>
-      <Nav>
-        <Nav.Item
-          className={styles.nav_item}
-          onClick={() => handleNavigate('/main')}
-          style={{ transition: 'all 0.3s' }}
-          onMouseEnter={(e) => Object.assign(e.currentTarget.style, getHoverStyle())}
-          onMouseLeave={(e) => e.currentTarget.removeAttribute('style')}
-        >
-          Главная
-        </Nav.Item>
-        <Nav.Item
-          className={styles.nav_item}
-          onClick={() => handleNavigate('/main/report')}
-          style={{ transition: 'all 0.3s' }}
-          onMouseEnter={(e) => Object.assign(e.currentTarget.style, getHoverStyle())}
-          onMouseLeave={(e) => e.currentTarget.removeAttribute('style')}
-        >
-          Отчет
-        </Nav.Item>
-        <Nav.Item
-          className={styles.nav_item}
-          onClick={() => handleNavigate('/main/reportList')}
-          style={{ transition: 'all 0.3s' }}
-          onMouseEnter={(e) => Object.assign(e.currentTarget.style, getHoverStyle())}
-          onMouseLeave={(e) => e.currentTarget.removeAttribute('style')}
-        >
-          Список отчетов
-        </Nav.Item>
-      </Nav>
-      <Nav pullRight>
-        {user && (
+
+      <Navbar
+        style={{
+          background: colors.length > 1 ? gradient : colors[0],
+          borderRadius: 8,
+          margin: 15,
+          color: 'white',
+          boxShadow: '5px 4px 18px -2px rgba(34, 60, 80, 0.4)'
+        }}
+        appearance={'subtle'}
+      >
+        <Navbar.Brand style={{padding: '13px 20px'}} href="#" onClick={() => handleNavigate('/main')}>
+          <img style={{height: 30, objectFit: 'contain'}} src={logoWhite} alt="logo"/>
+        </Navbar.Brand>
+        <Nav>
           <Nav.Item
+            className={styles.nav_item}
+            onClick={() => handleNavigate('/main')}
+            style={{transition: 'all 0.3s'}}
             onMouseEnter={(e) => Object.assign(e.currentTarget.style, getHoverStyle())}
             onMouseLeave={(e) => e.currentTarget.removeAttribute('style')}
-            className={styles.nav_item} icon={<UserBadgeIcon/>} style={{ transition: 'all 0.3s' }}>
-            {user.username}
+          >
+            Главная
           </Nav.Item>
-        )}
-        <Nav.Item
-          className={styles.nav_item}
-          onClick={handleLogOut}
-          icon={<ExitIcon/>}
-          style={{ transition: 'all 0.3s' }}
-          onMouseEnter={(e) => Object.assign(e.currentTarget.style, getHoverStyle())}
-          onMouseLeave={(e) => e.currentTarget.removeAttribute('style')}
-        >
-          Выйти из системы
-        </Nav.Item>
-      </Nav>
-    </Navbar>
+          <Nav.Item
+            className={styles.nav_item}
+            onClick={() => handleNavigate('/main/report')}
+            style={{transition: 'all 0.3s'}}
+            onMouseEnter={(e) => Object.assign(e.currentTarget.style, getHoverStyle())}
+            onMouseLeave={(e) => e.currentTarget.removeAttribute('style')}
+          >
+            Отчет
+          </Nav.Item>
+          <Nav.Item
+            className={styles.nav_item}
+            onClick={() => handleNavigate('/main/reportList')}
+            style={{transition: 'all 0.3s'}}
+            onMouseEnter={(e) => Object.assign(e.currentTarget.style, getHoverStyle())}
+            onMouseLeave={(e) => e.currentTarget.removeAttribute('style')}
+          >
+            Список отчетов
+          </Nav.Item>
+        </Nav>
+        <Nav pullRight>
+          {user && (
+            <Nav.Item
+              onMouseEnter={(e) => Object.assign(e.currentTarget.style, getHoverStyle())}
+              onMouseLeave={(e) => e.currentTarget.removeAttribute('style')}
+              className={styles.nav_item} icon={<UserBadgeIcon/>} style={{transition: 'all 0.3s'}}>
+              {user.username}
+            </Nav.Item>
+          )}
+          <Nav.Item
+            className={styles.nav_item}
+            onClick={handleLogOut}
+            icon={<ExitIcon/>}
+            style={{transition: 'all 0.3s'}}
+            onMouseEnter={(e) => Object.assign(e.currentTarget.style, getHoverStyle())}
+            onMouseLeave={(e) => e.currentTarget.removeAttribute('style')}
+          >
+            Выйти из системы
+          </Nav.Item>
+        </Nav>
+      </Navbar>
+
   );
 };

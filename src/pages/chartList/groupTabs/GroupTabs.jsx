@@ -14,7 +14,7 @@ import {Navigation, Mousewheel, Keyboard, Scrollbar} from 'swiper/modules';
 import {
   selectActiveGroupId,
   selectCharts,
-  selectCurrentGroupLoading,
+  selectCurrentGroupLoading, selectFilterLoading,
   selectScrollTabs
 } from "../../../store/chartSlice/chart.selectors";
 import {getFilters} from "../../../store/chartSlice/filter.actions";
@@ -25,6 +25,7 @@ export const GroupTabs = ({groupsReports}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const activeGroupId = useSelector(selectActiveGroupId)
   const currentGroupLoading = useSelector(selectCurrentGroupLoading)
+  const filterLoading = useSelector(selectFilterLoading);
   const scrollTabs = useSelector(selectScrollTabs)
   const charts = useSelector(selectCharts)
   const isFirstRender = useRef(true)
@@ -55,7 +56,7 @@ export const GroupTabs = ({groupsReports}) => {
     // const selectedGroup = groupsReports[index];
     // if (selectedGroup) {
     dispatch(setActiveGroup(id));
-    // dispatch(getGroupById(id));
+    dispatch(getGroupById(id));
 
     // dispatch(fetchAllChartsByGroupId(selectedGroup.group_id)).then(() => {
     //   dispatch(fetchAllChartsFormatByGroupId(selectedGroup.group_id));
@@ -137,7 +138,7 @@ export const GroupTabs = ({groupsReports}) => {
           >
             <div
 
-              className={`${styles.carouselItem} ${activeGroupId === group.group_id ? styles.active : ''}`}
+              className={`${styles.carouselItem} ${activeGroupId === group.group_id ? styles.active : ''} ${!filterLoading ? styles.loading: ''}`}
               onClick={() => handleItemClick(group.group_id)}
             >
               <p>

@@ -231,6 +231,8 @@ export const chartSlice = createSlice({
       })
       .addCase(getGroupById.pending, (state, action) => {
         state.currentGroupLoading = true
+        // state.charts = []
+        // state.filters = []
 
       })
 

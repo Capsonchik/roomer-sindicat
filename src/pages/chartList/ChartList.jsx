@@ -18,7 +18,7 @@ import {
   selectActiveReport,
   selectCharts,
   selectClients,
-  selectCurrentGroup,
+  selectCurrentGroup, selectCurrentGroupLoading,
   selectErrorCharts,
   selectFilterLoading,
   selectFilters,
@@ -79,6 +79,7 @@ export const ChartList = (props) => {
   const activeGraphsPosition = useSelector(selectActiveGraphsPosition);
   const [filtersState, setFiltersState] = useState([filters])
   const graphsPosition = useSelector(selectGraphsPosition);
+  const currentGroupLoading = useSelector(selectCurrentGroupLoading)
 
 
   // const [activeGroup, setActiveGroup] = useState()

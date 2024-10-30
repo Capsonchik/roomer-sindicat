@@ -13,7 +13,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {
   selectActiveGroupId,
-  selectActiveReport, selectCurrentGroupLoading,
+  selectActiveReport, selectCurrentGroup, selectCurrentGroupLoading,
   selectFilterLoading,
   selectFilters, selectGroupsReports
 } from "../../../store/chartSlice/chart.selectors";
@@ -30,6 +30,7 @@ export const GroupFilters = ({groups}) => {
   const filterLoading = useSelector(selectFilterLoading);
   const activeReport = useSelector(selectActiveReport)
   const currentGroupLoading = useSelector(selectCurrentGroupLoading)
+  const currentGroup = useSelector(selectCurrentGroup)
   // const groups = useSelector(selectGroupsReports)
   const [activeFilter, setActiveFilter] = useState(null);
   const [activeGroup, setActiveGroup] = useState(null)
@@ -55,16 +56,21 @@ export const GroupFilters = ({groups}) => {
   });
 
   useEffect(() => {
-    if (!activeGroupId) return
+    // const controller = new AbortController();
+    // const signal = controller.signal;
+    // abortControllerRef.current = new AbortController();
+    if(!activeGroupId)return
+    console.log(111111)
     methods.reset({filters: []})
-    dispatch(getFilters(activeGroupId,{ signal: abortControllerRef.current.signal })).then(() => {
+    dispatch(getFilters(activeGroupId)).then(() => {
       dispatch(setFilterLoading('none'))
     })
 
-    return () => {
-      // Отменяем запрос при размонтировании компонента
-      abortControllerRef.current.abort();
-    };
+    // return () => {
+    //   // Отменяем запрос при размонтировании компонента
+    //   console.log('отмена')
+    //   abortControllerRef.current.abort();
+    // };
 
   }, [activeGroupId]);
   // Сброс формы и обновление filters через reset, когда filters не пустой

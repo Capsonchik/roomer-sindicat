@@ -89,6 +89,9 @@
   }
 
 
+  &.loading {
+    pointer-events: none;
+  }
   &.active {
     //z-index: 100000000;
     //display: block;

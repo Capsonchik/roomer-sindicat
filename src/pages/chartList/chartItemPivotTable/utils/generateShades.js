@@ -6,7 +6,7 @@ export function generateShades(hexColor) {
   const rgbColor = hexToRgb(hexColor);
 
   // Создаем светлый оттенок (увеличиваем яркость, например, на 1.2)
-  const lightShade = adjustBrightness(rgbColor, 68.8);
+  const lightShade = adjustBrightness(rgbColor, 3.8);
 
   // Создаем темный оттенок (уменьшаем яркость, например, на 0.8)
   const darkShade = adjustBrightness(rgbColor, 2);

@@ -102,7 +102,7 @@ export const AgGridDataWrapper = ({chart, colors}) => {
 
 // Сильно осветляем цвета
           const lightenedDarkColor = lightenColor(darkColor, 40); // на 40%
-          const lightenedLightColor = lightenColor(lightColor, 98); // на 98%
+          const lightenedLightColor = lightenColor(lightColor, 99); // на 98%
 
 // Интерполируем между светлым и темным цветом
           const interpolatedColor = lightenedLightColor.map((c, i) =>

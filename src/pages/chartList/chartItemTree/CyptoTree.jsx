@@ -17,18 +17,18 @@ nodeHtmlLabel(cytoscape); // Подключаем nodeHtmlLabel плагин
 const initialState = [
   {data: {id: "1", label: "Объем, тыс.p",type: 'one', values: [{value: 460409750, percent: '+41971767'},{value: 502381517, percent: '+9,1%'}]},position: { x: 100, y: 100 }},
   {data: {id: "2", label: "Объем, тыс.л.",type: 'one', values: [{value: 3933628, percent: '+79325'}, {value: 4012953, percent: '+2,0%'}]},position: { x: -300, y: 250 }},
-  {data: {id: "3", label: "Цена за литр",type: 'two', values: [{value: 117, percent: '+8,1р'}, {value: 125, percent: '+7,0%'}]},position: { x: -550, y: 350 }},
+  {data: {id: "3", label: "Цена за литр, р.",type: 'two', values: [{value: 117, percent: '+8,1р'}, {value: 125, percent: '+7,0%'}]},position: { x: -550, y: 350 }},
 
   {data: {id: "4", label: "Объем, тыс.шт",type: 'one', values: [{value: 6358247, percent: '+343916'}, {value: 6702163, percent: '+5,4%'}]},position: { x: 550, y: 250 }},
-  {data: {id: "5", label: "Цена за шт",type: 'two', values: [{value: 72, percent: '+2,5р'}, {value: 75, percent: '+3,5%'}]},position: { x: 700, y: 350 }},
+  {data: {id: "5", label: "Цена за шт, р.",type: 'two', values: [{value: 72, percent: '+2,5р'}, {value: 75, percent: '+3,5%'}]},position: { x: 700, y: 350 }},
 
-  {data: {id: "6", label: "Трафик",type: 'two', values: [{value: 2702844441, percent: '+122447150'}, {value: 2825291591, percent: '+4,5%'}]},position: { x: -100, y: 400 }},
-  {data: {id: "7", label: "Средний чек",type: 'one', values: [{value: 170, percent: '+7,5р'},{value: 178, percent: '+4,4%'}]},position: { x: 200, y: 350 }},
+  {data: {id: "6", label: "Трафик, чел.",type: 'two', values: [{value: 2702844441, percent: '+122447150'}, {value: 2825291591, percent: '+4,5%'}]},position: { x: -100, y: 400 }},
+  {data: {id: "7", label: "Средний чек, р.",type: 'one', values: [{value: 170, percent: '+7,5р'},{value: 178, percent: '+4,4%'}]},position: { x: 200, y: 350 }},
 
 
-  {data: {id: "8", label: "Объем покупки,л",type: 'two', values: [{value: 1.46, percent: '-0,03'},{value: 1.42, percent: '-2,4%'}]},position: { x: -400, y: 650 }},
-  {data: {id: "9", label: "Покупатели",type: 'two', values: [{value: 59619489, percent: '+3116953'}, {value: 62736442, percent: '+5,2%'}]},position: { x: -100, y: 520 }},
-  {data: {id: "10", label: "Популяция",type: 'two', values: [{value: 104581474, percent: '+1'}, {value: 104581474, percent: '+0,0%'}]},position: { x: -220, y: 650 }},
+  {data: {id: "8", label: "Объем покупки, л.",type: 'two', values: [{value: 1.46, percent: '-0,03'},{value: 1.42, percent: '-2,4%'}]},position: { x: -400, y: 650 }},
+  {data: {id: "9", label: "Покупатели, чел.",type: 'two', values: [{value: 59619489, percent: '+3116953'}, {value: 62736442, percent: '+5,2%'}]},position: { x: -100, y: 520 }},
+  {data: {id: "10", label: "Популяция, чел.",type: 'two', values: [{value: 104581474, percent: '+1'}, {value: 104581474, percent: '+0,0%'}]},position: { x: -220, y: 650 }},
   {data: {id: "11", label: "Пенетрация",type: 'one', values: [{value: '57,0%', percent: '+3,0п.п'}, {value: '60,0%', percent: '+5,2%'}]},position: { x: 0, y: 650 }},
   {data: {id: "12", label: "Пенетрация 18+",type: 'one', values: [{value: '27,0%', percent: '+3,0п.п'}, {value: '30,0%', percent: '+5,2%'}]},position: { x: 200, y: 650 }},
   {data: {id: "13", label: "Частота покупки",type: 'one', values: [{value: 45.3, percent: '-0,3'}, {value: '45.0', percent: '-0,7'}]},position: { x: 400, y: 650 }},

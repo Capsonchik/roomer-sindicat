@@ -5,8 +5,15 @@ import {FormProvider, useForm} from "react-hook-form";
 import {CustomInput} from "../../../components/rhfInputs/customInput/CustomInput";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {deleteGroupById, fetchAllGroups, patchGroupById, postGroup} from "../../../store/chartSlice/chart.actions";
 import {
+  deleteGroupById,
+  fetchAllGroups,
+  fetchAllReports,
+  patchGroupById,
+  postGroup
+} from "../../../store/chartSlice/chart.actions";
+import {
+  selectActiveClient,
   selectActiveGroupId,
   selectActiveReport, selectCharts, selectGroupsReports,
   selectReportsClients,
@@ -20,6 +27,7 @@ import {CustomSelectPicker} from "../../../components/rhfInputs/selectPicker/Sel
 import cl from 'classnames'
 import {labelArray} from "../label.config";
 import {setActiveGroup, setScrollTabs} from "../../../store/chartSlice/chart.slice";
+import {fetchGetClientReports} from "../../../store/reportSlice/reportSlice.actions";
 
 export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
   const reportsClients = useSelector(selectReportsClients)
@@ -43,6 +51,7 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
   const activeReport = useSelector(selectActiveReport)
   const activeGroupId = useSelector(selectActiveGroupId)
   const typeGroupDrawer = useSelector(selectTypeGroupDrawer)
+  const activeClient = useSelector(selectActiveClient)
   const charts = useSelector(selectCharts)
   const groups = useSelector(selectGroupsReports);
   const [isDelete, setIsDelete] = useState(false)
@@ -85,6 +94,7 @@ export const GroupDrawer = ({open, onClose, activeGroup = null}) => {
   const handleCreateGroup = (data) => {
     // console.log(data)
     dispatch(postGroup(data)).then((res) => {
+      dispatch(fetchAllGroups(activeReport))
       // console.log(res)
       // const index = groups.findIndex(group => group.group_id === res.payload.group_id)
       dispatch(setActiveGroup(res.payload.group_id))

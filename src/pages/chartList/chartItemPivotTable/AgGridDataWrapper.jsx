@@ -60,7 +60,7 @@ export const AgGridDataWrapper = ({chart, colors}) => {
             if (typeof firstValue === 'number') {
               return filteredValues.length > 1
                 ? `~${chart?.ispercent ? (firstValue * 100)?.toFixed(1) : firstValue.toFixed(1)}%`
-                : `${chart.ispercent ? (firstValue * 100)?.toFixed(1) : firstValue.toFixed(1)}%`;
+                : `${chart.ispercent ? (firstValue * 100)?.toFixed(1) : firstValue.toFixed(3)}`;
             } else {
               console.warn('Первое значение не является числом:', firstValue);
               return null; // Или другое значение по умолчанию

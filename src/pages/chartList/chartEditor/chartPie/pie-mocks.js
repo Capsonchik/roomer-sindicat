@@ -1,35 +1,35 @@
 export const pieMocks = [
   {
-    name: 'first_pie',
+    name: '2023-H2',
     // center:  ['25%', '50%'],
     data: [
-      { value: 40, name: 'rose 1' },
-      { value: 33, name: 'rose 2' },
-      { value: 28, name: 'rose 3' },
-      { value: 22, name: 'rose 4' },
-      { value: 20, name: 'rose 5' },
-      { value: 15, name: 'rose 6' },
-      { value: 12, name: 'rose 7' },
-      { value: 10, name: 'rose 8' }
+      { value: 40, name: 'мужчина' },
+      { value: 60, name: 'женщина' },
+
     ]
   },
   {
-    name: 'second_pie',
+    name: '2023-H1',
     // center: ['75%', '50%'],
     data: [
-      { value: 30, name: 'rose 1' },
-      { value: 28, name: 'rose 2' },
-      { value: 26, name: 'rose 3' },
-      { value: 24, name: 'rose 4' },
-      { value: 22, name: 'rose 5' },
-      { value: 20, name: 'rose 6' },
-      { value: 18, name: 'rose 7' },
-      { value: 16, name: 'rose 8' }
+      { value: 70, name: 'мужчина' },
+      { value: 30, name: 'женщина' },
+
+    ]
+  },
+  {
+    name: '2022-H1',
+    // center: ['75%', '50%'],
+    data: [
+      { value: 35, name: 'мужчина' },
+      { value: 65, name: 'женщина' },
+
     ]
   }
 ]
 
 export const centerPie = {
-  1: [['50%', '40%']],
-  2: [['25%', '40%'],['75%', '40%']]
+  1: [['50%', '40%'],],
+  2: [['25%', '40%'],['75%', '40%']],
+  3: [['20%', '40%'],['50%', '40%'],['80%', '40%']],
 }

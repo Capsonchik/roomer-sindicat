@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import {ChartPivot} from "./ChartPivot";
 
 
-export const AgGridDataWrapper = ({chart}) => {
+export const AgGridDataWrapper = ({chart,colors}) => {
   const [columnsDef, setColumnsDef] = useState([])
   const [availableColumns, setAvailableColumns] = useState({
     availableValues: [],
@@ -59,14 +59,13 @@ export const AgGridDataWrapper = ({chart}) => {
           const value = (logValue - logMin) / (logMax - logMin); // Нормализация в диапазон [0, 1]
 
           // Определяем цвета (в формате RGB)
-          const darkColor = [250, 134, 130]; // #f7635c
-          const lightColor = [255, 248, 248]; // #fff2f2
-
+          const darkColor = colors.darkShade; // #f7635c
+          const lightColor = colors.lightShade; // #fff2f2
           // Интерполируем между светлым и темным цветом
           const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * value));
 
           return {
-            fontSize:20,
+            fontSize:14,
             backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
             color: value < 0.5 ? 'black' : 'white', // Контраст текста
           };
@@ -124,6 +123,6 @@ export const AgGridDataWrapper = ({chart}) => {
     setColumnsDef(columnDefs)
   }, [chart])
 
-  return  !!columnsDef.length ? <ChartPivot  chart={chart} columnsDef={columnsDef} availableColumns={availableColumns}/> : null
+  return  !!columnsDef.length ? <ChartPivot colors={colors}  chart={chart} columnsDef={columnsDef} availableColumns={availableColumns}/> : null
 
 }

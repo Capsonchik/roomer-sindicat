@@ -114,7 +114,8 @@ export const ChartAgGridPivot = ({chart,columnsDef}) => {
           // animateRows={true}               // Включаем анимацию строк
           pivotDefaultExpanded={1}
           suppressContextMenu={user.role === 'viewer'}
-          rowHeight={34} // Уменьшаем высоту строки до 25px
+          headerHeight={30}
+          rowHeight={20} // Уменьшаем высоту строки до 25px
           tooltipShowDelay={200} // Задержка перед показом тултипа
           tooltipHideDelay={4000} // Время до скрытия тултипа (например, 3 секунды)
           enableBrowserTooltips={false} // Отключаем нативные браузерные тултипы

@@ -39,7 +39,7 @@ ModuleRegistry.registerModules([
 const ITEM_TYPE = 'ITEM';
 
 
-export const ChartPivot = ({chart, columnsDef, availableColumns,}) => {
+export const ChartPivot = ({chart, columnsDef, availableColumns,colors}) => {
   const user = useSelector(selectCurrentUser)
   const activeGroupId = useSelector(selectActiveGroupId)
   const groupsReports = useSelector(selectGroupsReports)
@@ -78,8 +78,8 @@ export const ChartPivot = ({chart, columnsDef, availableColumns,}) => {
       const normalizedValue = (logValue - logMin) / (logMax - logMin); // Нормализация в диапазон [0, 1]
 
       // Определяем цвета (в формате RGB)
-      const darkColor = [250, 134, 130]; // #f7635c
-      const lightColor = [255, 248, 248]; // #fff2f2
+      const darkColor = colors.darkShade; // #f7635c
+      const lightColor = colors.lightShade; // #fff2f2
 
       // Интерполируем между светлым и темным цветом
       const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * normalizedValue));
@@ -369,7 +369,7 @@ export const ChartPivot = ({chart, columnsDef, availableColumns,}) => {
             animateRows={true}               // Включаем анимацию строк
             pivotDefaultExpanded={1}
             suppressContextMenu={user.role === 'viewer'}
-            rowHeight={34} // Уменьшаем высоту строки до 25px
+            rowHeight={24} // Уменьшаем высоту строки до 25px
             tooltipShowDelay={200} // Задержка перед показом тултипа
             tooltipHideDelay={4000} // Время до скрытия тултипа (например, 3 секунды)
             enableBrowserTooltips={false} // Отключаем нативные браузерные тултипы

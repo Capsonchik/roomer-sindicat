@@ -1,9 +1,27 @@
 import {useEffect, useState} from "react";
 import {ChartAgGridPivot} from "./AgPivotTbale";
+import {generateColors} from "../../../lib/generateColors";
+import {colors as colorsConsts} from "../chart/config";
+import {useSelector} from "react-redux";
+import {selectActiveClient, selectClients} from "../../../store/chartSlice/chart.selectors";
 
 
-export const AgGridDataWrapper = ({chart}) => {
+export const AgGridDataWrapper = ({chart,colors}) => {
   const [columnsDef, setColumnsDef] = useState([])
+  // const [colors, setColors] = useState(colorsConsts)
+  const activeClient = useSelector(selectActiveClient)
+  const clients = useSelector(selectClients)
+
+  // useEffect(() => {
+  //   const client = clients.find(clnt => clnt.client_id === activeClient)
+  //   if (client?.chart_colors && client?.chart_colors?.colors) {
+  //     // const test = ['#1675e0', '#fa8900']
+  //     // const gradientColors = generateColors(client?.chart_colors?.colors, Object.keys(chart.seriesData).length)
+  //     // // console.log(chart.seriesData)
+  //     setColors(client?.chart_colors?.colors?.[0])
+  //   }
+  // },[])
+
   const generateColumnDefs = (rowData, min, max, selectedRows) => {
 
     // console.log(min,max)
@@ -54,22 +72,23 @@ export const AgGridDataWrapper = ({chart}) => {
               color: 'black'
             };
           }
-
           // Нормализуем значение для диапазона [0, 1] с логарифмом для учета малых значений
           const logValue = Math.log(params.value.toString().replace('~','') > 0 ? params.value.toString().replace('~','') : 1e-10); // Логарифм от значения
           const logMin = Math.log(minValue);
           const logMax = Math.log(maxValue);
           const value = (logValue - logMin) / (logMax - logMin); // Нормализация в диапазон [0, 1]
 
+
+          // console.log(colors)
           // Определяем цвета (в формате RGB)
-          const darkColor = [250, 134, 130]; // #f7635c
-          const lightColor = [255, 248, 248]; // #fff2f2
+          const darkColor = colors.darkShade; // #f7635c
+          const lightColor = colors.lightShade; // #fff2f2
 
           // Интерполируем между светлым и темным цветом
           const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * value));
 
           return {
-            fontSize: 20,
+            fontSize: 14,
             backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
             color: value < 0.5 ? 'black' : 'white', // Контраст текста
           };

@@ -28,7 +28,7 @@ export const ChartDrawer = ({open, onClose}) => {
         <div className={styles.wrapper}>
 
 
-          <ChartEditor chart={chart} editor={true}/>
+          <ChartEditor chart={chart} editor={true} open={open}/>
 
 
           {/*<Button onClick={handleSave}>Сохранить</Button>*/}

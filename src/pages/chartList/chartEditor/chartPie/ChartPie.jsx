@@ -3,11 +3,16 @@ import {useDispatch, useSelector} from "react-redux";
 import {FormProvider, useForm} from "react-hook-form";
 import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 import * as echarts from "echarts";
-import {colors, legendConfig, tooltipConfig} from "../../chart/config";
+import {colors as colorsConsts, colors, legendConfig, tooltipConfig} from "../../chart/config";
 import {Button} from "rsuite";
 import {setActiveChart, setOpenDrawer} from "../../../../store/chartSlice/chart.slice";
 import EditIcon from "@rsuite/icons/Edit";
-import {selectActiveGroupId, selectCharts, selectGroupsReports} from "../../../../store/chartSlice/chart.selectors";
+import {
+  selectActiveClient,
+  selectActiveGroupId,
+  selectCharts, selectClients,
+  selectGroupsReports
+} from "../../../../store/chartSlice/chart.selectors";
 import {centerPie, pieMocks} from "./pie-mocks";
 import cl from "classnames";
 import {MainForm} from "./mainForm/MainForm";
@@ -17,8 +22,9 @@ import {
   patchChartFormatting
 } from "../../../../store/chartSlice/chart.actions";
 import {selectActiveFilters} from "../../../../store/chartSlice/filter.slice";
+import {generateColors} from "../../../../lib/generateColors";
 
-export const ChartPie = ({chart}) => {
+export const ChartPie = ({chart,open}) => {
   const dispatch = useDispatch();
   const methods = useForm()
   const chartRef = useRef(null);
@@ -34,7 +40,20 @@ export const ChartPie = ({chart}) => {
   const activeFilters = useSelector(selectActiveFilters)
   const inputs = methods.watch()
   const [isDelete, setIsDelete] = useState(false)
+  const [colors, setColors] = useState(colorsConsts)
+  const activeClient = useSelector(selectActiveClient)
+  const clients = useSelector(selectClients)
 
+  useEffect(() => {
+    const client = clients.find(clnt => clnt.client_id === activeClient)
+    if (client?.chart_colors && client?.chart_colors?.colors) {
+      // const test = ['#1675e0', '#fa8900']
+      const gradientColors = generateColors(client?.chart_colors?.colors, pieMocks[0].data.length)
+      // console.log(chart.seriesData)
+      setColors(gradientColors)
+    }
+  },[chartInstance])
+  // console.log(colors)
 
   useEffect(() => {
     const myChart = echarts.init(chartRef.current);
@@ -135,6 +154,7 @@ export const ChartPie = ({chart}) => {
         trigger: 'item',
         formatter: '{a} <br/>{b} : {c} ({d}%)'
       },
+
       title: [
         ...pieMocks.map((pieItem, index, arr) => {
           let center = centerPie[arr.length][index];
@@ -146,6 +166,7 @@ export const ChartPie = ({chart}) => {
           }
         })
       ],
+      color: colors,
 
 
       series: seriesOptions,

@@ -10,7 +10,7 @@ import {useSelector} from "react-redux";
 import {selectActiveClient, selectClients} from "../../../store/chartSlice/chart.selectors";
 import {generateShades} from "../chartItemPivotTable/utils/generateShades";
 
-export const ChartEditor = ({chart}) => {
+export const ChartEditor = ({chart,open}) => {
   const activeClient = useSelector(selectActiveClient)
   const clients = useSelector(selectClients)
 
@@ -28,7 +28,7 @@ export const ChartEditor = ({chart}) => {
       returnType = <ChartTableEditor chart={chart}/>
       break
     case 'pie':
-      returnType = <ChartPie chart={chart}/>
+      returnType = <ChartPie chart={chart} open={open}/>
       break
     case 'pivot':
       // returnType = <CustomPivotWrapper chart={chart}/>

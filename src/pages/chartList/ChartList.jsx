@@ -80,6 +80,7 @@ export const ChartList = (props) => {
   const [filtersState, setFiltersState] = useState([filters])
   const graphsPosition = useSelector(selectGraphsPosition);
   const currentGroupLoading = useSelector(selectCurrentGroupLoading)
+  const toggleFilters = useSelector(state => state.filters.toogleFilters);
 
 
   // const [activeGroup, setActiveGroup] = useState()
@@ -238,7 +239,7 @@ export const ChartList = (props) => {
     // Пересчитываем при изменении окна
     window.addEventListener('resize', calculateTop);
     return () => window.removeEventListener('resize', calculateTop);
-  }, []);
+  }, [toggleFilters]);
 
   console.log(data)
   return (

@@ -17,13 +17,17 @@ const initialState = {
   originValuesLoading: false,
   selectedFilters: [],
 
-  activeSavedFilters: null
+  activeSavedFilters: null,
+  toogleFilters: true,
 }
 
 export const filterSlice = createSlice({
   name: 'filters',
   initialState,
   reducers: {
+    setToggleFilters: (state, action) => {
+      state.toogleFilters= action.payload;
+    },
     setSelectedFilters: (state, action) => {
       state.selectedFilters= action.payload;
     },
@@ -63,7 +67,7 @@ export const filterSlice = createSlice({
   }
 })
 
-export const {setSelectedFilters,setActiveSavedFilters,removeFilters,removeFilter,setFilters} = filterSlice.actions;
+export const {setToggleFilters,setSelectedFilters,setActiveSavedFilters,removeFilters,removeFilter,setFilters} = filterSlice.actions;
 
 export default filterSlice.reducer;
 

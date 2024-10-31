@@ -6,7 +6,7 @@ import {useSelector} from "react-redux";
 import {selectActiveClient, selectClients} from "../../../store/chartSlice/chart.selectors";
 
 
-export const AgGridDataWrapper = ({chart,colors}) => {
+export const AgGridDataWrapper = ({chart, colors}) => {
   const [columnsDef, setColumnsDef] = useState([])
   // const [colors, setColors] = useState(colorsConsts)
   const activeClient = useSelector(selectActiveClient)
@@ -53,8 +53,18 @@ export const AgGridDataWrapper = ({chart,colors}) => {
         // Логика для получения точного значения на последнем уровне группировки
         aggFunc: (params) => {
           if (params.rowNode.level === params.api.getState()?.rowGroup?.groupColIds?.length - 1) {
-            const filteredValues = params.values.filter(Boolean)
-            return filteredValues.length > 1 ? `~${filteredValues[0]}` : filteredValues[0]; // Берем только первое значение
+            const filteredValues = params.values.filter(Boolean);
+            const firstValue = filteredValues[0];
+
+            // Проверяем, является ли первое значение числом
+            if (typeof firstValue === 'number') {
+              return filteredValues.length > 1
+                ? `~${chart?.ispercent ? (firstValue * 100)?.toFixed(1) : firstValue.toFixed(1)}%`
+                : `${chart.ispercent ? (firstValue * 100)?.toFixed(1) : firstValue.toFixed(1)}%`;
+            } else {
+              console.warn('Первое значение не является числом:', firstValue);
+              return null; // Или другое значение по умолчанию
+            }
           }
           return null;
         },
@@ -73,25 +83,38 @@ export const AgGridDataWrapper = ({chart,colors}) => {
             };
           }
           // Нормализуем значение для диапазона [0, 1] с логарифмом для учета малых значений
-          const logValue = Math.log(params.value.toString().replace('~','') > 0 ? params.value.toString().replace('~','') : 1e-10); // Логарифм от значения
+          const logValue = Math.log(params.value.toString().replace('~', '').replace('%', '') > 0 ? params.value.toString().replace('~', '').replace('%', "") : 1e-10); // Логарифм от значения
           const logMin = Math.log(minValue);
           const logMax = Math.log(maxValue);
           const value = (logValue - logMin) / (logMax - logMin); // Нормализация в диапазон [0, 1]
 
 
-          // console.log(colors)
-          // Определяем цвета (в формате RGB)
+          function lightenColor(rgb, percent) {
+            return rgb.map((channel) => {
+              const value = Math.min(255, Math.round(channel + (255 - channel) * (percent / 100)));
+              return value;
+            });
+          }
+
+// Определяем цвета (в формате RGB)
           const darkColor = colors.darkShade; // #f7635c
           const lightColor = colors.lightShade; // #fff2f2
 
-          // Интерполируем между светлым и темным цветом
-          const interpolatedColor = lightColor.map((c, i) => Math.round(c + (darkColor[i] - c) * value));
+// Сильно осветляем цвета
+          const lightenedDarkColor = lightenColor(darkColor, 40); // на 40%
+          const lightenedLightColor = lightenColor(lightColor, 98); // на 98%
+
+// Интерполируем между светлым и темным цветом
+          const interpolatedColor = lightenedLightColor.map((c, i) =>
+            Math.round(c + (lightenedDarkColor[i] - c) * value)
+          );
 
           return {
             fontSize: 14,
             backgroundColor: `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]}, ${interpolatedColor[2]})`, // от темного к светлому
             color: value < 0.5 ? 'black' : 'white', // Контраст текста
           };
+
         }
 
       });

@@ -101,9 +101,17 @@ export const CytoscapeTree = () => {
       wheelSensitivity: 0.1,  // Чувствительность зума (меньшее значение = более плавный зум
     });
 
-    cy.viewport({
-      zoom: 0.7,
-      pan: { x: 700, y: 0 }
+    cy.ready(() => {
+      const containerWidth = cy.container().clientWidth;  // Ширина контейнера
+      const graphCenterX = cy.width().w / 2;        // Центр графа по оси X
+
+      // Вычисляем смещение для центровки графа
+      const panX = containerWidth / 2 - graphCenterX;
+
+      cy.viewport({
+        zoom: 0.7,
+        pan: { x: panX, y: 0 }
+      });
     });
     setCyInstance(cy);
 
